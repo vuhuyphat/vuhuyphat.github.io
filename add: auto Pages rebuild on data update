@@ -1,0 +1,24 @@
+name: Redeploy Pages on data change
+on:
+  push:
+    paths:
+      - "data/**"
+      - "index.html"
+      - "ai_master.js"
+      - "config.json"
+  workflow_dispatch:
+
+jobs:
+  pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Touch to trigger
+        run: echo "<!-- redeploy $(date -u) -->" >> .rebuild
+      - name: Commit touch
+        run: |
+          git config user.name  "ai-x1000-bot"
+          git config user.email "ai@lightunfold.eth"
+          git add .rebuild || true
+          git commit -m "pages: redeploy $(date -u +'%H:%M:%S')" || true
+          git push || true
