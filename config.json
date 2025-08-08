@@ -1,0 +1,113 @@
+{
+  "site": {
+    "brand": "LightUnfold • Web3 AI X1000",
+    "ens": "lightunfold.eth",
+    "tagline": "20,000+ AI • 200+ quốc gia • 200+ ngôn ngữ • tự động 24/7 • chuyển đổi X1000",
+    "locale_default": "vi",
+    "locales": ["vi","en","es","fr","de","ja","ko","zh"],
+    "contact": {
+      "email": "vumumabada@gmail.com",
+      "telegram": "https://t.me/+0000000000",
+      "discord": "https://discord.gg/placeholder"
+    }
+  },
+
+  "seo": {
+    "title": "LightUnfold • Web3 AI X1000 – Tự động 24/7",
+    "description": "Nền tảng Web3 AI cập nhật tự động 24/7, quét thị trường đa nguồn, hiển thị cơ hội nổi bật, thanh toán on-chain/off-chain, affiliate toàn cầu.",
+    "keywords": ["web3","ai","crypto","defi","coingecko","trading","affiliate","payments","onchain","automation"],
+    "image": "https://vuhuyphat.github.io/assets/og-cover.png",
+    "twitter": "@LightUnfold",
+    "open_graph_type": "website"
+  },
+
+  "ui": {
+    "theme": "dark",
+    "accent": "#ff9800",
+    "show_sections": {
+      "opportunities": true,
+      "payments": true,
+      "affiliates": true
+    },
+    "cards": {
+      "max_items": 10,
+      "show_change_24h": true,
+      "show_volume_24h": true,
+      "show_links": true
+    }
+  },
+
+  "feeds": {
+    "top_n": 12,
+    "min_volume_usd": 1000000,
+    "blacklist_symbols": ["SCAM","TEST","FAKE"],
+    "sources": [
+      { "id": "coingecko_markets", "enabled": true, "weight": 0.6 },
+      { "id": "coinlore_tickers",  "enabled": true, "weight": 0.4 }
+    ]
+  },
+
+  "schedule": {
+    "refresh_minutes": 10,
+    "jitter_seconds": 30,
+    "timeout_ms": 10000
+  },
+
+  "heartbeat": {
+    "enabled": true,
+    "text_ok": "OK",
+    "data_url": "data/latest.json"
+  },
+
+  "payments": {
+    "qr_auto": true,
+    "chains": [
+      { "name": "ETH (EVM)",     "address": "0x54E15A7b6d4213beE87800432A151d794638E3C2", "explorer": "https://etherscan.io/address/0x54E15A7b6d4213beE87800432A151d794638E3C2" },
+      { "name": "USDT (ERC20)",  "address": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0", "explorer": "https://etherscan.io/token/USDT?a=0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0" }
+    ],
+    "offchain": {
+      "momo": "0567892030",
+      "vietcombank": "9567892030",
+      "paypal": "vumumabada@gmail.com"
+    },
+    "minimums": {
+      "ETH": 0.0005,
+      "USDT": 5
+    }
+  },
+
+  "affiliates": [
+    { "name": "Binance",  "url": "https://www.binance.com/vi/register?ref=GRO_20338_9V44N", "tag": "Top CEX" },
+    { "name": "AlgosOne", "url": "https://algosone.page.link/MbtR", "tag": "AI Trading" },
+    { "name": "OKX",      "url": "https://www.okx.com/join/your-code", "tag": "CEX" },
+    { "name": "Bybit",    "url": "https://www.bybit.com/invite?ref=your-code", "tag": "Derivatives" }
+  ],
+
+  "social": {
+    "x": "https://twitter.com/LightUnfold",
+    "telegram_channel": "https://t.me/your_channel",
+    "youtube": "https://youtube.com/@yourchannel"
+  },
+
+  "webhooks": {
+    "discord": { "use_secret": "DISCORD_WEBHOOK_URL" },
+    "telegram": { "use_secret": "TELEGRAM_BOT_TOKEN", "chat_id_secret": "TELEGRAM_CHAT_ID" },
+    "x_bearer_secret": "X_BEARER_TOKEN"
+  },
+
+  "cache": {
+    "max_age_seconds": 300,
+    "stale_while_revalidate_seconds": 900
+  },
+
+  "features": {
+    "i18n_auto": true,
+    "ai_summarize": true,
+    "link_out_tracking": true
+  },
+
+  "legal": {
+    "terms_url": "https://vuhuyphat.github.io/terms",
+    "privacy_url": "https://vuhuyphat.github.io/privacy"
+  }
+}
