@@ -2,162 +2,280 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>LightUnfold • Web3 AI X1000</title>
+<meta name="description" content="Trang Web3 AI tự động 24/7 • Quét thị trường, nạp dữ liệu liên tục, thanh toán đa kênh, affiliate, PWA offline.">
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡️</text></svg>">
+<meta property="og:title" content="LightUnfold • Web3 AI X1000">
+<meta property="og:description" content="Quét dữ liệu crypto/top cơ hội mỗi 10 phút • Thanh toán nhanh bằng QR • Chạy 24/7.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vuhuyphat.github.io/">
+<meta name="theme-color" content="#0b0f13">
 <style>
-  body{margin:0;background:#0b0f13;color:#e9eef4;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto}
-  header,section,footer{max-width:980px;margin:0 auto;padding:20px}
-  .hero{padding:28px 20px 10px}
-  h1{margin:6px 0 8px;font-size:26px}
-  .muted{color:#9fb3c8}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-  .card{background:#11161c;border:1px solid #1f2a3a;border-radius:14px;padding:16px}
-  .pill{display:inline-block;padding:6px 10px;border:1px solid #1f2a3a;border-radius:999px;margin-right:8px}
-  .row{display:flex;gap:10px;flex-wrap:wrap}
-  .pay{display:flex;gap:12px;align-items:center}
-  .btn{background:#ff9800;color:#1a1200;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
-  a{color:#7dc1ff;text-decoration:none}
-  img{max-width:100%;height:auto;border-radius:10px;border:1px solid #1f2a3a}
+:root{--bg:#0b0f13;--panel:#10171f;--line:#1c2a3a;--txt:#e9eef4;--muted:#9fb3c8;--brand:#7dc1ff;--accent:#ffad33;--ok:#1ec28b}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Inter,Arial}
+a{color:var(--brand);text-decoration:none}img{max-width:100%;height:auto}
+.container{max-width:1040px;margin:0 auto;padding:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(255,255,255,0.02);
+  padding:6px 12px;border-radius:999px;color:var(--muted)}
+h1{margin:10px 0 6px;font-weight:800;letter-spacing:.2px}
+.muted{color:var(--muted)}small.muted{font-size:.9em}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card h3{margin:0 0 10px}
+.badge{display:inline-block;background:#0e1b28;border:1px solid var(--line);border-radius:999px;padding:6px 10px}
+.item{padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,0.01)}
+.item strong{font-size:18px}
+.price{font-weight:700}
+.chg{font-variant-numeric:tabular-nums}
+.up{color:var(--ok)}.down{color:#f36}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:0;border-radius:10px;padding:10px 12px;font-weight:700;cursor:pointer}
+.btn-cta{background:var(--accent);color:#231700}
+.btn-ghost{background:#0e1b28;color:var(--txt);border:1px solid var(--line)}
+footer{color:var(--muted);text-align:center;padding:28px 16px}
+.sep{height:1px;background:linear-gradient(90deg,transparent, #203246 30%, #203246 70%, transparent);margin:16px 0}
+.kv{display:flex;gap:10px;flex-wrap:wrap}
+.kv div{padding:8px 12px;border:1px solid var(--line);border-radius:9px;color:var(--muted)}
+#hb.ok{color:var(--ok)}
+.shimmer{background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.12),rgba(255,255,255,.06));
+  background-size:200% 100%;animation:sh 1.2s infinite}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
 </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"LightUnfold • Web3 AI X1000","url":"https://vuhuyphat.github.io/",
+"potentialAction":{"@type":"SearchAction","target":"https://vuhuyphat.github.io/?q={query}","query-input":"required name=query"}}
+</script>
 </head>
 <body>
-<header class="hero">
-  <div class="row">
-    <span class="pill">ENS: <b id="ens">lightunfold.eth</b></span>
-    <span class="pill">Heartbeat: <span id="hb">—</span></span>
-    <span class="pill"><a href="data/latest.json" target="_blank">data</a></span>
+  <div class="container">
+    <div class="row">
+      <span class="pill">ENS: <b id="ens">lightunfold.eth</b></span>
+      <span class="pill">Heartbeat: <b id="hb">—</b></span>
+      <a class="pill" href="data/latest.json" target="_blank">data</a>
+      <a class="pill" href="config.json" target="_blank">config</a>
+    </div>
+    <h1 id="brand">LightUnfold • Web3 AI X1000</h1>
+    <div id="tagline" class="muted">Trang Web3 AI tự động 24/7</div>
+
+    <div class="sep"></div>
+
+    <section class="card">
+      <h3>🔥 Cơ hội nổi bật</h3>
+      <div id="opps" class="grid"></div>
+      <small class="muted" id="updated"></small>
+    </section>
+
+    <section class="card">
+      <h3>💳 Thanh toán</h3>
+      <div id="pays" class="grid"></div>
+      <div class="kv" style="margin-top:10px">
+        <div>Liên hệ: <code id="pay-contact"></code></div>
+        <div>Web3 • Phi tập trung • Mở rộng</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>🤝 Affiliate</h3>
+      <div id="affs" class="grid"></div>
+    </section>
+
+    <footer>© <span id="year"></span> LightUnfold • Chạy 24/7 • PWA offline</footer>
   </div>
-  <h1 id="brand">LightUnfold • Web3 AI X1000</h1>
-  <div id="tagline" class="muted">Trang Web3 AI tự động 24/7</div>
-</header>
-
-<section class="card">
-  <h3 style="margin:0 0 8px">🔥 Cơ hội nổi bật</h3>
-  <div id="opps"></div>
-  <div class="muted" id="updated"></div>
-</section>
-
-<section class="card">
-  <h3 style="margin:0 0 8px">💳 Thanh toán</h3>
-  <div id="pays" class="grid"></div>
-  <div class="muted" style="margin-top:6px">Quét QR / click để thanh toán nhanh. Sau khi thanh toán, liên hệ <code id="pp"></code>.</div>
-</section>
-
-<section class="card">
-  <h3 style="margin:0 0 8px">🤝 Affiliate</h3>
-  <div id="affs" class="grid"></div>
-</section>
-
-<footer class="muted" style="text-align:center;padding-bottom:40px">
-  © <span id="year"></span> LightUnfold • Phi tập trung & mở rộng 24/7
-</footer>
 
 <script>
-(async ()=>{
-  // ---- tiện ích
-  const $ = (id)=>document.getElementById(id);
-  const fmtPct = (x)=> (isFinite(x)? (x>=0? '+' : '') + x.toFixed(2)+'%' : '—');
-  const cfgDefault = {
-    site:{ brand:"LightUnfold • Web3 AI X1000", ens:"lightunfold.eth",
-           tagline:"20,000+ AI • 200+ quốc gia • tự động 24/7 • chuyển đổi X1000" },
-    payments:{
-      eth:"0x54E15A7b6d4213beE87800432A151d794638E3C2",
-      usdt_erc20:"0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",
-      momo:"0567892030",
-      vietcombank:"9567892030",
-      paypal:"vumumabada@gmail.com"
-    },
-    affiliates:[
-      {name:"Binance", url:"https://www.binance.com/vi/register?ref=GRO_20338_9V44N"},
-      {name:"AlgosOne",url:"https://algosone.page.link/MbtR"}
-    ],
-    feeds:{ top_n:10 }
-  };
-
-  async function tryJson(urls){
-    for(const u of urls){
-      try{ const r=await fetch(u); if(r.ok) return await r.json(); }catch{}
-    }
-    return null;
-  }
-
-  // ---- đọc config (config.json hoặc cấu hình.json)
-  const cfg = (await tryJson(["config.json","cấu%20hình.json"])) || cfgDefault;
-
-  // ---- set brand/ens/tagline
-  $('brand').textContent = cfg?.site?.brand || cfgDefault.site.brand;
-  $('ens').textContent   = cfg?.site?.ens   || cfgDefault.site.ens;
-  $('tagline').textContent = cfg?.site?.tagline || cfgDefault.site.tagline;
-  $('year').textContent = new Date().getFullYear();
-
-  // ---- lấy dữ liệu TOP
-  const data = await tryJson(["data/latest.json"]);
-  if(data?.generated_at){
-    $('hb').textContent = new Date(data.generated_at).toLocaleString();
-    $('updated').textContent = "Cập nhật: " + new Date(data.generated_at).toLocaleString();
-  }
-
-  // ---- render cơ hội
-  const opps = data?.items || [];
-  if(opps.length){
-    const wrap = document.createElement('div');
-    opps.forEach(x=>{
-      const row = document.createElement('div');
-      row.className='row';
-      row.style.borderTop='1px solid #1f2a3a';
-      row.style.padding='10px 0';
-      row.innerHTML = `
-        <div style="min-width:120px"><b>${x.symbol||x.name}</b></div>
-        <div>Giá: <b>$${(x.price||0).toLocaleString()}</b></div>
-        <div>24h: <b style="color:${(x.ch24h||0)>=0?'#61ffa1':'#ff6b6b'}">${fmtPct(x.ch24h||0)}</b></div>
-        <div>Khối lượng 24h: <b>$${(x.vol24h||0).toLocaleString()}</b></div>
-        <div><a href="${x.link}" target="_blank">Chi tiết</a></div>
-      `;
-      wrap.appendChild(row);
+/* ========= SW: tạo service worker từ Blob (không cần file riêng) ========= */
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE='x1000-v1';
+    const CORE=['./','index.html','config.json','data/latest.json'];
+    self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
+    self.addEventListener('activate',e=>{e.waitUntil(self.clients.claim())});
+    self.addEventListener('fetch',e=>{
+      const url=new URL(e.request.url);
+      if(url.origin===location.origin && (url.pathname.endsWith('/data/latest.json')||url.pathname.endsWith('/config.json'))){
+        // Network-first, fallback cache
+        e.respondWith(fetch(e.request).then(r=>{
+          const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return r;
+        }).catch(()=>caches.match(e.request)));
+      }else{
+        e.respondWith(caches.match(e.request).then(m=>m||fetch(e.request)));
+      }
     });
-    $('opps').appendChild(wrap);
-  }else{
-    $('opps').innerHTML = '<div class="muted">Chờ dữ liệu đầu tiên…</div>';
+  `;
+  const blobUrl = URL.createObjectURL(new Blob([swCode], {type:'text/javascript'}));
+  navigator.serviceWorker.register(blobUrl).catch(()=>{});
+}
+
+/* ========= tiện ích ========= */
+const $ = (s)=>document.querySelector(s);
+const fmt = (n, d=2)=>Number(n||0).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const ago = (ts)=>{try{const t=new Date(ts);const m=Math.max(0,(Date.now()-t)/60000)|0;return m?m+' phút trước':'vừa xong';}catch{ return '—'}};
+const qrlink = (data)=>`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(data)}`;
+
+/* ========= cấu hình mặc định nếu thiếu file ========= */
+const defaultCfg = {
+  site:{ brand:"LightUnfold • Web3 AI X1000", ens:"lightunfold.eth",
+    tagline:"20,000+ AI • 200+ quốc gia • 200+ ngôn ngữ • tự động 24/7 • chuyển đổi X1000",
+    contact:"@you" },
+  payments:{
+    eth:"0x54E15A7b6d4213beE87800432A151d794638E3C2",
+    usdt_erc20:"0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",
+    momo:"0567892030", vietcombank:"9567892030", paypal:"vumumabada@gmail.com"
+  },
+  affiliates:[
+    {name:"Binance", url:"https://www.binance.com/vi/register?ref=GRO_20338_9V44N"},
+    {name:"AlgosOne", url:"https://algosone.page.link/MbtR"}
+  ]
+};
+
+async function getJSON(url, fallback){
+  try{
+    const r = await fetch(url,{cache:'no-store'});
+    if(!r.ok) throw 0;
+    return await r.json();
+  }catch(e){
+    return fallback;
   }
+}
 
-  // ---- render thanh toán (QR tạo động, không cần ảnh)
-  const p = cfg.payments || {};
-  const paysEl = $('pays'); const arr=[];
-  if(p.eth) arr.push({label:'ETH (EVM)', val:p.eth, qr:`ethereum:${p.eth}`});
-  if(p.usdt_erc20) arr.push({label:'USDT (ERC20)', val:p.usdt_erc20, qr:`ethereum:${p.usdt_erc20}`});
-  if(p.momo) arr.push({label:'MoMo', val:p.momo, qr:p.momo});
-  if(p.vietcombank) arr.push({label:'Vietcombank', val:p.vietcombank, qr:p.vietcombank});
-  if(p.paypal) arr.push({label:'PayPal', val:p.paypal, link:`https://www.paypal.me/${encodeURIComponent(p.paypal.split('@')[0])}`});
+/* ========= render ========= */
+function renderHeader(cfg){
+  $('#brand').textContent = cfg?.site?.brand || defaultCfg.site.brand;
+  $('#ens').textContent   = cfg?.site?.ens   || defaultCfg.site.ens;
+  $('#tagline').textContent = cfg?.site?.tagline || defaultCfg.site.tagline;
+  $('#pay-contact').textContent = cfg?.site?.contact || defaultCfg.site.contact || '';
+  $('#year').textContent = new Date().getFullYear();
+}
 
-  $('pp').textContent = p.paypal || p.eth || '';
+function renderOpps(payload){
+  const wrap = $('#opps');
+  wrap.innerHTML = '';
+  const items = payload?.items||[];
+  if(!items.length){
+    wrap.innerHTML = `<div class="item shimmer">Đang cập nhật dữ liệu…</div>`;
+    $('#updated').textContent = '';
+    return;
+  }
+  for(const it of items){
+    const ch24 = Number(it.ch24h||0);
+    const dir = ch24>=0?'up':'down';
+    const el = document.createElement('div');
+    el.className='item';
+    el.innerHTML = `
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <div><strong>${(it.symbol||'').toUpperCase()}</strong> <small class="muted">${it.name||''}</small></div>
+        <a class="badge" href="${it.link||'#'}" target="_blank">Chi tiết ↗</a>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <div>Giá: <span class="price">$${fmt(it.price,4)}</span></div>
+        <div>24h: <b class="chg ${dir}">${fmt(ch24,2)}%</b></div>
+        <div>Vol 24h: $${fmt(it.vol24h||0,0)}</div>
+      </div>`;
+    wrap.appendChild(el);
+  }
+  $('#updated').textContent = 'Cập nhật: '+(payload.generated_at? ago(payload.generated_at):'—');
+  $('#hb').textContent = 'ONLINE'; $('#hb').classList.add('ok');
+}
 
-  arr.forEach(item=>{
-    const qr = `https://quickchart.io/qr?text=${encodeURIComponent(item.qr||item.val)}&margin=2&size=260`;
-    const box = document.createElement('div');
-    box.className='card';
-    box.innerHTML = `
-      <div class="pay">
-        <img src="${qr}" alt="QR" width="96" height="96">
+function renderPayments(cfg){
+  const p = (cfg?.payments)||defaultCfg.payments;
+  const payCards = [];
+
+  if(p.eth) payCards.push({
+    title:'ETH (EVM)',
+    addr:p.eth,
+    deep:`ethereum:${p.eth}`,
+    note:'Nạp ETH/USDT trên mạng EVM.'
+  });
+  if(p.usdt_erc20) payCards.push({
+    title:'USDT-ERC20',
+    addr:p.usdt_erc20,
+    deep:`ethereum:${p.usdt_erc20}/transfer?contractAddress=0xdac17f958d2ee523a2206206994597c13d831ec7`,
+    note:'USDT mạng Ethereum.'
+  });
+  if(p.momo) payCards.push({
+    title:'MoMo',
+    addr:p.momo,
+    deep:`momo://payment/${p.momo}`,
+    note:'Quét trên ứng dụng MoMo.'
+  });
+  if(p.vietcombank) payCards.push({
+    title:'Vietcombank',
+    addr:p.vietcombank,
+    deep:`vietcombank://pay/${p.vietcombank}`,
+    note:'Chuyển khoản nhanh 24/7.'
+  });
+  if(p.paypal) payCards.push({
+    title:'PayPal',
+    addr:p.paypal,
+    deep:`https://www.paypal.me/${encodeURIComponent(p.paypal.split('@')[0])}`,
+    note:'Thanh toán quốc tế.'
+  });
+
+  const wrap = $('#pays'); wrap.innerHTML='';
+  for(const c of payCards){
+    const el = document.createElement('div'); el.className='item';
+    el.innerHTML = `
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <strong>${c.title}</strong>
+        <a class="badge" href="${c.deep}" target="_blank">Mở ví/ứng dụng ↗</a>
+      </div>
+      <div class="row" style="align-items:center;margin-top:8px">
+        <img alt="QR" width="110" height="110" style="border-radius:10px;border:1px solid var(--line)" src="${qrlink(c.deep)}">
         <div>
-          <div style="font-weight:700">${item.label}</div>
-          <div class="muted" style="word-break:break-all">${item.val}</div>
-          ${item.link ? `<div style="margin-top:6px"><a href="${item.link}" target="_blank">Thanh toán nhanh</a></div>`:''}
+          <div class="muted">Địa chỉ</div>
+          <code style="display:inline-block;margin:4px 0">${c.addr}</code><br>
+          <small class="muted">${c.note||''}</small>
+          <div class="actions" style="margin-top:8px">
+            <button class="btn btn-cta" onclick="navigator.clipboard.writeText('${c.addr}').then(()=>alert('Đã copy địa chỉ'))">Copy địa chỉ</button>
+            <a class="btn btn-ghost" href="${c.deep}" target="_blank">Thanh toán ↗</a>
+          </div>
         </div>
       </div>`;
-    paysEl.appendChild(box);
-  });
+    wrap.appendChild(el);
+  }
+}
 
-  // ---- affiliate
-  const affs = cfg.affiliates || [];
-  const affEl = $('affs');
-  affs.forEach(a=>{
-    const d = document.createElement('div');
-    d.className='card';
-    d.innerHTML = `<div style="font-weight:700;margin-bottom:6px">${a.name}</div>
-                   <a href="${a.url}" target="_blank">${a.url}</a>`;
-    affEl.appendChild(d);
-  });
-})();
+function renderAffiliates(cfg){
+  const list = cfg?.affiliates || defaultCfg.affiliates;
+  const wrap = $('#affs'); wrap.innerHTML='';
+  for(const a of list){
+    const el = document.createElement('div'); el.className='item';
+    el.innerHTML = `<div class="row" style="justify-content:space-between;align-items:center">
+      <div><strong>${a.name}</strong><br><small class="muted">${a.desc||'Đăng ký để nhận ưu đãi.'}</small></div>
+      <a class="btn btn-ghost" href="${a.url}" target="_blank">Mở ↗</a>
+    </div>`;
+    wrap.appendChild(el);
+  }
+}
+
+/* ========= load & auto refresh ========= */
+async function boot(){
+  const cfg = await getJSON('config.json', defaultCfg);
+  renderHeader(cfg); renderPayments(cfg); renderAffiliates(cfg);
+
+  const data = await getJSON('data/latest.json', null);
+  if(data){ localStorage.setItem('x1000_data', JSON.stringify(data)); renderOpps(data); }
+  else{
+    const cached = localStorage.getItem('x1000_data');
+    if(cached){ renderOpps(JSON.parse(cached)); $('#hb').textContent='CACHED'; $('#hb').classList.add('ok'); }
+    else{ renderOpps({items:[]}); }
+  }
+}
+boot();
+
+// refresh thông minh mỗi 60s (backoff khi lỗi)
+let tick=60, backoff=60;
+setInterval(async()=>{
+  try{
+    const d = await getJSON('data/latest.json', null);
+    if(d){ renderOpps(d); localStorage.setItem('x1000_data', JSON.stringify(d)); backoff=60; }
+    tick = 60;
+  }catch{ tick = Math.min(300, backoff*=1.5); }
+}, 60*1000);
 </script>
 </body>
 </html>
