@@ -2,11 +2,11 @@ name: "AI X1000 - Scan & Broadcast"
 
 on:
   schedule:
-    - cron: "*/10 * * * *"    # chạy mỗi 10 phút (UTC)
+    - cron: "*/10 * * * *"   # chạy mỗi 10 phút (UTC)
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: write            # chỉ cần quyền ghi để commit data
 
 concurrency:
   group: ai-x1000-auto
@@ -15,13 +15,16 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
+    timeout-minutes: 8       # tránh kẹt job quá lâu
+    env:
+      NODE_OPTIONS: "--max-old-space-size=128"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           persist-credentials: true
 
-      - name: Setup Node.js
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -32,7 +35,7 @@ jobs:
           node - <<'NODE'
           import fs from 'fs';
 
-          // ------------ helpers ------------
+          // -------- helper --------
           const sleep = (ms)=>new Promise(r=>setTimeout(r,ms));
           async function safeGet(url, {retries=3, backoff=800, timeout=10000, headers={}} = {}) {
             for (let i=0;i<retries;i++){
@@ -41,7 +44,7 @@ jobs:
               try{
                 const res = await fetch(url,{
                   headers:{ "User-Agent":"AI-X1000/1.0 (+github actions)", "Accept":"application/json", ...headers },
-                  signal:ctrl.signal
+                  signal: ctrl.signal
                 });
                 clearTimeout(to);
                 if(!res.ok) throw new Error(res.status+" "+res.statusText);
@@ -53,22 +56,27 @@ jobs:
             }
           }
 
-          // ------------ read config ------------
+          // -------- config --------
           function readConfig(){
-            const candidates=["config.json","cấu hình.json","cau hinh.json"];
-            for(const n of candidates){
+            const names = ["config.json","cấu hình.json","cau hinh.json"];
+            for(const n of names){
               if(fs.existsSync(n)) return JSON.parse(fs.readFileSync(n,'utf8'));
             }
-            return { site:{brand:"LightUnfold • Web3 AI X1000"}, feeds:{top_n:10, sources:["coingecko_markets","coinlore_tickers"]} };
+            return { site:{brand:"LightUnfold • Web3 AI X1000"},
+                     feeds:{top_n:10, sources:["coingecko_markets","coinlore_tickers"]} };
           }
-          const cfg = readConfig();
+          const cfg  = readConfig();
           const topN = Number(cfg?.feeds?.top_n)||10;
+          const wanted = (Array.isArray(cfg?.feeds?.sources) && cfg.feeds.sources.length)
+            ? cfg.feeds.sources : ["coingecko_markets"];
 
-          // ------------ data sources ------------
+          // -------- sources --------
           const sources = {
             coingecko_markets: async ()=>{
-              const url="https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=50&page=1&price_change_percentage=1h,24h,7d";
-              return await safeGet(url); // public
+              const url="https://api.coingecko.com/api/v3/coins/markets"
+                +"?vs_currency=usd&order=volume_desc&per_page=50&page=1"
+                +"&price_change_percentage=1h,24h,7d";
+              return await safeGet(url);
             },
             coinlore_tickers: async ()=>{
               const j = await safeGet("https://api.coinlore.net/api/tickers/?start=0&limit=50");
@@ -76,7 +84,7 @@ jobs:
             }
           };
 
-          // ------------ scoring ------------
+          // -------- scoring --------
           const scoreCG = (c)=>
             (Number(c.price_change_percentage_1h_in_currency)||0)*0.40 +
             (Number(c.price_change_percentage_24h_in_currency)||0)*0.35 +
@@ -84,23 +92,21 @@ jobs:
             Math.log10((Number(c.total_volume)||1));
 
           const scoreCL = (c)=>{
-            const ch24=Number(c.percent_change_24h)||0;
-            const vol =Number(c.volume24)||0;
+            const ch24 = Number(c.percent_change_24h)||0;
+            const vol  = Number(c.volume24)||0;
             return ch24*0.70 + Math.log10(vol||1);
           };
 
-          // ------------ compose ------------
+          // -------- compose --------
           async function compose(){
             let items=[];
-            const wanted = Array.isArray(cfg?.feeds?.sources)&&cfg.feeds.sources.length?cfg.feeds.sources:["coingecko_markets"];
-
             for(const key of wanted){
               try{
                 const data = await (sources[key]?.());
                 if(!data) continue;
 
                 if(key==="coingecko_markets"){
-                  items = items.concat(data.map(c=>({
+                  items.push(...data.map(c=>({
                     source:"coingecko",
                     id:c.id,
                     symbol:(c.symbol||"").toUpperCase(),
@@ -116,7 +122,7 @@ jobs:
                 }
 
                 if(key==="coinlore_tickers"){
-                  items = items.concat(data.map(c=>({
+                  items.push(...data.map(c=>({
                     source:"coinlore",
                     id:c.id,
                     symbol:(c.symbol||"").toUpperCase(),
@@ -129,23 +135,32 @@ jobs:
                   })));
                 }
               }catch(e){
-                console.warn("source-error",key,String(e).slice(0,140));
+                console.warn("source-error", key, String(e).slice(0,140));
               }
             }
 
-            const best={};
+            // gộp theo symbol => lấy record có score cao nhất
+            const best = {};
             for(const it of items){
               if(!it.symbol) continue;
-              const k=it.symbol;
-              if(!best[k]||it.score>best[k].score) best[k]=it;
+              const k = it.symbol;
+              if(!best[k] || it.score > best[k].score) best[k]=it;
             }
 
-            const out=Object.values(best).sort((a,b)=>b.score-a.score).slice(0,topN);
+            const out = Object.values(best)
+              .sort((a,b)=>b.score-a.score)
+              .slice(0, topN);
 
-            const payload={ generated_at:new Date().toISOString(), brand:cfg?.site?.brand||"AI X1000", items:out };
+            const payload = {
+              generated_at: new Date().toISOString(),
+              brand: cfg?.site?.brand || "AI X1000",
+              items: out
+            };
+
             fs.mkdirSync("data",{recursive:true});
-            fs.writeFileSync("data/latest.json",JSON.stringify(payload,null,2));
-            fs.writeFileSync("data/summary.txt","🔥 TOP: "+out.map(x=>`${x.symbol}: $${x.price} (${(x.ch24h??0).toFixed(2)}%)`).join(" | "));
+            fs.writeFileSync("data/latest.json", JSON.stringify(payload,null,2));
+            fs.writeFileSync("data/summary.txt",
+              "🔥 TOP: " + out.map(x=>`${x.symbol}: $${x.price} (${(x.ch24h??0).toFixed(2)}%)`).join(" | "));
           }
 
           await compose();
@@ -159,7 +174,7 @@ jobs:
           git commit -m "data: refresh $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "no changes"
           git push || true
 
-      # --- Broadcast (optional; only runs if secrets exist) ---
+      # --- Broadcast (optional) ---
       - name: Broadcast to Telegram
         if: ${{ secrets.TELEGRAM_BOT_TOKEN && secrets.TELEGRAM_CHAT_ID }}
         env:
