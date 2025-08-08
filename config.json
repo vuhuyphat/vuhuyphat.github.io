@@ -2,7 +2,19 @@
   "site": {
     "brand": "LightUnfold • Web3 AI X1000",
     "ens": "lightunfold.eth",
-    "tagline": "20,000+ AI • 200+ quốc gia • 200+ ngôn ngữ • tự động 24/7 • chuyển đổi X1000",
+    "tagline": "20,000+ AI • 200+ quốc gia • 200+ ngôn ngữ • tự động 24/7 • chuyển đổi X1000 • bất biến vĩnh viễn",
+    "locale": "vi-VN",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "seo": {
+      "title": "LightUnfold • Web3 AI X1000 — Tự động 24/7, bất biến và siêu giá trị",
+      "description": "Nền tảng Web3 AI mạnh nhất hành tinh — 20,000+ AI, 200+ quốc gia, tự vận hành 24/7, cập nhật tức thì, tích hợp thanh toán toàn cầu và affiliate. Bất biến, bền bỉ, vĩnh viễn.",
+      "image": "https://vuhuyphat.github.io/data/og.png"
+    },
+    "contact": {
+      "email": "vumumabada@gmail.com",
+      "telegram": "https://t.me/your_username",
+      "discord": "https://discord.gg/your_invite"
+    },
     "payments": {
       "eth": "0x54E15A7b6d4213beE87800432A151d794638E3C2",
       "usdt_erc20": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",
@@ -11,15 +23,56 @@
       "paypal": "vumumabada@gmail.com"
     },
     "affiliates": [
-      { "name": "Binance",  "url": "https://www.binance.com/vi/register?ref=GRO_20338_9V44N" },
-      { "name": "AlgosOne", "url": "https://algosone.page.link/MbtR" }
+      { "name": "Binance", "url": "https://www.binance.com/vi/register?ref=GRO_20338_9V44N" },
+      { "name": "AlgosOne", "url": "https://algosone.page.link/MbtR" },
+      { "name": "CoinMarketCap Earn", "url": "https://coinmarketcap.com/earn/" }
     ]
   },
-  "feeds": {
-    "top_n": 10,
-    "sources": ["coingecko_markets", "coinlore_tickers"]
+
+  "ui": {
+    "theme": "dark",
+    "currency": "USD",
+    "price_digits": 6,
+    "show_heartbeat": true,
+    "qr_size": 240,
+    "buttons": [
+      { "text": "💎 Mở ví ngay ↗", "href": "https://metamask.app.link/" },
+      { "text": "📈 Tham gia Binance", "href": "https://www.binance.com/vi/register?ref=GRO_20338_9V44N" },
+      { "text": "🚀 Tham gia AlgosOne", "href": "https://algosone.page.link/MbtR" }
+    ]
   },
+
+  "feeds": {
+    "top_n": 15,
+    "sources": [
+      "coingecko_markets",
+      "coinlore_tickers",
+      "cmc_toplist",
+      "dexscreener_trending"
+    ],
+    "fallback": ["coinlore_tickers"]
+  },
+
   "schedule": {
-    "refresh_minutes": 10
+    "refresh_minutes": 5
+  },
+
+  "broadcast": {
+    "telegram": true,
+    "discord": true,
+    "x_twitter": true,
+    "webpush": true
+  },
+
+  "limits": {
+    "api_timeout_ms": 8000,
+    "api_retries": 3
+  },
+
+  "ai": {
+    "parallel_agents": 200,
+    "auto_translate_languages": ["en", "zh", "es", "fr", "ja", "ko", "ru", "de", "ar", "hi", "pt", "th"],
+    "content_auto_generate": true,
+    "viral_trigger": true
   }
 }
