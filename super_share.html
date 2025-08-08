@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Siêu lan tỏa • LightUnfold Web3 AI</title>
+<meta name="theme-color" content="#0b0f13">
+<meta name="description" content="Cỗ máy lan tỏa 1-click: tạo bài đăng đa nền tảng từ dữ liệu AI/crypto mới nhất. UTM + RSS + QR.">
+<style>
+  :root{--bg:#0b0f13;--card:#0f141a;--b:#1e293b;--txt:#e9eef4;--muted:#9fb3c8;--accent:#ff9800;--ok:#22c55e}
+  *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto}
+  a{color:#7dc1ff;text-decoration:none}
+  .wrap{max-width:980px;margin:0 auto;padding:18px}
+  .pill{display:inline-block;border:1px solid var(--b);border-radius:999px;padding:6px 10px;margin:0 8px 8px 0;background:#0b1117}
+  .card{background:var(--card);border:1px solid var(--b);border-radius:14px;padding:16px;margin-top:14px}
+  h1{margin:6px 0 4px;font-size:26px}h3{margin:0 0 10px}
+  .muted{color:var(--muted)} .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .btn{background:var(--accent);color:#1a1200;border:0;border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer}
+  .btn.out{background:transparent;border:1px solid var(--b);color:var(--txt)}
+  .box{border:1px dashed var(--b);border-radius:10px;padding:10px}
+  textarea{width:100%;min-height:110px;background:#0b1117;border:1px solid var(--b);color:var(--txt);border-radius:10px;padding:10px}
+  .ok{color:var(--ok)} .copy{border:1px solid var(--b);border-radius:8px;padding:6px 8px;cursor:pointer}
+  .footer{padding:24px 0;text-align:center;color:var(--muted)}
+  .tag{display:inline-block;background:#0b1117;border:1px solid var(--b);padding:4px 8px;border-radius:8px;margin:4px 6px 0 0}
+  .qr{background:#fff;border-radius:10px;padding:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="row">
+    <a class="pill" href="./" target="_blank">← Trang chính</a>
+    <a class="pill" href="config.json" target="_blank">config</a>
+    <a class="pill" href="data/latest.json" target="_blank">data</a>
+    <span class="pill" id="brandPill">—</span>
+    <span class="pill" id="updatedPill">—</span>
+  </div>
+
+  <h1>🚀 Siêu lan tỏa</h1>
+  <div class="muted">Tạo nội dung & share đa nền tảng từ dữ liệu mới nhất. Tự gắn UTM để đo chuyển đổi.</div>
+
+  <div class="card">
+    <h3>1) Mẫu nội dung tổng</h3>
+    <div class="row">
+      <button class="btn" id="btnGen">Tạo từ dữ liệu</button>
+      <button class="btn out" id="btnShare">Chia sẻ (Web Share)</button>
+      <span class="copy" id="copyAll">📋 Copy nhanh</span>
+    </div>
+    <div style="margin-top:8px" class="muted">Hashtag gợi ý: <span id="tags"></span></div>
+    <textarea id="postArea" placeholder="Nội dung sẽ xuất hiện ở đây…"></textarea>
+    <div class="row" id="shareLinks"></div>
+  </div>
+
+  <div class="card">
+    <h3>2) Cơ hội nổi bật (chọn 1 để lan tỏa)</h3>
+    <div id="items" class="grid"></div>
+  </div>
+
+  <div class="card">
+    <h3>3) QR & RSS</h3>
+    <div class="grid">
+      <div class="box">
+        <div class="muted">QR trang chính</div>
+        <img class="qr" id="qrMain" alt="qr" width="160" height="160">
+        <div><a id="qrMainDL" download="site-qr.png">Tải QR</a></div>
+      </div>
+      <div class="box">
+        <div class="muted">RSS nhẹ</div>
+        <div id="rssNote">Chưa tạo</div>
+        <div class="row" style="margin-top:8px">
+          <button class="btn" id="btnRSS">Tạo RSS local</button>
+          <a class="btn out" id="rssView" target="_blank" style="display:none">Mở RSS</a>
+        </div>
+      </div>
+      <div class="box">
+        <div class="muted">Sitemap mini</div>
+        <div><a href="./" target="_blank">/</a></div>
+        <div><a href="super_share.html" target="_blank">/super_share.html</a></div>
+        <div><a href="config.json" target="_blank">/config.json</a></div>
+        <div><a href="data/latest.json" target="_blank">/data/latest.json</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">© <span id="year"></span> LightUnfold • Web3 AI • Siêu lan tỏa 24/7</div>
+</div>
+
+<script>
+(async function(){
+  const $=s=>document.querySelector(s); const siteUrl=location.origin+location.pathname.replace('super_share.html','');
+  $('#year').textContent=new Date().getFullYear();
+
+  // fetch config + data
+  async function j(url){return await (await fetch(url,{cache:'no-store'})).json();}
+  const cfg = await j('config.json').catch(()=>({site:{brand:'LightUnfold'}, ui:{}}));
+  const data= await j('data/latest.json').catch(()=>({items:[]}));
+  $('#brandPill').textContent = cfg.site?.brand || 'LightUnfold';
+  $('#updatedPill').textContent = data.generated_at ? ('updated '+new Date(data.generated_at).toLocaleString()) : '—';
+
+  const items=(data.items||[]).slice(0, cfg.ui?.cards?.max_items || 10);
+
+  // helpers
+  const num = n => (n||0).toLocaleString(undefined,{maximumFractionDigits:2});
+  const qr  = (u,s=160)=>`https://chart.googleapis.com/chart?cht=qr&chs=${s}x${s}&chl=${encodeURIComponent(u)}`;
+  const utm = (u,src,med,camp)=>u+(u.includes('?')?'&':'?')+new URLSearchParams({utm_source:src,utm_medium:med,utm_campaign:camp}).toString();
+
+  // tags / default hashtags
+  const ht = ['#Web3','#AI','#Crypto','#DeFi','#Alpha','#LightUnfold','#X1000'];
+  $('#tags').innerHTML = ht.map(x=>`<span class="tag">${x}</span>`).join('');
+
+  // 1) mẫu tổng
+  function genPost(){
+    const head = `⚡ ${cfg.site?.brand||'LightUnfold'} • Cơ hội nổi bật`;
+    const lines = items.slice(0,5).map(x=>`• ${x.symbol}: $${num(x.price)} (${(x.ch24h||0).toFixed(2)}%) — nguồn: ${x.source||'-'}`);
+    const cta = `Xem chi tiết & thanh toán nhanh: ${utm(siteUrl,'share','organic','super_share')}`;
+    return `${head}\n${lines.join('\n')}\n\n${ht.join(' ')}\n${cta}`;
+  }
+  $('#postArea').value = genPost();
+
+  // share links (X, Telegram, Reddit, LinkedIn, Facebook, Email)
+  function drawShare(url,text){
+    const X  = `https://twitter.com/intent/tweet?${new URLSearchParams({text})}`;
+    const TG = `https://t.me/share/url?${new URLSearchParams({url, text})}`;
+    const RD = `https://www.reddit.com/submit?${new URLSearchParams({url, title: 'Alpha • Web3 AI'})}`;
+    const LI = `https://www.linkedin.com/sharing/share-offsite/?${new URLSearchParams({url})}`;
+    const FB = `https://www.facebook.com/sharer/sharer.php?${new URLSearchParams({u:url})}`;
+    const ML = `mailto:?${new URLSearchParams({subject:'Alpha • Web3 AI', body:text+'\n\n'+url})}`;
+    $('#shareLinks').innerHTML = [
+      ['X/Twitter',X],['Telegram',TG],['Reddit',RD],['LinkedIn',LI],['Facebook',FB],['Email',ML]
+    ].map(([n,h])=>`<a class="pill" target="_blank" href="${h}">↗ ${n}</a>`).join('');
+  }
+  drawShare(utm(siteUrl,'share','organic','super_share'), $('#postArea').value);
+
+  // events
+  $('#btnGen').onclick=()=>{ $('#postArea').value = genPost(); drawShare(utm(siteUrl,'share','organic','super_share'), $('#postArea').value); }
+  $('#copyAll').onclick=async()=>{ await navigator.clipboard.writeText($('#postArea').value); $('#copyAll').textContent='✅ Đã copy'; setTimeout(()=>$('#copyAll').textContent='📋 Copy nhanh',1500); }
+  $('#btnShare').onclick=async()=>{
+    const txt=$('#postArea').value, url=utm(siteUrl,'share','organic','super_share');
+    if(navigator.share){ try{ await navigator.share({title: cfg.site?.brand || 'Web3 AI', text: txt, url}); }catch(e){} }
+    else { window.open(`https://twitter.com/intent/tweet?${new URLSearchParams({text:txt+'\n'+url})}`,'_blank'); }
+  };
+
+  // 2) render từng cơ hội -> share riêng item
+  const grid=$('#items'); grid.innerHTML='';
+  items.forEach(x=>{
+    const deep = x.link || siteUrl; // fallback link nguồn
+    const url  = utm(deep,'share','item', `sym_${(x.symbol||'').toUpperCase()}`);
+    const text = `${x.symbol}: $${num(x.price)} (${(x.ch24h||0).toFixed(2)}%) • ${cfg.site?.brand||'LightUnfold'}\n${ht.slice(0,4).join(' ')}`;
+    const el = document.createElement('div'); el.className='box';
+    el.innerHTML = `
+      <div class="row" style="justify-content:space-between"><b>${x.symbol} · ${x.name||''}</b> <span class="muted">$${num(x.price)}</span></div>
+      <div class="muted" style="margin:6px 0">24h: ${(x.ch24h||0).toFixed(2)}% · Vol: $${num(x.vol24h||0)} · Nguồn: ${x.source||'-'}</div>
+      <div class="row">
+        <a class="btn" target="_blank" href="https://twitter.com/intent/tweet?${new URLSearchParams({text})}">Đẩy X</a>
+        <a class="btn out" target="_blank" href="https://t.me/share/url?${new URLSearchParams({url, text})}">Đẩy Telegram</a>
+        <span class="copy">📋</span>
+        <img class="qr" width="84" height="84" src="${qr(url,84)}" alt="qr">
+      </div>`;
+    grid.appendChild(el);
+    el.querySelector('.copy').onclick = async()=>{ await navigator.clipboard.writeText(text+'\n'+url); el.querySelector('.copy').textContent='✅'; setTimeout(()=>el.querySelector('.copy').textContent='📋',1200); };
+  });
+
+  // 3) QR trang chính
+  const mainU = utm(siteUrl,'share','organic','site_qr');
+  $('#qrMain').src = qr(mainU,160);
+  $('#qrMainDL').href = qr(mainU,640);
+
+  // 4) RSS nhẹ (client-side blob)
+  $('#btnRSS').onclick=()=>{
+    const itemsXML = items.map(x=>{
+      const link = x.link ? utm(x.link,'rss','item',`sym_${x.symbol}`) : mainU;
+      const title= `${x.symbol}: $${num(x.price)} (${(x.ch24h||0).toFixed(2)}%)`;
+      const desc = `Vol24h: $${num(x.vol24h||0)} • Nguồn: ${x.source||'-'}`;
+      return `<item><title>${title}</title><link>${link}</link><description><![CDATA[${desc}]]></description></item>`;
+    }).join('');
+    const xml = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel>
+      <title>${cfg.site?.brand||'LightUnfold Web3 AI'}</title>
+      <link>${siteUrl}</link>
+      <description>Cơ hội nổi bật (auto)</description>
+      ${itemsXML}
+    </channel></rss>`;
+    const blob = new Blob([xml],{type:'application/rss+xml'});
+    const u = URL.createObjectURL(blob);
+    $('#rssView').href = u; $('#rssView').style.display='inline-block';
+    $('#rssNote').innerHTML = '<span class="ok">Đã tạo RSS tạm thời (trong trình duyệt)</span>';
+  };
+})();
+</script>
+</body>
+</html>
