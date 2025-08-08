@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>LightUnfold • Web3 AI X1000</title>
+  <style>
+    body{margin:0;background:#0b0f13;color:#e9eef4;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto}
+    header,section,footer{max-width:980px;margin:0 auto;padding:20px}
+    .hero{padding:28px 20px 10px}
+    h1{margin:6px 0 8px;font-size:26px}
+    .muted{color:#9fb3c8}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+    .card{background:#11161c;border:1px solid #1f2a3a;border-radius:14px;padding:16px}
+    .btn{background:#ff9800;color:#1a1200;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .pill{display:inline-block;padding:6px 10px;border:1px solid #1f2a3a;border-radius:999px;margin-right:8px}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .opp{border-top:1px solid #1f2a3a;padding:10px 0}
+    code{background:#000;padding:2px 6px;border-radius:6px}
+    a{color:#7dc1ff;text-decoration:none}
+  </style>
+</head>
+<body>
+<header class="hero">
+  <div class="row">
+    <span class="pill">ENS: <b id="ens">lightunfold.eth</b></span>
+    <span class="pill">Heartbeat: <span id="hb">—</span></span>
+    <span class="pill"><a href="data/latest.json" target="_blank">data</a></span>
+  </div>
+  <h1 id="brand">LightUnfold • Web3 AI X1000</h1>
+  <div id="tagline" class="muted">Trang Web3 AI tự động 24/7</div>
+</header>
+
+<section class="card">
+  <h3 style="margin:0 0 8px">🔥 Cơ hội nổi bật</h3>
+  <div id="opps"></div>
+  <div class="muted" id="updated"></div>
+</section>
+
+<section class="card">
+  <h3 style="margin:0 0 8px">💳 Thanh toán</h3>
+  <div id="pays" class="grid"></div>
+  <div class="muted" style="margin-top:6px">Quét QR / click để thanh toán nhanh. Sau khi thanh toán, liên hệ <code id="pp"></code>.</div>
+</section>
+
+<section class="card">
+  <h3 style="margin:0 0 8px">🤝 Affiliate</h3>
+  <div id="affs" class="grid"></div>
+</section>
+
+<footer class="muted" style="text-align:center;padding-bottom:40px">
+  © <span id="year"></span> LightUnfold • Phi tập trung & mở rộng 24/7
+</footer>
+
+<script src="ai_master.js"></script>
+</body>
+</html>
