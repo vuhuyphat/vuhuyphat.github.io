@@ -1,0 +1,63 @@
+name: Auto Update • Robust
+
+on:
+  schedule:
+    - cron: "0 * * * *"        # chạy mỗi giờ (UTC)
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Lý do chạy thủ công"
+        required: false
+        default: "manual-run"
+
+permissions:
+  contents: write               # cho phép ghi để commit/push
+
+concurrency:
+  group: auto-update
+  cancel-in-progress: false     # không hủy lượt đang chạy
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    env:
+      TZ: UTC
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Tạo file dữ liệu (bạn tùy biến logic bên dưới theo nhu cầu)
+      - name: Build latest.json
+        run: |
+          mkdir -p data
+          node - <<'NODE'
+          import fs from 'fs';
+          const now = new Date().toISOString();
+          const payload = {
+            last_update: now,
+            status: "OK",
+            note: "Auto update hourly via GitHub Actions"
+          };
+          fs.writeFileSync('data/latest.json', JSON.stringify(payload, null, 2));
+          console.log('Wrote data/latest.json at', now);
+          NODE
+
+      # Chỉ commit khi thực sự có thay đổi
+      - name: Commit & push if changed
+        run: |
+          git config user.name  "auto-bot"
+          git config user.email "auto-bot@users.noreply.github.com"
+          git add data/latest.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "auto: refresh data ($(date -u +'%Y-%m-%dT%H:%M:%SZ'))"
+          git push
