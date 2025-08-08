@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LightUnfold • Web3 AI X1000</title>
+<style>
+  body{margin:0;background:#0b0f13;color:#e9eef4;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto}
+  header,section,footer{max-width:980px;margin:0 auto;padding:20px}
+  .hero{padding:28px 20px 10px}
+  h1{margin:6px 0 8px;font-size:26px}
+  .muted{color:#9fb3c8}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+  .card{background:#11161c;border:1px solid #1f2a3a;border-radius:14px;padding:16px}
+  .pill{display:inline-block;padding:6px 10px;border:1px solid #1f2a3a;border-radius:999px;margin-right:8px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .pay{display:flex;gap:12px;align-items:center}
+  .btn{background:#ff9800;color:#1a1200;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+  a{color:#7dc1ff;text-decoration:none}
+  img{max-width:100%;height:auto;border-radius:10px;border:1px solid #1f2a3a}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="row">
+    <span class="pill">ENS: <b id="ens">lightunfold.eth</b></span>
+    <span class="pill">Heartbeat: <span id="hb">—</span></span>
+    <span class="pill"><a href="data/latest.json" target="_blank">data</a></span>
+  </div>
+  <h1 id="brand">LightUnfold • Web3 AI X1000</h1>
+  <div id="tagline" class="muted">Trang Web3 AI tự động 24/7</div>
+</header>
+
+<section class="card">
+  <h3 style="margin:0 0 8px">🔥 Cơ hội nổi bật</h3>
+  <div id="opps"></div>
+  <div class="muted" id="updated"></div>
+</section>
+
+<section class="card">
+  <h3 style="margin:0 0 8px">💳 Thanh toán</h3>
+  <div id="pays" class="grid"></div>
+  <div class="muted" style="margin-top:6px">Quét QR / click để thanh toán nhanh. Sau khi thanh toán, liên hệ <code id="pp"></code>.</div>
+</section>
+
+<section class="card">
+  <h3 style="margin:0 0 8px">🤝 Affiliate</h3>
+  <div id="affs" class="grid"></div>
+</section>
+
+<footer class="muted" style="text-align:center;padding-bottom:40px">
+  © <span id="year"></span> LightUnfold • Phi tập trung & mở rộng 24/7
+</footer>
+
+<script>
+(async ()=>{
+  // ---- tiện ích
+  const $ = (id)=>document.getElementById(id);
+  const fmtPct = (x)=> (isFinite(x)? (x>=0? '+' : '') + x.toFixed(2)+'%' : '—');
+  const cfgDefault = {
+    site:{ brand:"LightUnfold • Web3 AI X1000", ens:"lightunfold.eth",
+           tagline:"20,000+ AI • 200+ quốc gia • tự động 24/7 • chuyển đổi X1000" },
+    payments:{
+      eth:"0x54E15A7b6d4213beE87800432A151d794638E3C2",
+      usdt_erc20:"0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",
+      momo:"0567892030",
+      vietcombank:"9567892030",
+      paypal:"vumumabada@gmail.com"
+    },
+    affiliates:[
+      {name:"Binance", url:"https://www.binance.com/vi/register?ref=GRO_20338_9V44N"},
+      {name:"AlgosOne",url:"https://algosone.page.link/MbtR"}
+    ],
+    feeds:{ top_n:10 }
+  };
+
+  async function tryJson(urls){
+    for(const u of urls){
+      try{ const r=await fetch(u); if(r.ok) return await r.json(); }catch{}
+    }
+    return null;
+  }
+
+  // ---- đọc config (config.json hoặc cấu hình.json)
+  const cfg = (await tryJson(["config.json","cấu%20hình.json"])) || cfgDefault;
+
+  // ---- set brand/ens/tagline
+  $('brand').textContent = cfg?.site?.brand || cfgDefault.site.brand;
+  $('ens').textContent   = cfg?.site?.ens   || cfgDefault.site.ens;
+  $('tagline').textContent = cfg?.site?.tagline || cfgDefault.site.tagline;
+  $('year').textContent = new Date().getFullYear();
+
+  // ---- lấy dữ liệu TOP
+  const data = await tryJson(["data/latest.json"]);
+  if(data?.generated_at){
+    $('hb').textContent = new Date(data.generated_at).toLocaleString();
+    $('updated').textContent = "Cập nhật: " + new Date(data.generated_at).toLocaleString();
+  }
+
+  // ---- render cơ hội
+  const opps = data?.items || [];
+  if(opps.length){
+    const wrap = document.createElement('div');
+    opps.forEach(x=>{
+      const row = document.createElement('div');
+      row.className='row';
+      row.style.borderTop='1px solid #1f2a3a';
+      row.style.padding='10px 0';
+      row.innerHTML = `
+        <div style="min-width:120px"><b>${x.symbol||x.name}</b></div>
+        <div>Giá: <b>$${(x.price||0).toLocaleString()}</b></div>
+        <div>24h: <b style="color:${(x.ch24h||0)>=0?'#61ffa1':'#ff6b6b'}">${fmtPct(x.ch24h||0)}</b></div>
+        <div>Khối lượng 24h: <b>$${(x.vol24h||0).toLocaleString()}</b></div>
+        <div><a href="${x.link}" target="_blank">Chi tiết</a></div>
+      `;
+      wrap.appendChild(row);
+    });
+    $('opps').appendChild(wrap);
+  }else{
+    $('opps').innerHTML = '<div class="muted">Chờ dữ liệu đầu tiên…</div>';
+  }
+
+  // ---- render thanh toán (QR tạo động, không cần ảnh)
+  const p = cfg.payments || {};
+  const paysEl = $('pays'); const arr=[];
+  if(p.eth) arr.push({label:'ETH (EVM)', val:p.eth, qr:`ethereum:${p.eth}`});
+  if(p.usdt_erc20) arr.push({label:'USDT (ERC20)', val:p.usdt_erc20, qr:`ethereum:${p.usdt_erc20}`});
+  if(p.momo) arr.push({label:'MoMo', val:p.momo, qr:p.momo});
+  if(p.vietcombank) arr.push({label:'Vietcombank', val:p.vietcombank, qr:p.vietcombank});
+  if(p.paypal) arr.push({label:'PayPal', val:p.paypal, link:`https://www.paypal.me/${encodeURIComponent(p.paypal.split('@')[0])}`});
+
+  $('pp').textContent = p.paypal || p.eth || '';
+
+  arr.forEach(item=>{
+    const qr = `https://quickchart.io/qr?text=${encodeURIComponent(item.qr||item.val)}&margin=2&size=260`;
+    const box = document.createElement('div');
+    box.className='card';
+    box.innerHTML = `
+      <div class="pay">
+        <img src="${qr}" alt="QR" width="96" height="96">
+        <div>
+          <div style="font-weight:700">${item.label}</div>
+          <div class="muted" style="word-break:break-all">${item.val}</div>
+          ${item.link ? `<div style="margin-top:6px"><a href="${item.link}" target="_blank">Thanh toán nhanh</a></div>`:''}
+        </div>
+      </div>`;
+    paysEl.appendChild(box);
+  });
+
+  // ---- affiliate
+  const affs = cfg.affiliates || [];
+  const affEl = $('affs');
+  affs.forEach(a=>{
+    const d = document.createElement('div');
+    d.className='card';
+    d.innerHTML = `<div style="font-weight:700;margin-bottom:6px">${a.name}</div>
+                   <a href="${a.url}" target="_blank">${a.url}</a>`;
+    affEl.appendChild(d);
+  });
+})();
+</script>
+</body>
+</html>
