@@ -1,0 +1,25 @@
+{
+  "site": {
+    "brand": "LightUnfold • Web3 AI X1000",
+    "ens": "lightunfold.eth",
+    "tagline": "20,000+ AI • 200+ quốc gia • 200+ ngôn ngữ • tự động 24/7 • chuyển đổi X1000"
+  },
+  "payments": {
+    "eth": "0x54E15A7b6d4213beE87800432A151d794638E3C2",
+    "usdt_erc20": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",
+    "momo": "0567892030",
+    "vietcombank": "9567892030",
+    "paypal": "vumumabada@gmail.com"
+  },
+  "affiliates": [
+    { "name": "Binance",  "url": "https://www.binance.com/vi/register?ref=GRO_20338_9V44N" },
+    { "name": "AlgosOne", "url": "https://algosone.page.link/MbtR" }
+  ],
+  "feeds": {
+    "top_n": 10,
+    "sources": ["coingecko_markets","coinlore_tickers"]
+  },
+  "schedule": {
+    "refresh_minutes": 10
+  }
+}
