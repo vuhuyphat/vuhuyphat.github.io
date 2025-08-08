@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Web3 AI X1000</title>
+  <meta name="description" content="Web3 AI X1000 • Tự động 24/7 • 200+ quốc gia • 200+ ngôn ngữ" />
+  <link rel="preconnect" href="https://api.qrserver.com">
+  <style>
+    :root{
+      --bg:#0b0f14; --card:#111823; --text:#eef3fb; --muted:#9fb3c8; --accent:#7dd3fc; --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+      --chip:#1f2937; --border:#223041;
+    }
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Roboto,Apple Color Emoji,Arial}
+    a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+    .wrap{max-width:960px;margin:auto;padding:20px}
+    .grid{display:grid;gap:16px}
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .badge{background:var(--chip);padding:8px 12px;border-radius:999px;border:1px solid var(--border);color:var(--muted);font-size:14px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+    h1{margin:8px 0 4px} h2{margin:0 0 8px;font-size:18px}
+    .muted{color:var(--muted)}
+    .list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+    .coin{border:1px solid var(--border);border-radius:12px;padding:12px;background:#0d141d}
+    .chg{font-weight:600}
+    .up{color:var(--ok)} .dn{color:var(--bad)}
+    .pay-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+    .pay-box{display:flex;gap:12px}
+    .qr{width:120px;height:120px;border-radius:8px;border:1px solid var(--border);background:#000}
+    .btn{display:inline-block;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:#0f1722;color:var(--text)}
+    .btn:hover{filter:brightness(1.1)}
+    .copy{cursor:pointer;font-size:12px;color:var(--muted)}
+    footer{margin:24px 0 16px;color:var(--muted);font-size:14px}
+    .small{font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap grid">
+    <div class="row">
+      <div id="ens" class="badge">ENS: —</div>
+      <div id="heartbeat" class="badge">Heartbeat: —</div>
+      <div><a class="badge" href="./data/latest.json" target="_blank">data</a></div>
+    </div>
+
+    <header>
+      <h1 id="brand">LightUnfold • Web3 AI X1000</h1>
+      <div id="tagline" class="muted small">Tự động 24/7</div>
+    </header>
+
+    <section class="card">
+      <h2>🔥 Cơ hội nổi bật</h2>
+      <div id="top-list" class="list"></div>
+      <div class="muted small" id="top-note"></div>
+    </section>
+
+    <section class="card">
+      <h2>💳 Thanh toán</h2>
+      <div id="payments" class="pay-grid"></div>
+      <div class="muted small">Quét QR / click để thanh toán nhanh. Sau khi thanh toán, liên hệ kênh hỗ trợ của bạn.</div>
+    </section>
+
+    <section class="card">
+      <h2>🤝 Affiliate</h2>
+      <div id="affs" class="row"></div>
+    </section>
+
+    <footer>© <span id="brand-foot">LightUnfold</span> • Phi tập trung & mở rộng 24/7</footer>
+  </div>
+
+  <script>
+  async function loadJSON(url) {
+    const res = await fetch(url, {cache:"no-store"});
+    if (!res.ok) throw new Error(`${url} ${res.status}`);
+    return res.json();
+  }
+  function fmtUSD(x){ try{ return Number(x).toLocaleString('en-US',{style:'currency',currency:'USD',maximumFractionDigits:6}); }catch{ return '$'+x; } }
+  function clsChg(v){ return (Number(v)>=0) ? 'up' : 'dn'; }
+  function pct(v){ v = Number(v)||0; return (v>0?'+':'')+v.toFixed(2)+'%'; }
+  function esc(s){ return String(s||'').replace(/[<>&"]/g,m=>({ '<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;' }[m])); }
+  function qrURL(data){ return `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(data)}`; }
+  function paymentItems(p){
+    const items=[];
+    if (p.eth) items.push({key:'ETH', addr:p.eth, uri:`ethereum:${p.eth}`, href:`https://etherscan.io/address/${p.eth}`});
+    if (p.usdt_erc20) items.push({key:'USDT (ERC20)', addr:p.usdt_erc20, uri:`ethereum:${p.usdt_erc20}`, href:`https://etherscan.io/address/${p.usdt_erc20}`});
+    if (p.momo) items.push({key:'MoMo', addr:p.momo, uri:`momo:${p.momo}`, href:`https://nhantien.momo.vn/${encodeURIComponent(p.momo)}`});
+    if (p.vietcombank) items.push({key:'Vietcombank', addr:p.vietcombank, uri:`VCB:${p.vietcombank}`, href:'#'});
+    if (p.paypal) items.push({key:'PayPal', addr:p.paypal, uri:`https://www.paypal.me/${encodeURIComponent(p.paypal)}`, href:`mailto:${p.paypal}`});
+    return items;
+  }
+  function renderPayments(p){
+    const root = document.getElementById('payments'); root.innerHTML='';
+    for (const it of paymentItems(p)){
+      const box=document.createElement('div'); box.className='card';
+      box.innerHTML=`<div class="pay-box">
+        <img class="qr" alt="QR ${esc(it.key)}" src="${qrURL(it.uri)}">
+        <div><div><b>${esc(it.key)}</b></div>
+          <div class="small muted">Địa chỉ / tài khoản:</div>
+          <div class="small" style="word-break:break-all">${esc(it.addr)}</div>
+          <div class="row" style="margin-top:8px">
+            <a class="btn" href="${it.href}" target="_blank" rel="noopener">Mở liên kết</a>
+            <span class="copy" data-copy="${esc(it.addr)}">Sao chép</span>
+          </div>
+        </div></div>`;
+      root.appendChild(box);
+    }
+    root.addEventListener('click', e=>{
+      const el = e.target.closest('.copy'); if (!el) return;
+      navigator.clipboard.writeText(el.getAttribute('data-copy')).then(()=>{
+        el.textContent='Đã sao chép ✓'; setTimeout(()=>el.textContent='Sao chép',1200);
+      });
+    }, {once:true});
+  }
+  function renderAffiliates(list){
+    const row=document.getElementById('affs'); row.innerHTML='';
+    (list||[]).forEach(a=>{
+      const b=document.createElement('a'); b.className='badge'; b.href=a.url; b.target='_blank'; b.rel='noopener'; b.textContent=a.name; row.appendChild(b);
+    });
+  }
+  function renderHeader(cfg){
+    const brand = cfg.site?.brand || 'LightUnfold • Web3 AI X1000';
+    document.getElementById('brand').textContent=brand;
+    document.getElementById('brand-foot').textContent=brand.replace(/•.*/,'').trim();
+    if (cfg.site?.tagline) document.getElementById('tagline').textContent=cfg.site.tagline;
+    if (cfg.site?.ens) document.getElementById('ens').textContent='ENS: '+cfg.site.ens;
+  }
+  async function renderTopList(){
+    try{
+      const j=await loadJSON('./data/latest.json?_='+Date.now());
+      const list=document.getElementById('top-list'); list.innerHTML='';
+      (j.items||[]).forEach(c=>{
+        const div=document.createElement('div'); div.className='coin';
+        div.innerHTML=`<div><b>${esc(c.symbol)}</b> · ${esc(c.name||'')}</div>
+        <div>${fmtUSD(c.price)} · <span class="chg ${clsChg(c.ch24h)}">${pct(c.ch24h)}</span></div>
+        <div class="small"><a href="${esc(c.link)}" target="_blank" rel="noopener">Chi tiết</a></div>`;
+        list.appendChild(div);
+      });
+      document.getElementById('heartbeat').textContent='Heartbeat: '+(j.generated_at?new Date(j.generated_at).toLocaleString():'—');
+      document.getElementById('top-note').textContent=j.items?.length?'':'Chưa có mục nào — chờ job đầu tiên.';
+    }catch(e){ document.getElementById('top-note').textContent='Không đọc được data/latest.json'; }
+  }
+  async function boot(){
+    try{
+      const cfg=await loadJSON('./config.json?_='+Date.now());
+      renderHeader(cfg);
+      renderPayments(cfg.payments||{});
+      renderAffiliates(cfg.affiliates||[]);
+    }catch{}
+    await renderTopList();
+    setInterval(renderTopList, 60000);
+  }
+  boot();
+  </script>
+</body>
+</html>
