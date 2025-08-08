@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Super Auto • Web3 AI X1000</title>
+<meta name="theme-color" content="#0b0f13">
+<meta name="description" content="Trang tác chiến tự vận hành: quét cơ hội 24/7, caption đa ngôn ngữ, auto-affiliate, webhook Zapier đăng chéo, QR thanh toán & paywall.">
+<style>
+:root{--bg:#0b0f13;--card:#0f141a;--bd:#1f2a3a;--tx:#e9eef4;--mut:#9fb3c8;--ac:#ff9800;--good:#2ecc71;--bad:#ff4d4f;--pill:#121922;--lnk:#7dc1ff}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto}
+a{color:var(--lnk);text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pill{background:var(--pill);border:1px solid var(--bd);border-radius:999px;padding:6px 10px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-top:14px}
+h1{margin:8px 0 6px;font-size:28px}h3{margin:0 0 10px}.muted{color:var(--mut)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.btn{background:var(--ac);color:#1a1200;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+.btn.out{background:transparent;border:1px solid var(--bd);color:var(--tx)}
+.badge{padding:6px 10px;border:1px solid var(--bd);border-radius:999px}
+.flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.item{border-top:1px dashed var(--bd);padding:12px 0}
+.chip{display:inline-block;border-radius:8px;padding:2px 8px;margin-left:6px;font-weight:700}
+.pos{background:rgba(46,204,113,.15);color:var(--good);border:1px solid rgba(46,204,113,.35)}
+.neg{background:rgba(255,77,79,.15);color:var(--bad);border:1px solid rgba(255,77,79,.35)}
+.qr{background:#fff;padding:8px;border-radius:10px}
+.paygrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.field{display:flex;gap:8px;align-items:center}
+input,textarea{width:100%;background:#0b1117;border:1px solid var(--bd);color:var(--tx);border-radius:10px;padding:10px}
+.kpi{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.kpi .box{flex:1 1 160px;background:var(--pill);border:1px solid var(--bd);border-radius:12px;padding:10px}
+.now{font-size:22px;font-weight:800}
+.ticker{overflow:hidden;white-space:nowrap;border-top:1px dashed var(--bd);border-bottom:1px dashed var(--bd);padding:8px 0;margin-top:8px}
+.ticker span{display:inline-block;margin-right:20px}
+.hidden{display:none}
+.small{font-size:12px}
+code{background:#000;padding:2px 6px;border-radius:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="row">
+    <span class="pill">ENS: <b id="ens">—</b></span>
+    <span class="pill">Heartbeat: <b id="hb">—</b></span>
+    <a class="pill" href="config.json" target="_blank">config</a>
+    <a class="pill" href="data/latest.json" target="_blank">data</a>
+    <span class="pill" id="lang">VI / EN</span>
+    <span class="pill" id="theme">🌗 Theme</span>
+  </div>
+
+  <h1 id="brand">Super Auto • Web3 AI X1000</h1>
+  <div id="tagline" class="muted">—</div>
+
+  <div class="kpi">
+    <div class="box"><div class="muted">Cơ hội</div><div class="now" id="kOpps">0</div></div>
+    <div class="box"><div class="muted">Cập nhật</div><div class="now" id="kUpd">—</div></div>
+    <div class="box"><div class="muted">Ngôn ngữ</div><div class="now" id="kLoc">vi/en</div></div>
+  </div>
+
+  <div class="card">
+    <div class="flex">
+      <h3 style="margin:0">🔥 Cơ hội nổi bật</h3>
+      <span class="badge" id="scanMode">quét: data</span>
+      <span class="badge" id="refresh">↻ làm mới</span>
+      <span class="badge" id="auto">auto: on</span>
+      <span class="badge" id="broadcast">🚀 phát sóng</span>
+    </div>
+    <div id="opps"></div>
+    <div class="ticker"><div id="ticker"></div></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0 0 8px">💳 Thanh toán</h3>
+    <div id="pays" class="paygrid"></div>
+    <div class="muted small">Quét QR / click để thanh toán nhanh. Nhận mã mở khóa từ chủ trang để xem nội dung cao cấp.</div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0 0 8px">🔓 Nội dung cao cấp</h3>
+    <div id="lock">
+      <div class="grid">
+        <div>
+          <div class="field"><input id="unlockCode" placeholder="Nhập mã mở khóa (từ chủ trang)"></div>
+          <div class="field"><input id="txHash" placeholder="(Tuỳ chọn) Dán TX hash / bằng chứng thanh toán"></div>
+          <div class="row">
+            <button class="btn" id="btnUnlock">Mở khóa</button>
+            <button class="btn out" id="btnRemember">Nhớ trên thiết bị</button>
+          </div>
+          <div id="uMsg" class="muted" style="margin-top:6px"></div>
+        </div>
+        <div class="muted small">
+          <b>Cách hoạt động:</b>
+          <ul>
+            <li>Bạn nhận mã sau khi thanh toán (ETH/USDT/MoMo/VCB/PayPal…)</li>
+            <li>Nhập mã để mở khóa nội dung cao cấp (lưu trong thiết bị, không cần Zapier)</li>
+            <li>Dán TX hash (tuỳ chọn) để ghi chú cục bộ</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div id="open" class="hidden">
+      <div class="row"><span class="pill" style="border-color:#2ecc71;color:#2ecc71">✔ Đã mở khóa</span><button class="btn out" id="btnLock">Khoá lại</button></div>
+      <div class="grid" id="premium"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0 0 8px">🤝 Affiliate</h3>
+    <div id="affs" class="grid"></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0 0 8px">🧰 Gói / Báo cáo (10 chủ lực)</h3>
+    <div id="bundles" class="grid"></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0 0 8px">🔗 Nhúng widget (tự lan tỏa)</h3>
+    <div class="grid">
+      <div>
+        <div class="muted small">Sao chép đoạn sau để nhúng ticker & hot list vào website/blog bất kỳ:</div>
+        <textarea id="embed" rows="4" readonly></textarea>
+        <div class="row" style="margin-top:8px">
+          <button class="btn out" id="copyEmbed">Sao chép</button>
+        </div>
+      </div>
+      <div class="muted small">Mẹo: ai nhúng widget này → traffic quay về trang của bạn (đã gắn affiliate & tracking).</div>
+    </div>
+  </div>
+
+  <div class="muted small" style="text-align:center;margin-top:18px">© <span id="year"></span> Super Auto • Web3 AI X1000</div>
+</div>
+
+<script>
+(async function(){
+  // ===== helpers =====
+  const $=s=>document.querySelector(s);
+  const num=n=>(n||0).toLocaleString(undefined,{maximumFractionDigits:2});
+  const ago=iso=>{try{const d=new Date(iso);const s=(Date.now()-d)/1e3;return s<60?Math.floor(s)+"s":s<3600?Math.floor(s/60)+"m":s<86400?Math.floor(s/3600)+"h":Math.floor(s/86400)+"d";}catch(e){return"—"}};
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  function QR(text,size=180){return `https://chart.googleapis.com/chart?cht=qr&chs=${size}x${size}&chl=${encodeURIComponent(text)}`;}
+
+  // ===== i18n + theme =====
+  let LANG=(localStorage.getItem('lang')||navigator.language||'vi').slice(0,2).toLowerCase().startsWith('vi')?'vi':'en';
+  $('#lang').onclick=()=>{LANG=(LANG==='vi'?'en':'vi');localStorage.setItem('lang',LANG);paint();};
+  $('#theme').onclick=()=>{document.documentElement.classList.toggle('light');};
+  $('#year').textContent=new Date().getFullYear();
+
+  // ===== load config + data =====
+  async function getJSON(url,key){
+    try{
+      const j=await (await fetch(url,{cache:'no-store'})).json();
+      localStorage.setItem(key,JSON.stringify(j));
+      return j;
+    }catch(e){
+      const c=localStorage.getItem(key); return c?JSON.parse(c):{};
+    }
+  }
+  const cfg = await getJSON('config.json','cfg');
+  const latest = await getJSON('data/latest.json','latest');
+  if(latest.items) $('#hb').textContent='LIVE';
+
+  // ===== header =====
+  $('#brand').textContent = cfg.site?.brand || 'Super Auto • Web3 AI X1000';
+  $('#tagline').textContent= cfg.site?.tagline||'Tự động 24/7';
+  $('#ens').textContent   = cfg.site?.ens||'—';
+  $('#kLoc').textContent  = (cfg.site?.locales||['vi','en']).join('/');
+  $('#kOpps').textContent = (latest.items||[]).length||0;
+  $('#kUpd').textContent  = latest.generated_at?ago(latest.generated_at):'—';
+
+  // ===== render opportunities =====
+  function renderOpps(list){
+    const wrap=$('#opps'); wrap.innerHTML='';
+    (list||[]).slice(0,cfg.ui?.cards?.max_items||10).forEach(x=>{
+      const pct=x.ch24h??0, ch=`<span class="chip ${pct>=0?'pos':'neg'}">${pct>=0?'+':''}${pct.toFixed(2)}%</span>`;
+      const vol = x.vol24h?` · Vol 24h: $${num(x.vol24h)}`:'';
+      const link= x.link?`<a class="badge" href="${x.link}" target="_blank">↗</a>`:'';
+      const el=document.createElement('div'); el.className='item';
+      el.innerHTML=`<div class="flex"><div><b>${x.symbol}</b> · ${x.name||''}</div><div>$${num(x.price)}</div>${ch}${link}</div>
+                    <div class="muted small">Nguồn: ${x.source||'—'}${vol}</div>`;
+      wrap.appendChild(el);
+    });
+    $('#ticker').innerHTML=(list||[]).map(x=>`<span>${x.symbol}: $${num(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join('')||'<span>—</span>';
+  }
+  renderOpps(latest.items||[]);
+
+  // ===== payments (from config.site.payments) =====
+  (function paintPayments(){
+    const p=cfg.site?.payments||{}, wrap=$('#pays'); wrap.innerHTML='';
+    function card(title,desc,addr,openUrl){
+      const html=`<div class="card"><div class="flex"><h4 style="margin:0">${title}</h4>${openUrl?`<a class="badge" target="_blank" href="${openUrl}">Mở ↗</a>`:''}</div>
+      <div class="grid"><div><img class="qr" width="180" height="180" src="${QR(addr)}" alt="QR"></div>
+      <div><div class="muted small">${desc}</div><div class="field" style="margin-top:8px"><input readonly value="${addr}"></div>
+      <div class="row" style="margin-top:6px"><button class="btn out" onclick="navigator.clipboard.writeText('${addr}')">Sao chép</button>
+      <a class="btn out" download="qr.png" href="${QR(addr,512)}">Tải QR</a></div></div></div></div>`;
+      const d=document.createElement('div'); d.innerHTML=html; return d.firstChild;
+    }
+    if(p.eth) wrap.appendChild(card('ETH (EVM)','Nạp ETH/USDT trên EVM.',p.eth,'https://metamask.app.link/'));
+    if(p.usdt_erc20) wrap.appendChild(card('USDT (ERC20)','USDT mạng ERC20.',p.usdt_erc20));
+    if(p.momo) wrap.appendChild(card('MoMo','Thanh toán MoMo.',p.momo));
+    if(p.vietcombank) wrap.appendChild(card('Vietcombank','Chuyển khoản VCB.',p.vietcombank));
+    if(p.paypal){ const pp=`https://www.paypal.me/${(p.paypal||'').split('@')[0]}`; wrap.appendChild(card('PayPal','Thanh toán PayPal.',p.paypal,pp));}
+  })();
+
+  // ===== affiliates (auto-rotation) =====
+  const affiliates = cfg.affiliates||[];
+  (function(){
+    const wrap=$('#affs'); wrap.innerHTML='';
+    affiliates.forEach(a=>{
+      const el=document.createElement('div'); el.className='card';
+      el.innerHTML=`<div class="flex"><h4 style="margin:0">${a.name}</h4><a class="badge" target="_blank" href="${a.url}">Tham gia ↗</a></div>
+      <div class="muted small">${a.desc||a.tag||''}</div>`;
+      wrap.appendChild(el);
+    });
+  })();
+  function pickAffiliate(){
+    if(!affiliates.length) return null;
+    return affiliates[Math.floor(Math.random()*affiliates.length)];
+  }
+
+  // ===== bundles / premium list (10 chủ lực) =====
+  (function(){
+    const b=(cfg.store&&cfg.store.bundles)||[];
+    const wrap=$('#bundles'); wrap.innerHTML='';
+    b.forEach(x=>{
+      const tags=(x.tags||[]).map(t=>`<span class="badge">${t}</span>`).join(' ');
+      const el=document.createElement('div'); el.className='card';
+      el.innerHTML=`<div class="flex"><h4 style="margin:0">${x.title}</h4><span class="badge">$${x.price}</span>${x.sla?`<span class="badge">${x.sla}</span>`:''}</div>
+      <div class="muted small">${x.desc||''}</div><div style="margin-top:6px">${tags}</div>
+      <div class="row" style="margin-top:8px"><button class="btn" onclick="document.getElementById('unlockCode').focus()">Mua & nhập mã</button>${x.link?`<a class="btn out" target="_blank" href="${x.link}">Demo</a>`:''}</div>`;
+      wrap.appendChild(el);
+    });
+  })();
+
+  // ===== paywall (offline code) =====
+  const SECRET = String((cfg.secrets && cfg.secrets.unlock_code) || 'X1000VIP');
+  const gateOpen = $('#open'), gateLock = $('#lock'), uMsg = $('#uMsg');
+  function setGate(open){gateOpen.classList.toggle('hidden',!open);gateLock.classList.toggle('hidden',open);}
+  function paintPremium(){
+    const prem=$('#premium'); prem.innerHTML='';
+    const items=(cfg.store&&cfg.store.premium)||[{title:"Alpha Feed Pro",desc:"Dòng tin alpha siêu nhanh, ưu tiên cơ hội lệch pha thị trường.",bullets:["Tốc độ ms","Bộ lọc rủi ro","Bất thường dòng tiền"],link:"data/latest.json"}];
+    items.forEach(p=>{
+      const el=document.createElement('div'); el.className='card';
+      el.innerHTML=`<h4 style="margin:0">${p.title}</h4><div class="muted small">${p.desc||''}</div>
+      <ul>${(p.bullets||[]).map(s=>`<li>${s}</li>`).join('')}</ul>${p.link?`<a class="badge" target="_blank" href="${p.link}">Xem dữ liệu ↗</a>`:''}`;
+      prem.appendChild(el);
+    });
+  }
+  const keep=localStorage.getItem('unlocked_code')||'';
+  if(keep===SECRET){ setGate(true); paintPremium(); if(localStorage.getItem('tx_hash')) uMsg.innerHTML='<span style="color:#2ecc71">TX: '+localStorage.getItem('tx_hash')+'</span>'; }
+  $('#btnUnlock').onclick=()=>{const c=$('#unlockCode').value.trim(),tx=$('#txHash').value.trim(); if(c===SECRET){setGate(true);paintPremium();uMsg.innerHTML='<span style="color:#2ecc71">Đã mở khóa!</span>'; if(tx) localStorage.setItem('tx_hash',tx);} else uMsg.innerHTML='<span style="color:#ff4d4f">Mã không đúng.</span>';};
+  $('#btnRemember').onclick=()=>{const c=$('#unlockCode').value.trim(); if(c){localStorage.setItem('unlocked_code',c); uMsg.textContent='Đã lưu trên thiết bị.';}};
+  $('#btnLock').onclick=()=>{localStorage.removeItem('unlocked_code'); setGate(false);};
+
+  // ===== embed widget (tự lan tỏa) =====
+  const widgetSrc = location.href; // có thể thay bằng trang /data embed riêng
+  const code = `<iframe src="${widgetSrc}" style="width:100%;height:600px;border:0;border-radius:12px;overflow:hidden" loading="lazy"></iframe>`;
+  $('#embed').value = code;
+  $('#copyEmbed').onclick=()=>{navigator.clipboard.writeText(code)};
+
+  // ===== auto refresh + manual =====
+  let auto=true; $('#auto').onclick=()=>{auto=!auto;$('#auto').textContent='auto: '+(auto?'on':'off');};
+  $('#refresh').onclick=()=>location.reload();
+
+  // ===== caption generator (VI/EN) =====
+  function buildCaption(top){
+    const a = pickAffiliate();
+    const aff = a?` • ${a.name}: ${a.url}`:'';
+    const vi = `🔥 TOP hôm nay: ${top.map(x=>`${x.symbol} $${x.price} (${(x.ch24h||0).toFixed(2)}%)`).join(' | ')} • cập nhật ${ago(latest.generated_at)} • xem đầy đủ: ${location.href}${aff}`;
+    const en = `🔥 Today’s TOP: ${top.map(x=>`${x.symbol} $${x.price} (${(x.ch24h||0).toFixed(2)}%)`).join(' | ')} • updated ${ago(latest.generated_at)} • full: ${location.href}${aff}`;
+    return {vi,en};
+  }
+
+  // ===== trigger chiến dịch bùng nổ + broadcast qua Zapier Webhook =====
+  async function broadcastIfConfigured(kind,payload){
+    const hook = (cfg.webhooks && (cfg.webhooks.zapier_catch || cfg.webhooks.ZAPIER_CATCH || cfg.webhooks.zapier)) || null;
+    if(!hook) return false;
+    try{
+      await fetch(hook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind,...payload})});
+      return true;
+    }catch(e){return false;}
+  }
+
+  // build & maybe broadcast once on load
+  const list = latest.items||[];
+  const cap = buildCaption(list.slice(0,5));
+  const hot = list.find(x=> (x.ch24h||0) >= (cfg.triggers?.pump_24h||12) || (x.vol24h||0) >= (cfg.triggers?.min_vol_usd||5_000_000) );
+  $('#scanMode').textContent = list.length ? 'quét: data' : 'quét: fallback';
+
+  // Nút "phát sóng" thủ công (để test)
+  $('#broadcast').onclick=async()=>{
+    const ok = await broadcastIfConfigured('manual_broadcast',{ lang:LANG, caption:cap[LANG], top:list.slice(0,10) });
+    alert(ok?'Đã gửi webhook Zapier!':'Chưa cấu hình webhook Zapier trong config.json');
+  };
+
+  // Tự phát sóng 1 lần khi có "hot" (chống spam bằng localStorage flag trong 30 phút)
+  (async function autoBlast(){
+    if(!hot) return;
+    const key='last_hot_broadcast';
+    const last=Number(localStorage.getItem(key)||0);
+    if(Date.now()-last<30*60*1000) return; // 30 phút
+    const ok = await broadcastIfConfigured('hot_pick',{ symbol:hot.symbol, change24h:hot.ch24h, vol24h:hot.vol24h, caption:cap[LANG] });
+    if(ok) localStorage.setItem(key, Date.now().toString());
+  })();
+
+  // vẽ opps ban đầu
+  renderOpps(list);
+
+  function paint(){
+    // (Giản lược: hiện demo i18n qua nút VI/EN, nội dung chính đã trung tính)
+  }
+  paint();
+})();
+</script>
+</body>
+</html>
