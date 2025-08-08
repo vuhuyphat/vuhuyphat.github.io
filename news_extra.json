@@ -1,0 +1,312 @@
+name: "HyperCore ULTRA – Web3 AI X1000"
+
+on:
+  push:
+    branches: ["main"]
+  schedule:
+    - cron: "*/10 * * * *"      # refresh mỗi 10 phút (UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+concurrency:
+  group: hypercore-ultra
+  cancel-in-progress: true
+
+jobs:
+  ultra:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # 0) Đảm bảo file phụ (không đụng config cũ)
+      - name: Prepare structure
+        run: |
+          mkdir -p data
+          [ -f data/news_extra.json ] || echo "[]" > data/news_extra.json
+          [ -f manifest.json ] || cat > manifest.json <<'JSON'
+          {
+            "name": "LightUnfold • Web3 AI X1000",
+            "short_name": "AI X1000",
+            "start_url": "/",
+            "display": "standalone",
+            "background_color": "#0b0f13",
+            "theme_color": "#0b0f13",
+            "icons": []
+          }
+          JSON
+          # unlock.json chứa hash của code test LIGHT-UNFOLD-8888 (có thể đổi sau)
+          [ -f unlock.json ] || node - <<'NODE'
+          import crypto from 'crypto', fs from 'fs';
+          const code="LIGHT-UNFOLD-8888";
+          const sha=crypto.createHash('sha256').update(code).digest('hex');
+          fs.writeFileSync('unlock.json', JSON.stringify({sha256_codes:[sha]},null,2));
+          NODE
+
+      # 1) Ghi index.html siêu nhẹ: i18n, auto-theme, SEO, PWA, QR pay, Affiliate UTM, Products, News extra, Unlock (mã/TX)
+      - name: Write index.html
+        run: |
+          cat > index.html <<'HTML'
+          <!doctype html><html lang="vi"><head>
+          <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+          <title>LightUnfold • Web3 AI X1000</title>
+          <meta name="description" content="Web3 AI 24/7 siêu nhẹ: cơ hội crypto 10’, headlines, QR thanh toán, affiliate, Premium unlock (mã & on‑chain).">
+          <meta name="theme-color" content="#0b0f13"><link rel="manifest" href="manifest.json">
+          <link rel="preconnect" href="https://api.coingecko.com"><link rel="preconnect" href="https://api.qrserver.com">
+          <meta property="og:title" content="LightUnfold • Web3 AI X1000">
+          <meta property="og:description" content="Cập nhật cơ hội crypto, mở khoá Premium, thanh toán QR, affiliate.">
+          <meta property="og:type" content="website"><meta property="og:url" content="https://vuhuyphat.github.io/">
+          <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"LightUnfold • Web3 AI X1000","url":"https://vuhuyphat.github.io/","potentialAction":{"@type":"SearchAction","target":"https://vuhuyphat.github.io/?q={query}","query-input":"required name=query"}}</script>
+          <style>
+            :root{--bg:#0b0f13;--card:#10151c;--muted:#9fb3c8;--border:#1f2a3a;--accent:#ff9800;--fg:#e9eef4}
+            @media (prefers-color-scheme:light){:root{--bg:#f6f8fb;--card:#fff;--muted:#6b7a8a;--border:#e2e8f0;--accent:#ff9800;--fg:#10141a}}
+            html,body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto}
+            header,section,footer{max-width:1080px;margin:0 auto;padding:18px}
+            .row{display:flex;gap:10px;flex-wrap:wrap}.pill{border:1px solid var(--border);border-radius:999px;padding:6px 10px;color:var(--muted)}
+            .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin:12px 18px}
+            .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+            .btn{background:var(--accent);color:#1a1200;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+            a{color:#1888ff;text-decoration:none}.muted{color:var(--muted)}.opp{border-top:1px solid var(--border);padding:10px 0}
+            input{background:transparent;border:1px solid var(--border);color:var(--fg);border-radius:8px;padding:8px;width:100%}
+            .tag{display:inline-block;border:1px solid var(--border);border-radius:8px;padding:4px 8px;margin-right:6px;color:#7dc1ff}
+            .ok{color:#39d353}.bad{color:#ff6b6b}
+            img[loading=lazy]{content-visibility:auto}
+          </style>
+          </head><body>
+            <header>
+              <div class="row">
+                <span class="pill">ENS: <b id="ens">—</b></span>
+                <span class="pill">Heartbeat: <span id="hb">—</span></span>
+                <a class="pill" href="config.json" target="_blank">config</a>
+                <a class="pill" href="data/latest.json" target="_blank">data</a>
+                <a class="pill" href="feed.xml" target="_blank">RSS</a>
+                <span class="pill" id="langSwitch">VI / EN</span>
+              </div>
+              <h1 id="brand">LightUnfold • Web3 AI X1000</h1>
+              <div id="tagline" class="muted">Tự động 24/7 • FREE + Premium (mã / on‑chain)</div>
+            </header>
+
+            <section class="card">
+              <div class="row" style="align-items:center">
+                <h3 style="margin:0" data-i18n="hot">🔥 Cơ hội nổi bật</h3>
+                <span id="liveTag" class="tag">LIVE fallback</span>
+              </div>
+              <div id="opps"><div class="muted" data-i18n="updating">Đang cập nhật dữ liệu…</div></div>
+              <div class="muted" id="updated"></div>
+            </section>
+
+            <section class="card" id="secNews">
+              <h3 style="margin:0 0 8px" data-i18n="news">🗞 Tin vắn tài chính</h3>
+              <div id="news" class="grid"></div>
+            </section>
+
+            <section class="card" id="secPay">
+              <h3 style="margin:0 0 8px" data-i18n="pay">💳 Thanh toán</h3>
+              <div id="pays" class="grid"></div>
+              <div class="muted" data-i18n="payhint">Quét QR / click để thanh toán nhanh, rồi mở khoá Premium phía dưới.</div>
+            </section>
+
+            <section class="card" id="secProd">
+              <h3 style="margin:0 0 8px" data-i18n="products">🧠 Sản phẩm & Dịch vụ</h3>
+              <div id="products" class="grid"></div>
+            </section>
+
+            <section class="card" id="secAff">
+              <h3 style="margin:0 0 8px">🤝 Affiliate</h3>
+              <div id="affs" class="grid"></div>
+            </section>
+
+            <section class="card" id="unlock">
+              <h3 style="margin:0 0 8px" data-i18n="unlock">🔓 Trung tâm mở khoá Premium</h3>
+              <div class="grid">
+                <div class="card">
+                  <h4 style="margin:0 0 8px" data-i18n="wayA">Cách A — Nhập mã bí mật</h4>
+                  <input id="manualKey" placeholder="Nhập mã (ví dụ: LIGHT-UNFOLD-8888)">
+                  <button class="btn" id="btnManual" style="margin-top:8px" data-i18n="open">Mở khoá</button>
+                </div>
+                <div class="card">
+                  <h4 style="margin:0 0 8px" data-i18n="wayB">Cách B — On‑chain (ETH/USDT)</h4>
+                  <div class="muted" data-i18n="pasteTx">Dán TX hash chuyển tới ví đích của trang:</div>
+                  <input id="txhash" placeholder="0x...">
+                  <button class="btn" id="btnVerifyTx" style="margin-top:8px" data-i18n="verify">Xác thực & Mở khoá</button>
+                  <div id="txStatus" style="margin-top:6px"></div>
+                </div>
+              </div>
+            </section>
+
+            <footer class="muted" style="text-align:center;padding-bottom:40px">© <span id="year"></span> LightUnfold • Web3 AI</footer>
+
+            <script>
+            // I18N
+            const I18N={vi:{hot:"🔥 Cơ hội nổi bật",updating:"Đang cập nhật dữ liệu…",news:"🗞 Tin vắn tài chính",pay:"💳 Thanh toán",payhint:"Quét QR / click để thanh toán nhanh, rồi mở khoá Premium phía dưới.",products:"🧠 Sản phẩm & Dịch vụ",unlock:"🔓 Trung tâm mở khoá Premium",wayA:"Cách A — Nhập mã bí mật",wayB:"Cách B — On‑chain (ETH/USDT)",pasteTx:"Dán TX hash chuyển tới ví đích của trang:",open:"Mở khoá",verify:"Xác thực & Mở khoá"},en:{hot:"🔥 Hot Opportunities",updating:"Updating…",news:"🗞 Finance Headlines",pay:"💳 Payments",payhint:"Scan QR / click to pay, then unlock Premium below.",products:"🧠 Products & Services",unlock:"🔓 Premium Unlock Center",wayA:"Way A — Secret code",wayB:"Way B — On‑chain (ETH/USDT)",pasteTx:"Paste a TX hash sent to this site’s wallet:",open:"Unlock",verify:"Verify & Unlock"}};
+            let LANG=(new URLSearchParams(location.search).get('lang'))||(navigator.language||'vi').slice(0,2); if(!['vi','en'].includes(LANG))LANG='vi';
+            const $=s=>document.querySelector(s), el=(t,h)=>{const x=document.createElement(t); x.innerHTML=h; return x};
+            function applyI18N(){document.querySelectorAll('[data-i18n]').forEach(n=>{const k=n.getAttribute('data-i18n');n.textContent=I18N[LANG][k]||n.textContent});}
+            document.getElementById('langSwitch').onclick=()=>{LANG=(LANG==='vi'?'en':'vi');applyI18N();history.replaceState(null,'',location.pathname+'?lang='+LANG)};
+
+            // helpers
+            const qr=u=>'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data='+encodeURIComponent(u);
+            const j=async(u)=>{const r=await fetch(u,{cache:'no-store'}); if(!r.ok) throw 0; return r.json()};
+            function addUTM(url){try{const u=new URL(url); u.searchParams.set('utm_source','lightunfold');u.searchParams.set('utm_medium','affiliate');u.searchParams.set('utm_campaign','x1000'); return u.toString()}catch{return url}}
+
+            let CFG=null, UNLOCK=null;
+            async function init(){
+              applyI18N();
+              try{CFG=await j('config.json')}catch{CFG={site:{brand:'AI X1000',ens:'',tagline:''},payments:{},affiliates:[],products:[]}}
+              try{UNLOCK=await j('unlock.json')}catch{UNLOCK={sha256_codes:[]}}
+              $('#brand').textContent=CFG.site?.brand||'AI X1000'; $('#ens').textContent=CFG.site?.ens||'—'; $('#tagline').textContent=CFG.site?.tagline||'';
+              showPays(); showAff(); showProd(); loadData();
+              if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(()=>{})}
+              $('#year').textContent=new Date().getFullYear();
+              // Auto theme theo giờ
+              const h=(new Date()).getHours(); document.documentElement.style.colorScheme=(h>=7&&h<=17)?'light':'dark';
+              bindUnlock();
+            }
+
+            function showPays(){
+              const p=CFG.payments||{}, g=$("#pays"); g.innerHTML='';
+              [
+                {t:'ETH (EVM)',a:p.eth,u:`ethereum:${p.eth}`,h:'ETH/USDT EVM'},
+                {t:'USDT (ERC20)',a:p.usdt_erc20,u:`ethereum:${p.usdt_erc20}`,h:'USDT ERC20'},
+                {t:'MoMo',a:p.momo,u:`momo://${p.momo}`,h:'MoMo'},
+                {t:'Vietcombank',a:p.vietcombank,u:`bank://${p.vietcombank}`,h:'VCB'},
+                {t:'PayPal',a:p.paypal,u:`mailto:${p.paypal}`,h:'Email'}
+              ].filter(x=>x.a).forEach(it=>{
+                g.appendChild(el('div',`<div style="display:flex;gap:12px">
+                  <img loading="lazy" src="${qr(it.u)}" width="112" height="112" style="border-radius:8px;border:1px solid #1f2a3a">
+                  <div style="flex:1"><h4 style="margin:0 0 6px">${it.t}</h4><div class="muted">${it.h||''}</div>
+                  <div style="word-break:break-all;margin:6px 0"><code>${it.a}</code></div>
+                  <button class="btn" onclick="navigator.clipboard.writeText('${it.a}')">${LANG==='vi'?'Sao chép':'Copy'}</button></div></div>`));
+              })
+            }
+            function showAff(){
+              const g=$("#affs"); g.innerHTML='';
+              (CFG.affiliates||[]).forEach(a=>{
+                const url=addUTM(a.url||'#');
+                g.appendChild(el('div',`<h4 style="margin:0 0 6px">${a.name||'—'}</h4><div class="muted" style="margin-bottom:8px">${a.desc||''}</div><a target=_blank class="btn" href="${url}">${LANG==='vi'?'Tham gia ↗':'Join ↗'}</a>`))
+              })
+            }
+            function showProd(){
+              const g=$("#products"); g.innerHTML='';
+              (CFG.products||[]).forEach(p=>{
+                g.appendChild(el('div',`<h4 style="margin:0 0 6px">${p.title||'—'}</h4><div class="muted" style="margin-bottom:8px">${p.desc||''}</div><a target=_blank class="btn" href="${p.href||'#'}">${p.cta||(LANG==='vi'?'Xem':'View')}</a>`))
+              })
+            }
+
+            function showOpp(items,ts){
+              const b=$("#opps"); b.innerHTML='';
+              (items||[]).forEach(x=>{
+                b.appendChild(el('div',`<div class="opp"><div class="row" style="align-items:center"><b>${x.symbol}</b> · ${x.name}<span class="pill">Giá: $${x.price}</span><span class="pill">24h: ${(x.ch24h??0).toFixed(2)}%</span><a class="pill" target=_blank href="${x.link}">Chi tiết ↗</a></div></div>`))
+              });
+              if(ts){ $("#liveTag").style.display='none'; $("#hb").textContent='LIVE • '+new Date(ts).toLocaleString(); $("#updated").textContent=(LANG==='vi'?'Cập nhật: ':'Updated: ')+new Date(ts).toLocaleString(); }
+            }
+
+            async function showNews(newsAuto){
+              const g=$("#news"); g.innerHTML='';
+              let extra=[]; try{const r=await fetch('data/news_extra.json',{cache:'no-store'}); if(r.ok) extra=await r.json()}catch{}
+              const merged=[...(extra||[]),...(newsAuto||[])].slice(0,12);
+              if(!merged.length){ g.innerHTML='<div class="muted">'+(LANG==='vi'?'Chưa có tin':'No news')+'</div>'; return; }
+              merged.forEach(n=>{
+                const url=addUTM(n.link||'#'); const card=el('div',''); card.className='card'; card.style.padding='10px';
+                card.appendChild(el('div',`<a target=_blank href="${url}">${n.title||'—'}</a>`)); g.appendChild(card);
+              })
+            }
+
+            async function loadData(){
+              try{ const jn=await j('data/latest.json'); showOpp(jn.items||[], jn.generated_at); showNews(jn.news||[]); }
+              catch{ fallbackLive(); }
+            }
+            async function fallbackLive(){
+              try{
+                const u="https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=20&page=1&price_change_percentage=1h,24h,7d";
+                const d=await (await fetch(u)).json();
+                showOpp(d.map(c=>({symbol:(c.symbol||'').toUpperCase(),name:c.name,price:+c.current_price||0,ch24h:+c.price_change_percentage_24h_in_currency||0,link:`https://www.coingecko.com/en/coins/${c.id}`})), new Date().toISOString());
+              }catch{}
+            }
+
+            // Unlock Premium
+            async function sha256hex(t){const e=new TextEncoder().encode(t);const b=await crypto.subtle.digest("SHA-256",e);return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
+            async function openPremium(){
+              try{
+                const P=await (await fetch('data/premium_plain.json',{cache:'no-store'})).json();
+                if(P?.items){ showOpp(P.items.slice(0,80),P.generated_at); alert(LANG==='vi'?'Đã mở khoá Premium ✓':'Premium unlocked ✓'); }
+              }catch{ alert(LANG==='vi'?'Premium đang khoá. Hãy nhập mã hợp lệ hoặc dùng TX hash.':'Premium locked. Enter a valid code or use a TX hash.'); }
+            }
+            function bindUnlock(){
+              $("#btnManual").onclick=async()=>{
+                const k=$("#manualKey").value.trim(); if(!k) return alert(LANG==='vi'?'Nhập mã':'Enter code');
+                try{ const h=await sha256hex(k); const ok=(UNLOCK?.sha256_codes||[]).includes(h); if(ok){ await openPremium(); } else { alert(LANG==='vi'?'Mã không hợp lệ':'Invalid code'); } }catch{}
+              };
+              $("#btnVerifyTx").onclick=verifyTx;
+            }
+            async function verifyTx(){
+              const tx=$("#txhash").value.trim(), s=$("#txStatus"); s.innerHTML=(LANG==='vi'?'Đang kiểm tra on-chain…':'Checking on-chain…');
+              if(!tx.startsWith('0x')){ s.innerHTML='<span class=bad>'+(LANG==='vi'?'TX hash không hợp lệ':'Invalid TX hash')+'</span>'; return; }
+              try{
+                const rpc=(CFG.unlock&&CFG.unlock.eth_rpc)||'https://cloudflare-eth.com';
+                const body=(m,ps)=>({jsonrpc:'2.0',id:1,method:m,params:ps});
+                const r=await (await fetch(rpc,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body('eth_getTransactionReceipt',[tx]))})).json();
+                const rec=r.result; if(!rec){ s.innerHTML='<span class=bad>'+(LANG==='vi'?'Chưa thấy giao dịch':'No receipt yet')+'</span>'; return; }
+                const recv=(CFG.payments?.eth||'').toLowerCase();
+                let pass=(rec.to||'').toLowerCase()===recv;
+                const usdt=(CFG.unlock?.usdt_contract||'').toLowerCase();
+                if(rec.logs && !pass){ for(const lg of rec.logs){ if((lg.address||'').toLowerCase()===usdt && lg.topics && lg.topics[0]==="0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"){ const toAddr='0x'+lg.topics[2].slice(26); if(toAddr.toLowerCase()===recv){ pass=true; break; } } } }
+                if(!pass){ s.innerHTML='<span class=bad>'+(LANG==='vi'?'Giao dịch không tới ví đích':'TX not to target wallet')+'</span>'; return; }
+                s.innerHTML='<span class=ok>'+(LANG==='vi'?'Xác thực ✓ Đang mở khoá…':'Verified ✓ Unlocking…')+'</span>'; await openPremium();
+              }catch{ s.innerHTML='<span class=bad>Error</span>'; }
+            }
+
+            init();
+            </script>
+          </body></html>
+          HTML
+
+      # 2) Service Worker + sinh data + SEO (RSS/Sitemap/robots) + dự phòng
+      - name: SW + Data + SEO
+        run: |
+          cat > sw.js <<'JS'
+          const C='x1000-ultra-v1';
+          self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['/','/index.html','/config.json','/data/latest.json','/unlock.json']).catch(()=>{}))));
+          self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const cp=res.clone(); caches.open(C).then(c=>c.put(e.request,cp)).catch(()=>{}); return res;}))));
+          JS
+
+          node - <<'NODE'
+          import fs from 'fs';
+          const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
+          async function safeGet(url,{retries=2,backoff=800,timeout=15000}={}){ for(let i=0;i<retries;i++){ const ctrl=new AbortController(); const to=setTimeout(()=>ctrl.abort(),timeout); try{ const res=await fetch(url,{signal:ctrl.signal,headers:{'User-Agent':'AI-X1000'}}); clearTimeout(to); if(!res.ok) throw new Error(res.status); return await res.json(); }catch(e){ if(i===retries-1) throw e; await sleep(backoff*(i+1)); } } }
+          let cfg={site:{brand:"AI X1000"},feeds:{top_n:12,finance_news:["https://www.coindesk.com/arc/outboundfeeds/rss/","https://cointelegraph.com/rss"]}};
+          try{ cfg=JSON.parse(fs.readFileSync('config.json','utf8')); }catch{}
+          const topN=+cfg?.feeds?.top_n||12;
+          async function pull(){ let items=[]; try{ const cg=await safeGet("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=120&page=1&price_change_percentage=1h,24h,7d"); items.push(...cg.map(c=>({source:'coingecko',id:c.id,symbol:(c.symbol||'').toUpperCase(),name:c.name,price:+c.current_price||0,ch1h:+c.price_change_percentage_1h_in_currency||0,ch24h:+c.price_change_percentage_24h_in_currency||0,ch7d:+c.price_change_percentage_7d_in_currency||0,vol24h:+c.total_volume||0,score:(+c.price_change_percentage_1h_in_currency||0)*.4+(+c.price_change_percentage_24h_in_currency||0)*.35+(+c.price_change_percentage_7d_in_currency||0)*.25+Math.log10((+c.total_volume||1)),link:`https://www.coingecko.com/en/coins/${c.id}`})) ) }catch(e){}
+            try{ const cl=await safeGet("https://api.coinlore.net/api/tickers/?start=0&limit=120"); items.push(...(cl?.data||[]).map(c=>({source:'coinlore',id:c.id,symbol:(c.symbol||'').toUpperCase(),name:c.name,price:+c.price_usd||0,ch24h:+c.percent_change_24h||0,vol24h:+c.volume24||0,score:(+c.percent_change_24h||0)*.7+Math.log10((+c.volume24||1)),link:`https://www.coinlore.com/coin/${(c.name||'').toLowerCase().replace(/\s+/g,'-')}`})) ) }catch(e){}
+            const best={}; for(const it of items){ if(!it.symbol) continue; const k=it.symbol; if(!best[k]||it.score>best[k].score) best[k]=it; }
+            return Object.values(best).sort((a,b)=>b.score-a.score)
+          }
+          async function news(){ const out=[]; for(const u of (cfg?.feeds?.finance_news||[])){ try{ const t=await (await fetch(u)).text(); const m=[...t.matchAll(/<item>[\s\S]*?<title>(.*?)<\/title>[\s\S]*?<link>(.*?)<\/link>/gi)]; for(const x of m.slice(0,5)) out.push({title:x[1],link:x[2]}); }catch(e){} } return out.slice(0,20) }
+          const ranked=await pull(); const n=await news(); const now=new Date().toISOString(); fs.mkdirSync('data',{recursive:true});
+          const free={generated_at:now,brand:cfg?.site?.brand||'AI X1000',items:ranked.slice(0,topN),news:n};
+          const premium={generated_at:now,brand:free.brand,items:ranked.slice(0,80),news:n,factors:{model:'x1000-ultra'}};
+          fs.writeFileSync('data/latest.json',JSON.stringify(free,null,2));
+          fs.writeFileSync('data/premium_plain.json',JSON.stringify(premium,null,2));
+          fs.writeFileSync('data/summary.txt',"🔥 TOP: "+free.items.map(x=>`${x.symbol}: $${x.price} (${(x.ch24h??0).toFixed(2)}%)`).join(" | "));
+          // SEO
+          const rss=n.slice(0,10).map(x=>`<item><title>${x.title}</title><link>${x.link}</link></item>`).join('');
+          fs.writeFileSync('feed.xml',`<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>${free.brand} Feed</title><link>https://vuhuyphat.github.io/</link><description>Finance headlines</description>${rss}</channel></rss>`);
+          const NOW=new Date().toISOString();
+          fs.writeFileSync('robots.txt',`User-agent: *\nAllow: /\nSitemap: https://vuhuyphat.github.io/sitemap.xml\n`);
+          fs.writeFileSync('sitemap.xml',`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://vuhuyphat.github.io/</loc><lastmod>${NOW}</lastmod><changefreq>hourly</changefreq></url><url><loc>https://vuhuyphat.github.io/config.json</loc><lastmod>${NOW}</lastmod></url><url><loc>https://vuhuyphat.github.io/data/latest.json</loc><lastmod>${NOW}</lastmod></url><url><loc>https://vuhuyphat.github.io/feed.xml</loc><lastmod>${NOW}</lastmod></url></urlset>`);
+          NODE
+
+      - name: Commit & Deploy
+        run: |
+          git config user.name  "ai-x1000-bot"
+          git config user.email "ai-x1000-bot@users.noreply.github.com"
+          git add -A
+          git commit -m "hypercore-ultra: deploy $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "no changes"
+          git push || true
+          echo "<!-- redeploy $(date -u) -->" > .rebuild && git add .rebuild && git commit -m "pages: redeploy" || true
+          git push || true
