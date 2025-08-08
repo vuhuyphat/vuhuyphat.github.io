@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LightUnfold • Portal</title>
+<meta name="theme-color" content="#0b0f13" />
+<meta name="description" content="Cổng vào LightUnfold • Web3 AI X1000: giới thiệu, bằng chứng giá trị, CTA thanh toán, gói premium, affiliate. Siêu nhẹ, tự động 24/7." />
+<style>
+  :root{--bg:#0b0f13;--card:#0f141a;--border:#1f2a3a;--text:#e9eef4;--muted:#9fb3c8;--acc:#ff9800;--pill:#121922;--good:#20c997}
+  *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto}
+  a{color:#7dc1ff;text-decoration:none} a:hover{opacity:.9}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px}
+  .pill{display:inline-flex;gap:8px;align-items:center;background:var(--pill);border:1px solid var(--border);border-radius:999px;padding:6px 12px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-top:14px}
+  h1{font-size:32px;margin:10px 0 6px} h2{margin:0 0 8px} h3{margin:0 0 8px}
+  .muted{color:var(--muted)}
+  .btn{background:var(--acc);color:#1a1200;border:0;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer}
+  .btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .kpi{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-top:12px}
+  .kpi .box{background:var(--pill);border:1px solid var(--border);border-radius:14px;padding:12px}
+  .big{font-size:22px;font-weight:900}
+  .ticker{overflow:hidden;white-space:nowrap;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border);padding:8px 0;margin-top:8px}
+  .marquee{display:inline-block;animation:scroll 22s linear infinite}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .badge{border:1px solid var(--border);border-radius:999px;padding:6px 10px}
+  .ok{color:var(--good)} .center{text-align:center}
+  .qr{background:#fff;border-radius:12px;padding:8px;display:block}
+  .foot{padding:28px 0;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Top pills -->
+  <div class="row">
+    <span class="pill">ENS: <b id="ens">—</b></span>
+    <span class="pill">Heartbeat: <b id="hb">—</b></span>
+    <a class="pill" href="config.json" target="_blank">config</a>
+    <a class="pill" href="data/latest.json" target="_blank">data</a>
+    <span class="pill" id="lang">VI / EN</span>
+    <span class="pill" id="theme">🌗</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="card">
+    <h1 id="brand">LightUnfold • Web3 AI X1000</h1>
+    <div class="muted" id="tagline">—</div>
+
+    <div class="kpi">
+      <div class="box">
+        <div class="muted">Cơ hội đang hiển thị</div>
+        <div class="big" id="k-opps">0</div>
+      </div>
+      <div class="box">
+        <div class="muted">Lần cập nhật</div>
+        <div class="big" id="k-upd">—</div>
+      </div>
+      <div class="box">
+        <div class="muted">Ngôn ngữ</div>
+        <div class="big" id="k-loc">vi/en</div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:12px">
+      <a class="btn" href="index.html">🚀 Vào Ứng Dụng AI</a>
+      <a class="btn ghost" href="#buy">💳 Mua quyền xem Premium</a>
+    </div>
+
+    <div class="ticker"><div id="tick" class="marquee">—</div></div>
+  </div>
+
+  <!-- LÝ DO / SOCIAL PROOF -->
+  <div class="card">
+    <h2>Vì sao LightUnfold khác biệt?</h2>
+    <div class="grid">
+      <div><h3>⚡ Tốc độ & tự động</h3><div class="muted">Cron 24/7 quét đa nguồn, hợp nhất & xếp hạng theo điểm động lực (momentum + volume).</div></div>
+      <div><h3>🧠 Tóm tắt AI</h3><div class="muted">Sinh mô tả ngắn gọn “điểm chớp thời cơ” để người mới cũng nắm được trong 10 giây.</div></div>
+      <div><h3>🔒 Paywall thông minh</h3><div class="muted">Mã mở khóa sau thanh toán (on/off-chain), lưu cục bộ – bạn không cần duyệt tay.</div></div>
+      <div><h3>🌎 Đa ngôn ngữ</h3><div class="muted">Tự đổi VI/EN; dễ mở rộng 200+ ngôn ngữ khi cần.</div></div>
+    </div>
+  </div>
+
+  <!-- GÓI PREMIUM / BUNDLE -->
+  <div class="card" id="buy">
+    <div class="row"><h2 style="margin:0">🧰 Gói Premium</h2><span class="badge" id="plan-sla">—</span></div>
+    <div class="grid" id="plans"></div>
+    <div class="center" style="margin-top:10px"><a class="btn" href="index.html#unlock">Mua & nhập mã mở khóa</a></div>
+  </div>
+
+  <!-- THANH TOÁN TẮT / CTA NHANH -->
+  <div class="card">
+    <h2>Thanh toán nhanh</h2>
+    <div class="grid" id="quickpay"></div>
+  </div>
+
+  <!-- AFFILIATES -->
+  <div class="card">
+    <h2>Đối tác</h2>
+    <div class="grid" id="affs"></div>
+  </div>
+
+  <div class="foot">© <span id="year"></span> LightUnfold — Portal • Tự động 24/7</div>
+</div>
+
+<script>
+(async function(){
+  const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+  const num=n=>(n||0).toLocaleString(undefined,{maximumFractionDigits:2});
+  const ago=iso=>{try{const d=new Date(iso);const s=(Date.now()-d)/1e3;return s<60?Math.floor(s)+"s":s<3600?Math.floor(s/60)+"m":s<86400?Math.floor(s/3600)+"h":Math.floor(s/86400)+"d";}catch(e){return"—"}};
+  const DARK={"--bg":"#0b0f13","--card":"#0f141a","--border":"#1f2a3a","--text":"#e9eef4","--muted":"#9fb3c8"};
+  const LIGHT={"--bg":"#f8fafc","--card":"#ffffff","--border":"#e2e8f0","--text":"#0b0f13","--muted":"#4a5568"};
+  function themeApply(m){const v=(m==='light'?LIGHT:DARK);for(const k in v)document.documentElement.style.setProperty(k,v[k]);}
+  let theme=localStorage.getItem("theme")||"dark"; themeApply(theme);
+  $('#theme').onclick=()=>{theme=(theme==='dark'?'light':'dark');localStorage.setItem('theme',theme);themeApply(theme);};
+
+  // i18n siêu gọn
+  const T={vi:{buy:"Mua quyền xem Premium",pay:"Thanh toán nhanh"},en:{buy:"Buy Premium Access",pay:"Quick Payments"}};
+  let LANG=(localStorage.getItem("lang")||navigator.language||"vi").slice(0,2).toLowerCase().startsWith("vi")?"vi":"en";
+  $('#lang').onclick=()=>{LANG=(LANG==='vi'?'en':'vi');localStorage.setItem('lang',LANG);};
+  $('#year').textContent=new Date().getFullYear();
+
+  async function getJSON(url,key){
+    try{const j=await (await fetch(url,{cache:'no-store'})).json();localStorage.setItem(key,JSON.stringify(j));return j;}
+    catch(e){const c=localStorage.getItem(key);return c?JSON.parse(c):{}}
+  }
+  const cfg=await getJSON('config.json','cfg');
+  const latest=await getJSON('data/latest.json','latest');
+
+  // Header
+  $('#brand').textContent = cfg.site?.brand || 'LightUnfold • Web3 AI X1000';
+  $('#tagline').textContent = cfg.site?.tagline || '20,000+ AI • tự động 24/7';
+  $('#ens').textContent = cfg.site?.ens || '—';
+  $('#hb').innerHTML = latest.items ? '<span class="ok">LIVE</span>' : '—';
+  $('#k-opps').textContent = (latest.items||[]).length||0;
+  $('#k-upd').textContent = latest.generated_at ? ago(latest.generated_at) : '—';
+  $('#k-loc').textContent = (cfg.site?.locales||['vi','en']).join('/');
+
+  // Ticker
+  const tick = (latest.items||[]).slice(0,20).map(x=>`${x.symbol}: $${num(x.price)} (${(x.ch24h||0).toFixed(2)}%)`).join(' • ');
+  $('#tick').textContent = tick || '—';
+
+  // Plans (lấy từ config.store.bundles nếu có)
+  const plans = cfg.store?.bundles || [
+    {title:"Alpha Feed Pro", desc:"Bản tin alpha tốc độ cao, ưu tiên lệch pha thị trường.", price:19, tags:["ms-speed","moneyflow"], sla:"5-10m"},
+    {title:"Premium Signals", desc:"Bộ lọc momentum + volume + risk.", price:49, tags:["signals","momentum"], sla:"10m"},
+    {title:"VIP Research", desc:"Báo cáo chuyên sâu + backtest.", price:199, tags:["deep research"], sla:"24h"}
+  ];
+  $('#plan-sla').textContent = "SLA: " + (plans.map(p=>p.sla).filter(Boolean).join(", ")||"—");
+  const plansWrap = $('#plans');
+  plans.forEach(p=>{
+    const el=document.createElement('div'); el.className='card';
+    el.innerHTML=`<h3 style="margin:0">${p.title}</h3>
+      <div class="muted">${p.desc||''}</div>
+      <div class="row" style="margin-top:8px">
+        <span class="badge">$${p.price}</span>
+        ${(p.tags||[]).map(t=>`<span class="badge">${t}</span>`).join('')}
+      </div>`;
+    plansWrap.appendChild(el);
+  });
+
+  // Quick payments (ETH/USDT/MoMo/VCB/PayPal…) từ config.site.payments
+  function QR(text,size=180){const u=`https://chart.googleapis.com/chart?cht=qr&chs=${size}x${size}&chl=${encodeURIComponent(text)}`;return `<img class="qr" width="${size}" height="${size}" src="${u}" alt="QR">`}
+  const qpWrap = $('#quickpay'); const pay = cfg.site?.payments || {};
+  const qpList = [
+    pay.eth ? {title:'ETH (EVM)', val:pay.eth, hint:'Nạp ETH/USDT mạng EVM'} : null,
+    pay.usdt_erc20 ? {title:'USDT (ERC20)', val:pay.usdt_erc20, hint:'USDT ERC20'} : null,
+    pay.momo ? {title:'MoMo', val:pay.momo, hint:'Thanh toán MoMo'} : null,
+    pay.vietcombank ? {title:'Vietcombank', val:pay.vietcombank, hint:'Chuyển khoản VCB'} : null,
+    pay.paypal ? {title:'PayPal', val:pay.paypal, hint:'Thanh toán PayPal'} : null
+  ].filter(Boolean);
+  qpList.forEach(p=>{
+    const el=document.createElement('div'); el.className='card';
+    el.innerHTML=`<h3 style="margin:0">${p.title}</h3>
+      <div class="grid" style="align-items:center">
+        <div>${QR(p.val)}</div>
+        <div>
+          <div class="muted">${p.hint}</div>
+          <div class="row" style="margin-top:8px">
+            <span class="badge">${p.val}</span>
+            <button class="btn" onclick="navigator.clipboard.writeText('${p.val}')">Sao chép</button>
+          </div>
+        </div>
+      </div>`;
+    qpWrap.appendChild(el);
+  });
+
+  // Affiliates
+  const affWrap = $('#affs'); (cfg.site?.affiliates||[]).forEach(a=>{
+    const el=document.createElement('div'); el.className='card';
+    el.innerHTML=`<div class="row"><h3 style="margin:0">${a.name}</h3>
+      <a class="badge" target="_blank" href="${a.url}">Tham gia ↗</a></div>
+      <div class="muted">${a.desc||''}</div>`;
+    affWrap.appendChild(el);
+  });
+})();
+</script>
+</body>
+</html>
