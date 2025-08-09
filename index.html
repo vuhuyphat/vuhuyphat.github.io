@@ -509,7 +509,7 @@ const __renderOppsOrig=function(items){
   else{alertBox.classList.add('hidden');alertBox.textContent='';}
   const L=i18n[LANG];
   $('#opps').innerHTML=(items||[]).map(x=>{
-    const ch=x.ch24h||0, pct=`${ch>=0?'+':''}${ch.toFixed(2)}%`;
+    const ch=x.ch24h||0, pct=`${ch>=0?'+':''}${ch.toFixed(2)}%`;a
     return `<div class="item">
       <div class="score">+${(x.score||0).toFixed(2)}</div>
       <div style="flex:1;min-width:0">
