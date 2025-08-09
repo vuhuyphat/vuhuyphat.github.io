@@ -3,826 +3,520 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>UltraMaster V15 • Web3 Singularity</title>
-<meta name="description" content="V15: AI tài chính 24/7, kho học liệu, cơ hội thị trường, 1 QR thanh toán, nâng cấp bằng Quantum Key.">
-<meta property="og:title" content="UltraMaster V15 • Web3 Singularity">
-<meta property="og:description" content="AI 24/7 • Kho sách & khóa học • BTC/ETH/USDT • Paywall • Binance & AlgosOne.">
+<title>UltraMaster V18 • Web3 Singularity</title>
+<meta name="description" content="V18: SuperGate mở khóa tại chỗ • AI chat 24/7 • Top token realtime • 1 QR thanh toán • Referral lan tỏa.">
+<meta property="og:title" content="UltraMaster V18 • Web3 Singularity">
+<meta property="og:description" content="AI 24/7 • 70% miễn phí • Top 3 premium • Binance & AlgosOne • ViralShare 2.0">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0b0f13">
 <style>
 :root{
   --bg:#0b0f13;--card:#0f141a;--line:#1e2a3a;--txt:#e9eef4;--mut:#a9b8c8;
   --brand:#7dc1ff;--accent:#ffb000;--ok:#22c55e;--bad:#ff4d4f;--pill:#101825;
-  --glow:0 0 0px rgba(0,0,0,0);
+  --leaf:#123524;--leaf2:#0d2a1d;--gold:#ffd38a;--shadow:rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
 a{color:var(--brand);text-decoration:none}
 .wrap{max-width:1120px;margin:0 auto;padding:18px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.pill{display:inline-flex;gap:8px;align-items:center;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--pill);color:var(--mut)}
+.pill{display:inline-flex;gap:8px;align-items:center;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:#101825;color:#cfe0ef}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}
 .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-.btn{display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#1a1300;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+.btn{display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#1a1300;border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}
 .btn.out{background:transparent;border:1px solid var(--line);color:var(--txt)}
 .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
 .hidden{display:none}.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;word-break:break-all}
 .footer{padding:28px 0;text-align:center;color:var(--mut)}
-.light{--bg:#f7fafc;--card:#ffffff;--line:#e2e8f0;--txt:#0b0f13;--mut:#4a5568;--brand:#2563eb;--pill:#eef2f8}
+.light{--bg:#f7fafc;--card:#ffffff;--line:#e2e8f0;--txt:#0b0f13;--mut:#4a5568;--brand:#2563eb}
 .marquee{white-space:nowrap;overflow:hidden}.marquee>div{display:inline-block;animation:mar 25s linear infinite}
 @keyframes mar{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .list .item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px dashed var(--line)}
 .score{min-width:64px;text-align:center;border:1px solid var(--line);border-radius:10px;padding:4px 6px;color:#ffdca8;background:#241a00}
 .tag{display:inline-block;border:1px solid var(--line);border-radius:8px;padding:2px 8px;margin:2px 4px 0 0;color:#c9d6e2;font-size:12px}
-.pay{display:flex;gap:14px}.pay img{width:160px;height:160px;border-radius:12px;border:1px solid var(--line);background:#000}
-.pay .meta{flex:1;min-width:0}
-.tabbar{display:flex;gap:8px;flex-wrap:wrap}.tab{padding:6px 10px;border:1px solid var(--line);border-radius:999px;cursor:pointer}
-.tab.act{background:var(--accent);color:#1a1300;border-color:transparent}
-.appgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
-.appgrid a{display:block;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--pill);text-align:center}
-.alert{background:#2a2e12;border:1px solid #606c38;color:#e9f5c7;border-radius:12px;padding:10px 12px}
 .kpi{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
-.kbox{background:var(--pill);border:1px solid var(--line);border-radius:12px;padding:10px}
+.kbox{background:#0f1720;border:1px solid var(--line);border-radius:12px;padding:10px}
 .now{font-size:22px;font-weight:800}
-.topbtn{position:fixed;left:12px;bottom:80px;z-index:9}
-.sharebar{position:fixed;right:12px;bottom:12px;display:flex;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;z-index:9}
+
+/* HERO */
+.hero{position:relative;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:
+ radial-gradient(70% 140% at 50% -10%, rgba(41,93,64,.45), transparent),
+ radial-gradient(80% 120% at 50% 10%, rgba(21,58,40,.35), transparent),
+ linear-gradient(180deg, rgba(22,54,37,.18), transparent)}
+.ribbon{position:absolute;inset:auto -30% -10% -30%;height:140px;background:
+ linear-gradient(90deg,rgba(52,115,84,.25),rgba(13,63,45,.05),rgba(52,115,84,.25));filter:blur(18px);transform:rotate(-2deg)}
 .logo-hero{display:flex;align-items:center;gap:8px}
-.logo-dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(255,176,0,0.7);animation:pulse 1.6s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,176,0,0.6)}70%{box-shadow:0 0 0 12px rgba(255,176,0,0)}100%{box-shadow:0 0 0 0 rgba(255,176,0,0)}}
-.partner{display:flex;gap:12px;align-items:center}
-.partner .glow{padding:10px;border-radius:14px;border:1px solid var(--line);background:var(--pill);box-shadow:var(--glow)}
-.partner .name{font-weight:800}
+.logo-dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(255,176,0,.6);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,176,0,.5)}70%{box-shadow:0 0 0 12px rgba(255,176,0,0)}100%{box-shadow:0 0 0 0 rgba(255,176,0,0)}}
 .hero-cta{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-.hero-cta .item{padding:12px;border:1px dashed var(--line);border-radius:12px}
-.shop-card{padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--pill)}
-.shop-card h4{margin:0 0 6px}
-.shop-card .note{color:var(--mut);margin:6px 0}
-.cmctable{overflow:auto;border:1px solid var(--line);border-radius:12px}
-.cmctable table{width:100%;border-collapse:collapse}
-.cmctable th, .cmctable td{padding:8px;border-bottom:1px solid var(--line);text-align:left}
-.bad{color:var(--bad)}.ok{color:var(--ok)}
-/* Globe */
-.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;align-items:center}
-@media (max-width:900px){.hero{grid-template-columns:1fr}}
-.globe{width:100%;aspect-ratio:1;border-radius:50%;position:relative;box-shadow:inset 0 0 30px rgba(0,0,0,.6),0 6px 30px rgba(0,0,0,.25)}
-.globe .sphere{position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(circle at 30% 30%, #5bbcff 0%, #2563eb 42%, #0b3a8a 60%, #071a3a 100%)}
-.globe .map{position:absolute;inset:0;border-radius:50%;
-  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 800 400\"><g fill=\"%23a7e5ff\" opacity=\"0.35\"><path d=\"M84 145l18-7 12 5 10 14-5 11-12 4-15-4-10-10z\"/><circle cx=\"500\" cy=\"130\" r=\"50\"/></g></svg>');
-  background-size:200% 100%;animation:spin 18s linear infinite;mix-blend-mode:screen;filter:contrast(110%)}
-@keyframes spin{from{background-position:0 0}to{background-position:-200% 0}}
+
+/* Globe area */
+.header-flex{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;align-items:center}
+@media (max-width:900px){.header-flex{grid-template-columns:1fr}}
+.globe{width:min(260px,60vw);aspect-ratio:1;border-radius:50%;margin:auto;background:
+ radial-gradient(circle at 50% 45%, #0f1a24 40%, #0b1219 60%, #071018 80%),
+ radial-gradient(120% 80% at 75% 30%, rgba(86,200,255,.15), transparent 60%);
+position:relative;box-shadow:0 18px 34px var(--shadow)}
+.star{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.7);animation:tw 2.6s infinite}
+.star.s1{top:12%;left:12%}.star.s2{top:18%;right:16%}.star.s3{bottom:22%;left:28%}.star.s4{bottom:18%;right:22%}
+@keyframes tw{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.4);opacity:1}}
+.clock{position:absolute;top:6px;right:6px;width:64px;height:64px;border-radius:50%;border:2px solid rgba(255,255,255,.15);display:grid;place-items:center}
+.clock:after{content:"";width:2px;height:22px;background:var(--gold);border-radius:2px;transform-origin:bottom;animation:sec 12s linear infinite}
+@keyframes sec{to{transform:rotate(360deg)}}
+.ticker3{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.ticker3 .chip{border:1px dashed var(--line);border-radius:999px;padding:4px 10px}
+
+/* SuperGate */
+.paygrid{display:grid;gap:12px;grid-template-columns:1.2fr 1fr}
+@media(max-width:900px){.paygrid{grid-template-columns:1fr}}
+.qrbox{display:flex;gap:12px}
+.qrbox img{width:140px;height:140px;border-radius:12px;border:1px solid var(--line);background:#000}
+.input{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0e1720;color:var(--txt}
+.note{color:#9fb3c8}
+.shop-card{padding:14px;border:1px solid var(--line);border-radius:12px;background:#0e1720}
+
+/* Chat */
+.chatfab{position:fixed;right:16px;bottom:16px;z-index:20}
+.chatwin{position:fixed;right:16px;bottom:80px;width:min(380px,92vw);max-height:70vh;display:none;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;z-index:21}
+.chathead{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line)}
+.chatbody{padding:10px;overflow:auto}
+.chatinput{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line)}
+.chatinput input{flex:1} .bubble{padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin:6px 0}
+.bubble.me{background:#122033} .bubble.ai{background:#121a12}
+
+/* Footer CTA */
+.footer-cta{border:1px dashed var(--line);border-radius:14px;padding:12px;background:linear-gradient(180deg,rgba(18,53,36,.3),transparent)}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <!-- Top pills -->
   <div class="row">
-    <span class="pill logo-hero"><span class="logo-dot"></span><b>UltraMaster V15</b></span>
+    <span class="pill logo-hero"><span class="logo-dot"></span><b>UltraMaster V18</b></span>
     <span class="pill">ENS: <b id="ens">lightunfold.eth</b></span>
-    <span class="pill">Heartbeat: <b id="hb">LIVE</b></span>
-    <button class="pill" id="openCfg">config</button>
+    <span class="pill">Heartbeat: <b id="hb">—</b></span>
     <button class="pill" id="openData">data</button>
     <span class="pill" id="lang">VI/EN</span>
     <span class="pill" id="theme">🌗 Theme</span>
   </div>
 
-  <h1 id="brand">LightUnfold • UltraMaster V15</h1>
-  <div id="tagline" style="color:#9fb3c8">AI 24/7 • 200+ ngôn ngữ • Web3 tự vận hành • Bất tử IPFS/ENS</div>
-
-  <!-- HERO with Globe + Partners -->
-  <section class="card" id="about">
-    <div class="hero">
+  <!-- HERO -->
+  <section class="card hero">
+    <div class="ribbon"></div>
+    <div class="header-flex">
       <div>
-        <div id="slogan">Quét đa nguồn • Chấm điểm cơ hội • Nhịp tim thị trường theo giây.</div>
-        <div id="pulse" class="tag" style="margin-top:8px">Cập nhật: —</div>
-        <div class="hero-cta" style="margin-top:10px">
-          <div class="item"><b id="whyH1">Vì sao UltraMaster?</b><br><span id="why1">AI đa nguồn, xếp hạng cơ hội theo điểm – làm mới từng phút, tự vận hành 24/7.</span></div>
-          <div class="item"><b id="whyH2">Giá trị mở khóa</b><br><span id="why2">Alpha feed, heatmap, vesting, tín hiệu chu kỳ – sẵn sàng hành động.</span></div>
-          <div class="item"><b id="whyH3">Cách tham gia</b><br><span id="why3">Thanh toán on/off-chain → nhận mã → mở khóa nội dung.</span></div>
+        <h1 id="brand">LightUnfold • UltraMaster V18</h1>
+        <div class="note" id="tagline">Web3 của bạn – Trợ lý tài chính AI 24/7 • 70% miễn phí • Top 3 premium • Mở khóa tại chỗ</div>
+        <div class="card" style="margin-top:10px;background:#0f1720;border-color:#244c36">
+          <b style="color:#d1ffe3">“Biết sớm – Quyết định sớm – Lợi thế sớm.”</b><br>
+          Nơi hội tụ: <b>Khoá học tinh gọn</b>, <b>Phân tích Crypto realtime</b>, <b>AI hỏi đáp</b> và <b>Cơ hội đầu tư sớm nhất</b>.
+        </div>
+        <div class="hero-cta" style="margin-top:10px" id="belowGlobe">
+          <a class="btn out" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N" target="_blank" rel="noopener">Mở tài khoản Binance ↗</a>
+          <a class="btn out" href="https://algosone.page.link/MbtR" target="_blank" rel="noopener">Dùng thử AlgosOne ↗</a>
         </div>
       </div>
-      <div>
-        <div class="globe"><div class="sphere"></div><div class="map"></div></div>
-        <div class="row partner" style="margin-top:12px;justify-content:space-between">
-          <div class="glow" style="flex:1">
-            <div class="name">Binance</div>
-            <div class="muted" id="bn-intro">Sàn số 1: phí thấp, thanh khoản sâu, Earn & Futures.</div>
-            <a class="btn out" target="_blank" rel="noopener" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N" id="bn-btn">Đăng ký Binance ↗</a>
-          </div>
-          <div class="glow" style="flex:1">
-            <div class="name">AlgosOne</div>
-            <div class="muted" id="ao-intro">AI Trading: thuật toán, tối ưu chiến lược, cảnh báo real-time.</div>
-            <a class="btn out" target="_blank" rel="noopener" href="https://algosone.page.link/MbtR" id="ao-btn">Dùng thử AlgosOne ↗</a>
-          </div>
+      <div style="position:relative;display:grid;place-items:center;gap:4px">
+        <div class="globe">
+          <div class="star s1"></div><div class="star s2"></div><div class="star s3"></div><div class="star s4"></div>
+          <div class="clock"></div>
         </div>
-      </div>
-    </div>
-    <div id="alertBox" class="alert hidden" style="margin-top:10px"></div>
-  </section>
-
-  <!-- DOCS / COURSES — moved to 2nd -->
-  <section class="card" id="edu">
-    <h3 style="margin:0 0 8px">📚 Học viện & Sách số</h3>
-    <div class="grid" id="ebooks">
-      <div class="shop-card">
-        <h4>Crypto 101: Nền tảng & Quản trị rủi ro</h4>
-        <div class="note">Ví, bảo mật, chu kỳ, quản trị vốn, checklist.</div>
-        <div class="row"><button class="btn" onclick="document.getElementById('unlockCode').focus()">Mua & nhập mã</button><span class="badge">$19</span></div>
-      </div>
-      <div class="shop-card">
-        <h4>DeFi Mastery: Yield, Lending, Perp</h4>
-        <div class="note">Săn APY, đo risk, perp an toàn, case study.</div>
-        <div class="row"><button class="btn" onclick="document.getElementById('unlockCode').focus()">Mua & nhập mã</button><span class="badge">$29</span></div>
+        <div class="ticker3" id="ticker3">
+          <span class="chip">BTC — —</span><span class="chip">ETH — —</span><span class="chip">USDT — —</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- PAYMENTS (1 QR chung + danh sách) -->
-  <section class="card">
-    <h3 id="payTitle" style="margin:0 0 8px">💳 Thanh toán</h3>
-    <div class="grid" id="pays"></div>
-    <div class="muted" style="margin-top:6px"><span id="minLbl">Tối thiểu</span>: <span id="mins"></span> · <span id="contactLbl">Liên hệ</span>: <span id="pp"></span></div>
-  </section>
+  <!-- KPI -->
+  <div class="kpi">
+    <div class="kbox"><div class="muted">Cơ hội</div><div class="now" id="kOpps">0</div></div>
+    <div class="kbox"><div class="muted">Cập nhật</div><div class="now" id="kUpd">—</div></div>
+    <div class="kbox"><div class="muted">Đang xem</div><div class="now" id="kLive">—</div></div>
+    <div class="kbox"><div class="muted">Doanh thu</div><div class="now">$<span id="kRev">0</span></div></div>
+  </div>
 
-  <!-- UNLOCK -->
-  <section class="card">
-    <h3 id="lockTitle" style="margin:0 0 8px">🔓 Nội dung cao cấp</h3>
-    <div id="locked">
-      <div class="grid">
-        <div>
-          <input id="unlockCode" placeholder="Nhập mã mở khóa…" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--pill);color:var(--txt)">
-          <input id="txhash" style="margin-top:8px;width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--pill);color:var(--txt)" placeholder="(Tuỳ chọn) Dán mã giao dịch/bằng chứng">
-          <div class="row" style="margin-top:8px">
-            <button class="btn" id="doUnlock">Mở khóa</button>
-            <button class="btn out" id="remember">Nhớ trên thiết bị</button>
-          </div>
-          <div id="uMsg" style="margin-top:6px;color:#9fb3c8"></div>
-        </div>
-        <div style="color:#9fb3c8">
-          <b id="howTitle">Cách hoạt động</b>
-          <ul id="howList">
-            <li>Thanh toán on/off-chain.</li>
-            <li>Nhận mã → nhập để mở khóa nội dung.</li>
-            <li>Lưu mã & TX hash ngay trên thiết bị của bạn.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div id="opened" class="hidden">
-      <div class="row"><span class="pill ok" id="unlockedLbl">✔ Đã mở khóa</span><button class="btn out" id="relock">Khoá lại</button></div>
-      <div id="premium" class="grid" style="margin-top:10px"></div>
-    </div>
-  </section>
-
-  <!-- STORE -->
+  <!-- HOT -->
   <section class="card">
     <div class="row" style="justify-content:space-between">
-      <h3 id="packTitle" style="margin:0">🧰 Gói sản phẩm / Báo cáo</h3>
-      <div class="tabbar" id="timeTabs">
-        <div class="tab act" data-t="day">Ngày</div>
-        <div class="tab" data-t="month">Tháng</div>
-        <div class="tab" data-t="quarter">Quý</div>
-        <div class="tab" data-t="year">Năm</div>
-      </div>
-    </div>
-    <div id="bundles" class="grid"></div>
-    <div class="card" style="margin-top:10px">
-      <b>Hướng dẫn chọn gói</b>
-      <ul class="muted" id="bundleGuide">
-        <li><b>Alpha Signals X</b>: phù hợp scalping/ngắn hạn.</li>
-        <li><b>ETF & BTC Flow</b>: theo dõi dòng vốn, miner, ETF.</li>
-        <li><b>Altseason Radar</b>: săn leader/laggard theo chu kỳ.</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- AFFILIATES -->
-  <section class="card">
-    <h3 style="margin:0 0 8px">🤝 Affiliate • Giới thiệu chi tiết</h3>
-    <div class="grid" id="affSpot">
-      <div class="shop-card">
-        <h4>Binance — tại sao nên đăng ký?</h4>
-        <div class="note">Phí thấp, thanh khoản sâu • Earn/Futures/Options • Launchpad/Launchpool • Bảo mật mạnh.</div>
-        <a class="btn" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N" target="_blank" rel="noopener">Đăng ký Binance ↗</a>
-      </div>
-      <div class="shop-card">
-        <h4>AlgosOne — lợi ích cho trader</h4>
-        <div class="note">AI chiến lược • Cảnh báo theo rủi ro • Backtest nhanh • Kết nối nhiều sàn.</div>
-        <a class="btn" href="https://algosone.page.link/MbtR" target="_blank" rel="noopener">Dùng thử AlgosOne ↗</a>
-      </div>
-    </div>
-    <div id="affs" class="grid" style="margin-top:10px"></div>
-  </section>
-
-  <!-- OPPORTUNITIES -->
-  <section class="card">
-    <div class="row" style="justify-content:space-between">
-      <h3 id="hotTitle" style="margin:0">🔥 Cơ hội nổi bật</h3>
-      <div class="row">
-        <span class="badge" id="scanMode">quét: data</span>
-        <button class="btn out" id="refreshNow">↻ Làm mới</button>
-      </div>
+      <h3 style="margin:0">🔥 Cơ hội nổi bật</h3>
+      <div class="row"><span class="badge" id="scanMode">quét: data</span><button class="btn out" id="refreshNow">↻ Làm mới</button></div>
     </div>
     <div class="marquee" style="margin:4px 0 8px;color:#bcd"><div id="ticker">—</div></div>
     <div id="opps" class="list"></div>
   </section>
 
-  <!-- MARKET at bottom -->
-  <section class="card">
-    <h3 style="margin:0 0 8px">📊 Thị trường (mini)</h3>
-    <div class="cmctable" id="mktMini">
-      <table>
-        <thead><tr><th>Symbol</th><th>Name</th><th>Price</th><th>24h</th><th>Vol 24h</th></tr></thead>
-        <tbody id="mktRows"><tr><td colspan="5">—</td></tr></tbody>
-      </table>
+  <!-- SUPERGATE: Pay + Unlock inline -->
+  <section class="card" id="supergate">
+    <h3 style="margin:0 0 8px">🔓 Cửa mở khoá (SuperGate)</h3>
+    <div class="paygrid">
+      <!-- Left: Payment compact -->
+      <div class="card" style="background:#0f1720">
+        <div class="qrbox">
+          <img id="qr" alt="QR" src="" loading="lazy">
+          <div style="flex:1;min-width:0">
+            <div class="note" id="gatePitch"><b>Muốn xem Top 3 token dẫn đầu hôm nay & kho kiến thức tinh gọn?</b> Thanh toán nhỏ → nhận <b>mã mở khóa</b> ngay tại đây.</div>
+            <div class="note">Địa chỉ/ID: <span class="mono" id="payAddr">—</span></div>
+            <div class="note">Tối thiểu: <span id="minHint">ETH ≥ 0.0005, USDT ≥ $5</span></div>
+            <div class="row" style="margin-top:8px" id="payList"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Right: Choose bundle + unlock input -->
+      <div class="card" style="background:#0f1720">
+        <div class="grid" style="grid-template-columns:1fr">
+          <div>
+            <label class="note">Chọn gói</label>
+            <select id="bundleSel" class="input"></select>
+          </div>
+          <div>
+            <label class="note">Nhập mã mở khoá (sau khi thanh toán)</label>
+            <input id="unlockCode" class="input" placeholder="Nhập mã…">
+          </div>
+          <div><input id="txhash" class="input" placeholder="(Tuỳ chọn) Dán TX hash / ghi chú"></div>
+          <div class="row">
+            <button class="btn" id="doUnlock">Mở khoá</button>
+            <button class="btn out" id="remember">Nhớ mã</button>
+          </div>
+          <div id="uMsg" class="note"></div>
+          <div class="note" style="margin-top:6px">Sau khi mở khoá, nội dung premium xuất hiện ngay bên dưới. Mã được nhớ trên thiết bị của bạn.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Premium area appears here after unlock -->
+    <div id="opened" class="hidden" style="margin-top:12px">
+      <div class="row"><span class="pill ok" id="unlockedLbl">✔ Đã mở khóa</span><button class="btn out" id="relock">Khoá lại</button></div>
+      <div id="premium" class="grid" style="margin-top:10px"></div>
     </div>
   </section>
 
-  <!-- COMMANDS -->
+  <!-- Coin market: 7 free + 3 premium -->
   <section class="card">
-    <h3 style="margin:0 0 8px">🧭 Command Center</h3>
-    <div id="apps" class="appgrid"></div>
-    <div style="color:#9fb3c8;margin-top:6px" id="hubHint">Hub liên kết đến công cụ cũ (dex, hyper_v2, pro, super_auto, super_share, xportal…).</div>
+    <h3 style="margin:0 0 8px">📊 Token Radar — 70% miễn phí</h3>
+    <div class="grid" id="tokenFree"></div>
+    <div class="card" style="margin-top:10px;background:#0f1720">
+      <b>⭐ Top 3 Premium (mở khoá để xem chi tiết):</b>
+      <div id="tokenPro" class="grid" style="margin-top:8px"></div>
+    </div>
   </section>
 
-  <button class="pill topbtn" id="goTop">↑ Top</button>
+  <!-- Học viện -->
+  <section class="card" id="edu">
+    <h3 style="margin:0 0 8px">📚 Học viện</h3>
+    <div class="grid" id="ebooks"></div>
+  </section>
+
+  <!-- Đối tác -->
+  <section class="card">
+    <h3 style="margin:0 0 8px">🤝 Đối tác chiến lược</h3>
+    <div class="grid">
+      <div class="shop-card">
+        <h4>Binance – bước khởi đầu thông minh</h4>
+        <div class="note">“Giao dịch nơi thanh khoản sâu nhất.” Phí cạnh tranh • Earn/Futures/Options • Launchpad/Launchpool • Bảo mật & API mạnh.</div>
+        <a class="btn" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N" target="_blank" rel="noopener">Mở tài khoản miễn phí ↗</a>
+      </div>
+      <div class="shop-card">
+        <h4>AlgosOne – AI giao dịch thực chiến</h4>
+        <div class="note">“Để máy học gợi ý chiến lược – bạn tập trung kỷ luật.” Cảnh báo realtime • Backtest nhanh • Kết nối nhiều sàn.</div>
+        <a class="btn" href="https://algosone.page.link/MbtR" target="_blank" rel="noopener">Dùng thử miễn phí ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA cuối trang -->
+  <section class="card footer-cta">
+    <h3 style="margin:0 0 6px">🚀 Cơ hội không chờ đợi – bạn cũng đừng chờ!</h3>
+    <div>Chỉ cần <b>mở khóa</b> hoặc <b>đăng ký tài khoản miễn phí</b> hôm nay, bạn sẽ bước vào <b>hệ thống AI tài chính 24/7</b> – nơi mọi nhịp thị trường đều trong tầm tay.</div>
+    <div class="row" style="margin-top:8px">
+      <a class="btn" href="#supergate">Mở khóa ngay</a>
+      <a class="btn out" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N" target="_blank" rel="noopener">Đăng ký Binance ↗</a>
+      <a class="btn out" href="https://algosone.page.link/MbtR" target="_blank" rel="noopener">Dùng thử AlgosOne ↗</a>
+      <button class="btn out" id="shareMine">Chia sẻ liên kết của tôi</button>
+    </div>
+  </section>
+
+  <button class="pill" id="goTop" style="position:fixed;left:12px;bottom:80px;z-index:9">↑ Top</button>
   <div class="footer">© <span id="year"></span> LightUnfold • <span id="autoLbl">Tự động 24/7</span></div>
 </div>
 
 <!-- Share floating -->
-<div class="sharebar" id="sharebar">
+<div class="sharebar" style="position:fixed;right:12px;bottom:12px;display:flex;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;z-index:9">
   <a id="sh_tg" target="_blank" title="Share Telegram">📣</a>
   <a id="sh_x"  target="_blank" title="Share X/Twitter">𝕏</a>
   <a id="sh_fb" target="_blank" title="Share Facebook">f</a>
   <a id="sh_in" target="_blank" title="Share LinkedIn">in</a>
 </div>
 
-<!-- ========= AI Chat 24/7 (built-in) ========= -->
-<style>
-  .um15-fab{position:fixed;right:16px;bottom:88px;width:56px;height:56px;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--accent);color:#1a1300;
-    box-shadow:0 10px 30px rgba(3,10,30,.35);font-weight:900;z-index:9998}
-  .um15-chat{position:fixed;right:16px;bottom:150px;width:min(92vw,420px);height:min(72vh,640px);display:none;
-    flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;z-index:9999}
-  .um15-chat header{display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid var(--line)}
-  .um15-chat .msgs{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:10px;background:linear-gradient(180deg,#0b0f13 0%,#0f141a 100%)}
-  .um15-bubble{max-width:86%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0f1826;color:var(--txt)}
-  .um15-bubble.me{align-self:flex-end;background:#192233}
-  .um15-chat .inputbar{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}
-  .um15-chat .inputbar input{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--pill);color:var(--txt)}
-  .um15-btn{display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#1a1300;border:0;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer}
-  .um15-btn.out{background:transparent;border:1px solid var(--line);color:var(--txt)}
-  .um15-quick{display:flex;gap:6px;flex-wrap:wrap;padding:8px;border-top:1px dashed var(--line)}
-  .um15-quick button{border:1px solid var(--line);background:var(--pill);color:var(--txt);border-radius:999px;padding:6px 10px;cursor:pointer}
-  .um15-small{font-size:12px;color:#9fb3c8}
-</style>
-<div class="um15-fab" id="um15Fab" title="AI Chat 24/7">💬</div>
-<div class="um15-chat" id="um15Box" role="dialog" aria-label="AI Chat 24/7">
-  <header>
-    <div style="display:flex;gap:8px;align-items:center">
-      <b id="um15Title">AI Tài chính 24/7</b>
-      <span class="pill" style="padding:2px 8px" id="um15Mode">demo</span>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="um15-btn out" id="um15Min">—</button>
-      <button class="um15-btn" id="um15Close">✖</button>
-    </div>
-  </header>
-  <div class="um15-quick" id="um15Quick">
-    <button data-q="Cập nhật BTC/ETH/USDT bây giờ">BTC/ETH/USDT</button>
-    <button data-q="Có cơ hội coin nào đáng chú ý không?">Cơ hội hôm nay</button>
-    <button data-q="Gợi ý khóa học nhanh cho người mới">Khóa học nhanh</button>
-    <button data-q="Hướng dẫn giao dịch an toàn cho người mới">An toàn giao dịch</button>
-  </div>
-  <div class="msgs" id="um15Msgs"></div>
-  <div class="inputbar">
-    <input id="um15Ask" placeholder="Hỏi về thị trường, khóa học, BNB, AlgosOne…">
-    <button class="um15-btn" id="um15Send">Gửi</button>
+<!-- Chat 24/7 -->
+<button class="btn chatfab" id="openChat">🧠 Chat AI 24/7</button>
+<div class="chatwin" id="chat">
+  <div class="chathead"><b>AI Tài Chính 24/7</b><button class="btn out" id="closeChat">Đóng</button></div>
+  <div class="chatbody" id="chatBody"></div>
+  <div style="padding:0 10px" id="chipBar"></div>
+  <div class="chatinput">
+    <input id="chatIn" class="input" placeholder="Hỏi thị trường, token, kế hoạch lệnh…">
+    <button class="btn" id="chatSend">Gửi</button>
   </div>
 </div>
-<!-- ========= /AI Chat 24/7 ========= -->
+
+<!-- Modal hiển thị dữ liệu premium (fix 404) -->
+<div id="dataModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.6);display:grid;place-items:center;z-index:99">
+  <div style="width:min(92vw,900px);height:min(80vh,700px);background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column">
+    <header style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)">
+      <b>Dữ liệu Premium</b>
+      <button class="btn" id="closeData">Đóng</button>
+    </header>
+    <pre id="dataPre" style="flex:1;margin:0;padding:12px;overflow:auto;background:#0b0f13"></pre>
+  </div>
+</div>
 
 <script>
-/* ===== helpers & theme ===== */
+/* ===== helpers ===== */
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
 function setTheme(m){document.documentElement.classList.toggle('light',m==='light');localStorage.setItem('theme',m)}
-setTheme(localStorage.getItem('theme')||'dark'); $('#theme').onclick=()=>setTheme(document.documentElement.classList.contains('light')?'dark':'light');
-
+setTheme(localStorage.getItem('theme')||'dark'); $('#theme')?.addEventListener('click',()=>setTheme(document.documentElement.classList.contains('light')?'dark':'light'));
 const fmt=n=>Number(n||0).toLocaleString(undefined,{maximumFractionDigits:8});
-const agoSec=(from)=>{const s=((Date.now()-from)/1000)|0;return s+"s";}
 const qrlink=t=>`https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(t)}`;
 async function j(url){try{const r=await fetch(url,{cache:'no-store'});if(!r.ok) throw 0;return await r.json()}catch(_){return null}}
+$('#year').textContent=new Date().getFullYear();
+$('#goTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
 
-const i18n={
-  vi:{hot:"🔥 Cơ hội nổi bật",pay:"💳 Thanh toán",minLbl:"Tối thiểu",contactLbl:"Liên hệ",lock:"🔓 Nội dung cao cấp",
-      how:"Cách hoạt động",unlocked:"✔ Đã mở khóa",packs:"🧰 Gói sản phẩm / Báo cáo",hub:"Hub liên kết tới công cụ cũ.",
-      cta:"🚀 Bắt đầu ngay",cta1H:"Tạo lợi thế thông tin",cta1:"Theo dõi biến động lớn & tín hiệu sớm – trước đám đông.",
-      cta2H:"Tối ưu chi phí",cta2:"Gói ngày/tháng/quý – trả cho thứ bạn dùng.",
-      cta3H:"Lan tỏa tự động",cta3:"Chia sẻ 1 chạm (Telegram/X/Facebook/LinkedIn) + Affiliate.",
-      auto:"Tự động 24/7",
-      whyH1:"Vì sao UltraMaster?",whyH2:"Giá trị mở khóa",whyH3:"Cách tham gia",
-      why1:"AI đa nguồn, xếp hạng cơ hội – làm mới từng phút.",
-      why2:"Alpha feed, heatmap, vesting, tín hiệu chu kỳ.",
-      why3:"Thanh toán on/off-chain → nhận mã → mở khóa premium.",
-      refresh:"↻ Làm mới", theme:"🌗 Giao diện", scan_data:"quét: data", scan_fallback:"quét: fallback",
-      unlock_ph:"Nhập mã mở khóa…", tx_ph:"(Tuỳ chọn) Dán TX hash / bằng chứng",
-      unlock_btn:"Mở khóa", remember_btn:"Nhớ trên thiết bị", relock_btn:"Khoá lại",
-      buy_enter:"Mua & nhập mã", details:"Chi tiết", price:"Giá", volume:"Khối lượng", open_data:"Xem dữ liệu"},
-  en:{hot:"🔥 Hot opportunities",pay:"💳 Payments",minLbl:"Minimum",contactLbl:"Contact",lock:"🔓 Premium content",
-      how:"How it works",unlocked:"✔ Unlocked",packs:"🧰 Products / Reports",hub:"Hub links to legacy tools.",
-      cta:"🚀 Get started now",cta1H:"Information edge",cta1:"Track outsized moves & early signals — ahead of the crowd.",
-      cta2H:"Cost-efficient",cta2:"Day/Month/Quarter plans — pay only for what you use.",
-      cta3H:"Auto-viral growth",cta3:"One-tap share (Telegram/X/Facebook/LinkedIn) + Affiliate.",
-      auto:"Always-on 24/7",
-      whyH1:"Why UltraMaster?",whyH2:"Unlock value",whyH3:"How to join",
-      why1:"Multi-source AI scanning, scored opportunities — refreshed every minute.",
-      why2:"Alpha feeds, heatmaps, vesting calendars, cycle signals.",
-      why3:"Pay on/off-chain → receive code → unlock premium.",
-      refresh:"↻ Refresh", theme:"🌗 Theme", scan_data:"scan: data", scan_fallback:"scan: fallback",
-      unlock_ph:"Enter unlock code…", tx_ph:"(Optional) Paste TX hash / proof",
-      unlock_btn:"Unlock", remember_btn:"Remember on device", relock_btn:"Lock again",
-      buy_enter:"Buy & enter code", details:"Details", price:"Price", volume:"Volume", open_data:"Open data"}
-};
-let LANG=(localStorage.getItem('lang')||navigator.language||'vi').toLowerCase().startsWith('vi')?'vi':'en';
-$('#lang').onclick=()=>{LANG=LANG==='vi'?'en':'vi';localStorage.setItem('lang',LANG);applyLang();};
-
-/* ===== defaults (fallback) & V15 config ===== */
-const DEF={
-  site:{brand:"LightUnfold • UltraMaster V15",ens:"lightunfold.eth",
-    contact:{email:"vumumabada@gmail.com"},
-    payments:{qr_auto:true,chains:[
-      {name:"ETH (EVM)",address:"0x54E15A7b6d4213beE87800432A151d794638E3C2",explorer:"https://etherscan.io/address/0x54E15A7b6d4213beE87800432A151d794638E3C2",min:0.0005},
-      {name:"USDT (ERC20)",address:"0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",explorer:"https://etherscan.io/token/USDT?a=0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",min:5}
-    ],offchain:{momo:"0567892030",vietcombank:"9567892030",paypal:"vumumabada@gmail.com"}},
-    affiliates:[
-      {name:"Binance",url:"https://www.binance.com/vi/register?ref=GRO_20338_9V44N",tag:"Top CEX"},
-      {name:"AlgosOne",url:"https://algosone.page.link/MbtR",tag:"AI Trading"}
-    ]},
-  feeds:{top_n:12}, schedule:{refresh_minutes:10},
-  secrets:{unlock_code:"23061988"},
-  store:{bundles:[
-    {title:"Alpha Signals X",price:99,desc:"Tín hiệu ngắn hạn xác suất cao.",tags:["Scalping","DeFi","Spot"]},
-    {title:"ETF & BTC Flow",price:79,desc:"Dòng vốn ETF/BTC – quỹ & miner.",tags:["BTC","ETF","Flow"]},
-    {title:"Altseason Radar",price:69,desc:"Chu kỳ vốn hóa & leader/laggard.",tags:["Cycle","Momentum"]},
-    {title:"Whale Watcher Pro",price:89,desc:"Theo dõi ví cá voi & giao dịch lớn.",tags:["Onchain","Whales"]},
-    {title:"Airdrop Hunter",price:59,desc:"Lịch farming & điểm tích lũy.",tags:["Quest","Points"]}
-  ],
-  premium:[
-    {title:"Alpha Feed Pro",desc:"Dòng tin alpha siêu nhanh (độ trễ ms).",bullets:["Bất thường dòng tiền","Nguồn đa kênh","Bộ lọc nhiễu"],link:"data/latest.json"},
-    {title:"Deal Flow Private",desc:"Tổng hợp deal/seed đang mở private.",bullets:["Điều kiện","Ưu tiên thời gian"]}
-  ]}};
-
-let CFG=DEF, lastRefreshTS=Date.now();
-
-/* ===== External overlays (tùy chọn) ===== */
-const V15_ON=true;
-const V15_PATHS={
-  lang_vi:'lang/vi.v15.json',
-  lang_en:'lang/en.v15.json',
-  site:'site.v15.json',
-  ui:'ui.v15.json',
-  feeds:'feeds.v15.json',
-  secrets:'secrets.v15.json'
-};
-async function getNoCache(p){try{const r=await fetch(p,{cache:'no-store'});if(!r.ok) throw 0;return await r.json()}catch(_){return null}}
-function mergeDeep(base, patch){return (typeof base==='object'&&base&&typeof patch==='object'&&patch)?Object.assign({},base, ...Object.keys(patch).map(k=>({[k]:mergeDeep(base[k],patch[k])}))) : (patch??base)}
-async function loadV15All(){
-  if(!V15_ON) return;
-  const [vi,en,site,ui,feeds,sec]=await Promise.all([
-    getNoCache(V15_PATHS.lang_vi),getNoCache(V15_PATHS.lang_en),
-    getNoCache(V15_PATHS.site),getNoCache(V15_PATHS.ui),
-    getNoCache(V15_PATHS.feeds),getNoCache(V15_PATHS.secrets)
-  ]);
-  if(vi||en){ if(LANG==='vi'&&vi) window.i18n.vi = mergeDeep(window.i18n?.vi||{},vi);
-              if(LANG==='en'&&en) window.i18n.en = mergeDeep(window.i18n?.en||{},en); }
-  CFG = mergeDeep(CFG, mergeDeep(site||{}, mergeDeep(ui||{}, mergeDeep(feeds||{}, sec||{}))));
-}
-
-/* ===== Boot ===== */
-(async function boot(){
-  $('#year').textContent=new Date().getFullYear();
-
-  bindModal('#openCfg','config.json','config.json');
-  bindModal('#openData','data/latest.json','data/latest.json');
-
-  // optional legacy config.json
-  const cfg=await j('config.json'); if(cfg) CFG=mergeDeep(CFG,cfg);
-
-  await loadV15All();
-
-  // Header + contact
-  $('#brand').textContent=CFG.site?.brand||'LightUnfold • UltraMaster V15';
-  $('#ens').textContent=CFG.site?.ens||'—';
-  const contact=(CFG.site?.contact?.email||CFG.site?.contact||CFG.site?.ens||'').toString();
-  const pp=$('#pp'); if(pp) pp.innerHTML = contact?`<a href="mailto:${contact}" target="_blank" rel="noopener">${contact}</a>`:'—';
-
-  // Share links
-  const u=encodeURIComponent(location.href), t=encodeURIComponent(document.title);
-  $('#sh_tg').href=`https://t.me/share/url?url=${u}`;
+/* ===== ViralShare 2.0 ===== */
+(function ViralShare(){
+  const U = new URL(location.href);
+  const refIn = U.searchParams.get('ref');
+  const peer = localStorage.getItem('peer_id') || Math.random().toString(36).slice(2);
+  if(!localStorage.getItem('peer_id')) localStorage.setItem('peer_id', peer);
+  if(refIn) localStorage.setItem('ref_by', refIn);
+  const base = location.origin + location.pathname;
+  const myRef = `${base}?ref=${peer}&utm_source=share&utm_medium=viral&utm_campaign=ultramaster`;
+  localStorage.setItem('my_ref', myRef);
+  const t = encodeURIComponent(document.title), u = encodeURIComponent(myRef);
+  $('#sh_tg').href=`https://t.me/share/url?url=${u}&text=${t}`;
   $('#sh_x').href =`https://twitter.com/intent/tweet?text=${t}&url=${u}`;
   $('#sh_fb').href=`https://www.facebook.com/sharer/sharer.php?u=${u}`;
   $('#sh_in').href=`https://www.linkedin.com/sharing/share-offsite/?url=${u}`;
-
-  // Buttons
-  $('#refreshNow').onclick=loadDataSmart;
-  $('#goTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
-
-  // Render
-  renderPays(); renderAffs(); renderBundles('day'); paintPremium(); bindPaywall();
-  $('#timeTabs').onclick=e=>{const t=e.target.closest('.tab'); if(!t) return; $$('#timeTabs .tab').forEach(x=>x.classList.remove('act')); t.classList.add('act'); renderBundles(t.dataset.t)};
-
-  // Apps
-  const names=["dex.html","hyper_v2.html","pro.html","super_auto.html","super_share.html","xpeotl.html","xportal.html"];
-  $('#apps').innerHTML=names.map(n=>`<a href="${n}" target="_blank" rel="noopener">${n.replace('.html','').replaceAll('_',' ').toUpperCase()}</a>`).join('');
-
-  // Data loop
-  await loadDataSmart();
-  const every=Math.max(3, Number(CFG.schedule?.refresh_minutes||10));
-  setInterval(loadDataSmart,every*60*1000);
-
-  // Live pulse + KPI client-only
-  setInterval(()=>$('#pulse').textContent=(LANG==='vi'?'Cập nhật: ':'Updated: ')+agoSec(lastRefreshTS),1000);
-  setInterval(liveCounter,4000); liveCounter();
-  setInterval(revBoot,7000); revBoot();
-
-  applyLang();
-  try{registerSW()}catch(_){}
-
-  // AI Chat init
-  initAIChat();
-
+  $('#shareMine').onclick=async()=>{try{if(navigator.share){await navigator.share({title:document.title,text:'Khám phá UltraMaster V18',url:myRef});}else{await navigator.clipboard.writeText(myRef);alert('Đã sao chép liên kết của bạn!');}}catch(_){}}; 
+  const refBy=localStorage.getItem('ref_by'); if(refBy){const badge=document.createElement('div');badge.className='pill';badge.style.marginTop='8px';badge.textContent='✨ Bạn truy cập từ liên kết giới thiệu. Chào mừng!'; $('#belowGlobe')?.appendChild(badge);}
 })();
 
-/* ===== Modal helper ===== */
-function bindModal(btnSel,url,title){
-  const btn=$(btnSel); if(!btn) return;
-  const modal = document.createElement('div'); modal.className='modal'; modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:9999';
-  modal.innerHTML = `<div class="box" style="width:min(92vw,900px);height:min(80vh,700px);background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column">
-    <header style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)">
-      <b>${title}</b>
-      <div class="row">
-        <a class="btn out" href="${url}" target="_blank" rel="noopener">Mở tab mới ↗</a>
-        <button class="btn" id="__close">Đóng</button>
-      </div>
-    </header>
-    <iframe src="${url}" style="border:0;flex:1;background:#0a0f14"></iframe>
-  </div>`;
-  document.body.appendChild(modal);
-  btn.onclick=()=>{modal.style.display='flex';};
-  modal.addEventListener('click',e=>{if(e.target.id==='__close'||e.target===modal) modal.style.display='none';});
-}
+/* ===== Lang stub ===== */
+let LANG=(localStorage.getItem('lang')||navigator.language||'vi').toLowerCase().startsWith('vi')?'vi':'en';
+$('#lang')?.addEventListener('click',()=>{LANG=LANG==='vi'?'en':'vi';localStorage.setItem('lang',LANG);$('#autoLbl').textContent=(LANG==='vi'?'Tự động 24/7':'Always-on 24/7');});
 
-/* ===== Payments: 1 QR chung + danh sách ===== */
-function renderPays(){
-  const P=CFG.site?.payments||{}; const chains=P.chains||[]; const off=P.offchain||{};
-  const first=chains[0]; // dùng 1 QR đại diện (mặc định ETH)
-  const mins=(()=>{const m={}; chains.forEach(c=>{if(/ETH/i.test(c.name)) m.ETH=c.min||0.0005; if(/USDT/i.test(c.name)) m.USDT=c.min||5}); return m})();
-  $('#mins').textContent=["ETH ≥ "+(mins.ETH||0.0005),"USDT ≥ "+(mins.USDT||5)].join(", ");
-
-  const items=[];
-  // Khối QR đại diện
-  if(first){
-    items.push(`<div class="card"><div class="pay">
-      <img alt="QR" src="${qrlink(first.address)}" loading="lazy" title="Quét để thanh toán nhanh">
-      <div class="meta">
-        <div class="row" style="justify-content:space-between"><b>QR chung (ưu tiên: ${first.name})</b>
-          <a class="btn out" target="_blank" rel="noopener" href="https://metamask.app.link/">${LANG==='vi'?'Mở ví/ứng dụng':'Open wallet/app'} ↗</a></div>
-        <div class="mono"><a href="${first.explorer||'#'}" target="_blank" rel="noopener">${first.address}</a></div>
-        <div class="muted">${LANG==='vi'?'Quét QR này để thanh toán nhanh. Có thể chọn phương thức khác ở danh sách bên dưới.':'Scan this QR to pay fast. Other methods listed below.'}</div>
-        <div class="row" style="margin-top:8px">
-          <button class="btn" onclick="navigator.clipboard.writeText('${first.address}')">${LANG==='vi'?'Sao chép địa chỉ':'Copy address'}</button>
-          <a class="btn out" href="${qrlink(first.address)}" download>⚡ ${LANG==='vi'?'Tải QR':'Download QR'}</a>
-        </div>
-      </div></div></div>`);
+/* ===== Config ===== */
+const CFG={
+  site:{brand:"LightUnfold • UltraMaster V18",ens:"lightunfold.eth",
+    contact:{email:"vumumabada@gmail.com"},
+    payments:{chains:[
+      {name:"ETH (EVM)",address:"0x54E15A7b6d4213beE87800432A151d794638E3C2",explorer:"https://etherscan.io/address/0x54E15A7b6d4213beE87800432A151d794638E3C2",min:0.0005},
+      {name:"USDT (ERC20)",address:"0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",explorer:"https://etherscan.io/token/USDT?a=0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",min:5},
+      {name:"MoMo",address:"0567892030"},
+      {name:"Vietcombank",address:"9567892030"},
+      {name:"PayPal",address:"vumumabada@gmail.com"}
+    ]},
+  },
+  secrets:{unlock_code:"23061988"},
+  store:{
+    bundles:[
+      {id:"alpha",title:"Alpha Signals X",price:19,desc:"Tín hiệu ngắn hạn xác suất cao."},
+      {id:"etfbtc",title:"ETF & BTC Flow",price:29,desc:"Dòng vốn ETF/BTC – macro view."},
+      {id:"alts",title:"Altseason Radar",price:10,desc:"Chu kỳ xoay vòng vốn."}
+    ],
+    premium:[
+      {title:"Alpha Feed Pro",desc:"Dòng tin alpha siêu nhanh (độ trễ ms).",bullets:["Bất thường dòng tiền","Nguồn đa kênh","Bộ lọc nhiễu"],link:"#openDataModal"},
+      {title:"Deal Flow Private",desc:"Tổng hợp deal/seed đang mở private.",bullets:["Điều kiện","Ưu tiên thời gian"],link:"#openDataModal"}
+    ],
+    edu:[
+      {title:"Crypto 101",price:0,desc:"70% miễn phí: ví, bảo mật, chu kỳ, quản trị vốn.",tag:"Miễn phí"},
+      {title:"DeFi Mastery",price:10,desc:"Yield • Lending • Perp • Case study.",tag:"Nâng cao"},
+      {title:"Risk & Psychology",price:19,desc:"Kỷ luật, R:R, hệ thống hóa quyết định.",tag:"Chuyên sâu"}
+    ]
   }
-  // Danh sách chi tiết
-  const detail = [];
-  chains.forEach(c=>{
-    detail.push(`<div class="shop-card">
-      <h4>${c.name}</h4>
-      <div class="mono">${c.address}</div>
-      ${c.explorer?`<div class="muted">Explorer: <a target="_blank" rel="noopener" href="${c.explorer}">On-chain ↗</a></div>`:""}
-      ${c.min?`<div class="muted">${LANG==='vi'?'Tối thiểu':'Minimum'}: ${c.min}</div>`:""}
-      <div class="row" style="margin-top:8px">
-        <button class="btn" onclick="navigator.clipboard.writeText('${c.address}')">${LANG==='vi'?'Sao chép':'Copy'}</button>
-      </div>
-    </div>`);
-  });
-  if(off.momo) detail.push(simplePay("MoMo",off.momo,LANG==='vi'?"Ví MoMo Việt Nam.":"Vietnam MoMo wallet."));
-  if(off.vietcombank) detail.push(simplePay("Vietcombank",off.vietcombank,LANG==='vi'?"Chuyển khoản VCB.":"VCB bank transfer."));
-  if(off.paypal) detail.push(simplePay("PayPal",off.paypal,`${LANG==='vi'?'Thanh toán PayPal.':'Pay via PayPal.'}`));
+};
 
-  items.push(`<div class="grid">${detail.join("")}</div>`);
-  $('#pays').innerHTML=items.join("");
+/* ===== Header apply ===== */
+$('#brand').textContent=CFG.site.brand; $('#ens').textContent=CFG.site.ens; $('#autoLbl').textContent=(LANG==='vi'?'Tự động 24/7':'Always-on 24/7');
 
-  function simplePay(label,addr,hint){return `<div class="shop-card">
-    <h4>${label}</h4><div class="muted">${hint||""}</div><div class="mono">${addr}</div>
-    <div class="row" style="margin-top:8px"><button class="btn" onclick="navigator.clipboard.writeText('${addr}')">${LANG==='vi'?'Sao chép':'Copy'}</button></div>
-  </div>`}
+/* ===== BTC/ETH/USDT ticker ===== */
+async function tick3(){
+  try{
+    const ids=['bitcoin','ethereum','tether'].join(',');
+    const r=await j('https://api.coingecko.com/api/v3/simple/price?ids='+ids+'&vs_currencies=usd&include_24hr_change=true');
+    if(!r) return;
+    const m=[
+      {k:'BTC',p:r.bitcoin?.usd, c:r.bitcoin?.usd_24h_change},
+      {k:'ETH',p:r.ethereum?.usd, c:r.ethereum?.usd_24h_change},
+      {k:'USDT',p:r.tether?.usd, c:r.tether?.usd_24h_change}
+    ];
+    $('#ticker3').innerHTML=m.map(o=>`<span class="chip">${o.k} $${fmt(o.p)} <b class="${(o.c||0)>=0?'ok':'bad'}">${(o.c||0).toFixed(2)}%</b></span>`).join('');
+  }catch(_){}
 }
+setInterval(tick3, 8000); tick3();
 
-/* ===== Affiliates ===== */
-function renderAffs(){
-  const A=CFG.site?.affiliates||[];
-  $('#affs').innerHTML=A.map(a=>`<div class="shop-card">
-    <h4>${a.name}</h4>
-    <div class="note">Ưu đãi đối tác: ${a.tag||'Partner'}.</div>
-    <div class="row"><a class="btn" href="${a.url}" target="_blank" rel="noopener">${LANG==='vi'?'Đăng ký/Truy cập':'Join/Visit'} ↗</a>
-    <button class="btn out" onclick="navigator.clipboard.writeText('${a.url}')">${LANG==='vi'?'Sao chép link':'Copy link'}</button></div>
-  </div>`).join('');
-}
-
-/* ===== Market data (opps + mini table) ===== */
+/* ===== Market data: free 7 + pro 3 ===== */
 let LAST_ITEMS=[];
-async function loadDataSmart(){
-  const latest=await j('data/latest.json'); lastRefreshTS=Date.now();
-  if(latest && Array.isArray(latest.items)){ $('#scanMode').textContent=i18n[LANG].scan_data; renderOpps(latest.items); renderMini(latest.items); return; }
-  const items=await scanLive(); $('#scanMode').textContent=i18n[LANG].scan_fallback; renderOpps(items); renderMini(items);
-}
-async function scanLive(){
-  const items=[];
+async function fetchLive(){
+  const latest=await j('data/latest.json'); // optional
+  if(latest && Array.isArray(latest.items)){ renderAll(latest.items); return; }
   try{
-    const cg=await j('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=40&page=1&price_change_percentage=1h,24h,7d');
-    if(Array.isArray(cg)) for(const c of cg){
-      items.push({source:"coingecko",symbol:(c.symbol||"").toUpperCase(),name:c.name,
-        price:+c.current_price||0,ch24h:+c.price_change_percentage_24h_in_currency||0,vol24h:+c.total_volume||0,
-        score:(+c.price_change_percentage_1h_in_currency||0)*0.4+(+c.price_change_percentage_24h_in_currency||0)*0.35+(+c.price_change_percentage_7d_in_currency||0)*0.25+Math.log10((+c.total_volume||1)),
-        link:`https://www.coingecko.com/en/coins/${c.id}`});
-    }
+    const cg=await j('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=60&page=1&price_change_percentage=1h,24h,7d');
+    const items=(cg||[]).map(c=>({source:"coingecko",symbol:(c.symbol||"").toUpperCase(),name:c.name,price:+c.current_price||0,
+      ch24h:+c.price_change_percentage_24h_in_currency||0,vol24h:+c.total_volume||0,
+      mcap:+c.market_cap||0, link:`https://www.coingecko.com/en/coins/${c.id}`,
+      score:(+c.price_change_percentage_1h_in_currency||0)*0.4+(+c.price_change_percentage_24h_in_currency||0)*0.35+(+c.price_change_percentage_7d_in_currency||0)*0.25+Math.log10((+c.total_volume||1))}));
+    const bestBySymbol={}; for(const it of items){const k=it.symbol; if(!bestBySymbol[k]||it.score>bestBySymbol[k].score) bestBySymbol[k]=it;}
+    LAST_ITEMS=Object.values(bestBySymbol).sort((a,b)=>b.score-a.score).slice(0,20);
+    renderAll(LAST_ITEMS);
   }catch(_){}
-  try{
-    const cl=await j('https://api.coinlore.net/api/tickers/?start=0&limit=40');
-    const data=cl?.data||[];
-    for(const c of data){
-      items.push({source:"coinlore",symbol:(c.symbol||"").toUpperCase(),name:c.name,
-        price:+c.price_usd||0,ch24h:+c.percent_change_24h||0,vol24h:+c.volume24||0,
-        score:(+c.percent_change_24h||0)*0.7+Math.log10((+c.volume24||1)),
-        link:`https://www.coinlore.com/coin/${(c.name||"").toLowerCase().replace(/\s+/g,"-")}`});
-    }
-  }catch(_){}
-  const best={}; for(const it of items){if(!it.symbol) continue; const k=it.symbol; if(!best[k]||it.score>best[k].score) best[k]=it;}
-  return Object.values(best).sort((a,b)=>b.score-a.score).slice(0, CFG.feeds?.top_n||12);
 }
-function renderOpps(items){
-  LAST_ITEMS=items||[];
-  $('#ticker').innerHTML=(LAST_ITEMS||[]).map(x=>`<span class="tag">${x.symbol}: $${fmt(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join('')||'—';
-  const maxAbs = LAST_ITEMS?.length ? Math.max(...LAST_ITEMS.map(x=>Math.abs(x.ch24h||0))) : 0;
-  const alertBox=$('#alertBox'); if(maxAbs>=12){alertBox.classList.remove('hidden'); alertBox.innerHTML=`⚠️ <b>Alert:</b> ${LANG==='vi'?'Biến động lớn':'Large move'} (${maxAbs.toFixed(2)}%) — ${LANG==='vi'?'kiểm tra cơ hội bên dưới.':'check opportunities below.'}`;} else {alertBox.classList.add('hidden'); alertBox.textContent='';}
-  const L=i18n[LANG];
-  $('#opps').innerHTML=(LAST_ITEMS||[]).map(x=>{
-    const ch=x.ch24h||0, pct=`${ch>=0?'+':''}${ch.toFixed(2)}%`;
-    return `<div class="item">
-      <div class="score">+${(x.score||0).toFixed(2)}</div>
+function renderAll(items){
+  // ticker + hot list
+  $('#kOpps').textContent=items.length; $('#ticker').innerHTML=items.slice(0,12).map(x=>`<span class="tag">${x.symbol}: $${fmt(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join('')||'—';
+  $('#opps').innerHTML=items.slice(0,10).map(x=>{
+    const ch=x.ch24h||0,pct=`${ch>=0?'+':''}${ch.toFixed(2)}%`;
+    return `<div class="item"><div class="score">+${(x.score||0).toFixed(2)}</div>
       <div style="flex:1;min-width:0">
         <div class="row" style="justify-content:space-between;gap:8px">
           <div><b>${x.symbol}</b> · <span class="muted">${x.name||''}</span></div>
-          <a class="btn out" target="_blank" rel="noopener" href="${x.link||'#'}">${L.details} ↗</a>
-        </div>
+          <a class="btn out" target="_blank" rel="noopener" href="${x.link||'#'}">Chi tiết ↗</a></div>
         <div class="row" style="gap:8px">
-          <span class="tag">${L.price}: $${fmt(x.price||0)}</span>
+          <span class="tag">Giá: $${fmt(x.price||0)}</span>
           <span class="tag ${ch>=0?'ok':'bad'}">24h: ${pct}</span>
-          <span class="tag">${L.volume}: $${fmt(x.vol24h||0)}</span>
-          <span class="tag">Src: ${x.source}</span>
-        </div>
+          <span class="tag">Vol: $${fmt(x.vol24h||0)}</span>
+        </div></div></div>`;
+  }).join('');
+
+  // Free 7
+  const free = items.slice(0,7);
+  $('#tokenFree').innerHTML=free.map(x=>{
+    const c=x.ch24h||0, rr=c>=0?'ok':'bad';
+    return `<div class="shop-card">
+      <h4>${x.symbol} — ${x.name||''}</h4>
+      <div class="note">Giá: $${fmt(x.price)} · <b class="${rr}">${c.toFixed(2)}%</b> · Vol: $${fmt(x.vol24h)}</div>
+      <div class="row" style="margin-top:8px">
+        <a class="btn out" target="_blank" rel="noopener" href="${x.link||'#'}">Mở biểu đồ ↗</a>
+        <button class="btn out" onclick="aiHint('${x.symbol}')">AI phân tích nhanh</button>
       </div>
     </div>`;
-  }).join('')||'<div class="muted">—</div>';
-}
-function renderMini(items){
-  const rows=(items||[]).slice(0,10).map(x=>{
-    const p=fmt(x.price||0), ch=(x.ch24h||0).toFixed(2);
-    return `<tr><td>${x.symbol}</td><td>${x.name||''}</td><td>$${p}</td><td class="${x.ch24h>=0?'ok':'bad'}">${ch}%</td><td>$${fmt(x.vol24h||0)}</td></tr>`;
   }).join('');
-  $('#mktRows').innerHTML=rows||'<tr><td colspan="5">—</td></tr>';
-}
 
-/* ===== Bundles ===== */
-function renderBundles(mode='day'){
-  const B=CFG.store?.bundles||[];
-  const L=i18n[LANG];
-  $('#bundles').innerHTML=B.map(b=>{
-    const tags=(b.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
+  // Premium 3 (mask)
+  const pro = items.slice(7,10);
+  $('#tokenPro').innerHTML=pro.map((x,i)=>{
     return `<div class="shop-card">
-      <h4>${b.title}</h4>
-      <div class="note">${b.desc||''}</div>
-      <div style="margin-top:6px">${tags}</div>
-      <div class="note">${LANG==='vi'?'Cách nhận giá trị:':'How to get value:'} ${LANG==='vi'?'Thanh toán → nhận mã → mở khóa':'Pay → get code → unlock'}</div>
-      <div class="row" style="margin-top:8px"><button class="btn" onclick="document.getElementById('unlockCode').focus()">${L.buy_enter}</button><span class="badge">${mode}</span><span class="badge">$${b.price}</span></div>
+      <h4>⭐ Premium #${i+1}</h4>
+      <div class="note">Mở khóa để xem: ${x.symbol} • Price/Vol/7d • Chiến lược vào/ra an toàn.</div>
+      <a class="btn" href="#supergate">Mở khóa ngay</a>
     </div>`;
   }).join('');
 }
 
-/* ===== Premium + Paywall ===== */
+/* ===== Payments: 1 QR đại diện + list ===== */
+const pays=CFG.site.payments.chains;
+(function paintPay(){
+  const first=pays[0]; if(first){ $('#qr').src=qrlink(first.address); $('#payAddr').textContent=first.address; }
+  const row=c=>`<button class="btn out" onclick="navigator.clipboard.writeText('${c.address}')">${c.name}</button>`;
+  $('#payList').innerHTML=pays.map(row).join('');
+})();
+
+/* ===== Bundles + Premium ===== */
+(function paintBundles(){
+  $('#bundleSel').innerHTML=CFG.store.bundles.map(b=>`<option value="${b.id}">${b.title} — $${b.price}</option>`).join('');
+})();
 function paintPremium(){
-  const P=CFG.store?.premium||[];
-  const L=i18n[LANG];
+  const P=CFG.store.premium||[];
   $('#premium').innerHTML=P.map(p=>`<div class="shop-card"><h4>${p.title}</h4>
     <div class="note">${p.desc||''}</div>
     ${p.bullets?`<ul>${p.bullets.map(x=>`<li>${x}</li>`).join('')}</ul>`:""}
-    ${p.link?`<a class="btn out" target="_blank" rel="noopener" href="${p.link}">${L.open_data} ↗</a>`:""}
+    <button class="btn out" onclick="openDataModal()">${(LANG==='vi'?'Xem dữ liệu':'Open data')} ↗</button>
   </div>`).join('');
 }
-function bindPaywall(){
-  const SECRET=String(CFG.secrets?.unlock_code||'23061988');
+paintPremium();
+
+/* ===== Edu ===== */
+(function paintEdu(){
+  $('#ebooks').innerHTML=CFG.store.edu.map(e=>`<div class="shop-card">
+    <h4>${e.title}</h4><div class="note">${e.desc}</div>
+    <div class="row" style="margin-top:8px"><span class="badge">${e.tag}</span>
+    <button class="btn out" onclick="document.getElementById('unlockCode').focus()">Mua & nhập mã</button>
+    ${e.price?`<span class="badge">$${e.price}</span>`:""}</div>
+  </div>`).join('');
+})();
+
+/* ===== Paywall ===== */
+const SECRET=String(CFG.secrets.unlock_code||'23061988');
+function gate(open){$('#opened').classList.toggle('hidden',!open);}
+(function bindPaywall(){
   const saved=localStorage.getItem('unlocked_code')||'';
-  function gate(open){$('#locked').classList.toggle('hidden',open);$('#opened').classList.toggle('hidden',!open);}
   if(saved===SECRET){gate(true); paintPremium(); const th=localStorage.getItem('tx_hash'); if(th) $('#uMsg').innerHTML='<span class="ok">TX: '+th+'</span>';}
   $('#doUnlock').onclick=()=>{const code=$('#unlockCode').value.trim(),tx=$('#txhash').value.trim();
-    if(code===SECRET){gate(true); paintPremium(); $('#uMsg').innerHTML='<span class="ok">'+(LANG==='vi'?'Đã mở khóa!':'Unlocked!')+'</span>'; if(tx) localStorage.setItem('tx_hash',tx); localStorage.setItem('unlocked_code',code);}
-    else $('#uMsg').innerHTML='<span class="err">'+(LANG==='vi'?'Mã không đúng.':'Invalid code.')+'</span>';};
-  $('#remember').onclick=()=>{const c=$('#unlockCode').value.trim(); if(c){localStorage.setItem('unlocked_code',c); $('#uMsg').textContent=LANG==='vi'?'Đã lưu trên thiết bị.':'Saved on device.'}};
+    if(code===SECRET){gate(true); paintPremium(); $('#uMsg').innerHTML='<span class="ok">✔ Đã mở khóa</span>'; if(tx) localStorage.setItem('tx_hash',tx); localStorage.setItem('unlocked_code',code);}
+    else $('#uMsg').innerHTML='<span class="bad">Mã không đúng.</span>';};
+  $('#remember').onclick=()=>{const c=$('#unlockCode').value.trim(); if(c){localStorage.setItem('unlocked_code',c); $('#uMsg').textContent='Đã lưu trên thiết bị.'}};
   $('#relock').onclick=()=>{localStorage.removeItem('unlocked_code'); gate(false);};
+})();
+
+/* ===== AI Chat 24/7 (smarter prompts) ===== */
+function addBubble(txt, who='ai'){
+  const b=document.createElement('div'); b.className='bubble '+(who==='me'?'me':'ai'); b.innerHTML=txt; $('#chatBody').appendChild(b); $('#chatBody').scrollTop=1e6;
 }
-
-/* ===== i18n apply ===== */
-function applyLang(){
-  const L=i18n[LANG];
-  $('#hotTitle').textContent=L.hot; $('#payTitle').textContent=L.pay; $('#minLbl').textContent=L.minLbl;
-  $('#contactLbl').textContent=L.contactLbl; $('#lockTitle').textContent=L.lock; $('#howTitle').textContent=L.how;
-  $('#unlockedLbl').textContent=L.unlocked; $('#packTitle').textContent=L.packs; $('#hubHint').textContent=L.hub;
-  $('#autoLbl').textContent=L.auto; $('#whyH1').textContent=L.whyH1; $('#whyH2').textContent=L.whyH2; $('#whyH3').textContent=L.whyH3;
-  $('#why1').textContent=L.why1; $('#why2').textContent=L.why2; $('#why3').textContent=L.why3;
-  const uc=$('#unlockCode'), tx=$('#txhash'); if(uc) uc.placeholder=L.unlock_ph; if(tx) tx.placeholder=L.tx_ph;
-  const rn=$('#refreshNow'); if(rn) rn.textContent=L.refresh;
-  const scan=$('#scanMode'); if(scan){const fb=/fallback|scan/i.test(scan.textContent); scan.textContent=fb?L.scan_fallback:L.scan_data;}
-  try{ renderPays(); renderBundles(document.querySelector('#timeTabs .tab.act')?.dataset.t||'day'); paintPremium(); if(LAST_ITEMS.length) renderOpps(LAST_ITEMS);}catch(_){}
+function smartReply(q){
+  const s=q.toLowerCase();
+  if(/mở khóa|unlock|thanh toán|premium/.test(s))
+    return 'Bước 1: Quét QR và thanh toán nhỏ • Bước 2: Nhận mã • Bước 3: Nhập ngay tại SuperGate để mở Top 3 & kho kiến thức.';
+  if(/token|tiềm năng|coin/.test(s)){
+    const top=(LAST_ITEMS||[]).slice(0,5).map(x=>`${x.symbol} $${fmt(x.price)} (${(x.ch24h||0).toFixed(1)}%)`).join(' • ');
+    return `Theo biến động/khối lượng hiện tại: ${top}. Muốn xem Top 3 premium & lộ trình vào/ra an toàn không?`;
+  }
+  if(/an toàn|risk|stop|kế hoạch|dca/.test(s))
+    return 'Kế hoạch an toàn: rủi ro 1–2%/lệnh • DCA 2–3 nhịp • Stop-loss cứng • Không all-in • RR≥1:2 • Nhật ký giao dịch.';
+  if(/khóa học|course|học nhanh/.test(s))
+    return 'Lộ trình: Crypto101 (miễn phí 70%) → DeFi Mastery ($10) → Risk & Psychology ($19). Bạn muốn mở khóa gói nào?';
+  if(/binance|bnb/.test(s))
+    return '“Giao dịch nơi thanh khoản sâu nhất.” Mở tài khoản miễn phí tại Binance: <a target="_blank" rel="noopener" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N">đăng ký ngay ↗</a>';
+  if(/algosone|algo/.test(s))
+    return '“Để máy học gợi ý chiến lược – bạn tập trung kỷ luật.” Dùng thử AlgosOne: <a target="_blank" rel="noopener" href="https://algosone.page.link/MbtR">mở ngay ↗</a>';
+  if(/share|chia sẻ|ref/.test(s)){
+    const myRef=localStorage.getItem('my_ref')||location.href; return `Đây là liên kết giới thiệu của bạn: <br><span class="mono">${myRef}</span><br>Gợi ý post: “Mình dùng UltraMaster V18 theo dõi token realtime + AI 24/7. Link của mình: ${myRef}”`;
+  }
+  return 'Mình sẵn sàng: hỏi token, gói học, mở khóa, an toàn giao dịch hoặc gõ “share” để lấy link giới thiệu.';
 }
+(function chatInit(){
+  const chips=['Tóm tắt thị trường','Token tiềm năng hôm nay','Kế hoạch lệnh an toàn','Cách mở khóa','Lấy link chia sẻ'];
+  const bar=$('#chipBar'); chips.forEach(t=>{const b=document.createElement('button'); b.className='btn out'; b.textContent=t; b.onclick=()=>{$('#chatIn').value=t; $('#chatSend').click();}; bar.appendChild(b);});
+  $('#openChat').onclick=()=>{$('#chat').style.display='flex'; if(!$('#chatBody').dataset.hi){addBubble('Chào bạn! Mình là AI tài chính 24/7. 70% nội dung miễn phí, Top 3 cần mở khoá.'); $('#chatBody').dataset.hi=1;}};
+  $('#closeChat').onclick=()=>{$('#chat').style.display='none'};
+  $('#chatSend').onclick=()=>{const v=$('#chatIn').value.trim(); if(!v) return; addBubble(v,'me'); $('#chatIn').value=''; addBubble(smartReply(v),'ai');};
+})();
 
-/* ===== Mini PWA & vanity KPI ===== */
-function registerSW(){
-  const sw=`
-    const CORE=['./','index.html','config.json','data/latest.json'];
-    self.addEventListener('install',e=>{e.waitUntil(caches.open('umv15-core').then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
-    self.addEventListener('activate',e=>{e.waitUntil(self.clients.claim())});
-    self.addEventListener('fetch',e=>{
-      const u=new URL(e.request.url);
-      if(u.origin===location.origin){e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));return;}
-      e.respondWith(fetch(e.request).catch(()=>caches.match('./')));
-    });
-  `;
-  const url=URL.createObjectURL(new Blob([sw],{type:'text/javascript'}));
-  navigator.serviceWorker.register(url,{scope:'./'});
-}
-function liveCounter(){
-  const k='umv15_peers'; const now=Date.now(), ttl=25*1000;
-  const id=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2);
-  localStorage.setItem('peer_id',id);
-  const raw=localStorage.getItem(k); let list=raw?JSON.parse(raw):[];
-  list=list.filter(x=>now-x.t<ttl); const me=list.find(x=>x.id===id);
-  if(me) me.t=now; else list.push({id,t:now});
-  localStorage.setItem(k,JSON.stringify(list));
-  // KPI hiển thị tượng trưng
-  const kLive=$('#kLive'); if(kLive) kLive.textContent=list.length;
-}
-function revBoot(){
-  const k='umv15_rev'; let val=Number(localStorage.getItem(k)||0);
-  val += (Math.random()*0.5+0.2);
-  localStorage.setItem(k,val);
-  const el=$('#kRev'); if(el) el.textContent = fmt(val);
-}
+/* ===== Modal data (fix 404) ===== */
+const PREMIUM_DATA={
+  updated_at:new Date().toISOString(),
+  alpha_feed:[
+    {type:"flow", text:"Dòng tiền BTC vào CEX tăng dần — theo dõi breakout vùng kháng cự gần."},
+    {type:"onchain", text:"Ví cá voi gom alt mid-cap hệ ETH, khối lượng gia tăng theo giờ."},
+    {type:"macro", text:"ETF spot ghi nhận inflow tuần thứ 3 liên tiếp."}
+  ],
+  deals:[{name:"Seed/Private-DeFiX", note:"Allocation nhỏ, vesting 12m – cân đối rủi ro."}]
+};
+function openDataModal(){ $('#dataPre').textContent=JSON.stringify(PREMIUM_DATA,null,2); $('#dataModal').classList.remove('hidden'); }
+$('#openData')?.addEventListener('click', openDataModal);
+$('#closeData')?.addEventListener('click', ()=>$('#dataModal').classList.add('hidden'));
 
-/* ====== AI Chat 24/7 (rule-based + price fetch) ====== */
-function initAIChat(){
-  const L = ( (localStorage.getItem('lang')||navigator.language||'vi').toLowerCase().startsWith('vi') ? 'vi' : 'en' );
-  const T={
-    vi:{title:'AI Tài chính 24/7', hello:'Xin chào! Tôi là AI tài chính 24/7. Tôi có thể cập nhật BTC/ETH/USDT, gợi ý cơ hội, khóa học và hướng dẫn an toàn.',
-        typing:'đang nhập…', askph:'Hỏi về thị trường, khóa học, BNB, AlgosOne…',
-        open:'Mở', join:'Đăng ký', learn:'Xem khóa học', more:'Xem thêm',
-        fallback:'Bạn có thể hỏi: “BTC/ETH/USDT bây giờ?”, “Cơ hội hôm nay?”, “Khóa học nhanh?”, “An toàn giao dịch?”'},
-    en:{title:'24/7 Finance AI', hello:'Hi! I can update BTC/ETH/USDT, suggest opportunities, courses and safe trading tips.',
-        typing:'typing…', askph:'Ask about market, courses, BNB, AlgosOne…',
-        open:'Open', join:'Join', learn:'See course', more:'More',
-        fallback:'You can ask: “BTC/ETH/USDT now?”, “Today’s opportunities?”, “Quick course?”, “Safe trading?”'}
-  }[L];
+/* ===== Live counters ===== */
+(function peers(){
+  const k='umv18_peers'; const now=Date.now(), ttl=25e3; const id=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2); localStorage.setItem('peer_id',id);
+  const raw=localStorage.getItem(k); let list=raw?JSON.parse(raw):[]; list=list.filter(x=>now-x.t<ttl); const me=list.find(x=>x.id===id); if(me) me.t=now; else list.push({id,t:now});
+  localStorage.setItem(k,JSON.stringify(list)); $('#kLive').textContent=list.length; setTimeout(peers,4000);
+})();
 
-  const box=$('#um15Box'), fab=$('#um15Fab'), msgs=$('#um15Msgs');
-  const sendBtn=$('#um15Send'), ask=$('#um15Ask');
-  $('#um15Title').textContent=T.title; ask.placeholder=T.askph;
+/* ===== Loops ===== */
+async function boot(){ await fetchLive(); setInterval(fetchLive, 60*1000); }
+boot();
 
-  fab.onclick=()=>{box.style.display='flex'; if(!msgs.dataset.boot){botSay(T.hello); msgs.dataset.boot=1;}};
-  $('#um15Close').onclick=()=>box.style.display='none';
-  $('#um15Min').onclick=()=>box.style.height = (box.style.height==='54px'?'min(72vh,640px)':'54px');
-  $('#um15Quick').addEventListener('click',e=>{
-    const b=e.target.closest('button'); if(!b) return; ask.value=b.dataset.q||''; send();
-  });
-  sendBtn.onclick=send; ask.onkeydown=e=>{if(e.key==='Enter'){send();}};
-
-  function userSay(t){const b=document.createElement('div'); b.className='um15-bubble me'; b.textContent=t; msgs.appendChild(b); scroll();}
-  function botSay(t){const b=document.createElement('div'); b.className='um15-bubble'; b.innerHTML=t; msgs.appendChild(b); scroll();}
-  function typing(on){if(on){botSay('<span class="um15-small">'+T.typing+'</span>'); msgs.dataset.typing='1'; scroll();}
-                     else{ if(msgs.dataset.typing){msgs.removeChild(msgs.lastElementChild); delete msgs.dataset.typing;} }}
-  function scroll(){msgs.scrollTop=msgs.scrollHeight;}
-
-  async function send(){
-    const q=ask.value.trim(); if(!q) return; userSay(q); ask.value=''; typing(true);
-    try{ const ans = await route(q); typing(false); botSay(ans); }
-    catch(_){ typing(false); botSay(L==='vi'?'Xin lỗi, có lỗi xảy ra.':'Sorry, something went wrong.'); }
-  }
-
-  async function route(q){
-    const s=q.toLowerCase();
-    if(/btc|eth|usdt/.test(s)) return await pricePanel();
-    if(/cơ hội|opportunity|coin nào|token nào/.test(s)) return await oppsPanel();
-    if(/khóa học|khoa hoc|course|học nhanh|hoc nhanh/.test(s)) return coursePanel();
-    if(/an toàn|safe|quản trị rủi ro|risk/.test(s)) return safetyPanel();
-    if(/binance|bnb/.test(s)) return binancePanel();
-    if(/algosone|algo/i.test(s)) return algosonePanel();
-    return (L==='vi'
-      ? `${T.fallback}<br>Đăng ký <a target="_blank" rel="noopener" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N">Binance</a> · <a target="_blank" rel="noopener" href="https://algosone.page.link/MbtR">AlgosOne</a>.`
-      : `${T.fallback}<br>Join <a target="_blank" rel="noopener" href="https://www.binance.com/en/register?ref=GRO_20338_9V44N">Binance</a> · <a target="_blank" rel="noopener" href="https://algosone.page.link/MbtR">AlgosOne</a>.`);
-  }
-
-  async function pricePanel(){
-    let data=null;
-    try{
-      const ids='bitcoin,ethereum,tether';
-      const r=await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`,{cache:'no-store'});
-      if(r.ok) data=await r.json();
-    }catch(_){}
-    if(!data) return (L==='vi'?'Tạm thời không lấy được giá. Thử lại sau nhé.':'Unable to fetch prices now. Please try again.');
-    const row = (sym,name,obj) => {
-      const p=obj?.usd??0, ch=Number(obj?.usd_24h_change||0);
-      const arrow = ch>=0?'▲':'▼';
-      const c = ch>=0?'#22c55e':'#ff4d4f';
-      return `<div style="display:flex;justify-content:space-between;gap:8px;margin:4px 0">
-        <b>${sym}</b> <span class="um15-small" style="flex:1">${name}</span>
-        <span>$${p.toLocaleString(undefined,{maximumFractionDigits:8})}</span>
-        <span style="color:${c}">${arrow} ${ch.toFixed(2)}%</span>
-      </div>`;
-    };
-    return `<div><b>${L==='vi'?'Giá hiện tại (USD)':'Live prices (USD)'}:</b>
-      <div style="margin-top:6px">${row('BTC','Bitcoin',data.bitcoin)}
-      ${row('ETH','Ethereum',data.ethereum)}
-      ${row('USDT','Tether',data.tether)}</div>
-      <div class="um15-small">${L==='vi'?'Nguồn: CoinGecko':'Source: CoinGecko'}</div></div>`;
-  }
-
-  async function oppsPanel(){
-    try{
-      const list = Array.from(document.querySelectorAll('#opps .item')).slice(0,5).map(el=>{
-        const s=el.querySelector('b')?.textContent||''; const name=el.querySelector('.muted')?.textContent||'';
-        const tags=Array.from(el.querySelectorAll('.tag')).map(t=>t.textContent).join(' · ');
-        return `• <b>${s}</b> <span class="um15-small">${name}</span> — ${tags}`;
-      });
-      if(list.length){
-        return `<div><b>${L==='vi'?'Cơ hội đáng chú ý':'Notable opportunities'}</b><br>${list.join('<br>')}
-        <div class="um15-small" style="margin-top:6px">${L==='vi'?'Mẹo: bấm “↻ Làm mới” trên trang để cập nhật.':'Tip: press “↻ Refresh” on page to update.'}</div></div>`;
-      }
-    }catch(_){}
-    return (L==='vi'?'Hiện chưa có dữ liệu cơ hội. Hãy bấm “↻ Làm mới” hoặc hỏi lại sau.'
-                   :'No opportunity data yet. Click “↻ Refresh” or ask again later.');
-  }
-
-  function coursePanel(){
-    return (L==='vi'
-      ? `<div><b>Lộ trình học nhanh</b>
-         <ul style="margin:6px 0 0 16px">
-           <li><b>Crypto 101</b> — ví & bảo mật, chu kỳ, quản trị rủi ro. <span class="um15-small">$19</span></li>
-           <li><b>DeFi Mastery</b> — Yield/Lending/Perp. <span class="um15-small">$29</span></li>
-         </ul>
-         <div style="margin-top:8px"><button class="um15-btn" onclick="document.getElementById('unlockCode').focus()">${'Mua & nhập mã'}</button></div></div>`
-      : `<div><b>Fast learning path</b>
-         <ul style="margin:6px 0 0 16px">
-           <li><b>Crypto 101</b> — wallet & security, cycles, risk. <span class="um15-small">$19</span></li>
-           <li><b>DeFi Mastery</b> — Yield/Lending/Perp. <span class="um15-small">$29</span></li>
-         </ul>
-         <div style="margin-top:8px"><button class="um15-btn" onclick="document.getElementById('unlockCode').focus()">${'Buy & enter code'}</button></div></div>`);
-  }
-  function safetyPanel(){
-    return (L==='vi'
-      ? `<div><b>Nguyên tắc an toàn</b>
-         <ol style="margin:6px 0 0 18px">
-           <li>Không all-in; chia nhỏ vị thế.</li>
-           <li>Luôn đặt stoploss; tỉ lệ R:R ≥ 1:2.</li>
-           <li>Ưu tiên sàn uy tín; 2FA & chống phishing.</li>
-           <li>Ghi chép nhật ký giao dịch.</li>
-         </ol></div>`
-      : `<div><b>Safety principles</b>
-         <ol style="margin:6px 0 0 18px">
-           <li>No all-in; scale in/out.</li>
-           <li>Always use stoploss; R:R ≥ 1:2.</li>
-           <li>Reputable exchanges; 2FA & anti-phishing.</li>
-           <li>Keep a trading journal.</li>
-         </ol></div>`);
-  }
-  function binancePanel(){
-    return (L==='vi'
-      ? `<div><b>Binance — sàn số 1</b><br>Phí thấp, thanh khoản sâu, Earn/Futures/Options, Launchpad/Launchpool.<br>
-         <a class="um15-btn" target="_blank" rel="noopener" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N">Đăng ký Binance ↗</a></div>`
-      : `<div><b>Binance — #1 exchange</b><br>Low fees, deep liquidity, Earn/Futures/Options, Launchpad/Launchpool.<br>
-         <a class="um15-btn" target="_blank" rel="noopener" href="https://www.binance.com/en/register?ref=GRO_20338_9V44N">Join Binance ↗</a></div>`);
-  }
-  function algosonePanel(){
-    return (L==='vi'
-      ? `<div><b>AlgosOne — AI giao dịch</b><br>Tối ưu chiến lược, cảnh báo realtime, backtest nhanh, kết nối nhiều sàn.<br>
-         <a class="um15-btn" target="_blank" rel="noopener" href="https://algosone.page.link/MbtR">Dùng thử miễn phí ↗</a></div>`
-      : `<div><b>AlgosOne — AI trading</b><br>Strategy optimization, realtime alerts, fast backtest, multi-exchange.<br>
-         <a class="um15-btn" target="_blank" rel="noopener" href="https://algosone.page.link/MbtR">Try for free ↗</a></div>`);
-  }
-
-  // Auto open on first visit? bật nếu muốn
-  // setTimeout(()=>{document.getElementById('um15Fab').click()}, 1000);
-}
-
-/* ===== END AI Chat ===== */
+/* ===== Theme switch label ===== */
+$('#theme')?.addEventListener('click',()=>{});
 </script>
 </body>
 </html>
