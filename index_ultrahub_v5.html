@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LightUnfold • UltraHub v5.0</title>
+<meta name="description" content="Web3 AI tự động 24/7: cơ hội, thanh toán QR, nội dung cao cấp (mã), affiliate. Tối ưu di động & desktop.">
+<meta name="theme-color" content="#0b0f13">
+<style>
+:root{--bg:#0b0f13;--card:#10161d;--line:#1c2836;--txt:#e9eef4;--mut:#9fb3c8;--brand:#7dc1ff;--accent:#ffb000;--ok:#20c997;--bad:#ff4d4f;--pill:#0f141c}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
+a{color:var(--brand);text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pill{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--pill);color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.btn{display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#1a1300;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+.btn.out{background:transparent;border:1px solid var(--line);color:var(--txt)}
+.badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+.list .item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px dashed var(--line)}
+.score{min-width:60px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:4px 6px;color:#ffdca8;background:#241a00}
+.tag{display:inline-block;border:1px solid var(--line);border-radius:8px;padding:2px 8px;margin:2px 4px 0 0;color:#bcd;font-size:12px}
+.pay{display:flex;gap:14px}.pay img{width:160px;height:160px;border-radius:12px;border:1px solid var(--line);background:#000}
+.pay .meta{flex:1;min-width:0}.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;word-break:break-all}
+.hidden{display:none}
+.footer{padding:28px 0;text-align:center;color:#9fb3c8}
+.marquee{white-space:nowrap;overflow:hidden}.marquee>div{display:inline-block;animation:mar 25s linear infinite}
+@keyframes mar{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tabbar{display:flex;gap:8px;flex-wrap:wrap}.tab{padding:6px 10px;border:1px solid var(--line);border-radius:999px;cursor:pointer}
+.tab.act{background:var(--accent);color:#1a1300;border-color:transparent}
+.appgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.appgrid a{display:block;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--pill);text-align:center}
+.light{--bg:#f7fafc;--card:#ffffff;--line:#e2e8f0;--txt:#0b0f13;--mut:#4a5568;--brand:#2563eb;--pill:#f3f6fb}
+.alert{background:#2a2e12;border:1px solid #606c38;color:#e9f5c7;border-radius:12px;padding:10px 12px}
+.topbtn{position:fixed;left:12px;bottom:80px;z-index:9998}
+.affgrid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.affcard{padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--pill);display:flex;flex-direction:column;gap:8px}
+.affcard .actions{display:flex;gap:8px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="row">
+    <span class="pill">ENS: <b id="ens">—</b></span>
+    <span class="pill">Heartbeat: <b id="hb">—</b></span>
+    <a class="pill" href="core.v5.json" target="_blank" rel="noopener">core</a>
+    <a class="pill" href="override.v5.json" target="_blank" rel="noopener">override</a>
+    <a class="pill" href="data/latest.json" target="_blank" rel="noopener">data</a>
+    <span class="pill" id="lang">VI/EN</span>
+    <span class="pill" id="theme">🌗 Theme</span>
+  </div>
+
+  <h1 id="brand">LightUnfold • UltraHub v5.0</h1>
+  <div id="tagline" style="color:#9fb3c8">—</div>
+
+  <section class="card" id="about">
+    <div class="row" style="justify-content:space-between;align-items:flex-start">
+      <div>
+        <div id="slogan">—</div>
+        <div id="pulse" class="tag" style="margin-top:8px">—</div>
+      </div>
+      <div class="row" id="heroCtas"></div>
+    </div>
+    <div id="alertBox" class="alert hidden" style="margin-top:10px"></div>
+    <div class="grid" id="usp"></div>
+  </section>
+
+  <section class="card" id="secOpps">
+    <div class="row" style="justify-content:space-between">
+      <h3 id="hotTitle" style="margin:0">—</h3>
+      <div class="row">
+        <span class="badge" id="scanMode">—</span>
+        <button class="btn out" id="refreshNow">↻</button>
+      </div>
+    </div>
+    <div class="marquee" style="margin:4px 0 8px;color:#bcd"><div id="ticker">—</div></div>
+    <div id="opps" class="list"></div>
+  </section>
+
+  <section class="card" id="secPay">
+    <h3 id="payTitle" style="margin:0 0 8px">—</h3>
+    <div id="pays" class="grid"></div>
+    <div style="color:#9fb3c8;margin-top:6px"><span id="minLbl">—</span>: <span id="mins"></span> · <span id="contactLbl">—</span>: <span id="pp"></span></div>
+  </section>
+
+  <section class="card" id="secLock">
+    <h3 id="lockTitle" style="margin:0 0 8px">—</h3>
+    <div id="locked">
+      <div class="grid">
+        <div>
+          <input id="unlockCode" placeholder="" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--pill);color:var(--txt)">
+          <input id="txhash" style="margin-top:8px;width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--pill);color:var(--txt)">
+          <div class="row" style="margin-top:8px">
+            <button class="btn" id="doUnlock"></button>
+            <button class="btn out" id="remember"></button>
+          </div>
+          <div id="uMsg" style="margin-top:6px;color:#9fb3c8"></div>
+        </div>
+        <div style="color:#9fb3c8">
+          <b id="howTitle">—</b>
+          <ul id="howList"></ul>
+        </div>
+      </div>
+    </div>
+    <div id="opened" class="hidden">
+      <div class="row"><span class="pill ok" id="unlockedLbl">—</span><button class="btn out" id="relock"></button></div>
+      <div id="premium" class="grid" style="margin-top:10px"></div>
+    </div>
+  </section>
+
+  <section class="card" id="secBundles">
+    <div class="row" style="justify-content:space-between">
+      <h3 id="packTitle" style="margin:0">—</h3>
+      <div class="tabbar" id="timeTabs">
+        <div class="tab act" data-t="day">Day</div>
+        <div class="tab" data-t="month">Month</div>
+        <div class="tab" data-t="quarter">Quarter</div>
+        <div class="tab" data-t="year">Year</div>
+      </div>
+    </div>
+    <div id="bundles" class="grid"></div>
+  </section>
+
+  <section class="card" id="secAff">
+    <h3 id="affTitle" style="margin:0 0 8px">—</h3>
+    <div id="affs" class="affgrid"></div>
+  </section>
+
+  <section class="card" id="secApps">
+    <h3 id="hubTitle" style="margin:0 0 8px">—</h3>
+    <div id="apps" class="appgrid"></div>
+    <div style="color:#9fb3c8;margin-top:6px" id="hubHint">—</div>
+  </section>
+
+  <button class="pill topbtn" id="goTop">↑ Top</button>
+  <div class="footer">© <span id="year"></span> <span id="footBrand">LightUnfold</span> • <span id="autoLbl">—</span></div>
+</div>
+
+<script>
+/* ===== Helpers ===== */
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const fmt=n=>Number(n||0).toLocaleString(undefined,{maximumFractionDigits:8});
+const ago=(ts)=>{const d=new Date(ts);const s=((Date.now()-d)/1000)|0;return s<60?`${s}s`:s<3600?`${(s/60)|0}m`:s<86400?`${(s/3600)|0}h`:`${(s/86400)|0}d`};
+const qrlink=t=>`https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(t)}`;
+async function j(url){try{const r=await fetch(url,{cache:'no-store'});if(!r.ok) throw 0;return await r.json()}catch(_){return null}}
+function deepMerge(a,b){if(!b) return a; const o=structuredClone(a); (function m(x,y){for(const k in y){if(y[k]&&typeof y[k]==='object'&&!Array.isArray(y[k])){x[k]=x[k]&&typeof x[k]==='object'?x[k]:{};m(x[k],y[k])}else{x[k]=y[k]}}})(o,b); return o}
+function setTheme(m){document.documentElement.classList.toggle('light',m==='light'); localStorage.setItem('theme',m)}
+/* ===== State ===== */
+let CFG={}, L={}, LANG='vi', lastTS=Date.now();
+
+/* ===== Boot ===== */
+(async function boot(){
+  $('#year').textContent=new Date().getFullYear();
+
+  // Load config: core -> override
+  const core=await j('core.v5.json')||{};
+  const over=await j('override.v5.json')||{};
+  CFG=deepMerge(core,over);
+
+  // Theme
+  setTheme(localStorage.getItem('theme')||CFG.ui?.theme||'dark');
+  $('#theme').onclick=()=>setTheme(document.documentElement.classList.contains('light')?'dark':'light');
+
+  // Language init + load dictionary
+  LANG=(localStorage.getItem('lang')||CFG.site?.locale_default||'vi').slice(0,2).toLowerCase();
+  await loadLang(LANG);
+  $('#lang').onclick=async()=>{LANG=LANG==='vi'?'en':'vi';localStorage.setItem('lang',LANG); await loadLang(LANG); paintStatic(); paintDynamicOnce();};
+
+  paintStatic(); // texts from L + CFG
+  bindCommon();  // buttons
+  await paintDynamicOnce(); // data + payments + aff + bundles + premium
+  scheduleRefresh();
+})();
+
+async function loadLang(code){
+  const dict=await j(`lang/${code}.v5.json`);
+  L=dict||await j('lang/en.v5.json')||{};
+}
+
+function T(key, fallback=''){ return key.split('.').reduce((o,k)=>o&&o[k], L)||fallback }
+
+/* ===== Paint static texts ===== */
+function paintStatic(){
+  // Header & hero
+  $('#brand').textContent = CFG.site?.brand || 'UltraHub v5.0';
+  $('#footBrand').textContent = (CFG.site?.brand||'LightUnfold').replace(/ •.*$/,'');
+  $('#ens').textContent = CFG.site?.ens || '—';
+  $('#tagline').textContent = CFG.site?.tagline || T('hero.tagline','Web3 AI 24/7');
+  $('#slogan').textContent = T('hero.slogan','Multi‑source scanning, scoring, alerts.');
+  $('#pulse').textContent  = T('hero.pulse','—');
+
+  // Hero CTAs
+  const ctas = CFG.site?.hero_ctas || [
+    {label:'Binance', url:'https://www.binance.com/vi/register?ref=GRO_20338_9V44N'},
+    {label:'AlgosOne (AI Trading)', url:'https://algosone.page.link/MbtR'}
+  ];
+  $('#heroCtas').innerHTML = ctas.map(c=>`<a class="btn out" target="_blank" rel="noopener" href="${c.url}">${c.label}</a>`).join('');
+
+  // USP
+  const usp = CFG.site?.usp || [
+    {h:T('usp.whyH1','Why UltraHub?'), p:T('usp.why1','Multi‑source scan, minute refresh.')},
+    {h:T('usp.whyH2','Unlock value'),   p:T('usp.why2','Alpha feeds, heatmaps, vesting, cycles.')},
+    {h:T('usp.whyH3','How to join'),    p:T('usp.why3','Pay on/off‑chain → code → unlock.')}
+  ];
+  $('#usp').innerHTML = usp.map(u=>`<div><b>${u.h}</b><br><span style="color:#9fb3c8">${u.p}</span></div>`).join('');
+
+  // Section titles & labels
+  $('#hotTitle').textContent   = T('sections.hot','🔥 Hot opportunities');
+  $('#scanMode').textContent   = T('labels.scan','scan: data');
+  $('#refreshNow').textContent = T('labels.refresh','↻ Refresh');
+  $('#payTitle').textContent   = T('sections.pay','💳 Payments');
+  $('#minLbl').textContent     = T('labels.minimum','Minimum');
+  $('#contactLbl').textContent = T('labels.contact','Contact');
+  $('#lockTitle').textContent  = T('sections.lock','🔓 Premium content');
+  $('#howTitle').textContent   = T('labels.how','How it works');
+  $('#doUnlock').textContent   = T('labels.unlock','Unlock');
+  $('#remember').textContent   = T('labels.remember','Remember on device');
+  $('#unlockedLbl').textContent= T('labels.unlocked','✔ Unlocked');
+  $('#relock').textContent     = T('labels.relock','Lock again');
+  $('#packTitle').textContent  = T('sections.packs','🧰 Products / Reports');
+  $('#affTitle').textContent   = T('sections.aff','🤝 Affiliate');
+  $('#hubTitle').textContent   = T('sections.hub','🧭 Command Center');
+  $('#hubHint').textContent    = T('labels.hubHint','Hub to legacy tools.');
+  $('#ctaTitle')&&($('#ctaTitle').textContent=T('sections.cta','🚀 Get started'));
+  $('#autoLbl').textContent    = T('labels.always','Always‑on 24/7');
+
+  // Placeholders
+  $('#unlockCode').placeholder = T('placeholders.code','Enter unlock code…');
+  $('#txhash').placeholder     = T('placeholders.tx','(Optional) Paste TX / proof');
+}
+
+/* ===== Bind & dynamic ===== */
+function bindCommon(){
+  $('#theme').onclick=()=>setTheme(document.documentElement.classList.contains('light')?'dark':'light');
+  $('#goTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+  $('#refreshNow').onclick=()=>paintData();
+}
+
+async function paintDynamicOnce(){
+  renderPays();
+  renderAffs();
+  renderBundles('day');
+  bindTabs();
+  paintPremium(); bindPaywall();
+  renderApps();
+  await paintData();
+}
+
+function bindTabs(){
+  $('#timeTabs').onclick=e=>{
+    const t=e.target.closest('.tab'); if(!t) return;
+    $$('#timeTabs .tab').forEach(x=>x.classList.remove('act')); t.classList.add('act');
+    renderBundles(t.dataset.t);
+  };
+}
+
+function scheduleRefresh(){
+  const every=Math.max(3, Number(CFG.schedule?.refresh_minutes||10));
+  setInterval(paintData, every*60*1000);
+  setInterval(()=>$('#pulse').textContent = T('labels.updated','Updated: ') + ago(lastTS), 1000);
+}
+
+/* ===== Payments ===== */
+function renderPays(){
+  const P = CFG.payments || CFG.site?.payments || {};
+  const chains=P.chains||[]; const off=P.offchain||{};
+  const mins=(()=>{const m={}; chains.forEach(c=>{if(/ETH/i.test(c.name)) m.ETH=c.min||0.0005; if(/USDT/i.test(c.name)) m.USDT=c.min||5}); return m})();
+  $('#mins').textContent=["ETH ≥ "+(mins.ETH||0.0005),"USDT ≥ "+(mins.USDT||5)].join(", ");
+
+  const items=[];
+  chains.forEach(c=>{
+    const open="https://metamask.app.link/";
+    items.push(`
+      <div class="card"><div class="pay">
+        <img alt="QR" src="${qrlink(c.address)}" loading="lazy" title="QR">
+        <div class="meta">
+          <div class="row" style="justify-content:space-between"><b>${c.name}</b>
+            <a class="btn out" target="_blank" rel="noopener" href="${open}">${T('labels.openWallet','Open wallet/app')} ↗</a></div>
+          <div class="mono"><a href="${c.explorer||'#'}" target="_blank" rel="noopener">${c.address}</a></div>
+          ${c.explorer?`<div style="color:#9fb3c8">Explorer: <a target="_blank" rel="noopener" href="${c.explorer}">On‑chain ↗</a></div>`:""}
+          ${c.min?`<div style="color:#9fb3c8">${T('labels.minimum','Minimum')}: ${c.min}</div>`:""}
+          <div class="row" style="margin-top:8px">
+            <button class="btn" onclick="navigator.clipboard.writeText('${c.address}')">${T('labels.copy','Copy')}</button>
+            <a class="btn out" href="${qrlink(c.address)}" download>⚡ ${T('labels.dlqr','Download QR')}</a>
+          </div>
+        </div>
+      </div></div>`);
+  });
+  function payBox(label,addr,hint){return `
+    <div class="card"><div class="pay">
+      <img alt="QR" src="${qrlink(addr)}" loading="lazy">
+      <div class="meta">
+        <div class="row" style="justify-content:space-between"><b>${label}</b><span></span></div>
+        <div style="color:#9fb3c8">${hint||""}</div>
+        <div class="mono">${addr}</div>
+        <div class="row" style="margin-top:8px">
+          <button class="btn" onclick="navigator.clipboard.writeText('${addr}')">${T('labels.copy','Copy')}</button>
+          <a class="btn out" href="${qrlink(addr)}" download>⚡ ${T('labels.dlqr','Download QR')}</a>
+        </div>
+      </div>
+    </div></div>`}
+  if(off.momo) items.push(payBox("MoMo",off.momo,T('pay.momo','Vietnam MoMo wallet.')));
+  if(off.vietcombank) items.push(payBox("Vietcombank",off.vietcombank,T('pay.vcb','VCB bank transfer.')));
+  if(off.paypal) items.push(payBox("PayPal",off.paypal,`${T('pay.paypal','Pay via PayPal.')} <a target="_blank" rel="noopener" href="https://www.paypal.me/${off.paypal.split('@')[0]}">PayPal.me ↗</a>`));
+
+  $('#pays').innerHTML = items.join("");
+  const contact = (CFG.site?.contact?.email || CFG.site?.contact || CFG.site?.ens || '').toString();
+  $('#pp').innerHTML = contact ? `<a href="mailto:${contact}" target="_blank" rel="noopener">${contact}</a>` : '—';
+}
+
+/* ===== Affiliates ===== */
+function renderAffs(){
+  const A = CFG.affiliates || CFG.site?.affiliates || [];
+  $('#affs').innerHTML=A.map(a=>`<div class="affcard">
+    <div><b>${a.name}</b> · <span class="tag">${a.tag||'Partner'}</span></div>
+    <div class="actions">
+      <a class="btn" href="${a.url}" target="_blank" rel="noopener">${T('labels.join','Join/Visit')} ↗</a>
+      <button class="btn out" onclick="navigator.clipboard.writeText('${a.url}')">${T('labels.copyLink','Copy link')}</button>
+    </div>
+  </div>`).join('');
+}
+
+/* ===== Bundles ===== */
+function renderBundles(mode='day'){
+  const B=CFG.store?.bundles||[];
+  $('#bundles').innerHTML=B.map(b=>{
+    const tags=(b.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
+    return `<div class="card">
+      <div class="row" style="justify-content:space-between"><b>${b.title}</b><span class="badge">$${b.price}</span></div>
+      <div style="color:#9fb3c8">${b.desc||''}</div>
+      <div style="margin-top:6px">${tags}</div>
+      <div class="row" style="margin-top:8px"><button class="btn" onclick="document.getElementById('unlockCode').focus()">${T('labels.buy','Buy & enter code')}</button><span class="badge">${mode}</span></div>
+    </div>`;
+  }).join('');
+}
+
+/* ===== Premium + Paywall ===== */
+function paintPremium(){
+  const P=CFG.store?.premium||[];
+  $('#premium').innerHTML=P.map(p=>`<div class="card"><b>${p.title}</b>
+    <div style="color:#9fb3c8">${p.desc||''}</div>
+    ${p.bullets?`<ul>${p.bullets.map(x=>`<li>${x}</li>`).join('')}</ul>`:""}
+    ${p.link?`<a class="btn out" target="_blank" rel="noopener" href="${p.link}">${T('labels.openData','Open data')} ↗</a>`:""}
+  </div>`).join('');
+}
+function bindPaywall(){
+  const SECRET=String(CFG.secrets?.unlock_code||'23061988');
+  const saved=localStorage.getItem('unlocked_code')||'';
+  function gate(open){$('#locked').classList.toggle('hidden',open);$('#opened').classList.toggle('hidden',!open);}
+
+  // i18n texts
+  $('#remember').textContent=T('labels.remember','Remember on device');
+  $('#relock').textContent=T('labels.relock','Lock again');
+
+  if(saved===SECRET){gate(true); paintPremium(); const th=localStorage.getItem('tx_hash'); if(th) $('#uMsg').innerHTML='<span class="ok">TX: '+th+'</span>';}
+  $('#doUnlock').onclick=()=>{const code=$('#unlockCode').value.trim(),tx=$('#txhash').value.trim();
+    if(code===SECRET){gate(true); paintPremium(); $('#uMsg').innerHTML='<span class="ok">'+T('labels.unlocked','Unlocked!')+'</span>'; if(tx) localStorage.setItem('tx_hash',tx); localStorage.setItem('unlocked_code',code);}
+    else $('#uMsg').innerHTML='<span class="err">'+T('labels.badcode','Invalid code.')+'</span>';};
+  $('#remember').onclick=()=>{const c=$('#unlockCode').value.trim(); if(c){localStorage.setItem('unlocked_code',c); $('#uMsg').textContent=T('labels.saved','Saved on device.')}};
+  $('#relock').onclick=()=>{localStorage.removeItem('unlocked_code'); gate(false);};
+}
+
+/* ===== Apps ===== */
+function renderApps(){
+  const names = CFG.apps || ["dex.html","hyper_v2.html","pro.html","super_auto.html","super_share.html","xportal.html"];
+  $('#apps').innerHTML = names.map(n=>`<a href="${n}" target="_blank" rel="noopener">${n.replace('.html','').replaceAll('_',' ').toUpperCase()}</a>`).join('');
+}
+
+/* ===== Data (ticker + alert) ===== */
+async function paintData(){
+  const latest=await j(CFG.heartbeat?.data_url || 'data/latest.json');
+  lastTS=Date.now();
+  if(latest && Array.isArray(latest.items)){
+    $('#hb').textContent='LIVE'; $('#scanMode').textContent=T('labels.scan','scan: data');
+    renderOpps(latest.items, latest.generated_at); return;
+  }
+  $('#hb').textContent='—'; $('#scanMode').textContent=T('labels.scanFallback','scan: fallback');
+  $('#ticker').textContent='—'; $('#opps').innerHTML='<div style="color:#9fb3c8">—</div>';
+}
+
+function renderOpps(items, ts){
+  if(ts) $('#pulse').textContent = T('labels.updated','Updated: ') + ago(ts);
+  // ticker
+  $('#ticker').innerHTML = items.map(x=>`<span class="tag">${x.symbol}: $${fmt(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join('') || '—';
+
+  // alert
+  const maxAbs = items?.length ? Math.max(...items.map(x=>Math.abs(x.ch24h||0))) : 0;
+  const ALERT_TH = CFG.alert?.threshold_pct ?? 12;
+  const alertBox = $('#alertBox');
+  if(maxAbs>=ALERT_TH){ alertBox.classList.remove('hidden'); alertBox.innerHTML = `⚠️ <b>Alert:</b> ${T('labels.largeMove','Large move')} (${maxAbs.toFixed(2)}%) – ${T('labels.checkBelow','check opportunities below.')}`; }
+  else { alertBox.classList.add('hidden'); alertBox.textContent=''; }
+
+  // list
+  $('#opps').innerHTML=(items||[]).slice(0, CFG.ui?.cards?.max_items || 12).map(x=>{
+    const ch=x.ch24h||0, pct=`${ch>=0?'+':''}${ch.toFixed(2)}%`;
+    return `<div class="item">
+      <div class="score">+${(x.score||0).toFixed(2)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="row" style="justify-content:space-between;gap:8px">
+          <div><b>${x.symbol}</b> · <span style="color:#9fb3c8">${x.name||''}</span></div>
+          ${x.link?`<a class="btn out" target="_blank" rel="noopener" href="${x.link}">${T('labels.details','Details')} ↗</a>`:''}
+        </div>
+        <div class="row" style="gap:8px">
+          <span class="tag">${T('labels.price','Price')}: $${fmt(x.price||0)}</span>
+          <span class="tag ${ch>=0?'':'err'}">24h: ${pct}</span>
+          ${x.vol24h?`<span class="tag">${T('labels.volume','Volume')}: $${fmt(x.vol24h)}</span>`:''}
+          <span class="tag">Src: ${x.source||'—'}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('') || '<div style="color:#9fb3c8">—</div>';
+}
+</script>
+</body>
+</html>
