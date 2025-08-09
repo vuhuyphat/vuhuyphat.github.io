@@ -70,7 +70,7 @@ position:relative;box-shadow:0 18px 34px var(--shadow)}
 @media(max-width:900px){.paygrid{grid-template-columns:1fr}}
 .qrbox{display:flex;gap:12px}
 .qrbox img{width:140px;height:140px;border-radius:12px;border:1px solid var(--line);background:#000}
-.input{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0e1720;color:var(--txt}
+.input{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0e1720;color:var(--txt)}
 .note{color:#9fb3c8}
 .shop-card{padding:14px;border:1px solid var(--line);border-radius:12px;background:#0e1720}
 
@@ -85,6 +85,12 @@ position:relative;box-shadow:0 18px 34px var(--shadow)}
 
 /* Footer CTA */
 .footer-cta{border:1px dashed var(--line);border-radius:14px;padding:12px;background:linear-gradient(180deg,rgba(18,53,36,.3),transparent)}
+
+/* Modal (Premium Data) */
+#dataModal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;place-items:center;z-index:9999}
+#dataModal.show{display:grid}
+#dataModal .box{width:min(92vw,900px);height:min(80vh,700px);background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+#dataModal header{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -259,10 +265,10 @@ position:relative;box-shadow:0 18px 34px var(--shadow)}
   </div>
 </div>
 
-<!-- Modal hiển thị dữ liệu premium (fix 404) -->
-<div id="dataModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.6);display:grid;place-items:center;z-index:99">
-  <div style="width:min(92vw,900px);height:min(80vh,700px);background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column">
-    <header style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)">
+<!-- Modal hiển thị dữ liệu premium -->
+<div id="dataModal" aria-hidden="true">
+  <div class="box" role="dialog" aria-label="Dữ liệu Premium">
+    <header>
       <b>Dữ liệu Premium</b>
       <button class="btn" id="closeData">Đóng</button>
     </header>
@@ -296,7 +302,11 @@ $('#goTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
   $('#sh_x').href =`https://twitter.com/intent/tweet?text=${t}&url=${u}`;
   $('#sh_fb').href=`https://www.facebook.com/sharer/sharer.php?u=${u}`;
   $('#sh_in').href=`https://www.linkedin.com/sharing/share-offsite/?url=${u}`;
-  $('#shareMine').onclick=async()=>{try{if(navigator.share){await navigator.share({title:document.title,text:'Khám phá UltraMaster V18',url:myRef});}else{await navigator.clipboard.writeText(myRef);alert('Đã sao chép liên kết của bạn!');}}catch(_){}}; 
+  $('#shareMine')?.addEventListener('click', async()=>{
+    try{ if(navigator.share){await navigator.share({title:document.title,text:'Khám phá UltraMaster V18',url:myRef});}
+         else{await navigator.clipboard.writeText(myRef);alert('Đã sao chép liên kết của bạn!');} }
+    catch(_){ }
+  });
   const refBy=localStorage.getItem('ref_by'); if(refBy){const badge=document.createElement('div');badge.className='pill';badge.style.marginTop='8px';badge.textContent='✨ Bạn truy cập từ liên kết giới thiệu. Chào mừng!'; $('#belowGlobe')?.appendChild(badge);}
 })();
 
@@ -490,7 +500,7 @@ function smartReply(q){
   $('#chatSend').onclick=()=>{const v=$('#chatIn').value.trim(); if(!v) return; addBubble(v,'me'); $('#chatIn').value=''; addBubble(smartReply(v),'ai');};
 })();
 
-/* ===== Modal data (fix 404) ===== */
+/* ===== Modal data (fix đóng mở) ===== */
 const PREMIUM_DATA={
   updated_at:new Date().toISOString(),
   alpha_feed:[
@@ -500,9 +510,23 @@ const PREMIUM_DATA={
   ],
   deals:[{name:"Seed/Private-DeFiX", note:"Allocation nhỏ, vesting 12m – cân đối rủi ro."}]
 };
-function openDataModal(){ $('#dataPre').textContent=JSON.stringify(PREMIUM_DATA,null,2); $('#dataModal').classList.remove('hidden'); }
+function openDataModal(){
+  $('#dataPre').textContent=JSON.stringify(PREMIUM_DATA,null,2);
+  $('#dataModal').classList.add('show');
+  document.body.style.overflow='hidden';
+  $('#dataModal').setAttribute('aria-hidden','false');
+}
 $('#openData')?.addEventListener('click', openDataModal);
-$('#closeData')?.addEventListener('click', ()=>$('#dataModal').classList.add('hidden'));
+$('#closeData')?.addEventListener('click', closeDataModal);
+// Đóng khi click ra ngoài hộp
+$('#dataModal')?.addEventListener('click', (e)=>{ if(e.target.id==='dataModal') closeDataModal(); });
+// Đóng bằng phím ESC
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && $('#dataModal').classList.contains('show')) closeDataModal(); });
+function closeDataModal(){
+  $('#dataModal').classList.remove('show');
+  document.body.style.overflow='';
+  $('#dataModal').setAttribute('aria-hidden','true');
+}
 
 /* ===== Live counters ===== */
 (function peers(){
@@ -514,9 +538,6 @@ $('#closeData')?.addEventListener('click', ()=>$('#dataModal').classList.add('hi
 /* ===== Loops ===== */
 async function boot(){ await fetchLive(); setInterval(fetchLive, 60*1000); }
 boot();
-
-/* ===== Theme switch label ===== */
-$('#theme')?.addEventListener('click',()=>{});
 </script>
 </body>
 </html>
