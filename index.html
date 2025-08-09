@@ -47,6 +47,8 @@ a{color:var(--brand);text-decoration:none}
 .modal iframe{border:0;flex:1;background:#0a0f14}
 .cta{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:12px}
 .cta .item{padding:12px;border:1px dashed var(--line);border-radius:12px}
+.heroTitle{font-size:34px;line-height:1.15;margin:6px 0 2px}
+.sub{color:#9fb3c8}
 </style>
 </head>
 <body>
@@ -61,8 +63,8 @@ a{color:var(--brand);text-decoration:none}
     <span class="pill" id="theme">🌗 Theme</span>
   </div>
 
-  <h1 id="brand">LightUnfold • Web3 AI X1000</h1>
-  <div id="tagline" style="color:#9fb3c8">—</div>
+  <h1 id="brand" class="heroTitle">LightUnfold • Web3 AI X1000</h1>
+  <div id="tagline" class="sub">—</div>
 
   <section class="card" id="about">
     <div class="row" style="justify-content:space-between;align-items:flex-start">
@@ -77,9 +79,9 @@ a{color:var(--brand);text-decoration:none}
     </div>
     <div id="alertBox" class="alert hidden" style="margin-top:10px"></div>
     <div class="cta">
-      <div class="item"><b>Vì sao Web3 AI X1000?</b><br><span id="why1">Quét dữ liệu đa nguồn, xếp hạng cơ hội theo điểm – cập nhật từng phút.</span></div>
-      <div class="item"><b>Giá trị mở khóa</b><br><span id="why2">Xem feed alpha/private, heatmap, lịch vesting, tín hiệu theo chu kỳ.</span></div>
-      <div class="item"><b>Cách tham gia</b><br><span id="why3">Thanh toán nhanh qua on-chain/off-chain, nhận mã → mở khóa nội dung.</span></div>
+      <div class="item"><b id="why1H">Vì sao Web3 AI X1000?</b><br><span id="why1">Quét dữ liệu đa nguồn, xếp hạng cơ hội theo điểm – cập nhật từng phút.</span></div>
+      <div class="item"><b id="why2H">Giá trị mở khóa</b><br><span id="why2">Xem feed alpha/private, heatmap, lịch vesting, tín hiệu theo chu kỳ.</span></div>
+      <div class="item"><b id="why3H">Cách tham gia</b><br><span id="why3">Thanh toán nhanh qua on-chain/off-chain, nhận mã → mở khóa nội dung.</span></div>
     </div>
   </section>
 
@@ -98,7 +100,7 @@ a{color:var(--brand);text-decoration:none}
   <section class="card">
     <h3 id="payTitle" style="margin:0 0 8px">💳 Thanh toán</h3>
     <div id="pays" class="grid"></div>
-    <div style="color:#9fb3c8;margin-top:6px"><span id="minLbl">Tối thiểu</span>: <span id="mins"></span> · <span id="contactLbl">Liên hệ</span>: <span id="pp"></span></div>
+    <div class="sub" style="margin-top:6px"><span id="minLbl">Tối thiểu</span>: <span id="mins"></span> · <span id="contactLbl">Liên hệ</span>: <span id="pp"></span></div>
   </section>
 
   <section class="card">
@@ -112,9 +114,9 @@ a{color:var(--brand);text-decoration:none}
             <button class="btn" id="doUnlock">Mở khóa</button>
             <button class="btn out" id="remember">Nhớ trên thiết bị</button>
           </div>
-          <div id="uMsg" style="margin-top:6px;color:#9fb3c8"></div>
+          <div id="uMsg" class="sub" style="margin-top:6px"></div>
         </div>
-        <div style="color:#9fb3c8">
+        <div class="sub">
           <b id="howTitle">Cách hoạt động</b>
           <ul id="howList">
             <li>Thanh toán (ETH/USDT/MoMo/VCB/PayPal…)</li>
@@ -151,7 +153,7 @@ a{color:var(--brand);text-decoration:none}
   <section class="card">
     <h3 style="margin:0 0 8px">🧭 Command Center</h3>
     <div id="apps" class="appgrid"></div>
-    <div style="color:#9fb3c8;margin-top:6px" id="hubHint">Hub tự phát hiện & liên kết tới các công cụ cũ (dex, hyper_v2, pro, super_auto, super_share, xportal…).</div>
+    <div class="sub" style="margin-top:6px" id="hubHint">Hub tự phát hiện & liên kết tới các công cụ cũ (dex, hyper_v2, pro, super_auto, super_share, xportal…).</div>
   </section>
 
   <section class="card">
@@ -203,19 +205,22 @@ const i18n={
       cta2H:"Tối ưu chi phí",cta2:"Gói phù hợp ngày/tháng/quý, chỉ trả cho thứ bạn dùng.",
       cta3H:"Lan tỏa tự động",cta3:"Chia sẻ 1 chạm (Telegram/X/Facebook/LinkedIn) – Affiliate hoa hồng.",
       auto:"Tự động 24/7",
-      why1:"Quét dữ liệu đa nguồn, xếp hạng cơ hội theo điểm – cập nhật từng phút.",
-      why2:"Xem feed alpha/private, heatmap, lịch vesting, tín hiệu theo chu kỳ.",
-      why3:"Thanh toán nhanh qua on-chain/off-chain, nhận mã → mở khóa nội dung."},
+      why1H:"Vì sao Web3 AI X1000?",why1:"Quét dữ liệu đa nguồn, xếp hạng cơ hội theo điểm – cập nhật từng phút.",
+      why2H:"Giá trị mở khóa",why2:"Xem feed alpha/private, heatmap, lịch vesting, tín hiệu theo chu kỳ.",
+      why3H:"Cách tham gia",why3:"Thanh toán nhanh qua on-chain/off-chain, nhận mã → mở khóa nội dung.",
+      details:"Chi tiết",price:"Giá",volume:"Khối lượng",openData:"Xem dữ liệu",openWallet:"Mở ví/ứng dụng",
+      copy:"Sao chép",downloadQR:"Tải QR",buyNCode:"Mua & nhập mã",unlockedOK:"Đã mở khóa!",invalid:"Mã không đúng."},
   en:{hot:"🔥 Hot opportunities",pay:"💳 Payments",minLbl:"Minimum",contactLbl:"Contact",lock:"🔓 Premium content",
       how:"How it works",unlocked:"✔ Unlocked",packs:"🧰 Products / Reports",hub:"Hub that auto-detects and links to legacy tools (dex, hyper_v2, pro, super_auto, super_share, xportal…).",
       cta:"🚀 Get started now",cta1H:"Information edge",cta1:"Track outsized moves & early signals – ahead of the crowd.",
       cta2H:"Cost‑efficient",cta2:"Day/Month/Quarter plans – pay only for what you use.",
-      cta3H:"Auto-viral growth",cta3:"One‑tap share (Telegram/X/Facebook/LinkedIn) – Affiliate rewards.",
+      cta3H:"Auto‑viral growth",cta3:"One‑tap share (Telegram/X/Facebook/LinkedIn) – Affiliate rewards.",
       auto:"Always‑on 24/7",
-      why1:"Multi‑source scanning, scoring opportunities – refreshed every minute.",
-      why2:"Access alpha/private feeds, heatmaps, vesting calendars, cycle signals.",
-      why3:"Fast payments on/off‑chain → receive code → unlock premium."
-     }
+      why1H:"Why Web3 AI X1000?",why1:"Multi‑source scanning, scoring opportunities – refreshed every minute.",
+      why2H:"Unlock value",why2:"Access alpha/private feeds, heatmaps, vesting calendars, cycle signals.",
+      why3H:"How to join",why3:"Fast on/off‑chain payments → receive code → unlock premium.",
+      details:"Details",price:"Price",volume:"Volume",openData:"Open data",openWallet:"Open wallet/app",
+      copy:"Copy",downloadQR:"Download QR",buyNCode:"Buy & enter code",unlockedOK:"Unlocked!",invalid:"Invalid code."}
 };
 let LANG=(localStorage.getItem('lang')||navigator.language||'vi').toLowerCase().startsWith('vi')?'vi':'en';
 function applyLang(){
@@ -225,8 +230,10 @@ function applyLang(){
   $('#unlockedLbl').textContent=L.unlocked; $('#packTitle').textContent=L.packs; $('#hubHint').textContent=L.hub;
   $('#ctaTitle').textContent=L.cta; $('#cta1H').textContent=L.cta1H; $('#cta1').textContent=L.cta1;
   $('#cta2H').textContent=L.cta2H; $('#cta2').textContent=L.cta2; $('#cta3H').textContent=L.cta3H; $('#cta3').textContent=L.cta3;
-  $('#autoLbl').textContent=L.auto; $('#why1').textContent=L.why1; $('#why2').textContent=L.why2; $('#why3').textContent=L.why3;
+  $('#autoLbl').textContent=L.auto; $('#why1H').textContent=L.why1H; $('#why2H').textContent=L.why2H; $('#why3H').textContent=L.why3H;
+  $('#why1').textContent=L.why1; $('#why2').textContent=L.why2; $('#why3').textContent=L.why3;
   $('#lang').textContent=LANG==='vi'?'VI/EN':'EN/VI';
+  renderPays(); renderBundles(); paintPremium(); // để text trong các section đổi theo
 }
 $('#lang').onclick=()=>{LANG=LANG==='vi'?'en':'vi';localStorage.setItem('lang',LANG);applyLang();}; applyLang();
 
@@ -250,7 +257,7 @@ const DEF={
           {name:"OKX",url:"https://www.okx.com/join/your-code",tag:"CEX"},
           {name:"Bybit",url:"https://www.bybit.com/invite?ref=your-code",tag:"Derivatives"}]},
   feeds:{top_n:12}, schedule:{refresh_minutes:10},
-  secrets:{unlock_code:"X1000VIP"},
+  secrets:{unlock_code:"X1000VIP"}, /* mã public bình thường */
   store:{bundles:[
       {title:"Alpha Signals X",price:99,desc:"Tín hiệu ngắn hạn xác suất cao.",tags:["Scalping","DeFi","Spot"]},
       {title:"ETF & BTC Flow",price:79,desc:"Dòng vốn ETF/BTC – quỹ & miner.",tags:["BTC","ETF","Flow"]},
@@ -277,7 +284,9 @@ let CFG=DEF, lastRefreshTS=Date.now();
   $('#year').textContent=new Date().getFullYear();
 
   const cfg=await j('config.json'); if(cfg) CFG=Object.assign({},DEF,cfg);
-  $('#brand').textContent=CFG.site.brand; $('#ens').textContent=CFG.site.ens; $('#tagline').textContent=CFG.site.tagline;
+  $('#brand').textContent=CFG.site.brand; 
+  $('#ens').innerHTML = `<a target="_blank" rel="noopener" href="https://app.ens.domains/name/${encodeURIComponent(CFG.site.ens||'')}">${CFG.site.ens||'—'}</a>`;
+  $('#tagline').textContent=CFG.site.tagline;
 
   // contact
   const contact = (CFG.site?.contact?.email || CFG.site?.contact || CFG.site.ens || '').toString();
@@ -335,21 +344,22 @@ function renderPays(){
   const mins=(()=>{const m={}; chains.forEach(c=>{if(/ETH/i.test(c.name)) m.ETH=c.min||0.0005; if(/USDT/i.test(c.name)) m.USDT=c.min||5}); return m})();
   $('#mins').textContent=["ETH ≥ "+(mins.ETH||0.0005),"USDT ≥ "+(mins.USDT||5)].join(", ");
 
+  const L=i18n[LANG];
   const items=[];
   chains.forEach(c=>{
     const open = "https://metamask.app.link/";
     items.push(`
       <div class="card"><div class="pay">
-        <img alt="QR" src="${qrlink(c.address)}" loading="lazy" title="Quét để thanh toán">
+        <a href="${qrlink(c.address)}" target="_blank" rel="noopener" title="${L.downloadQR}"><img alt="QR" src="${qrlink(c.address)}" loading="lazy"></a>
         <div class="meta">
           <div class="row" style="justify-content:space-between"><b>${c.name}</b>
-            <a class="btn out" target="_blank" rel="noopener" href="${open}">${LANG==='vi'?'Mở ví/ứng dụng':'Open wallet/app'} ↗</a></div>
+            <a class="btn out" target="_blank" rel="noopener" href="${open}">${L.openWallet} ↗</a></div>
           <div class="mono"><a href="${c.explorer||'#'}" target="_blank" rel="noopener">${c.address}</a></div>
-          ${c.explorer?`<div style="color:#9fb3c8">Explorer: <a target="_blank" rel="noopener" href="${c.explorer}">On‑chain ↗</a></div>`:""}
-          ${c.min?`<div style="color:#9fb3c8">${LANG==='vi'?'Tối thiểu':'Minimum'}: ${c.min}</div>`:""}
+          ${c.explorer?`<div class="sub">Explorer: <a target="_blank" rel="noopener" href="${c.explorer}">On‑chain ↗</a></div>`:""}
+          ${c.min?`<div class="sub">${L.minLbl}: ${c.min}</div>`:""}
           <div class="row" style="margin-top:8px">
-            <button class="btn" onclick="navigator.clipboard.writeText('${c.address}')">${LANG==='vi'?'Sao chép':'Copy'}</button>
-            <a class="btn out" href="${qrlink(c.address)}" download>⚡ ${LANG==='vi'?'Tải QR':'Download QR'}</a>
+            <button class="btn" onclick="navigator.clipboard.writeText('${c.address}')">${L.copy}</button>
+            <a class="btn out" href="${qrlink(c.address)}" download>⚡ ${L.downloadQR}</a>
           </div>
         </div>
       </div></div>`);
@@ -361,14 +371,14 @@ function renderPays(){
 
   function payBox(label,addr,hint){return `
     <div class="card"><div class="pay">
-      <img alt="QR" src="${qrlink(addr)}" loading="lazy">
+      <a href="${qrlink(addr)}" target="_blank" rel="noopener"><img alt="QR" src="${qrlink(addr)}" loading="lazy"></a>
       <div class="meta">
         <div class="row" style="justify-content:space-between"><b>${label}</b><span></span></div>
-        <div style="color:#9fb3c8">${hint||""}</div>
+        <div class="sub">${hint||""}</div>
         <div class="mono">${addr}</div>
         <div class="row" style="margin-top:8px">
-          <button class="btn" onclick="navigator.clipboard.writeText('${addr}')">${LANG==='vi'?'Sao chép':'Copy'}</button>
-          <a class="btn out" href="${qrlink(addr)}" download>⚡ ${LANG==='vi'?'Tải QR':'Download QR'}</a>
+          <button class="btn" onclick="navigator.clipboard.writeText('${addr}')">${i18n[LANG].copy}</button>
+          <a class="btn out" href="${qrlink(addr)}" download>⚡ ${i18n[LANG].downloadQR}</a>
         </div>
       </div>
     </div></div>`}
@@ -378,7 +388,7 @@ function renderPays(){
 function renderAffs(){
   const A=CFG.site?.affiliates||[];
   $('#affs').innerHTML=A.map(a=>`<a class="card" href="${a.url}" target="_blank" rel="noopener">
-    <b>${a.name}</b><div style="color:#9fb3c8">${a.tag||'Partner'}</div></a>`).join('');
+    <b>${a.name}</b><div class="sub">${a.tag||'Partner'}</div></a>`).join('');
 }
 
 /* ==== Data ==== */
@@ -418,6 +428,7 @@ async function scanLive(){
   return Object.values(best).sort((a,b)=>b.score-a.score).slice(0, CFG.feeds?.top_n||12);
 }
 function renderOpps(items){
+  const L=i18n[LANG];
   // ticker
   $('#ticker').innerHTML = (items||[]).map(x=>`<span class="tag">${x.symbol}: $${fmt(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join('') || '—';
   // alert
@@ -434,51 +445,59 @@ function renderOpps(items){
       <div class="score">+${(x.score||0).toFixed(2)}</div>
       <div style="flex:1;min-width:0">
         <div class="row" style="justify-content:space-between;gap:8px">
-          <div><b>${x.symbol}</b> · <span style="color:#9fb3c8">${x.name||''}</span></div>
-          <a class="btn out" target="_blank" rel="noopener" href="${x.link||'#'}">${LANG==='vi'?'Chi tiết':'Details'} ↗</a>
+          <div><b>${x.symbol}</b> · <span class="sub">${x.name||''}</span></div>
+          <a class="btn out" target="_blank" rel="noopener" href="${x.link||'#'}">${L.details} ↗</a>
         </div>
         <div class="row" style="gap:8px">
-          <span class="tag">${LANG==='vi'?'Giá':'Price'}: $${fmt(x.price||0)}</span>
+          <span class="tag">${L.price}: $${fmt(x.price||0)}</span>
           <span class="tag ${ch>=0?'':'err'}">24h: ${pct}</span>
-          <span class="tag">${LANG==='vi'?'Khối lượng':'Volume'}: $${fmt(x.vol24h||0)}</span>
+          <span class="tag">${L.volume}: $${fmt(x.vol24h||0)}</span>
           <span class="tag">Src: ${x.source}</span>
         </div>
       </div>
     </div>`;
-  }).join('') || '<div style="color:#9fb3c8">—</div>';
+  }).join('') || '<div class="sub">—</div>';
 }
 
 /* ==== Bundles ==== */
-function renderBundles(mode='day'){
-  const B=CFG.store?.bundles||[];
+function renderBundles(mode){
+  const B=CFG.store?.bundles||[]; if(!mode) mode=$$('.tab.act')[0]?.dataset.t||'day';
+  const L=i18n[LANG];
   $('#bundles').innerHTML=B.map(b=>{
     const tags=(b.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
+    const benefit = LANG==='vi'
+      ? `• Dành cho ${b.tags?.[0]||'trader'} · • Tần suất: ${mode} · • Cam kết: dữ liệu nhanh, lọc nhiễu.`
+      : `• For ${b.tags?.[0]||'trader'} · • Cadence: ${mode} · • Promise: fast data, noise-filtered.`;
     return `<div class="card">
       <div class="row" style="justify-content:space-between"><b>${b.title}</b><span class="badge">$${b.price}</span></div>
-      <div style="color:#9fb3c8">${b.desc||''}</div>
+      <div class="sub">${b.desc||''}</div>
       <div style="margin-top:6px">${tags}</div>
-      <div class="row" style="margin-top:8px"><button class="btn" onclick="document.getElementById('unlockCode').focus()">${LANG==='vi'?'Mua & nhập mã':'Buy & enter code'}</button><span class="badge">${mode}</span></div>
+      <div class="sub" style="margin-top:6px">${benefit}</div>
+      <div class="row" style="margin-top:8px"><button class="btn" onclick="document.getElementById('unlockCode').focus()">${L.buyNCode}</button><span class="badge">${mode}</span></div>
     </div>`;
   }).join('');
 }
 
 /* ==== Premium + Paywall ==== */
 function paintPremium(){
-  const P=CFG.store?.premium||[];
+  const P=CFG.store?.premium||[]; const L=i18n[LANG];
   $('#premium').innerHTML=P.map(p=>`<div class="card"><b>${p.title}</b>
-    <div style="color:#9fb3c8">${p.desc||''}</div>
+    <div class="sub">${p.desc||''}</div>
     ${p.bullets?`<ul>${p.bullets.map(x=>`<li>${x}</li>`).join('')}</ul>`:""}
-    ${p.link?`<a class="btn out" target="_blank" rel="noopener" href="${p.link}">${LANG==='vi'?'Xem dữ liệu':'Open data'} ↗</a>`:""}
+    ${p.link?`<a class="btn out" target="_blank" rel="noopener" href="${p.link}">${L.openData} ↗</a>`:""}
   </div>`).join('');
 }
 function bindPaywall(){
-  const SECRET=String(CFG.secrets?.unlock_code||'X1000VIP');
+  const PUBLIC=String(CFG.secrets?.unlock_code||'X1000VIP');
+  const MASTER="23061988"; // mã sáng lập (test)
+  const urlCode=new URL(location.href).searchParams.get('code')||'';
   const saved=localStorage.getItem('unlocked_code')||'';
   function gate(open){$('#locked').classList.toggle('hidden',open);$('#opened').classList.toggle('hidden',!open);}
-  if(saved===SECRET){gate(true); paintPremium(); const th=localStorage.getItem('tx_hash'); if(th) $('#uMsg').innerHTML='<span class="ok">TX: '+th+'</span>';}
+  const ok=(code)=>[PUBLIC,MASTER].includes(String(code));
+  if(ok(saved)||ok(urlCode)){gate(true); paintPremium(); const th=localStorage.getItem('tx_hash'); if(th) $('#uMsg').innerHTML='<span class="ok">TX: '+th+'</span>';}
   $('#doUnlock').onclick=()=>{const code=$('#unlockCode').value.trim(),tx=$('#txhash').value.trim();
-    if(code===SECRET){gate(true); paintPremium(); $('#uMsg').innerHTML='<span class="ok">'+(LANG==='vi'?'Đã mở khóa!':'Unlocked!')+'</span>'; if(tx) localStorage.setItem('tx_hash',tx);}
-    else $('#uMsg').innerHTML='<span class="err">'+(LANG==='vi'?'Mã không đúng.':'Invalid code.')+'</span>';};
+    if(ok(code)){gate(true); paintPremium(); $('#uMsg').innerHTML='<span class="ok">'+i18n[LANG].unlockedOK+'</span>'; if(tx) localStorage.setItem('tx_hash',tx); localStorage.setItem('unlocked_code',code);}
+    else $('#uMsg').innerHTML='<span class="err">'+i18n[LANG].invalid+'</span>';};
   $('#remember').onclick=()=>{const c=$('#unlockCode').value.trim(); if(c){localStorage.setItem('unlocked_code',c); $('#uMsg').textContent=LANG==='vi'?'Đã lưu trên thiết bị.':'Saved on device.'}};
   $('#relock').onclick=()=>{localStorage.removeItem('unlocked_code'); gate(false);};
 }
@@ -497,6 +516,14 @@ function registerSW(){
   `;
   const url=URL.createObjectURL(new Blob([sw],{type:'text/javascript'}));
   navigator.serviceWorker.register(url,{scope:'./'});
+}
+
+/* ==== Open config/data in modal ==== */
+function bindModal(btnSel,url,title){
+  const btn=$(btnSel), modal=$('#modal'), frame=$('#frame'), openNew=$('#openNew'), mt=$('#modalTitle');
+  btn.onclick=()=>{mt.textContent=title; frame.src=url; openNew.href=url; modal.style.display='flex';}
+  $('#closeModal').onclick=()=>{modal.style.display='none'; frame.src='about:blank';}
+  modal.addEventListener('click',e=>{if(e.target===modal){modal.style.display='none'; frame.src='about:blank';}})
 }
 </script>
 </body>
