@@ -2,36 +2,48 @@
   "site": {
     "brand": "LightUnfold • Web3 AI X1000",
     "ens": "lightunfold.eth",
-    "tagline": "20,000+ AI • 200+ quốc gia • 200+ ngôn ngữ • tự động 24/7 • chuyển đổi X1000",
+    "tagline": "20,000+ AI • 200+ quốc gia • 200+ ngôn ngữ • Tự động 24/7 • Chuyển đổi X1000",
     "locale_default": "vi",
     "locales": ["vi","en","es","fr","de","ja","ko","zh"],
     "contact": {
       "email": "vumumabada@gmail.com",
       "telegram": "https://t.me/+0000000000",
       "discord": "https://discord.gg/placeholder"
-    },
-
-    "payments": {
-      "qr_auto": true,
-      "chains": [
-        { "name": "ETH (EVM)",    "address": "0x54E15A7b6d4213beE87800432A151d794638E3C2", "explorer": "https://etherscan.io/address/0x54E15A7b6d4213beE87800432A151d794638E3C2" },
-        { "name": "USDT (ERC20)", "address": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0", "explorer": "https://etherscan.io/token/USDT?a=0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0" }
-      ],
-      "offchain": { "momo": "0567892030", "vietcombank": "9567892030", "paypal": "vumumabada@gmail.com" },
-      "minimums": { "ETH": 0.0005, "USDT": 5 }
-    },
-
-    "affiliates": [
-      { "name": "Binance",  "url": "https://www.binance.com/vi/register?ref=GRO_20338_9V44N", "tag": "Top CEX" },
-      { "name": "AlgosOne", "url": "https://algosone.page.link/MbtR", "tag": "AI Trading" },
-      { "name": "OKX",      "url": "https://www.okx.com/join/your-code", "tag": "CEX" },
-      { "name": "Bybit",    "url": "https://www.bybit.com/invite?ref=your-code", "tag": "Derivatives" }
-    ]
+    }
   },
+
+  "payments": {
+    "qr_auto": true,
+    "chains": [
+      {
+        "name": "ETH (EVM)",
+        "address": "0x54E15A7b6d4213beE87800432A151d794638E3C2",
+        "explorer": "https://etherscan.io/address/0x54E15A7b6d4213beE87800432A151d794638E3C2"
+      },
+      {
+        "name": "USDT (ERC20)",
+        "address": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",
+        "explorer": "https://etherscan.io/token/USDT?a=0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0"
+      }
+    ],
+    "offchain": {
+      "momo": "0567892030",
+      "vietcombank": "9567892030",
+      "paypal": "vumumabada@gmail.com"
+    },
+    "minimums": { "ETH": 0.0005, "USDT": 5 }
+  },
+
+  "affiliates": [
+    { "name": "Binance",  "url": "https://www.binance.com/vi/register?ref=GRO_20338_9V44N", "tag": "Top CEX" },
+    { "name": "AlgosOne", "url": "https://algosone.page.link/MbtR", "tag": "AI Trading" },
+    { "name": "OKX",      "url": "https://www.okx.com/join/your-code", "tag": "CEX" },
+    { "name": "Bybit",    "url": "https://www.bybit.com/invite?ref=your-code", "tag": "Derivatives" }
+  ],
 
   "seo": {
     "title": "LightUnfold • Web3 AI X1000 – Tự động 24/7",
-    "description": "Nền tảng Web3 AI cập nhật tự động 24/7, quét đa nguồn, cơ hội nổi bật, thanh toán on/off‑chain, affiliate toàn cầu.",
+    "description": "Nền tảng Web3 AI cập nhật tự động 24/7, quét đa nguồn, cơ hội nổi bật, thanh toán on/off-chain, affiliate toàn cầu.",
     "keywords": ["web3","ai","crypto","defi","coingecko","trading","affiliate","payments","onchain","automation"],
     "image": "https://vuhuyphat.github.io/assets/og-cover.png",
     "twitter": "@LightUnfold",
@@ -41,8 +53,19 @@
   "ui": {
     "theme": "dark",
     "accent": "#ff9800",
-    "show_sections": { "opportunities": true, "payments": true, "affiliates": true },
-    "cards": { "max_items": 12, "show_change_24h": true, "show_volume_24h": true, "show_links": true }
+    "show_sections": {
+      "opportunities": true,
+      "payments": true,
+      "affiliates": true,
+      "store": true,
+      "unlock_qr": true
+    },
+    "cards": {
+      "max_items": 12,
+      "show_change_24h": true,
+      "show_volume_24h": true,
+      "show_links": true
+    }
   },
 
   "feeds": {
@@ -59,35 +82,18 @@
 
   "heartbeat": { "enabled": true, "text_ok": "OK", "data_url": "data/latest.json" },
 
-  "payments": {                       // (bản sao để trang cũ/khác vẫn nhận)
-    "qr_auto": true,
-    "chains": [
-      { "name": "ETH (EVM)",    "address": "0x54E15A7b6d4213beE87800432A151d794638E3C2", "explorer": "https://etherscan.io/address/0x54E15A7b6d4213beE87800432A151d794638E3C2" },
-      { "name": "USDT (ERC20)", "address": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0", "explorer": "https://etherscan.io/token/USDT?a=0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0" }
-    ],
-    "offchain": { "momo": "0567892030", "vietcombank": "9567892030", "paypal": "vumumabada@gmail.com" },
-    "minimums": { "ETH": 0.0005, "USDT": 5 }
-  },
-
-  "affiliates": [                     // (bản sao như trên cho tương thích)
-    { "name": "Binance",  "url": "https://www.binance.com/vi/register?ref=GRO_20338_9V44N", "tag": "Top CEX" },
-    { "name": "AlgosOne", "url": "https://algosone.page.link/MbtR", "tag": "AI Trading" },
-    { "name": "OKX",      "url": "https://www.okx.com/join/your-code", "tag": "CEX" },
-    { "name": "Bybit",    "url": "https://www.bybit.com/invite?ref=your-code", "tag": "Derivatives" }
-  ],
-
   "store": {
     "bundles": [
-      { "title": "Alpha Signals X",      "price": 99,  "desc": "Tín hiệu ngắn hạn xác suất cao.",               "tags": ["Scalping","DeFi","Spot"] },
-      { "title": "ETF & BTC Flow",       "price": 79,  "desc": "Dòng vốn ETF/BTC – quỹ & miner.",                "tags": ["BTC","ETF","Flow"] },
-      { "title": "Altseason Radar",      "price": 69,  "desc": "Chu kỳ vốn hóa & leader/laggard.",               "tags": ["Cycle","Momentum"] },
-      { "title": "Whale Watcher Pro",    "price": 89,  "desc": "Theo dõi ví cá voi & giao dịch lớn.",           "tags": ["Onchain","Whales"] },
-      { "title": "Airdrop Hunter",       "price": 59,  "desc": "Lịch farming & điểm tích luỹ.",                  "tags": ["Quest","Points"] },
-      { "title": "Perp Heatmap",         "price": 79,  "desc": "Funding, OI, liquidation map.",                  "tags": ["Futures","Heatmap"] },
-      { "title": "Narrative Scanner",    "price": 49,  "desc": "Xu hướng L2, AI, RWA, GameFi.",                  "tags": ["Narrative"] },
-      { "title": "Risk Guard",           "price": 39,  "desc": "Cảnh báo rủi ro smart‑money & dev activity.",    "tags": ["Risk","Safety"] },
-      { "title": "Tokenomics Lens",      "price": 69,  "desc": "Lịch vesting & pha loãng.",                      "tags": ["Vesting","FDV"] },
-      { "title": "Copy‑Trade Radar",     "price": 59,  "desc": "Theo dõi trader mẫu & tín hiệu sao chép.",       "tags": ["Copy","Social"] }
+      { "title": "Alpha Signals X",      "price": 99,  "desc": "Tín hiệu ngắn hạn xác suất cao.", "tags": ["Scalping","DeFi","Spot"] },
+      { "title": "ETF & BTC Flow",       "price": 79,  "desc": "Dòng vốn ETF/BTC – quỹ & miner.", "tags": ["BTC","ETF","Flow"] },
+      { "title": "Altseason Radar",      "price": 69,  "desc": "Chu kỳ vốn hóa & leader/laggard.", "tags": ["Cycle","Momentum"] },
+      { "title": "Whale Watcher Pro",    "price": 89,  "desc": "Theo dõi ví cá voi & giao dịch lớn.", "tags": ["Onchain","Whales"] },
+      { "title": "Airdrop Hunter",       "price": 59,  "desc": "Lịch farming & điểm tích luỹ.", "tags": ["Quest","Points"] },
+      { "title": "Perp Heatmap",         "price": 79,  "desc": "Funding, OI, liquidation map.", "tags": ["Futures","Heatmap"] },
+      { "title": "Narrative Scanner",    "price": 49,  "desc": "Xu hướng L2, AI, RWA, GameFi.", "tags": ["Narrative"] },
+      { "title": "Risk Guard",           "price": 39,  "desc": "Cảnh báo rủi ro smart-money & dev activity.", "tags": ["Risk","Safety"] },
+      { "title": "Tokenomics Lens",      "price": 69,  "desc": "Lịch vesting & pha loãng.", "tags": ["Vesting","FDV"] },
+      { "title": "Copy-Trade Radar",     "price": 59,  "desc": "Theo dõi trader mẫu & tín hiệu sao chép.", "tags": ["Copy","Social"] }
     ],
     "premium": [
       { "title": "Alpha Feed Pro", "desc": "Dòng tin alpha siêu nhanh (độ trễ ms).", "bullets": ["Bất thường dòng tiền","Nguồn đa kênh","Bộ lọc nhiễu"], "link": "data/latest.json" },
@@ -112,7 +118,9 @@
   "features": {
     "i18n_auto": true,
     "ai_summarize": true,
-    "link_out_tracking": true
+    "link_out_tracking": true,
+    "store_enabled": true,
+    "unlock_qr_enabled": true
   },
 
   "secrets": { "unlock_code": "X1000VIP" },
