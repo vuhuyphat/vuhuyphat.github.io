@@ -3,19 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>LightUnfold • UltraHub v3.1</title>
+<title>LightUnfold • UltraHub v3.1.1</title>
 <meta name="description" content="Web3 AI tự động 24/7: cơ hội nổi bật, thanh toán QR (on/off-chain), nội dung cao cấp (mã), affiliate. Tối ưu di động & desktop.">
-<meta property="og:title" content="LightUnfold • UltraHub v3.1">
+<meta property="og:title" content="LightUnfold • UltraHub v3.1.1">
 <meta property="og:description" content="Nền tảng Web3 AI tự vận hành 24/7: quét đa nguồn, cơ hội, thanh toán, paywall, affiliate.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0b0f13">
-
 <!--
-  UltraHub v3.1 — FINAL
-  🔒 ĐỪNG CHỈNH FILE NÀY khi nâng cấp. Luôn tạo file mới, ví dụ:
+  UltraHub v3.1.1 — FINAL
+  🔒 Khi nâng cấp, hãy tạo file mới, ví dụ:
       index_ultrahub_v3.2.html  → cập nhật routing sang file mới.
 -->
-
 <style>
 :root{--bg:#0b0f13;--card:#10161d;--line:#1c2836;--txt:#e9eef4;--mut:#9fb3c8;--brand:#7dc1ff;--accent:#ffb000;--ok:#20c997;--bad:#ff4d4f;--pill:#0f141c}
 *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
@@ -26,7 +24,7 @@ a{color:var(--brand);text-decoration:none}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px}
 .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
 .btn{display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#1a1300;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
-.btn.out{background:transparent;border:1px solid var(--line);color:var(--txt)}
+.btn.out{background:transparent;border:1px solid var(--line);color:#fff}
 .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
 .list .item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px dashed var(--line)}
 .score{min-width:60px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:4px 6px;color:#ffdca8;background:#241a00}
@@ -70,7 +68,7 @@ a{color:var(--brand);text-decoration:none}
     <span class="pill" id="theme">🌗 Theme</span>
   </div>
 
-  <h1 id="brand">LightUnfold • UltraHub v3.1</h1>
+  <h1 id="brand">LightUnfold • UltraHub v3.1.1</h1>
   <div id="tagline" style="color:#9fb3c8">20,000+ AI • 200+ quốc gia • 200+ ngôn ngữ • Tự động 24/7 • Chuyển đổi X1000</div>
 
   <section class="card" id="about">
@@ -214,7 +212,11 @@ const i18n={
       whyH1:"Vì sao UltraHub?",whyH2:"Giá trị mở khóa",whyH3:"Cách tham gia",
       why1:"Quét dữ liệu đa nguồn, xếp hạng cơ hội theo điểm – cập nhật từng phút.",
       why2:"Alpha/private feed, heatmap, vesting, tín hiệu chu kỳ – sẵn sàng hành động.",
-      why3:"Thanh toán on/off‑chain → nhận mã → mở khóa nội dung."},
+      why3:"Thanh toán on/off‑chain → nhận mã → mở khóa nội dung.",
+      refresh:"↻ Làm mới", theme:"🌗 Giao diện", scan_data:"quét: data", scan_fallback:"quét: fallback",
+      unlock_ph:"Nhập mã mở khóa…", tx_ph:"(Tuỳ chọn) Dán mã giao dịch/bằng chứng",
+      unlock_btn:"Mở khóa", remember_btn:"Nhớ trên thiết bị", relock_btn:"Khoá lại", buy_enter:"Mua & nhập mã", details:"Chi tiết", price:"Giá", volume:"Khối lượng", open_data:"Xem dữ liệu"
+  },
   en:{hot:"🔥 Hot opportunities",pay:"💳 Payments",minLbl:"Minimum",contactLbl:"Contact",lock:"🔓 Premium content",
       how:"How it works",unlocked:"✔ Unlocked",packs:"🧰 Products / Reports",hub:"Hub auto-detects & links to legacy tools (dex, hyper_v2, pro, super_auto, super_share, xportal…).",
       cta:"🚀 Get started now",cta1H:"Information edge",cta1:"Track outsized moves & early signals — ahead of the crowd.",
@@ -224,21 +226,13 @@ const i18n={
       whyH1:"Why UltraHub?",whyH2:"Unlock value",whyH3:"How to join",
       why1:"Multi‑source scanning, scored opportunities — refreshed every minute.",
       why2:"Alpha/private feeds, heatmaps, vesting calendars, cycle signals.",
-      why3:"Pay on/off‑chain → receive code → unlock premium."}
+      why3:"Pay on/off‑chain → receive code → unlock premium.",
+      refresh:"↻ Refresh", theme:"🌗 Theme", scan_data:"scan: data", scan_fallback:"scan: fallback",
+      unlock_ph:"Enter unlock code…", tx_ph:"(Optional) Paste TX hash / proof",
+      unlock_btn:"Unlock", remember_btn:"Remember on device", relock_btn:"Lock again", buy_enter:"Buy & enter code", details:"Details", price:"Price", volume:"Volume", open_data:"Open data"
+  }
 };
 let LANG=(localStorage.getItem('lang')||navigator.language||'vi').toLowerCase().startsWith('vi')?'vi':'en';
-function applyLang(){
-  const L=i18n[LANG];
-  $('#hotTitle').textContent=L.hot; $('#payTitle').textContent=L.pay; $('#minLbl').textContent=L.minLbl;
-  $('#contactLbl').textContent=L.contactLbl; $('#lockTitle').textContent=L.lock; $('#howTitle').textContent=L.how;
-  $('#unlockedLbl').textContent=L.unlocked; $('#packTitle').textContent=L.packs; $('#hubHint').textContent=L.hub;
-  $('#ctaTitle').textContent=L.cta; $('#cta1H').textContent=L.cta1H; $('#cta1').textContent=L.cta1;
-  $('#cta2H').textContent=L.cta2H; $('#cta2').textContent=L.cta2; $('#cta3H').textContent=L.cta3H; $('#cta3').textContent=L.cta3;
-  $('#autoLbl').textContent=L.auto; $('#whyH1').textContent=L.whyH1; $('#whyH2').textContent=L.whyH2; $('#whyH3').textContent=L.whyH3;
-  $('#why1').textContent=L.why1; $('#why2').textContent=L.why2; $('#why3').textContent=L.why3;
-  $('#lang').textContent=LANG==='vi'?'VI/EN':'EN/VI';
-}
-$('#lang').onclick=()=>{LANG=LANG==='vi'?'en':'vi';localStorage.setItem('lang',LANG);applyLang();}; applyLang();
 
 /* =============== Utils =============== */
 const fmt=n=>Number(n||0).toLocaleString(undefined,{maximumFractionDigits:8});
@@ -292,7 +286,7 @@ let CFG=DEF, lastRefreshTS=Date.now();
 
   // Contact
   const contact = (CFG.site?.contact?.email || CFG.site?.contact || CFG.site.ens || '').toString();
-  $('#pp').innerHTML = contact ? `<a href="mailto:${contact}" target="_blank" rel="noopener">${contact}</a>` : '—';
+  const pp = document.getElementById('pp'); if(pp) pp.innerHTML = contact ? `<a href="mailto:${contact}" target="_blank" rel="noopener">${contact}</a>` : '—';
 
   // Share links
   const u=encodeURIComponent(location.href), t=encodeURIComponent(document.title);
@@ -323,6 +317,9 @@ let CFG=DEF, lastRefreshTS=Date.now();
 
   // Live pulse
   setInterval(()=>$('#pulse').textContent=(LANG==='vi'?'Cập nhật: ':'Updated: ')+agoSec(lastRefreshTS),1000);
+
+  // Áp i18n lần đầu
+  applyLang();
 
   try{registerSW()}catch(_){}
 })();
@@ -393,14 +390,16 @@ function renderAffs(){
 }
 
 /* =============== Data (ticker + alert) =============== */
+window.LAST_ITEMS = []; // để re-render khi đổi ngôn ngữ
+
 async function loadDataSmart(){
   const latest=await j('data/latest.json'); lastRefreshTS=Date.now();
   if(latest && Array.isArray(latest.items)){
-    $('#hb').textContent='LIVE'; $('#scanMode').textContent='quét: data';
+    $('#hb').textContent='LIVE'; $('#scanMode').textContent=i18n[LANG].scan_data;
     renderOpps(latest.items); return;
   }
   const items=await scanLive();
-  $('#hb').textContent='LIVE'; $('#scanMode').textContent='quét: fallback';
+  $('#hb').textContent='LIVE'; $('#scanMode').textContent=i18n[LANG].scan_fallback;
   renderOpps(items);
 }
 async function scanLive(){
@@ -427,7 +426,9 @@ async function scanLive(){
   const best={}; for(const it of items){if(!it.symbol) continue; const k=it.symbol; if(!best[k]||it.score>best[k].score) best[k]=it;}
   return Object.values(best).sort((a,b)=>b.score-a.score).slice(0, CFG.feeds?.top_n||12);
 }
-function renderOpps(items){
+
+// Bọc renderOpps để lưu LAST_ITEMS cho i18n re-render
+const __renderOppsOrig = function(items){
   // ticker
   $('#ticker').innerHTML = (items||[]).map(x=>`<span class="tag">${x.symbol}: $${fmt(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join('') || '—';
   // alert
@@ -438,6 +439,7 @@ function renderOpps(items){
   else { alertBox.classList.add('hidden'); alertBox.textContent=''; }
 
   // list
+  const L=i18n[LANG];
   $('#opps').innerHTML=(items||[]).map(x=>{
     const ch=x.ch24h||0, pct=`${ch>=0?'+':''}${ch.toFixed(2)}%`;
     return `<div class="item">
@@ -445,29 +447,31 @@ function renderOpps(items){
       <div style="flex:1;min-width:0">
         <div class="row" style="justify-content:space-between;gap:8px">
           <div><b>${x.symbol}</b> · <span style="color:#9fb3c8">${x.name||''}</span></div>
-          <a class="btn out" target="_blank" rel="noopener" href="${x.link||'#'}">${LANG==='vi'?'Chi tiết':'Details'} ↗</a>
+          <a class="btn out" target="_blank" rel="noopener" href="${x.link||'#'}">${L.details} ↗</a>
         </div>
         <div class="row" style="gap:8px">
-          <span class="tag">${LANG==='vi'?'Giá':'Price'}: $${fmt(x.price||0)}</span>
+          <span class="tag">${L.price}: $${fmt(x.price||0)}</span>
           <span class="tag ${ch>=0?'':'err'}">24h: ${pct}</span>
-          <span class="tag">${LANG==='vi'?'Khối lượng':'Volume'}: $${fmt(x.vol24h||0)}</span>
+          <span class="tag">${L.volume}: $${fmt(x.vol24h||0)}</span>
           <span class="tag">Src: ${x.source}</span>
         </div>
       </div>
     </div>`;
   }).join('') || '<div style="color:#9fb3c8">—</div>';
-}
+};
+function renderOpps(items){ window.LAST_ITEMS = items||[]; __renderOppsOrig(window.LAST_ITEMS); }
 
 /* =============== Bundles =============== */
 function renderBundles(mode='day'){
   const B=CFG.store?.bundles||[];
+  const L=i18n[LANG];
   $('#bundles').innerHTML=B.map(b=>{
     const tags=(b.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
     return `<div class="card">
       <div class="row" style="justify-content:space-between"><b>${b.title}</b><span class="badge">$${b.price}</span></div>
       <div style="color:#9fb3c8">${b.desc||''}</div>
       <div style="margin-top:6px">${tags}</div>
-      <div class="row" style="margin-top:8px"><button class="btn" onclick="document.getElementById('unlockCode').focus()">${LANG==='vi'?'Mua & nhập mã':'Buy & enter code'}</button><span class="badge">${mode}</span></div>
+      <div class="row" style="margin-top:8px"><button class="btn" onclick="document.getElementById('unlockCode').focus()">${L.buy_enter}</button><span class="badge">${mode}</span></div>
     </div>`;
   }).join('');
 }
@@ -475,10 +479,11 @@ function renderBundles(mode='day'){
 /* =============== Premium + Paywall (code: 23061988) =============== */
 function paintPremium(){
   const P=CFG.store?.premium||[];
+  const L=i18n[LANG];
   $('#premium').innerHTML=P.map(p=>`<div class="card"><b>${p.title}</b>
     <div style="color:#9fb3c8">${p.desc||''}</div>
     ${p.bullets?`<ul>${p.bullets.map(x=>`<li>${x}</li>`).join('')}</ul>`:""}
-    ${p.link?`<a class="btn out" target="_blank" rel="noopener" href="${p.link}">${LANG==='vi'?'Xem dữ liệu':'Open data'} ↗</a>`:""}
+    ${p.link?`<a class="btn out" target="_blank" rel="noopener" href="${p.link}">${L.open_data} ↗</a>`:""}
   </div>`).join('');
 }
 function bindPaywall(){
@@ -487,11 +492,48 @@ function bindPaywall(){
   function gate(open){$('#locked').classList.toggle('hidden',open);$('#opened').classList.toggle('hidden',!open);}
   if(saved===SECRET){gate(true); paintPremium(); const th=localStorage.getItem('tx_hash'); if(th) $('#uMsg').innerHTML='<span class="ok">TX: '+th+'</span>';}
   $('#doUnlock').onclick=()=>{const code=$('#unlockCode').value.trim(),tx=$('#txhash').value.trim();
-    if(code===SECRET){gate(true); paintPremium(); $('#uMsg').innerHTML='<span class="ok">'+(LANG==='vi'?'Đã mở khóa!':'Unlocked!')+'</span>'; if(tx) localStorage.setItem('tx_hash',tx);}
+    if(code===SECRET){gate(true); paintPremium(); $('#uMsg').innerHTML='<span class="ok">'+(LANG==='vi'?'Đã mở khóa!':'Unlocked!')+'</span>'; if(tx) localStorage.setItem('tx_hash',tx); localStorage.setItem('unlocked_code',code);}
     else $('#uMsg').innerHTML='<span class="err">'+(LANG==='vi'?'Mã không đúng.':'Invalid code.')+'</span>';};
   $('#remember').onclick=()=>{const c=$('#unlockCode').value.trim(); if(c){localStorage.setItem('unlocked_code',c); $('#uMsg').textContent=LANG==='vi'?'Đã lưu trên thiết bị.':'Saved on device.'}};
   $('#relock').onclick=()=>{localStorage.removeItem('unlocked_code'); gate(false);};
 }
+
+/* =============== i18n apply (toàn trang) =============== */
+function applyLang(){
+  const L=i18n[LANG];
+  // Tiêu đề / nhãn lớn
+  $('#hotTitle').textContent=L.hot; $('#payTitle').textContent=L.pay; $('#minLbl').textContent=L.minLbl;
+  $('#contactLbl').textContent=L.contactLbl; $('#lockTitle').textContent=L.lock; $('#howTitle').textContent=L.how;
+  $('#unlockedLbl').textContent=L.unlocked; $('#packTitle').textContent=L.packs; $('#hubHint').textContent=L.hub;
+  $('#ctaTitle').textContent=L.cta; $('#cta1H').textContent=L.cta1H; $('#cta1').textContent=L.cta1;
+  $('#cta2H').textContent=L.cta2H; $('#cta2').textContent=L.cta2; $('#cta3H').textContent=L.cta3H; $('#cta3').textContent=L.cta3;
+  $('#autoLbl').textContent=L.auto; $('#whyH1').textContent=L.whyH1; $('#whyH2').textContent=L.whyH2; $('#whyH3').textContent=L.whyH3;
+  $('#why1').textContent=L.why1; $('#why2').textContent=L.why2; $('#why3').textContent=L.why3;
+  $('#lang').textContent=LANG==='vi'?'VI/EN':'EN/VI';
+
+  // Nút / placeholder / badge
+  const uc=$('#unlockCode'), tx=$('#txhash');
+  if(uc) uc.placeholder=L.unlock_ph;
+  if(tx) tx.placeholder=L.tx_ph;
+  const btnUnlock=$('#doUnlock'), btnRemember=$('#remember'), btnRelock=$('#relock');
+  if(btnUnlock) btnUnlock.textContent=L.unlock_btn;
+  if(btnRemember) btnRemember.textContent=L.remember_btn;
+  if(btnRelock) btnRelock.textContent=L.relock_btn;
+  const scan=$('#scanMode'); if(scan){const fb=/fallback/i.test(scan.textContent); scan.textContent=fb?L.scan_fallback:L.scan_data;}
+  const rn=$('#refreshNow'); if(rn) rn.textContent=L.refresh;
+
+  // Re-render các vùng phụ thuộc ngôn ngữ
+  try{ renderPays(); }catch(e){}
+  try{
+    const act=document.querySelector('#timeTabs .tab.act');
+    renderBundles(act?act.dataset.t:'day');
+  }catch(e){}
+  try{ paintPremium(); }catch(e){}
+  try{ if(window.LAST_ITEMS && window.LAST_ITEMS.length) renderOpps(window.LAST_ITEMS); }catch(e){}
+}
+
+// toggle ngôn ngữ
+$('#lang').onclick=()=>{LANG=LANG==='vi'?'en':'vi';localStorage.setItem('lang',LANG);applyLang();};
 
 /* =============== PWA mini (cache nội bộ) =============== */
 function registerSW(){
