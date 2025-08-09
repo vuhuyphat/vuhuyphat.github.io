@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LightUnfold • Web3 AI X1000</title>
+<meta name="description" content="Web3 AI tự động 24/7: cơ hội nổi bật, thanh toán đa kênh, nội dung cao cấp qua mã mở khóa, affiliate toàn cầu.">
+<link rel="canonical" href="https://vuhuyphat.github.io/">
+<meta property="og:title" content="LightUnfold • Web3 AI X1000">
+<meta property="og:description" content="Nền tảng Web3 AI cập nhật 24/7, quét đa nguồn, thanh toán on/off-chain, gói báo cáo & tín hiệu cao cấp.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vuhuyphat.github.io/">
+<meta name="theme-color" content="#0b0f13">
+<style>
+  :root{
+    --bg:#0b0f13;--card:#10161d;--line:#1c2836;--txt:#e9eef4;--mut:#9fb3c8;--brand:#7dc1ff;--accent:#ffb000;--good:#2ecc71;--bad:#ff4d4f;
+  }
+  @media (prefers-color-scheme:light){
+    :root{--bg:#f7fafc;--card:#ffffff;--line:#e2e8f0;--txt:#111827;--mut:#4b5563;--brand:#2563eb;--accent:#ff9800}
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  header,section,footer{max-width:1000px;margin:0 auto;padding:18px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .col{display:flex;flex-direction:column;gap:10px}
+  .pill{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--mut)}
+  .link{color:var(--brand);text-decoration:none}
+  h1{margin:12px 0 4px;font-size:28px}
+  h2{margin:0 0 10px;font-size:20px}
+  h3{margin:0 0 8px}
+  .muted{color:var(--mut)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .btn{display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#1a1300;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;text-decoration:none}
+  .btn.out{background:transparent;border:1px solid var(--line);color:inherit}
+  .mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+  .skeleton{background:linear-gradient(90deg,transparent,#0f151d,transparent);background-size:200% 100%;animation:sk 1.2s infinite}
+  @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .tag{display:inline-block;border:1px solid var(--line);border-radius:8px;padding:2px 8px;margin:2px 4px 0 0;color:var(--mut);font-size:12px}
+  .pay{display:flex;gap:14px}
+  .pay img{width:150px;height:150px;border-radius:12px;border:1px solid var(--line);background:#000}
+  .pay .meta{flex:1;min-width:0}
+  .copy{cursor:pointer}
+  .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+  .list .item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px dashed var(--line)}
+  .list .score{min-width:54px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:4px 6px;color:#ffdca8;background:#241a00}
+  .scorepos{color:var(--good)} .scoreneg{color:var(--bad)}
+  .aff a{display:block}
+  .ticker{white-space:nowrap;overflow:hidden;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:6px 0;margin-top:8px}
+  .marquee{display:inline-block;animation:scroll 22s linear infinite}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  input,textarea{width:100%;background:transparent;border:1px solid var(--line);border-radius:10px;padding:10px;color:inherit}
+  .ok{color:var(--good)} .err{color:var(--bad)}
+  .sharebar{position:fixed;right:12px;bottom:12px;display:flex;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;z-index:9999}
+  .sharebar a{font-size:18px;text-decoration:none}
+  .kpi{display:flex;gap:10px;flex-wrap:wrap}
+  .kpi .box{flex:1 1 160px;background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:10px}
+  .now{font-size:20px;font-weight:800}
+  .note{font-size:13px;color:var(--mut)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="row">
+    <span class="pill">ENS: <b id="ens">—</b></span>
+    <span class="pill">Heartbeat: <span id="hb">—</span></span>
+    <a class="pill link" href="config.json" target="_blank">config</a>
+    <a class="pill link" href="data/latest.json" target="_blank">data</a>
+  </div>
+  <h1 id="brand">LightUnfold • Web3 AI X1000</h1>
+  <div id="tagline" class="muted">Web3 AI tự động 24/7</div>
+
+  <div class="kpi" style="margin-top:10px">
+    <div class="box"><div class="muted">Cơ hội</div><div class="now" id="kOpps">0</div></div>
+    <div class="box"><div class="muted">Cập nhật</div><div class="now" id="kUpd">—</div></div>
+    <div class="box"><div class="muted">Ngôn ngữ</div><div class="now" id="kLoc">vi/en</div></div>
+  </div>
+</header>
+
+<section class="card">
+  <div class="row" style="justify-content:space-between">
+    <h2 style="margin:0">🔥 Cơ hội nổi bật</h2>
+    <span class="badge"><span id="uptxt" class="muted">Đang cập nhật…</span></span>
+  </div>
+  <div id="opps" class="list">
+    <div class="item"><div class="score skeleton">—</div><div style="flex:1" class="skeleton" aria-hidden="true">&nbsp;</div></div>
+    <div class="item"><div class="score skeleton">—</div><div style="flex:1" class="skeleton">&nbsp;</div></div>
+    <div class="item"><div class="score skeleton">—</div><div style="flex:1" class="skeleton">&nbsp;</div></div>
+  </div>
+  <div class="ticker"><div id="ticker" class="marquee"></div></div>
+</section>
+
+<section class="card">
+  <h2 style="margin:0 0 8px">💳 Thanh toán</h2>
+  <div class="note">Quét QR hoặc nhấn “Mở ví/ứng dụng” để thanh toán nhanh. Xong, bạn sẽ **nhận mã mở khóa** để truy cập nội dung cao cấp.</div>
+  <div id="pays" class="grid" style="margin-top:8px"></div>
+</section>
+
+<section class="card" id="gate">
+  <h2 style="margin:0 0 8px">🔓 Nội dung cao cấp</h2>
+  <div class="note">Nhập **mã mở khóa** (gửi cho bạn sau thanh toán). Có thể lưu mã & mã giao dịch trên thiết bị của bạn, không gửi lên máy chủ.</div>
+  <div id="gate-locked" class="col" style="margin-top:10px">
+    <input id="unlockCode" placeholder="Nhập mã mở khóa…">
+    <input id="txHash" placeholder="(Tuỳ chọn) Dán mã giao dịch / bằng chứng thanh toán">
+    <div class="row">
+      <button class="btn" id="btnUnlock">Mở khóa</button>
+      <button class="btn out" id="btnRemember">Nhớ trên thiết bị</button>
+    </div>
+    <div id="uMsg" class="note"></div>
+  </div>
+  <div id="gate-open" class="col" style="margin-top:6px;display:none">
+    <div class="row">
+      <span class="pill ok">✔ Đã mở khóa</span>
+      <button class="btn out" id="btnLock">Khoá lại</button>
+    </div>
+    <div id="premium" class="grid" style="margin-top:8px"></div>
+  </div>
+</section>
+
+<section class="card" id="bundles-wrap">
+  <h2 style="margin:0 0 8px">🧰 Gói sản phẩm / Báo cáo</h2>
+  <div id="bundles" class="grid"></div>
+</section>
+
+<section class="card">
+  <h2 style="margin:0 0 8px">🤝 Affiliate</h2>
+  <div class="grid">
+    <div class="card">
+      <h3 style="margin:0 0 6px">Binance (BNB)</h3>
+      <div class="muted">Sàn CEX lớn nhất: spot, futures, earn, thẻ Visa. Đăng ký nhận ưu đãi phí giao dịch.</div>
+      <div class="row" style="margin-top:8px">
+        <a class="btn" target="_blank" id="bnblink">Vào Binance ↗</a>
+        <a class="btn out" href="https://www.binance.com/vi/price/bnb" target="_blank">Giới thiệu BNB ↗</a>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 6px">AlgosOne (AI Trading)</h3>
+      <div class="muted">Nền tảng AI hỗ trợ tín hiệu & chiến lược. Tối ưu hoá vào/ra lệnh theo thuật toán.</div>
+      <div class="row" style="margin-top:8px">
+        <a class="btn" target="_blank" id="algoslink">Vào AlgosOne ↗</a>
+        <a class="btn out" target="_blank" href="https://algosone.page.link/MbtR">Tìm hiểu nhanh ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 style="margin:0 0 8px">ℹ️ Giới thiệu</h2>
+  <p>LightUnfold • Web3 AI X1000 là nền tảng **AI tự vận hành 24/7**: quét thị trường đa nguồn, phát hiện cơ hội, tổng hợp dữ liệu,
+  cung cấp gói báo cáo/bộ tín hiệu trả phí, và liên kết thanh toán on-chain/off-chain. Tất cả chạy **trên GitHub Pages** — nhẹ, bền, khó phá vỡ.</p>
+</section>
+
+<section class="card">
+  <h2 style="margin:0 0 8px">❓ FAQ nhanh</h2>
+  <ul class="muted">
+    <li><b>Nhận mã mở khóa ở đâu?</b> → Sau khi thanh toán (ETH/USDT/MoMo/VCB/PayPal), bạn sẽ được gửi mã qua email/Telegram.</li>
+    <li><b>Tôi nhập sai mã?</b> → Kiểm tra lại ký tự hoa/thường; nếu vẫn không được, liên hệ hỗ trợ.</li>
+    <li><b>Web có tự cập nhật?</b> → Có. Dữ liệu từ <code>data/latest.json</code> (nếu có); nếu không, trang tự quét trực tiếp.</li>
+  </ul>
+</section>
+
+<footer class="muted" style="text-align:center;padding:28px">
+  © <span id="year"></span> LightUnfold • Tự động 24/7 • Web3 AI X1000
+</footer>
+
+<!-- ======== JS tất-cả-trong-1 ======== -->
+<script>
+const FALLBACK_CFG = {
+  site:{
+    brand:"LightUnfold • Web3 AI X1000",
+    ens:"lightunfold.eth",
+    tagline:"20,000+ AI • 200+ quốc gia • 200+ ngôn ngữ • tự động 24/7 • chuyển đổi X1000",
+    contact:{ email:"vumumabada@gmail.com", telegram:"https://t.me/+0000000000", discord:"https://discord.gg/placeholder"},
+    payments:{
+      qr_auto:true,
+      chains:[
+        {name:"ETH (EVM)",address:"0x54E15A7b6d4213beE87800432A151d794638E3C2",explorer:"https://etherscan.io/address/0x54E15A7b6d4213beE87800432A151d794638E3C2"},
+        {name:"USDT (ERC20)",address:"0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",explorer:"https://etherscan.io/token/USDT?a=0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0"}
+      ],
+      offchain:{momo:"0567892030",vietcombank:"9567892030",paypal:"vumumabada@gmail.com"},
+      minimums:{ETH:0.0005,USDT:5}
+    },
+    affiliates:[
+      {name:"Binance",url:"https://www.binance.com/vi/register?ref=GRO_20338_9V44N"},
+      {name:"AlgosOne",url:"https://algosone.page.link/MbtR"},
+      {name:"OKX",url:"https://www.okx.com/join/your-code"},
+      {name:"Bybit",url:"https://www.bybit.com/invite?ref=your-code"}
+    ],
+    locale_default:"vi",
+    locales:["vi","en","es","fr","de","ja","ko","zh"]
+  },
+  schedule:{refresh_minutes:10},
+  secrets:{unlock_code:"X1000VIP"},
+  store:{
+    bundles:[
+      {title:"Alpha Signals X",price:99,desc:"Tín hiệu ngắn hạn xác suất cao.",tags:["Scalping","DeFi","Spot"]},
+      {title:"ETF & BTC Flow",price:79,desc:"Dòng vốn ETF/BTC – quỹ & miner.",tags:["BTC","ETF","Flow"]},
+      {title:"Altseason Radar",price:69,desc:"Chu kỳ vốn hoá & leader/laggard.",tags:["Cycle","Momentum"]},
+      {title:"Whale Watcher Pro",price:89,desc:"Theo dõi ví cá voi & lệnh lớn.",tags:["Onchain","Whales"]},
+      {title:"Airdrop Hunter",price:59,desc:"Lịch farming & điểm tích luỹ.",tags:["Quest","Points"]},
+      {title:"Perp Heatmap",price:79,desc:"Funding, OI, liquidation map.",tags:["Futures","Heatmap"]},
+      {title:"Narrative Scanner",price:49,desc:"Xu hướng L2, AI, RWA, GameFi.",tags:["Narrative"]},
+      {title:"Risk Guard",price:39,desc:"Cảnh báo rủi ro smart‑money & dev.",tags:["Risk","Safety"]},
+      {title:"Tokenomics Lens",price:69,desc:"Lịch vesting & pha loãng.",tags:["Vesting","FDV"]},
+      {title:"Copy‑Trade Radar",price:59,desc:"Theo dõi trader mẫu & tín hiệu.",tags:["Copy","Social"]}
+    ],
+    premium:[
+      {title:"Alpha Feed Pro",desc:"Dòng tin alpha siêu nhanh (độ trễ ms).",bullets:["Bất thường dòng tiền","Nguồn đa kênh","Bộ lọc nhiễu"],link:"data/latest.json"},
+      {title:"Deal Flow Private",desc:"Tổng hợp deal/seed mở private.",bullets:["Điều kiện","Ưu tiên thời gian"]}
+    ]
+  }
+};
+
+// utils
+const $=s=>document.querySelector(s);
+const fmt=n=>Number(n||0).toLocaleString(undefined,{maximumFractionDigits:8});
+const ago=iso=>{if(!iso)return"—";const s=Math.floor((Date.now()-new Date(iso))/1000);if(s<60)return s+"s";const m=Math.floor(s/60);if(m<60)return m+"m";const h=Math.floor(m/60);if(h<24)return h+"h";return Math.floor(h/24)+"d";}
+const qrlink=t=>`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(t)}`;
+async function safeJson(u){try{const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw 0;return await r.json()}catch{return null}}
+
+// load config & data
+let CFG=structuredClone(FALLBACK_CFG);
+(async function init(){
+  $("#year").textContent=new Date().getFullYear();
+  const cfg=await safeJson("config.json"); if(cfg){ CFG=deepMerge(CFG,cfg); }
+  $("#brand").textContent=CFG.site?.brand||"LightUnfold • Web3 AI X1000";
+  $("#tagline").textContent=CFG.site?.tagline||"Tự động 24/7";
+  $("#ens").textContent=CFG.site?.ens||"—";
+  $("#kLoc").textContent=(CFG.site?.locales||["vi","en"]).join("/");
+
+  renderPayments(CFG.site?.payments||{});
+  renderBundles(CFG.store?.bundles||[]);
+  setupAffiliate(CFG.site?.affiliates||[]);
+
+  // paywall
+  const SECRET=String(CFG.secrets?.unlock_code||"X1000VIP");
+  const keep=localStorage.getItem("unlocked_code")||"";
+  paintPremium(); if(keep===SECRET) openGate();
+  $("#btnUnlock").onclick=()=>{const c=$("#unlockCode").value.trim(); const tx=$("#txHash").value.trim();
+    if(c===SECRET){ openGate(); if(tx) localStorage.setItem("tx_hash",tx); $("#uMsg").innerHTML='<span class="ok">Đã mở khóa.</span>'; }
+    else $("#uMsg").innerHTML='<span class="err">Mã không đúng.</span>';};
+  $("#btnRemember").onclick=()=>{const c=$("#unlockCode").value.trim(); if(c){localStorage.setItem("unlocked_code",c); $("#uMsg").textContent="Đã lưu mã trên thiết bị.";}}
+  $("#btnLock").onclick=()=>{localStorage.removeItem("unlocked_code"); closeGate();};
+
+  // data load
+  await loadDataSmart();
+
+})();
+
+function deepMerge(a,b){for(const k in b){if(b[k]&&typeof b[k]==="object"&&!Array.isArray(b[k])){a[k]=deepMerge(a[k]||{},b[k]);}else{a[k]=b[k];}}return a;}
+
+async function loadDataSmart(){
+  const local=await safeJson("data/latest.json");
+  if(local && Array.isArray(local.items)){
+    renderOpps(local.items, local.generated_at, "cache"); return;
+  }
+  const items=await scanLive();
+  renderOpps(items, new Date().toISOString(), "live");
+}
+
+async function scanLive(){
+  const items=[];
+  try{
+    const cg=await safeJson("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=50&page=1&price_change_percentage=1h,24h,7d");
+    if(Array.isArray(cg)){
+      for(const c of cg){
+        items.push({
+          source:"coingecko",symbol:(c.symbol||"").toUpperCase(),name:c.name,
+          price:+c.current_price||0,ch24h:+c.price_change_percentage_24h_in_currency||0,
+          vol24h:+c.total_volume||0,
+          score:(+c.price_change_percentage_1h_in_currency||0)*0.4+(+c.price_change_percentage_24h_in_currency||0)*0.35+(+c.price_change_percentage_7d_in_currency||0)*0.25+Math.log10((+c.total_volume||1)),
+          link:`https://www.coingecko.com/en/coins/${c.id}`
+        });
+      }
+    }
+  }catch{}
+  try{
+    const cl=await safeJson("https://api.coinlore.net/api/tickers/?start=0&limit=50");
+    const data=cl?.data||[];
+    for(const c of data){
+      items.push({
+        source:"coinlore",symbol:(c.symbol||"").toUpperCase(),name:c.name,
+        price:+c.price_usd||0,ch24h:+c.percent_change_24h||0,vol24h:+c.volume24||0,
+        score:(+c.percent_change_24h||0)*0.7+Math.log10((+c.volume24||1)),
+        link:`https://www.coinlore.com/coin/${(c.name||"").toLowerCase().replace(/\s+/g,"-")}`
+      });
+    }
+  }catch{}
+  const best={}; for(const it of items){ if(!it.symbol) continue; const k=it.symbol; if(!best[k]||it.score>best[k].score) best[k]=it; }
+  return Object.values(best).sort((a,b)=>b.score-a.score).slice(0, 12);
+}
+
+function renderOpps(items, ts, mode){
+  $("#hb").textContent=mode==="live"?"LIVE":ago(ts);
+  $("#kUpd").textContent=ago(ts);
+  $("#kOpps").textContent=items?.length||0;
+  const html=(items||[]).map(x=>{
+    const s=(x.score||0); const cls=s>=0?"scorepos":"scoreneg";
+    return `<div class="item">
+      <div class="score ${cls}">${s>=0?'+':''}${s.toFixed(2)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="row" style="justify-content:space-between;gap:8px">
+          <div><b>${x.symbol}</b> · <span class="muted">${x.name||""}</span></div>
+          <a class="link" href="${x.link}" target="_blank">Chi tiết ↗</a>
+        </div>
+        <div class="row" style="gap:8px">
+          <span class="tag">Giá: $${fmt(x.price||0)}</span>
+          <span class="tag">24h: ${(x.ch24h>=0?'+':'')}${(x.ch24h||0).toFixed(2)}%</span>
+          <span class="tag">Khối lượng: $${fmt(x.vol24h||0)}</span>
+          <span class="tag">Nguồn: ${x.source}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+  $("#opps").innerHTML=html||`<div class="muted">Chưa có dữ liệu.</div>`;
+  $("#ticker").innerHTML=(items||[]).map(x=>`<span style="margin-right:18px">${x.symbol}: $${fmt(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join("")||'<span>—</span>';
+}
+
+// payments
+function renderPayments(P){
+  const list=[];
+  // on-chain
+  (P.chains||[]).forEach(c=>{
+    const isETH=/ETH/i.test(c.name);
+    const open=isETH?'https://metamask.app.link/':(c.explorer||'#');
+    list.push(`
+      <div class="card" style="background:var(--card)">
+        <div class="pay">
+          <img alt="QR" src="${qrlink(c.address)}" loading="lazy">
+          <div class="meta">
+            <div class="row" style="justify-content:space-between">
+              <b>${c.name}</b>
+              <a class="link" target="_blank" href="${open}">${isETH?'Mở ví/ứng dụng ↗':'Mở explorer ↗'}</a>
+            </div>
+            <div class="muted" style="margin:6px 0">Địa chỉ nhận (copy/dán trong ví):</div>
+            <div class="mono copy" data-addr="${c.address}" style="word-break:break-all">${c.address}</div>
+            <div class="row" style="margin-top:8px">
+              <button class="btn copy" data-addr="${c.address}">Sao chép địa chỉ</button>
+              <a class="btn" href="${qrlink(c.address)}" download>⚡ Tải QR</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+  });
+  // off-chain
+  if(P.offchain?.momo){ list.push(offCard("MoMo", P.offchain.momo, "Ví MoMo Việt Nam.")); }
+  if(P.offchain?.vietcombank){ list.push(offCard("Vietcombank", P.offchain.vietcombank, "Chuyển khoản VCB.")); }
+  if(P.offchain?.paypal){
+    const id = (P.offchain.paypal||'').split('@')[0];
+    list.push(`
+      <div class="card"><div class="pay">
+        <img alt="QR" src="${qrlink(P.offchain.paypal)}">
+        <div class="meta">
+          <div class="row" style="justify-content:space-between"><b>PayPal</b>
+            <a class="link" target="_blank" href="https://www.paypal.me/${id}">Mở PayPal ↗</a>
+          </div>
+          <div class="muted" style="margin:6px 0">Thanh toán PayPal.</div>
+          <div class="mono copy" data-addr="${P.offchain.paypal}" style="word-break:break-all">${P.offchain.paypal}</div>
+          <div class="row" style="margin-top:8px"><button class="btn copy" data-addr="${P.offchain.paypal}">Sao chép</button><a class="btn" href="${qrlink(P.offchain.paypal)}" download>⚡ Tải QR</a></div>
+        </div></div></div>
+    `);
+  }
+  $("#pays").innerHTML=list.join("")||`<div class="muted">Chưa cấu hình phương thức thanh toán.</div>`;
+  document.addEventListener("click",e=>{
+    const t=e.target.closest(".copy"); if(!t) return;
+    const v=t.getAttribute("data-addr")||t.textContent.trim();
+    navigator.clipboard.writeText(v).then(()=>{ t.textContent=(t.textContent.trim()+" ✓").slice(0,120); setTimeout(()=>location.reload(),600);});
+  });
+  function offCard(name,val,hint){
+    return `<div class="card"><div class="pay">
+      <img alt="QR" src="${qrlink(val)}"><div class="meta">
+      <div class="row" style="justify-content:space-between"><b>${name}</b></div>
+      <div class="muted" style="margin:6px 0">${hint}</div>
+      <div class="mono copy" data-addr="${val}" style="word-break:break-all">${val}</div>
+      <div class="row" style="margin-top:8px"><button class="btn copy" data-addr="${val}">Sao chép</button><a class="btn" href="${qrlink(val)}" download>⚡ Tải QR</a></div>
+      </div></div></div>`;
+  }
+}
+
+// bundles & premium
+function renderBundles(list){
+  $("#bundles").innerHTML=(list||[]).map(b=>{
+    const tags=(b.tags||[]).map(t=>`<span class="tag">${t}</span>`).join("");
+    return `<div class="card">
+      <div class="row" style="justify-content:space-between"><b>${b.title}</b><span class="badge">$${b.price}</span></div>
+      <div class="muted" style="margin-top:4px">${b.desc||""}</div>
+      <div style="margin-top:6px">${tags}</div>
+      <div class="row" style="margin-top:10px"><a class="btn" href="#gate">Mua & nhập mã</a></div>
+    </div>`;
+  }).join("");
+}
+
+function paintPremium(){
+  const prem=$("#premium"); prem.innerHTML="";
+  (CFG.store?.premium||[]).forEach(p=>{
+    prem.innerHTML += `<div class="card">
+      <b>${p.title}</b>
+      <div class="muted" style="margin-top:4px">${p.desc||""}</div>
+      <ul>${(p.bullets||[]).map(x=>`<li>${x}</li>`).join("")}</ul>
+      ${p.link?`<a class="btn out" target="_blank" href="${p.link}">Xem dữ liệu ↗</a>`:""}
+    </div>`;
+  });
+}
+function openGate(){ $("#gate-locked").style.display="none"; $("#gate-open").style.display="flex"; const tx=localStorage.getItem("tx_hash"); if(tx) $("#uMsg").innerHTML='<span class="ok">TX: '+tx+'</span>'; }
+function closeGate(){ $("#gate-locked").style.display="flex"; $("#gate-open").style.display="none"; }
+
+function setupAffiliate(A){
+  const bin=A.find(x=>/binance/i.test(x.name));
+  const alg=A.find(x=>/algos/i.test(x.name));
+  $("#bnblink").href = bin?.url || "https://www.binance.com/vi/register?ref=GRO_20338_9V44N";
+  $("#algoslink").href = alg?.url || "https://algosone.page.link/MbtR";
+}
+
+// share bar
+(function autoShare(){
+  const links=[
+    "https://t.me/share/url?url="+encodeURIComponent(location.href),
+    "https://twitter.com/intent/tweet?text="+encodeURIComponent(document.title)+"&url="+encodeURIComponent(location.href),
+    "https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(location.href),
+    "https://www.linkedin.com/sharing/share-offsite/?url="+encodeURIComponent(location.href)
+  ];
+  const bar=document.createElement("div"); bar.className="sharebar";
+  ["📣","𝕏","f","in"].forEach((txt,i)=>{const a=document.createElement("a");a.href=links[i];a.target="_blank";a.textContent=txt;bar.appendChild(a);});
+  document.body.appendChild(bar);
+})();
+</script>
+</body>
+</html>
