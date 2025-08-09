@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>UltraMaster V10 • LightUnfold</title>
+<meta name="description" content="Web3 AI UltraMaster V10: tự vận hành 24/7, đa ngôn ngữ, thanh toán on/off-chain, cơ hội thị trường, affiliate toàn cầu.">
+<meta property="og:title" content="UltraMaster V10 • LightUnfold">
+<meta property="og:description" content="Nền tảng Web3 AI tự vận hành 24/7: quét đa nguồn, cơ hội, thanh toán, paywall, affiliate.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0b0f13">
+<style>
+:root{
+  --bg:#0b0f13;--card:#0f141a;--line:#1e2a3a;--txt:#e9eef4;--mut:#a9b8c8;
+  --brand:#7dc1ff;--accent:#ffb000;--ok:#22c55e;--bad:#ff4d4f;--pill:#101825;
+  --glow:0 0 0px rgba(0,0,0,0);
+}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
+a{color:var(--brand);text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pill{display:inline-flex;gap:8px;align-items:center;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--pill);color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.btn{display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#1a1300;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+.btn.out{background:transparent;border:1px solid var(--line);color:var(--txt)}
+.badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+.hidden{display:none}.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;word-break:break-all}
+.footer{padding:28px 0;text-align:center;color:var(--mut)}
+.light{--bg:#f7fafc;--card:#ffffff;--line:#e2e8f0;--txt:#0b0f13;--mut:#4a5568;--brand:#2563eb;--pill:#eef2f8}
+.marquee{white-space:nowrap;overflow:hidden}.marquee>div{display:inline-block;animation:mar 25s linear infinite}
+@keyframes mar{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.list .item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px dashed var(--line)}
+.score{min-width:64px;text-align:center;border:1px solid var(--line);border-radius:10px;padding:4px 6px;color:#ffdca8;background:#241a00}
+.tag{display:inline-block;border:1px solid var(--line);border-radius:8px;padding:2px 8px;margin:2px 4px 0 0;color:#c9d6e2;font-size:12px}
+.pay{display:flex;gap:14px}.pay img{width:160px;height:160px;border-radius:12px;border:1px solid var(--line);background:#000}
+.pay .meta{flex:1;min-width:0}
+.tabbar{display:flex;gap:8px;flex-wrap:wrap}.tab{padding:6px 10px;border:1px solid var(--line);border-radius:999px;cursor:pointer}
+.tab.act{background:var(--accent);color:#1a1300;border-color:transparent}
+.appgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.appgrid a{display:block;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--pill);text-align:center}
+.alert{background:#2a2e12;border:1px solid #606c38;color:#e9f5c7;border-radius:12px;padding:10px 12px}
+.kpi{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.kbox{background:var(--pill);border:1px solid var(--line);border-radius:12px;padding:10px}
+.now{font-size:22px;font-weight:800}
+.topbtn{position:fixed;left:12px;bottom:80px;z-index:9}
+.sharebar{position:fixed;right:12px;bottom:12px;display:flex;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;z-index:9}
+.logo-hero{display:flex;align-items:center;gap:8px}
+.logo-dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(255,176,0,0.7);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,176,0,0.6)}70%{box-shadow:0 0 0 12px rgba(255,176,0,0)}100%{box-shadow:0 0 0 0 rgba(255,176,0,0)}}
+.partner{display:flex;gap:12px;align-items:center}
+.partner .glow{padding:10px;border-radius:14px;border:1px solid var(--line);background:var(--pill);box-shadow:var(--glow)}
+.partner .name{font-weight:800}
+.hero-cta{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.hero-cta .item{padding:12px;border:1px dashed var(--line);border-radius:12px}
+.shop-card{padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--pill)}
+.shop-card h4{margin:0 0 6px}
+.shop-card .note{color:var(--mut);margin:6px 0}
+.cmctable{overflow:auto;border:1px solid var(--line);border-radius:12px}
+.cmctable table{width:100%;border-collapse:collapse}
+.cmctable th, .cmctable td{padding:8px;border-bottom:1px solid var(--line);text-align:left}
+.bad{color:var(--bad)}.ok{color:var(--ok)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="row">
+    <span class="pill logo-hero"><span class="logo-dot"></span><b>UltraMaster V10</b></span>
+    <span class="pill">ENS: <b id="ens">lightunfold.eth</b></span>
+    <span class="pill">Heartbeat: <b id="hb">—</b></span>
+    <button class="pill" id="openCfg">config</button>
+    <button class="pill" id="openData">data</button>
+    <span class="pill" id="lang">VI/EN</span>
+    <span class="pill" id="theme">🌗 Theme</span>
+  </div>
+
+  <h1 id="brand">LightUnfold • UltraMaster V10</h1>
+  <div id="tagline" style="color:#9fb3c8">200+ AI • 200+ ngôn ngữ • Tự động 24/7 • Web3 bất khả xâm phạm</div>
+
+  <!-- KPI -->
+  <div class="kpi">
+    <div class="kbox"><div class="muted">Cơ hội</div><div class="now" id="kOpps">0</div></div>
+    <div class="kbox"><div class="muted">Cập nhật</div><div class="now" id="kUpd">—</div></div>
+    <div class="kbox"><div class="muted">Đang xem</div><div class="now" id="kLive">—</div></div>
+    <div class="kbox"><div class="muted">Doanh thu</div><div class="now">$<span id="kRev">0</span></div></div>
+  </div>
+
+  <!-- Hero -->
+  <section class="card" id="about">
+    <div class="row" style="justify-content:space-between;align-items:flex-start">
+      <div>
+        <div id="slogan">Quét đa nguồn • Chấm điểm cơ hội • Cảnh báo nhịp tim thị trường.</div>
+        <div id="pulse" class="tag" style="margin-top:8px">Cập nhật: —</div>
+      </div>
+      <div class="row partner">
+        <div class="glow">
+          <div class="name">Binance</div>
+          <div class="muted" id="bn-intro">Sàn giao dịch hàng đầu: phí thấp, thanh khoản sâu, Earn & Futures.</div>
+          <a class="btn out" target="_blank" rel="noopener" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N" id="bn-btn">Đăng ký Binance ↗</a>
+        </div>
+        <div class="glow">
+          <div class="name">AlgosOne</div>
+          <div class="muted" id="ao-intro">Nền tảng AI Trading: thuật toán, tối ưu chiến lược, cảnh báo real‑time.</div>
+          <a class="btn out" target="_blank" rel="noopener" href="https://algosone.page.link/MbtR" id="ao-btn">Dùng thử AlgosOne ↗</a>
+        </div>
+      </div>
+    </div>
+    <div id="alertBox" class="alert hidden" style="margin-top:10px"></div>
+    <div class="hero-cta" style="margin-top:10px">
+      <div class="item"><b id="whyH1">Vì sao UltraMaster?</b><br><span id="why1">AI đa nguồn, xếp hạng cơ hội theo điểm – làm mới từng phút, tự vận hành 24/7.</span></div>
+      <div class="item"><b id="whyH2">Giá trị mở khóa</b><br><span id="why2">Alpha feed, heatmap, vesting, tín hiệu chu kỳ – sẵn sàng hành động.</span></div>
+      <div class="item"><b id="whyH3">Cách tham gia</b><br><span id="why3">Thanh toán on/off‑chain → nhận mã → mở khóa nội dung.</span></div>
+    </div>
+  </section>
+
+  <!-- Opportunities -->
+  <section class="card">
+    <div class="row" style="justify-content:space-between">
+      <h3 id="hotTitle" style="margin:0">🔥 Cơ hội nổi bật</h3>
+      <div class="row">
+        <span class="badge" id="scanMode">quét: data</span>
+        <button class="btn out" id="refreshNow">↻ Làm mới</button>
+      </div>
+    </div>
+    <div class="marquee" style="margin:4px 0 8px;color:#bcd"><div id="ticker">—</div></div>
+    <div id="opps" class="list"></div>
+  </section>
+
+  <!-- Payments -->
+  <section class="card">
+    <h3 id="payTitle" style="margin:0 0 8px">💳 Thanh toán</h3>
+    <div id="pays" class="grid"></div>
+    <div class="muted" style="margin-top:6px"><span id="minLbl">Tối thiểu</span>: <span id="mins"></span> · <span id="contactLbl">Liên hệ</span>: <span id="pp"></span></div>
+    <div class="card" style="margin-top:10px">
+      <b id="howPayH">Hướng dẫn thanh toán</b>
+      <ol id="howPay">
+        <li>Chọn phương thức phù hợp (ETH/USDT/MoMo/VCB/PayPal).</li>
+        <li>Quét QR hoặc sao chép địa chỉ/ID → chuyển đúng số tiền.</li>
+        <li>Nhận mã mở khóa qua email/ghi chú → nhập mã ở mục “Nội dung cao cấp”.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Unlock -->
+  <section class="card">
+    <h3 id="lockTitle" style="margin:0 0 8px">🔓 Nội dung cao cấp</h3>
+    <div id="locked">
+      <div class="grid">
+        <div>
+          <input id="unlockCode" placeholder="Nhập mã mở khóa…" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--pill);color:var(--txt)">
+          <input id="txhash" style="margin-top:8px;width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--pill);color:var(--txt)" placeholder="(Tuỳ chọn) Dán mã giao dịch/bằng chứng">
+          <div class="row" style="margin-top:8px">
+            <button class="btn" id="doUnlock">Mở khóa</button>
+            <button class="btn out" id="remember">Nhớ trên thiết bị</button>
+          </div>
+          <div id="uMsg" style="margin-top:6px;color:#9fb3c8"></div>
+        </div>
+        <div style="color:#9fb3c8">
+          <b id="howTitle">Cách hoạt động</b>
+          <ul id="howList">
+            <li>Thanh toán on/off‑chain.</li>
+            <li>Nhận mã → nhập để mở khóa nội dung.</li>
+            <li>Lưu mã & TX hash ngay trên thiết bị của bạn.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div id="opened" class="hidden">
+      <div class="row"><span class="pill ok" id="unlockedLbl">✔ Đã mở khóa</span><button class="btn out" id="relock">Khoá lại</button></div>
+      <div id="premium" class="grid" style="margin-top:10px"></div>
+    </div>
+  </section>
+
+  <!-- Store (with per‑product guides) -->
+  <section class="card">
+    <div class="row" style="justify-content:space-between">
+      <h3 id="packTitle" style="margin:0">🧰 Gói sản phẩm / Báo cáo</h3>
+      <div class="tabbar" id="timeTabs">
+        <div class="tab act" data-t="day">Ngày</div>
+        <div class="tab" data-t="month">Tháng</div>
+        <div class="tab" data-t="quarter">Quý</div>
+        <div class="tab" data-t="year">Năm</div>
+      </div>
+    </div>
+    <div id="bundles" class="grid"></div>
+    <div class="card" style="margin-top:10px">
+      <b>Hướng dẫn chọn gói</b>
+      <ul class="muted" id="bundleGuide">
+        <li><b>Alpha Signals X</b>: phù hợp scalping/ngắn hạn. Thanh toán → nhập mã → nhận tín hiệu real‑time.</li>
+        <li><b>ETF & BTC Flow</b>: theo dõi dòng vốn, miner, ETF – hỗ trợ quyết định macro.</li>
+        <li><b>Altseason Radar</b>: săn leader/laggard, xoay vòng vốn theo chu kỳ.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Affiliate spotlight (long form) -->
+  <section class="card">
+    <h3 style="margin:0 0 8px">🤝 Affiliate • Giới thiệu chi tiết</h3>
+    <div class="grid" id="affSpot">
+      <div class="shop-card">
+        <h4>Binance — tại sao nên đăng ký?</h4>
+        <div class="note">• Phí giao dịch thấp, thanh khoản sâu • Earn/Futures/Options • Launchpad/Launchpool • Bảo mật cấp sàn top đầu</div>
+        <div class="note">• Tích hợp API mạnh: dễ tự động hóa chiến lược • Ứng dụng mượt, hỗ trợ đa ngôn ngữ</div>
+        <a class="btn" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N" target="_blank" rel="noopener">Đăng ký Binance ↗</a>
+      </div>
+      <div class="shop-card">
+        <h4>AlgosOne — lợi ích cho trader</h4>
+        <div class="note">• Máy học gợi ý chiến lược • Cảnh báo theo ngưỡng rủi ro • Backtest nhanh • Tối ưu vị thế & điểm vào/ra</div>
+        <div class="note">• Kết nối nhiều sàn • Dashboard trực quan, đa thiết bị</div>
+        <a class="btn" href="https://algosone.page.link/MbtR" target="_blank" rel="noopener">Dùng thử AlgosOne ↗</a>
+      </div>
+    </div>
+    <div id="affs" class="grid" style="margin-top:10px"></div>
+  </section>
+
+  <!-- CoinMarketCap mini (fallback with CG/CL) -->
+  <section class="card">
+    <h3 style="margin:0 0 8px">📊 Thị trường (mini)</h3>
+    <div class="cmctable" id="mktMini">
+      <table>
+        <thead><tr><th>Symbol</th><th>Name</th><th>Price</th><th>24h</th><th>Vol 24h</th></tr></thead>
+        <tbody id="mktRows"><tr><td colspan="5">—</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Docs / Courses -->
+  <section class="card">
+    <h3 style="margin:0 0 8px">📚 Học viện & Sách số</h3>
+    <div class="grid" id="ebooks">
+      <div class="shop-card">
+        <h4>Crypto 101: Nền tảng & Quản trị rủi ro</h4>
+        <div class="note">Hướng dẫn dễ hiểu cho người mới: ví, bảo mật, chu kỳ, quản lý vốn, checklist.</div>
+        <div class="row"><button class="btn" onclick="document.getElementById('unlockCode').focus()">Mua & nhập mã</button><span class="badge">$19</span></div>
+      </div>
+      <div class="shop-card">
+        <h4>DeFi Mastery: Yield, Lending, Perp</h4>
+        <div class="note">Lộ trình thực chiến: săn APY, đo risk, sử dụng perp an toàn, case study.</div>
+        <div class="row"><button class="btn" onclick="document.getElementById('unlockCode').focus()">Mua & nhập mã</button><span class="badge">$29</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Command Center -->
+  <section class="card">
+    <h3 style="margin:0 0 8px">🧭 Command Center</h3>
+    <div id="apps" class="appgrid"></div>
+    <div style="color:#9fb3c8;margin-top:6px" id="hubHint">Hub liên kết đến công cụ cũ (dex, hyper_v2, pro, super_auto, super_share, xportal…).</div>
+  </section>
+
+  <button class="pill topbtn" id="goTop">↑ Top</button>
+  <div class="footer">© <span id="year"></span> LightUnfold • <span id="autoLbl">Tự động 24/7</span></div>
+</div>
+
+<!-- Share floating -->
+<div class="sharebar" id="sharebar">
+  <a id="sh_tg" target="_blank" title="Share Telegram">📣</a>
+  <a id="sh_x"  target="_blank" title="Share X/Twitter">𝕏</a>
+  <a id="sh_fb" target="_blank" title="Share Facebook">f</a>
+  <a id="sh_in" target="_blank" title="Share LinkedIn">in</a>
+</div>
+
+<script>
+/* ===== helpers & theme ===== */
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+function setTheme(m){document.documentElement.classList.toggle('light',m==='light');localStorage.setItem('theme',m)}
+setTheme(localStorage.getItem('theme')||'dark'); $('#theme').onclick=()=>setTheme(document.documentElement.classList.contains('light')?'dark':'light');
+
+const fmt=n=>Number(n||0).toLocaleString(undefined,{maximumFractionDigits:8});
+const agoSec=(from)=>{const s=((Date.now()-from)/1000)|0;return s+"s";}
+const qrlink=t=>`https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(t)}`;
+async function j(url){try{const r=await fetch(url,{cache:'no-store'});if(!r.ok) throw 0;return await r.json()}catch(_){return null}}
+
+const i18n={
+  vi:{hot:"🔥 Cơ hội nổi bật",pay:"💳 Thanh toán",minLbl:"Tối thiểu",contactLbl:"Liên hệ",lock:"🔓 Nội dung cao cấp",
+      how:"Cách hoạt động",unlocked:"✔ Đã mở khóa",packs:"🧰 Gói sản phẩm / Báo cáo",hub:"Hub liên kết tới công cụ cũ.",
+      cta:"🚀 Bắt đầu ngay",cta1H:"Tạo lợi thế thông tin",cta1:"Theo dõi biến động lớn & tín hiệu sớm – trước đám đông.",
+      cta2H:"Tối ưu chi phí",cta2:"Gói ngày/tháng/quý – trả cho thứ bạn dùng.",
+      cta3H:"Lan tỏa tự động",cta3:"Chia sẻ 1 chạm (Telegram/X/Facebook/LinkedIn) + Affiliate.",
+      auto:"Tự động 24/7",
+      whyH1:"Vì sao UltraMaster?",whyH2:"Giá trị mở khóa",whyH3:"Cách tham gia",
+      why1:"AI đa nguồn, xếp hạng cơ hội – làm mới từng phút.",
+      why2:"Alpha feed, heatmap, vesting, tín hiệu chu kỳ.",
+      why3:"Thanh toán on/off‑chain → nhận mã → mở khóa premium.",
+      refresh:"↻ Làm mới", theme:"🌗 Giao diện", scan_data:"quét: data", scan_fallback:"quét: fallback",
+      unlock_ph:"Nhập mã mở khóa…", tx_ph:"(Tuỳ chọn) Dán TX hash / bằng chứng",
+      unlock_btn:"Mở khóa", remember_btn:"Nhớ trên thiết bị", relock_btn:"Khoá lại",
+      buy_enter:"Mua & nhập mã", details:"Chi tiết", price:"Giá", volume:"Khối lượng", open_data:"Xem dữ liệu"},
+  en:{hot:"🔥 Hot opportunities",pay:"💳 Payments",minLbl:"Minimum",contactLbl:"Contact",lock:"🔓 Premium content",
+      how:"How it works",unlocked:"✔ Unlocked",packs:"🧰 Products / Reports",hub:"Hub links to legacy tools.",
+      cta:"🚀 Get started now",cta1H:"Information edge",cta1:"Track outsized moves & early signals — ahead of the crowd.",
+      cta2H:"Cost‑efficient",cta2:"Day/Month/Quarter plans — pay only for what you use.",
+      cta3H:"Auto‑viral growth",cta3:"One‑tap share (Telegram/X/Facebook/LinkedIn) + Affiliate.",
+      auto:"Always‑on 24/7",
+      whyH1:"Why UltraMaster?",whyH2:"Unlock value",whyH3:"How to join",
+      why1:"Multi‑source AI scanning, scored opportunities — refreshed every minute.",
+      why2:"Alpha feeds, heatmaps, vesting calendars, cycle signals.",
+      why3:"Pay on/off‑chain → receive code → unlock premium.",
+      refresh:"↻ Refresh", theme:"🌗 Theme", scan_data:"scan: data", scan_fallback:"scan: fallback",
+      unlock_ph:"Enter unlock code…", tx_ph:"(Optional) Paste TX hash / proof",
+      unlock_btn:"Unlock", remember_btn:"Remember on device", relock_btn:"Lock again",
+      buy_enter:"Buy & enter code", details:"Details", price:"Price", volume:"Volume", open_data:"Open data"}
+};
+let LANG=(localStorage.getItem('lang')||navigator.language||'vi').toLowerCase().startsWith('vi')?'vi':'en';
+$('#lang').onclick=()=>{LANG=LANG==='vi'?'en':'vi';localStorage.setItem('lang',LANG);applyLang();};
+
+/* ===== defaults (fallback) & V10 config switch ===== */
+const DEF={
+  site:{brand:"LightUnfold • UltraMaster V10",ens:"lightunfold.eth",
+    contact:{email:"vumumabada@gmail.com"},
+    payments:{qr_auto:true,chains:[
+      {name:"ETH (EVM)",address:"0x54E15A7b6d4213beE87800432A151d794638E3C2",explorer:"https://etherscan.io/address/0x54E15A7b6d4213beE87800432A151d794638E3C2",min:0.0005},
+      {name:"USDT (ERC20)",address:"0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",explorer:"https://etherscan.io/token/USDT?a=0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",min:5}
+    ],offchain:{momo:"0567892030",vietcombank:"9567892030",paypal:"vumumabada@gmail.com"}},
+    affiliates:[
+      {name:"Binance",url:"https://www.binance.com/vi/register?ref=GRO_20338_9V44N",tag:"Top CEX"},
+      {name:"AlgosOne",url:"https://algosone.page.link/MbtR",tag:"AI Trading"},
+      {name:"OKX",url:"https://www.okx.com/join/your-code",tag:"CEX"},
+      {name:"Bybit",url:"https://www.bybit.com/invite?ref=your-code",tag:"Derivatives"}]
+  },
+  feeds:{top_n:12}, schedule:{refresh_minutes:10},
+  secrets:{unlock_code:"23061988"},
+  store:{bundles:[
+    {title:"Alpha Signals X",price:99,desc:"Tín hiệu ngắn hạn xác suất cao.",tags:["Scalping","DeFi","Spot"]},
+    {title:"ETF & BTC Flow",price:79,desc:"Dòng vốn ETF/BTC – quỹ & miner.",tags:["BTC","ETF","Flow"]},
+    {title:"Altseason Radar",price:69,desc:"Chu kỳ vốn hóa & leader/laggard.",tags:["Cycle","Momentum"]},
+    {title:"Whale Watcher Pro",price:89,desc:"Theo dõi ví cá voi & giao dịch lớn.",tags:["Onchain","Whales"]},
+    {title:"Airdrop Hunter",price:59,desc:"Lịch farming & điểm tích lũy.",tags:["Quest","Points"]}
+  ],
+  premium:[
+    {title:"Alpha Feed Pro",desc:"Dòng tin alpha siêu nhanh (độ trễ ms).",bullets:["Bất thường dòng tiền","Nguồn đa kênh","Bộ lọc nhiễu"],link:"data/latest.json"},
+    {title:"Deal Flow Private",desc:"Tổng hợp deal/seed đang mở private.",bullets:["Điều kiện","Ưu tiên thời gian"]}
+  ]}};
+
+let CFG=DEF, lastRefreshTS=Date.now();
+
+/* ===== V10 external config (tùy chọn) – one‑click replace ===== */
+const V10_ON=true;
+const V10_PATHS={
+  lang_vi:'lang/vi.v10.json',
+  lang_en:'lang/en.v10.json',
+  site:'site.v10.json',
+  ui:'ui.v10.json',
+  feeds:'feeds.v10.json',
+  secrets:'secrets.v10.json'
+};
+async function getNoCache(p){try{const r=await fetch(p,{cache:'no-store'});if(!r.ok) throw 0;return await r.json()}catch(_){return null}}
+function mergeDeep(base, patch){return (typeof base==='object'&&base&&typeof patch==='object'&&patch)?Object.assign({},base, ...Object.keys(patch).map(k=>({[k]:mergeDeep(base[k],patch[k])}))) : (patch??base)}
+async function loadV10All(){
+  if(!V10_ON) return;
+  const [vi,en,site,ui,feeds,sec]=await Promise.all([
+    getNoCache(V10_PATHS.lang_vi),getNoCache(V10_PATHS.lang_en),
+    getNoCache(V10_PATHS.site),getNoCache(V10_PATHS.ui),
+    getNoCache(V10_PATHS.feeds),getNoCache(V10_PATHS.secrets)
+  ]);
+  if(vi||en){ if(LANG==='vi'&&vi) window.i18n.vi = mergeDeep(window.i18n?.vi||{},vi);
+              if(LANG==='en'&&en) window.i18n.en = mergeDeep(window.i18n?.en||{},en); }
+  CFG = mergeDeep(CFG, mergeDeep(site||{}, mergeDeep(ui||{}, mergeDeep(feeds||{}, sec||{}))));
+}
+
+/* ===== Boot ===== */
+(async function boot(){
+  $('#year').textContent=new Date().getFullYear();
+
+  // modal preview buttons
+  bindModal('#openCfg','config.json','config.json');
+  bindModal('#openData','data/latest.json','data/latest.json');
+
+  // optional legacy config.json
+  const cfg=await j('config.json'); if(cfg) CFG=mergeDeep(CFG,cfg);
+
+  // V10 external overlays
+  await loadV10All();
+
+  // Header + contact
+  $('#brand').textContent=CFG.site?.brand||'LightUnfold • UltraMaster V10';
+  $('#ens').textContent=CFG.site?.ens||'—';
+  const contact=(CFG.site?.contact?.email||CFG.site?.contact||CFG.site?.ens||'').toString();
+  const pp=$('#pp'); if(pp) pp.innerHTML = contact?`<a href="mailto:${contact}" target="_blank" rel="noopener">${contact}</a>`:'—';
+
+  // Share links
+  const u=encodeURIComponent(location.href), t=encodeURIComponent(document.title);
+  $('#sh_tg').href=`https://t.me/share/url?url=${u}`;
+  $('#sh_x').href =`https://twitter.com/intent/tweet?text=${t}&url=${u}`;
+  $('#sh_fb').href=`https://www.facebook.com/sharer/sharer.php?u=${u}`;
+  $('#sh_in').href=`https://www.linkedin.com/sharing/share-offsite/?url=${u}`;
+
+  // Buttons
+  $('#refreshNow').onclick=loadDataSmart;
+  $('#goTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+
+  // Render
+  renderPays(); renderAffs(); renderBundles('day'); paintPremium(); bindPaywall();
+  $('#timeTabs').onclick=e=>{const t=e.target.closest('.tab'); if(!t) return; $$('#timeTabs .tab').forEach(x=>x.classList.remove('act')); t.classList.add('act'); renderBundles(t.dataset.t)};
+
+  // Apps
+  const names=["dex.html","hyper_v2.html","pro.html","super_auto.html","super_share.html","xpeotl.html","xportal.html"];
+  $('#apps').innerHTML=names.map(n=>`<a href="${n}" target="_blank" rel="noopener">${n.replace('.html','').replaceAll('_',' ').toUpperCase()}</a>`).join('');
+
+  // Data loop
+  await loadDataSmart();
+  const every=Math.max(3, Number(CFG.schedule?.refresh_minutes||10));
+  setInterval(loadDataSmart,every*60*1000);
+
+  // Live pulse + KPI client-only
+  setInterval(()=>$('#pulse').textContent=(LANG==='vi'?'Cập nhật: ':'Updated: ')+agoSec(lastRefreshTS),1000);
+  setInterval(liveCounter,4000); liveCounter();
+  setInterval(revBoot,7000); revBoot();
+
+  applyLang();
+  try{registerSW()}catch(_){}
+})();
+
+/* ===== Modal helper ===== */
+function bindModal(btnSel,url,title){
+  const btn=$(btnSel); if(!btn) return;
+  const modal = document.createElement('div'); modal.className='modal'; modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:9999';
+  modal.innerHTML = `<div class="box" style="width:min(92vw,900px);height:min(80vh,700px);background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column">
+    <header style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)">
+      <b>${title}</b>
+      <div class="row">
+        <a class="btn out" href="${url}" target="_blank" rel="noopener">Mở tab mới ↗</a>
+        <button class="btn" id="__close">Đóng</button>
+      </div>
+    </header>
+    <iframe src="${url}" style="border:0;flex:1;background:#0a0f14"></iframe>
+  </div>`;
+  document.body.appendChild(modal);
+  btn.onclick=()=>{modal.style.display='flex';};
+  modal.addEventListener('click',e=>{if(e.target.id==='__close'||e.target===modal) modal.style.display='none';});
+}
+
+/* ===== Payments ===== */
+function renderPays(){
+  const P=CFG.site?.payments||{}; const chains=P.chains||[]; const off=P.offchain||{};
+  const mins=(()=>{const m={}; chains.forEach(c=>{if(/ETH/i.test(c.name)) m.ETH=c.min||0.0005; if(/USDT/i.test(c.name)) m.USDT=c.min||5}); return m})();
+  $('#mins').textContent=["ETH ≥ "+(mins.ETH||0.0005),"USDT ≥ "+(mins.USDT||5)].join(", ");
+
+  const items=[];
+  chains.forEach(c=>{
+    const open="https://metamask.app.link/";
+    items.push(`<div class="card"><div class="pay">
+      <img alt="QR" src="${qrlink(c.address)}" loading="lazy" title="Quét để thanh toán">
+      <div class="meta">
+        <div class="row" style="justify-content:space-between"><b>${c.name}</b>
+          <a class="btn out" target="_blank" rel="noopener" href="${open}">${LANG==='vi'?'Mở ví/ứng dụng':'Open wallet/app'} ↗</a></div>
+        <div class="mono"><a href="${c.explorer||'#'}" target="_blank" rel="noopener">${c.address}</a></div>
+        ${c.explorer?`<div class="muted">Explorer: <a target="_blank" rel="noopener" href="${c.explorer}">On‑chain ↗</a></div>`:""}
+        ${c.min?`<div class="muted">${LANG==='vi'?'Tối thiểu':'Minimum'}: ${c.min}</div>`:""}
+        <div class="row" style="margin-top:8px">
+          <button class="btn" onclick="navigator.clipboard.writeText('${c.address}')">${LANG==='vi'?'Sao chép':'Copy'}</button>
+          <a class="btn out" href="${qrlink(c.address)}" download>⚡ ${LANG==='vi'?'Tải QR':'Download QR'}</a>
+        </div>
+      </div></div></div>`);
+  });
+  if(off.momo) items.push(payBox("MoMo",off.momo,LANG==='vi'?"Ví MoMo Việt Nam.":"Vietnam MoMo wallet."));
+  if(off.vietcombank) items.push(payBox("Vietcombank",off.vietcombank,LANG==='vi'?"Chuyển khoản VCB.":"VCB bank transfer."));
+  if(off.paypal) items.push(payBox("PayPal",off.paypal,`${LANG==='vi'?'Thanh toán PayPal.':'Pay via PayPal.'} <a target="_blank" rel="noopener" href="https://www.paypal.me/${off.paypal.split('@')[0]}">PayPal.me ↗</a>`));
+  $('#pays').innerHTML=items.join("");
+  function payBox(label,addr,hint){return `<div class="card"><div class="pay">
+    <img alt="QR" src="${qrlink(addr)}" loading="lazy"><div class="meta">
+    <div class="row" style="justify-content:space-between"><b>${label}</b><span></span></div>
+    <div class="muted">${hint||""}</div><div class="mono">${addr}</div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn" onclick="navigator.clipboard.writeText('${addr}')">${LANG==='vi'?'Sao chép':'Copy'}</button>
+      <a class="btn out" href="${qrlink(addr)}" download>⚡ ${LANG==='vi'?'Tải QR':'Download QR'}</a>
+    </div></div></div></div>`}
+}
+
+/* ===== Affiliates ===== */
+function renderAffs(){
+  const A=CFG.site?.affiliates||[];
+  $('#affs').innerHTML=A.map(a=>`<div class="shop-card">
+    <h4>${a.name}</h4>
+    <div class="note">Ưu đãi đối tác: ${a.tag||'Partner'}. Trải nghiệm mượt, hỗ trợ đa ngôn ngữ, API tự động hóa.</div>
+    <div class="row"><a class="btn" href="${a.url}" target="_blank" rel="noopener">${LANG==='vi'?'Đăng ký/Truy cập':'Join/Visit'} ↗</a>
+    <button class="btn out" onclick="navigator.clipboard.writeText('${a.url}')">${LANG==='vi'?'Sao chép link':'Copy link'}</button></div>
+  </div>`).join('');
+}
+
+/* ===== Market data (opps + mini table) ===== */
+let LAST_ITEMS=[];
+async function loadDataSmart(){
+  const latest=await j('data/latest.json'); lastRefreshTS=Date.now();
+  if(latest && Array.isArray(latest.items)){ $('#hb').textContent='LIVE'; $('#scanMode').textContent=i18n[LANG].scan_data; renderOpps(latest.items); renderMini(latest.items); return; }
+  const items=await scanLive(); $('#hb').textContent='LIVE'; $('#scanMode').textContent=i18n[LANG].scan_fallback; renderOpps(items); renderMini(items);
+}
+async function scanLive(){
+  const items=[];
+  try{
+    const cg=await j('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=40&page=1&price_change_percentage=1h,24h,7d');
+    if(Array.isArray(cg)) for(const c of cg){
+      items.push({source:"coingecko",symbol:(c.symbol||"").toUpperCase(),name:c.name,
+        price:+c.current_price||0,ch24h:+c.price_change_percentage_24h_in_currency||0,vol24h:+c.total_volume||0,
+        score:(+c.price_change_percentage_1h_in_currency||0)*0.4+(+c.price_change_percentage_24h_in_currency||0)*0.35+(+c.price_change_percentage_7d_in_currency||0)*0.25+Math.log10((+c.total_volume||1)),
+        link:`https://www.coingecko.com/en/coins/${c.id}`});
+    }
+  }catch(_){}
+  try{
+    const cl=await j('https://api.coinlore.net/api/tickers/?start=0&limit=40');
+    const data=cl?.data||[];
+    for(const c of data){
+      items.push({source:"coinlore",symbol:(c.symbol||"").toUpperCase(),name:c.name,
+        price:+c.price_usd||0,ch24h:+c.percent_change_24h||0,vol24h:+c.volume24||0,
+        score:(+c.percent_change_24h||0)*0.7+Math.log10((+c.volume24||1)),
+        link:`https://www.coinlore.com/coin/${(c.name||"").toLowerCase().replace(/\s+/g,"-")}`});
+    }
+  }catch(_){}
+  const best={}; for(const it of items){if(!it.symbol) continue; const k=it.symbol; if(!best[k]||it.score>best[k].score) best[k]=it;}
+  return Object.values(best).sort((a,b)=>b.score-a.score).slice(0, CFG.feeds?.top_n||12);
+}
+function renderOpps(items){
+  LAST_ITEMS=items||[];
+  $('#kOpps').textContent = LAST_ITEMS.length||0;
+  $('#kUpd').textContent = '0s';
+  $('#ticker').innerHTML=(LAST_ITEMS||[]).map(x=>`<span class="tag">${x.symbol}: $${fmt(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join('')||'—';
+  const maxAbs = LAST_ITEMS?.length ? Math.max(...LAST_ITEMS.map(x=>Math.abs(x.ch24h||0))) : 0;
+  const alertBox=$('#alertBox'); if(maxAbs>=12){alertBox.classList.remove('hidden'); alertBox.innerHTML=`⚠️ <b>Alert:</b> ${LANG==='vi'?'Biến động lớn':'Large move'} (${maxAbs.toFixed(2)}%) — ${LANG==='vi'?'kiểm tra cơ hội bên dưới.':'check opportunities below.'}`;} else {alertBox.classList.add('hidden'); alertBox.textContent='';}
+  const L=i18n[LANG];
+  $('#opps').innerHTML=(LAST_ITEMS||[]).map(x=>{
+    const ch=x.ch24h||0, pct=`${ch>=0?'+':''}${ch.toFixed(2)}%`;
+    return `<div class="item">
+      <div class="score">+${(x.score||0).toFixed(2)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="row" style="justify-content:space-between;gap:8px">
+          <div><b>${x.symbol}</b> · <span class="muted">${x.name||''}</span></div>
+          <a class="btn out" target="_blank" rel="noopener" href="${x.link||'#'}">${L.details} ↗</a>
+        </div>
+        <div class="row" style="gap:8px">
+          <span class="tag">${L.price}: $${fmt(x.price||0)}</span>
+          <span class="tag ${ch>=0?'ok':'bad'}">24h: ${pct}</span>
+          <span class="tag">${L.volume}: $${fmt(x.vol24h||0)}</span>
+          <span class="tag">Src: ${x.source}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('')||'<div class="muted">—</div>';
+}
+function renderMini(items){
+  const rows=(items||[]).slice(0,10).map(x=>{
+    const p=fmt(x.price||0), ch=(x.ch24h||0).toFixed(2);
+    return `<tr><td>${x.symbol}</td><td>${x.name||''}</td><td>$${p}</td><td class="${x.ch24h>=0?'ok':'bad'}">${ch}%</td><td>$${fmt(x.vol24h||0)}</td></tr>`;
+  }).join('');
+  $('#mktRows').innerHTML=rows||'<tr><td colspan="5">—</td></tr>';
+}
+
+/* ===== Bundles ===== */
+function renderBundles(mode='day'){
+  const B=CFG.store?.bundles||[];
+  const L=i18n[LANG];
+  $('#bundles').innerHTML=B.map(b=>{
+    const tags=(b.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
+    return `<div class="shop-card">
+      <h4>${b.title}</h4>
+      <div class="note">${b.desc||''}</div>
+      <div style="margin-top:6px">${tags}</div>
+      <div class="note">${LANG==='vi'?'Cách nhận giá trị:':'How to get value:'} ${LANG==='vi'?'Thanh toán → nhận mã → mở khóa':'Pay → get code → unlock'}</div>
+      <div class="row" style="margin-top:8px"><button class="btn" onclick="document.getElementById('unlockCode').focus()">${L.buy_enter}</button><span class="badge">${mode}</span><span class="badge">$${b.price}</span></div>
+    </div>`;
+  }).join('');
+}
+
+/* ===== Premium + Paywall ===== */
+function paintPremium(){
+  const P=CFG.store?.premium||[];
+  const L=i18n[LANG];
+  $('#premium').innerHTML=P.map(p=>`<div class="shop-card"><h4>${p.title}</h4>
+    <div class="note">${p.desc||''}</div>
+    ${p.bullets?`<ul>${p.bullets.map(x=>`<li>${x}</li>`).join('')}</ul>`:""}
+    ${p.link?`<a class="btn out" target="_blank" rel="noopener" href="${p.link}">${L.open_data} ↗</a>`:""}
+  </div>`).join('');
+}
+function bindPaywall(){
+  const SECRET=String(CFG.secrets?.unlock_code||'23061988');
+  const saved=localStorage.getItem('unlocked_code')||'';
+  function gate(open){$('#locked').classList.toggle('hidden',open);$('#opened').classList.toggle('hidden',!open);}
+  if(saved===SECRET){gate(true); paintPremium(); const th=localStorage.getItem('tx_hash'); if(th) $('#uMsg').innerHTML='<span class="ok">TX: '+th+'</span>';}
+  $('#doUnlock').onclick=()=>{const code=$('#unlockCode').value.trim(),tx=$('#txhash').value.trim();
+    if(code===SECRET){gate(true); paintPremium(); $('#uMsg').innerHTML='<span class="ok">'+(LANG==='vi'?'Đã mở khóa!':'Unlocked!')+'</span>'; if(tx) localStorage.setItem('tx_hash',tx); localStorage.setItem('unlocked_code',code);}
+    else $('#uMsg').innerHTML='<span class="err">'+(LANG==='vi'?'Mã không đúng.':'Invalid code.')+'</span>';};
+  $('#remember').onclick=()=>{const c=$('#unlockCode').value.trim(); if(c){localStorage.setItem('unlocked_code',c); $('#uMsg').textContent=LANG==='vi'?'Đã lưu trên thiết bị.':'Saved on device.'}};
+  $('#relock').onclick=()=>{localStorage.removeItem('unlocked_code'); gate(false);};
+}
+
+/* ===== i18n apply ===== */
+function applyLang(){
+  const L=i18n[LANG];
+  $('#hotTitle').textContent=L.hot; $('#payTitle').textContent=L.pay; $('#minLbl').textContent=L.minLbl;
+  $('#contactLbl').textContent=L.contactLbl; $('#lockTitle').textContent=L.lock; $('#howTitle').textContent=L.how;
+  $('#unlockedLbl').textContent=L.unlocked; $('#packTitle').textContent=L.packs; $('#hubHint').textContent=L.hub;
+  $('#autoLbl').textContent=L.auto; $('#whyH1').textContent=L.whyH1; $('#whyH2').textContent=L.whyH2; $('#whyH3').textContent=L.whyH3;
+  $('#why1').textContent=L.why1; $('#why2').textContent=L.why2; $('#why3').textContent=L.why3;
+  const uc=$('#unlockCode'), tx=$('#txhash'); if(uc) uc.placeholder=L.unlock_ph; if(tx) tx.placeholder=L.tx_ph;
+  const rn=$('#refreshNow'); if(rn) rn.textContent=L.refresh;
+  const scan=$('#scanMode'); if(scan){const fb=/fallback|scan/i.test(scan.textContent); scan.textContent=fb?L.scan_fallback:L.scan_data;}
+  try{ renderPays(); renderBundles(document.querySelector('#timeTabs .tab.act')?.dataset.t||'day'); paintPremium(); if(LAST_ITEMS.length) renderOpps(LAST_ITEMS);}catch(_){}
+}
+
+/* ===== Mini PWA & vanity KPI ===== */
+function registerSW(){
+  const sw=`
+    const CORE=['./','index.html','config.json','data/latest.json'];
+    self.addEventListener('install',e=>{e.waitUntil(caches.open('umv10-core').then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
+    self.addEventListener('activate',e=>{e.waitUntil(self.clients.claim())});
+    self.addEventListener('fetch',e=>{
+      const u=new URL(e.request.url);
+      if(u.origin===location.origin){e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));return;}
+      e.respondWith(fetch(e.request).catch(()=>caches.match('./')));
+    });
+  `;
+  const url=URL.createObjectURL(new Blob([sw],{type:'text/javascript'}));
+  navigator.serviceWorker.register(url,{scope:'./'});
+}
+function liveCounter(){
+  const k='umv10_peers'; const now=Date.now(), ttl=25*1000;
+  const id=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2);
+  localStorage.setItem('peer_id',id);
+  const raw=localStorage.getItem(k); let list=raw?JSON.parse(raw):[];
+  list=list.filter(x=>now-x.t<ttl); const me=list.find(x=>x.id===id);
+  if(me) me.t=now; else list.push({id,t:now});
+  localStorage.setItem(k,JSON.stringify(list));
+  $('#kLive').textContent=list.length;
+}
+function revBoot(){
+  const k='umv10_rev'; let val=Number(localStorage.getItem(k)||0);
+  val += (Math.random()*0.5+0.2);
+  localStorage.setItem(k,val);
+  $('#kRev').textContent = fmt(val);
+}
+</script>
+</body>
+</html>
