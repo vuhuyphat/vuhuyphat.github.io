@@ -1,1 +1,51 @@
-{}
+{
+  "site": {
+    "title": "UltraWeb3 – AI X200 V5.0",
+    "subtitle": "Hệ thống Web3 tự động hóa – đa nền tảng – đa ngôn ngữ",
+    "owner": "TRẦN VĂN VŨ"
+  },
+  "contacts": {
+    "paypal": "vumumabada@gmail.com",
+    "momo": "0567892030",
+    "vietcombank": "9567892030",
+    "usdt_erc20": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",
+    "eth_main": "0x54E15A7b6d4213beE87800432A151d794638E3C2",
+    "ens": "lightunfold.eth"
+  },
+  "affiliate": {
+    "binance": "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N",
+    "algosone": "https://algosone.page.link/MbtR"
+  },
+  "sections": [
+    {
+      "id": "intro",
+      "title": "Giới thiệu",
+      "content": "Hệ thống Web3 V5.0: Viết nội dung, đăng đa nền tảng, gắn link thanh toán & affiliate, tối ưu tốc độ và chuyển đổi toàn cầu."
+    },
+    {
+      "id": "payments",
+      "title": "Thông tin thanh toán",
+      "items": [
+        { "label": "PayPal", "value": "vumumabada@gmail.com" },
+        { "label": "Momo", "value": "0567892030" },
+        { "label": "Vietcombank", "value": "9567892030" },
+        { "label": "USDT (ERC20)", "value": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0" },
+        { "label": "ETH", "value": "0x54E15A7b6d4213beE87800432A151d794638E3C2" }
+      ]
+    },
+    {
+      "id": "trade",
+      "title": "Bắt đầu giao dịch",
+      "items": [
+        { "label": "Đăng ký Binance", "url": "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N" },
+        { "label": "Đăng ký AlgosOne", "url": "https://algosone.page.link/MbtR" }
+      ]
+    }
+  ],
+  "ui": {
+    "cta_primary": "Đăng ký ngay",
+    "cta_secondary": "Sao chép thông tin thanh toán",
+    "lang": "vi"
+  },
+  "version": "5.0.0"
+}
