@@ -12,12 +12,9 @@
 <meta property="og:url" content="https://vuhuyphat.github.io/">
 <meta name="theme-color" content="#0b0f13">
 <style>
-  :root{
-    --bg:#0b0f13;--card:#10161d;--line:#1c2836;--txt:#e9eef4;--mut:#9fb3c8;--brand:#7dc1ff;--accent:#ffb000;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
-  header,section,footer{max-width:980px;margin:0 auto;padding:20px}
+  :root{--bg:#0b0f13;--card:#10161d;--line:#1c2836;--txt:#e9eef4;--mut:#9fb3c8;--brand:#7dc1ff;--accent:#ffb000;--good:#2ecc71;--bad:#ff4d4f}
+  *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  header,section,footer{max-width:980px;margin:0 auto;padding:18px}
   .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
   .pill{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--mut)}
   .link{color:var(--brand);text-decoration:none}
@@ -30,30 +27,31 @@
   .skeleton{background:linear-gradient(90deg,#0f151d,#172230,#0f151d);background-size:200% 100%;animation:sk 1.2s infinite}
   @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
   .tag{display:inline-block;border:1px solid var(--line);border-radius:8px;padding:2px 8px;margin:2px 4px 0 0;color:var(--mut);font-size:12px}
-  .pay{display:flex;gap:14px}
-  .pay img{width:160px;height:160px;border-radius:12px;border:1px solid var(--line);background:#000}
-  .pay .meta{flex:1;min-width:0}
-  .pay .copy{cursor:pointer}
-  .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
   .list .item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px dashed var(--line)}
   .list .score{min-width:54px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:4px 6px;color:#ffdca8;background:#241a00}
-  .aff a{display:block}
-  /* Nút chia sẻ nổi */
+  .pay{display:flex;gap:14px} .pay img{width:160px;height:160px;border-radius:12px;border:1px solid var(--line);background:#000}
+  .pay .meta{flex:1;min-width:0} .pay .copy{cursor:pointer}
+  .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+  .ticker{overflow:hidden;white-space:nowrap;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:8px 0;margin-top:10px}
+  .marquee{display:inline-block;animation:scroll 22s linear infinite} @keyframes scroll{from{transform:translateX(0)} to{transform:translateX(-50%)}}
   .sharebar{position:fixed;right:12px;bottom:12px;display:flex;gap:8px;background:#10161d;border:1px solid #1c2836;border-radius:12px;padding:8px;z-index:9999}
   .sharebar a{font-size:18px;text-decoration:none}
+  .chip{display:inline-block;border-radius:8px;padding:2px 8px;margin-left:6px;font-weight:700}
+  .pos{background:rgba(46,204,113,.15);color:var(--good);border:1px solid rgba(46,204,113,.35)}
+  .neg{background:rgba(255,77,79,.15);color:var(--bad);border:1px solid rgba(255,77,79,.35)}
 </style>
 </head>
 <body>
-
 <header>
   <div class="row">
     <span class="pill">ENS: <b id="ens">lightunfold.eth</b></span>
-    <span class="pill">Heartbeat: <span id="hb">—</span></span>
+    <span class="pill">Heartbeat: <b id="hb">—</b></span>
     <a class="pill link" href="config.json" target="_blank">config</a>
     <a class="pill link" href="data/latest.json" target="_blank">data</a>
   </div>
   <h1 id="brand">LightUnfold • Web3 AI X1000</h1>
   <div id="tagline" class="muted">Trang Web3 AI tự động 24/7</div>
+  <div id="aiSummary" class="muted" style="margin-top:6px">Đang tạo tóm tắt…</div>
 </header>
 
 <section class="card">
@@ -62,10 +60,11 @@
     <span class="badge"><span id="uptxt" class="muted">Đang cập nhật…</span></span>
   </div>
   <div id="opps" class="list">
-    <div class="item"><div class="score skeleton">—</div><div style="flex:1" class="skeleton" aria-hidden="true">&nbsp;</div></div>
+    <div class="item"><div class="score skeleton">—</div><div style="flex:1" class="skeleton">&nbsp;</div></div>
     <div class="item"><div class="score skeleton">—</div><div style="flex:1" class="skeleton">&nbsp;</div></div>
     <div class="item"><div class="score skeleton">—</div><div style="flex:1" class="skeleton">&nbsp;</div></div>
   </div>
+  <div class="ticker"><div id="ticker" class="marquee">—</div></div>
 </section>
 
 <section class="card">
@@ -76,16 +75,20 @@
 
 <section class="card">
   <h3 style="margin-top:0">🤝 Affiliate</h3>
-  <div id="affs" class="grid aff"></div>
+  <div id="affs" class="grid"></div>
 </section>
 
 <footer class="muted" style="text-align:center;padding:28px">
   © <span id="year"></span> LightUnfold • Phi tập trung & mở rộng 24/7
 </footer>
 
-<!-- ========= JS: tất cả-in-1 ========= -->
 <script>
-/* ===== Fallback cấu hình trong file (có thể override bằng config.json) ===== */
+/* ================== 1) CONFIG CỤC BỘ + LOG_URL Apps Script ================== */
+const LOG_URL = ""; 
+/* 👉 Nếu bạn có Google Apps Script (Web App): dán URL Publish vào đây, VD:
+   const LOG_URL = "https://script.google.com/macros/s/AKfycbxYourWebAppID/exec";
+   Không có cũng OK, site vẫn chạy, chỉ không ghi log. */
+
 const LOCAL_CFG = {
   site:{
     brand:"LightUnfold • Web3 AI X1000",
@@ -94,157 +97,145 @@ const LOCAL_CFG = {
     payments:{
       eth:"0x54E15A7b6d4213beE87800432A151d794638E3C2",
       usdt_erc20:"0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",
-      momo:"0567892030",
-      vietcombank:"9567892030",
-      paypal:"vumumabada@gmail.com"
+      momo:"0567892030", vietcombank:"9567892030", paypal:"vumumabada@gmail.com"
     },
     affiliates:[
       {name:"Binance",url:"https://www.binance.com/vi/register?ref=GRO_20338_9V44N"},
-      {name:"AlgosOne",url:"https://algosone.page.link/MbtR"}
+      {name:"AlgosOne",url:"https://algosone.page.link/MbtR"},
+      {name:"OKX",url:"https://www.okx.com/join/your-code"},
+      {name:"Bybit",url:"https://www.bybit.com/invite?ref=your-code"}
     ],
     contact:"@lightunfold"
   },
-  feeds:{top_n:10,sources:["coingecko_markets","coinlore_tickers"]},
-  schedule:{refresh_minutes:10}
+  feeds:{top_n:12}, schedule:{refresh_minutes:10, jitter_seconds:30}
 };
 
-/* ===== Tiện ích ===== */
+/* ================== 2) TIỆN ÍCH CHUNG ================== */
 const $ = s=>document.querySelector(s);
-const fmt = n => Number(n||0).toLocaleString(undefined,{maximumFractionDigits:8});
-const age = iso => {
-  if(!iso) return "—";
-  const s = Math.floor((Date.now()-new Date(iso).getTime())/1000);
-  if (s<60) return s+"s ago";
-  const m = Math.floor(s/60); if (m<60) return m+"m ago";
-  const h = Math.floor(m/60); return h+"h ago";
+const fmt=n=>Number(n||0).toLocaleString(undefined,{maximumFractionDigits:8});
+const age=iso=>{if(!iso)return"—";const s=Math.floor((Date.now()-new Date(iso).getTime())/1000);
+  if(s<60)return s+"s ago";const m=Math.floor(s/60);if(m<60)return m+"m ago";const h=Math.floor(m/60);return h+"h ago";}
+const qrlink=t=>`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(t)}`;
+const sendLog=(type,detail)=>{
+  if(!LOG_URL) return;
+  const data=new URLSearchParams({t:Date.now(),type,detail,ref:document.referrer||"",url:location.href,ua:navigator.userAgent});
+  try{navigator.sendBeacon(LOG_URL+"?"+data.toString());}catch{fetch(LOG_URL,{method:"POST",body:data}).catch(()=>{});}
 };
-const qrlink = text => `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(text)}`;
-async function safeJson(url){ try{ const r=await fetch(url,{cache:"no-store"}); if(!r.ok) throw 0; return await r.json(); }catch{ return null; }}
+async function safeJson(url,timeout=10000){
+  const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(),timeout);
+  try{const r=await fetch(url,{cache:"no-store",signal:ctl.signal}); clearTimeout(to); if(!r.ok) throw 0; return await r.json();}
+  catch{clearTimeout(to);return null;}
+}
 
-/* ===== Render tĩnh ===== */
+/* ================== 3) KHỞI TẠO GIAO DIỆN ================== */
 (function boot(){
-  $("#year").textContent = new Date().getFullYear();
-  $("#brand").textContent = LOCAL_CFG.site.brand;
-  $("#ens").textContent = LOCAL_CFG.site.ens;
-  $("#tagline").textContent = LOCAL_CFG.site.tagline;
-  $("#pp").textContent = LOCAL_CFG.site.contact || LOCAL_CFG.site.ens;
-
-  // payments
-  const P = LOCAL_CFG.site.payments||{};
-  const pays = [];
-  if(P.eth) pays.push({label:"ETH (EVM)", addr:P.eth, hint:"Nạp ETH/USDT trên mạng EVM."});
-  if(P.usdt_erc20) pays.push({label:"USDT (ERC20)", addr:P.usdt_erc20, hint:"USDT ERC20 Ethereum."});
-  if(P.momo) pays.push({label:"MoMo", addr:P.momo, hint:"Ví MoMo Việt Nam."});
-  if(P.vietcombank) pays.push({label:"Vietcombank", addr:P.vietcombank, hint:"Chuyển khoản VCB."});
-  if(P.paypal) pays.push({label:"PayPal", addr:P.paypal, hint:"Thanh toán PayPal."});
-
-  $("#pays").innerHTML = pays.map(p=>`
+  $("#year").textContent=new Date().getFullYear();
+  $("#brand").textContent=LOCAL_CFG.site.brand;
+  $("#ens").textContent=LOCAL_CFG.site.ens;
+  $("#tagline").textContent=LOCAL_CFG.site.tagline;
+  $("#pp").textContent=LOCAL_CFG.site.contact;
+  // Payments
+  const P=LOCAL_CFG.site.payments||{}, pays=[];
+  if(P.eth) pays.push({label:"ETH (EVM)",addr:P.eth,hint:"Nạp ETH/USDT trên EVM."});
+  if(P.usdt_erc20) pays.push({label:"USDT (ERC20)",addr:P.usdt_erc20,hint:"USDT ERC20 Ethereum."});
+  if(P.momo) pays.push({label:"MoMo",addr:P.momo,hint:"Ví MoMo Việt Nam."});
+  if(P.vietcombank) pays.push({label:"Vietcombank",addr:P.vietcombank,hint:"Chuyển khoản VCB."});
+  if(P.paypal) pays.push({label:"PayPal",addr:P.paypal,hint:"Thanh toán PayPal."});
+  $("#pays").innerHTML=pays.map(p=>`
     <div class="card" style="background:#0e141b">
       <div class="pay">
         <img alt="QR" src="${qrlink(p.addr)}" loading="lazy">
         <div class="meta">
-          <div class="row" style="justify-content:space-between">
-            <b>${p.label}</b>
-            <a class="link" target="_blank" href="${p.label.includes('ETH')?'https://metamask.app.link/':'#'}">${p.label.includes('ETH')?'Mở ví/ứng dụng ↗':''}</a>
-          </div>
+          <div class="row" style="justify-content:space-between"><b>${p.label}</b></div>
           <div class="muted" style="margin:6px 0">${p.hint||""}</div>
-          <div class="mono copy" title="Nhấn để sao chép" data-addr="${p.addr}" style="word-break:break-all">${p.addr}</div>
+          <div class="mono copy" data-addr="${p.addr}" style="word-break:break-all">${p.addr}</div>
           <div class="row" style="margin-top:8px">
-            <button class="btn copy" data-addr="${p.addr}">Sao chép địa chỉ</button>
-            <a class="btn" style="text-decoration:none" href="${qrlink(p.addr)}" download>⚡ Tải QR</a>
+            <button class="btn copy" data-addr="${p.addr}">Sao chép</button>
+            <a class="btn" href="${qrlink(p.addr)}" download>⚡ Tải QR</a>
           </div>
         </div>
       </div>
     </div>
   `).join("");
-
-  // affiliates
-  const A = LOCAL_CFG.site.affiliates||[];
-  $("#affs").innerHTML = A.map(a=>`
-    <a class="card link" href="${a.url}" target="_blank">
-      <b>${a.name}</b><div class="muted">Tham gia qua link đối tác</div>
-    </a>
-  `).join("");
-
-  // copy handlers
   document.addEventListener("click",e=>{
-    const t = e.target.closest(".copy"); if(!t) return;
-    const v = t.getAttribute("data-addr") || t.textContent.trim();
-    navigator.clipboard.writeText(v).then(()=>{ t.textContent = v+"  ✓"; setTimeout(()=>t.textContent=v,1000);});
+    const t=e.target.closest(".copy"); if(!t) return;
+    const v=t.getAttribute("data-addr")||t.textContent.trim();
+    navigator.clipboard.writeText(v).then(()=>{ t.textContent=v+" ✓"; setTimeout(()=>t.textContent=v,1000); sendLog("copy",v);});
   });
+  // Affiliates (tự gắn UTM)
+  const A=(LOCAL_CFG.site.affiliates||[]).map(a=>({...a, url:a.url+(a.url.includes("?")?"&":"?")+"utm_source=lightunfold&utm_medium=site&utm_campaign=aff"}));
+  $("#affs").innerHTML=A.map(a=>`<a class="card link" href="${a.url}" target="_blank"><b>${a.name}</b><div class="muted">Tham gia qua link đối tác</div></a>`).join("");
+  document.addEventListener("click",e=>{const a=e.target.closest("a"); if(a) sendLog("link",a.href);});
 })();
 
-/* ===== Dữ liệu: ưu tiên data/latest.json (Actions), fallback quét live ===== */
+/* ================== 4) DATA: ưu tiên /data/latest.json → fallback API ================== */
 async function loadDataSmart(){
-  const local = await safeJson("data/latest.json");
-  if(local && Array.isArray(local.items)){
-    renderOpps(local.items, local.generated_at, "latest.json");
-    return;
-  }
-  // fallback: quét trực tiếp
-  const items = await scanLive();
-  renderOpps(items, new Date().toISOString(), "live");
+  let j=await safeJson("data/latest.json"); 
+  if(j&&Array.isArray(j.items)){ render(j.items,j.generated_at,"latest.json"); return; }
+  const items=await scanLive(); render(items,new Date().toISOString(),"live");
 }
-
 async function scanLive(){
-  const items = [];
+  const arr=[];
   try{
-    const cg = await safeJson("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=50&page=1&price_change_percentage=1h,24h,7d");
-    if (Array.isArray(cg)) {
-      for (const c of cg) {
-        items.push({
-          source:"coingecko", symbol:(c.symbol||"").toUpperCase(), name:c.name,
-          price:+c.current_price||0, ch24h:+c.price_change_percentage_24h_in_currency||0,
-          vol24h:+c.total_volume||0,
-          score:(+c.price_change_percentage_1h_in_currency||0)*0.4 + (+c.price_change_percentage_24h_in_currency||0)*0.35 + (+c.price_change_percentage_7d_in_currency||0)*0.25 + Math.log10((+c.total_volume||1)),
-          link:`https://www.coingecko.com/en/coins/${c.id}`
-        });
-      }
+    const cg=await safeJson("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=50&page=1&price_change_percentage=1h,24h,7d");
+    if(Array.isArray(cg)) for(const c of cg){
+      arr.push({source:"coingecko",symbol:(c.symbol||"").toUpperCase(),name:c.name,price:+c.current_price||0,ch24h:+c.price_change_percentage_24h_in_currency||0,vol24h:+c.total_volume||0,
+        score:(+c.price_change_percentage_1h_in_currency||0)*0.4+(+c.price_change_percentage_24h_in_currency||0)*0.35+(+c.price_change_percentage_7d_in_currency||0)*0.25+Math.log10((+c.total_volume||1)),
+        link:`https://www.coingecko.com/en/coins/${c.id}`});
     }
   }catch{}
   try{
-    const cl = await safeJson("https://api.coinlore.net/api/tickers/?start=0&limit=50");
-    const data = cl?.data||[];
-    for (const c of data) {
-      items.push({
-        source:"coinlore", symbol:(c.symbol||"").toUpperCase(), name:c.name,
-        price:+c.price_usd||0, ch24h:+c.percent_change_24h||0, vol24h:+c.volume24||0,
-        score:(+c.percent_change_24h||0)*0.7 + Math.log10((+c.volume24||1)),
-        link:`https://www.coinlore.com/coin/${(c.name||"").toLowerCase().replace(/\s+/g,"-")}`
-      });
+    const cl=await safeJson("https://api.coinlore.net/api/tickers/?start=0&limit=50"); const list=cl?.data||[];
+    for(const c of list){
+      arr.push({source:"coinlore",symbol:(c.symbol||"").toUpperCase(),name:c.name,price:+c.price_usd||0,ch24h:+c.percent_change_24h||0,vol24h:+c.volume24||0,
+        score:(+c.percent_change_24h||0)*0.7+Math.log10((+c.volume24||1)),
+        link:`https://www.coinlore.com/coin/${(c.name||"").toLowerCase().replace(/\s+/g,"-")}`});
     }
   }catch{}
-  // gộp symbol → chọn score cao nhất
-  const best={};
-  for(const it of items){ if(!it.symbol) continue; const k=it.symbol; if(!best[k]||it.score>best[k].score) best[k]=it; }
-  return Object.values(best).sort((a,b)=>b.score-a.score).slice(0, LOCAL_CFG.feeds.top_n||10);
+  const best={}; for(const it of arr){ if(!it.symbol) continue; const k=it.symbol; if(!best[k]||it.score>best[k].score) best[k]=it; }
+  return Object.values(best).sort((a,b)=>b.score-a.score).slice(0, LOCAL_CFG.feeds.top_n||12);
 }
-
-function renderOpps(items, ts, mode){
-  $("#hb").textContent = mode==="live" ? "LIVE" : age(ts);
-  $("#uptxt").textContent = mode==="live" ? "Quét trực tiếp (fallback)" : ("Cập nhật " + age(ts));
-  const html = (items||[]).map(x=>`
-    <div class="item">
+function render(items,ts,mode){
+  $("#hb").textContent=mode==="live"?"LIVE":age(ts); $("#uptxt").textContent=mode==="live"?"Quét trực tiếp":"Cập nhật "+age(ts);
+  $("#opps").innerHTML=(items||[]).map(x=>{
+    const ch=x.ch24h||0, chip=`<span class="chip ${ch>=0?'pos':'neg'}">${ch>=0?'+':''}${ch.toFixed(2)}%</span>`;
+    return `<div class="item">
       <div class="score">+${(x.score||0).toFixed(2)}</div>
-      <div style="flex:1;min-width:0">
-        <div class="row" style="justify-content:space-between;gap:8px">
-          <div><b>${x.symbol}</b> · <span class="muted">${x.name||""}</span></div>
+      <div style="flex:1">
+        <div class="row" style="justify-content:space-between">
+          <div><b>${x.symbol}</b> · <span class="muted">${x.name||""}</span> ${chip}</div>
           <a class="link" href="${x.link}" target="_blank">Chi tiết ↗</a>
         </div>
-        <div class="row" style="gap:8px">
-          <span class="tag">Giá: $${fmt(x.price||0)}</span>
-          <span class="tag">24h: ${(x.ch24h>=0?'+':'')}${(x.ch24h||0).toFixed(2)}%</span>
-          <span class="tag">Khối lượng: $${fmt(x.vol24h||0)}</span>
-          <span class="tag">Nguồn: ${x.source}</span>
-        </div>
-      </div>
-    </div>
-  `).join("");
-  $("#opps").innerHTML = html || `<div class="muted">Chưa có dữ liệu.</div>`;
+        <div class="row"><span class="tag">Giá: $${fmt(x.price||0)}</span><span class="tag">Khối lượng: $${fmt(x.vol24h||0)}</span><span class="tag">Nguồn: ${x.source}</span></div>
+      </div></div>`;
+  }).join("")||`<div class="muted">Chưa có dữ liệu.</div>`;
+  $("#ticker").innerHTML=(items||[]).map(x=>`<span style="margin-right:20px">${x.symbol}: $${fmt(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join('')||'—';
+  aiSummary(items);
 }
 
-/* ===== Thanh chia sẻ nổi + (tuỳ chọn) log click ===== */
-(function autoShare(){
+/* ================== 5) “AI” TÓM TẮT (heuristic) ================== */
+function aiSummary(items){
+  if(!items||!items.length){ $("#aiSummary").textContent="—"; return; }
+  const hot=[...items].sort((a,b)=>(b.ch24h||0)-(a.ch24h||0)).slice(0,3);
+  const bigVol=[...items].sort((a,b)=>(b.vol24h||0)-(a.vol24h||0)).slice(0,1);
+  const s1=hot.map(x=>`${x.symbol} ${(x.ch24h>0?'+':'')}${(x.ch24h||0).toFixed(1)}%`).join(' • ');
+  const s2=bigVol[0]?`Vol lớn: ${bigVol[0].symbol} $${fmt(bigVol[0].vol24h)}`:'';
+  $("#aiSummary").textContent=`Nhịp thị trường: ${s1}${s2?(' • '+s2):''}`;
+}
+
+/* ================== 6) AUTO REFRESH + JITTER ================== */
+(async function loop(){
+  await loadDataSmart();
+  while(true){
+    const base=(LOCAL_CFG.schedule?.refresh_minutes||10)*60*1000;
+    const jitter=(Math.random()*(LOCAL_CFG.schedule?.jitter_seconds||30))*1000;
+    await new Promise(r=>setTimeout(r,base+jitter));
+    await loadDataSmart();
+  }
+})();
+
+/* ================== 7) NÚT CHIA SẺ + LOG ================== */
+(function share(){
   const links=[
     "https://t.me/share/url?url="+encodeURIComponent(location.href),
     "https://twitter.com/intent/tweet?text="+encodeURIComponent(document.title)+"&url="+encodeURIComponent(location.href),
@@ -252,20 +243,34 @@ function renderOpps(items, ts, mode){
     "https://www.linkedin.com/sharing/share-offsite/?url="+encodeURIComponent(location.href)
   ];
   const bar=document.createElement("div"); bar.className="sharebar";
-  ["📣","𝕏","f","in"].forEach((txt,i)=>{
-    const a=document.createElement("a"); a.href=links[i]; a.target="_blank"; a.textContent=txt; bar.appendChild(a);
-  });
+  ["📣","𝕏","f","in"].forEach((txt,i)=>{ const a=document.createElement("a"); a.href=links[i]; a.target="_blank"; a.textContent=txt; bar.appendChild(a);});
   document.body.appendChild(bar);
-
-  // (Tuỳ chọn) Ghi log click ra Google Apps Script – bỏ comment để dùng:
-  document.addEventListener("click",function(e){
-    const a=e.target.closest("a"); if(!a) return;
-    // fetch("https://script.google.com/macros/s/YOUR-APPSCRIPT-ID/exec?u="+encodeURIComponent(a.href)+"&t="+Date.now()).catch(()=>{});
-  });
+  document.addEventListener("click",e=>{ const a=e.target.closest("a"); if(a) sendLog("click",a.href); });
 })();
 
-/* ===== Khởi động ===== */
-loadDataSmart();
+/* ================== 8) PWA OFFLINE — tạo service worker bằng Blob ================== */
+(function pwa(){
+  if(!("serviceWorker" in navigator)) return;
+  const swCode = `
+    const CACHE='x1000-v1';
+    const ASSETS=['./','index.html','config.json','data/latest.json'];
+    self.addEventListener('install',e=>{ e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())); });
+    self.addEventListener('activate',e=>{ e.waitUntil(self.clients.claim()); });
+    self.addEventListener('fetch',e=>{
+      const url=new URL(e.request.url);
+      if(url.pathname.endsWith('/data/latest.json')){
+        e.respondWith(fetch(e.request).then(r=>{
+          const copy=r.clone(); caches.open(CACHE).then(c=>c.put(e.request,copy)); return r;
+        }).catch(()=>caches.match(e.request)));
+        return;
+      }
+      e.respondWith(caches.match(e.request).then(m=>m||fetch(e.request)));
+    });
+  `;
+  const blob=new Blob([swCode],{type:'text/javascript'});
+  const swURL=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swURL).catch(()=>{});
+})();
 </script>
 </body>
 </html>
