@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>LightUnfold • Portal</title>
+<title>LightUnfold • Portal (v3.1)</title>
 <meta name="theme-color" content="#0b0f13" />
 <meta name="description" content="Cổng vào LightUnfold • Web3 AI X1000: giới thiệu, bằng chứng giá trị, CTA thanh toán, gói premium, affiliate. Siêu nhẹ, tự động 24/7." />
 <style>
@@ -38,10 +38,10 @@
   <div class="row">
     <span class="pill">ENS: <b id="ens">—</b></span>
     <span class="pill">Heartbeat: <b id="hb">—</b></span>
-    <a class="pill" href="config.json" target="_blank">config</a>
-    <a class="pill" href="data/latest.json" target="_blank">data</a>
-    <span class="pill" id="lang">VI / EN</span>
-    <span class="pill" id="theme">🌗</span>
+    <a class="pill" href="config.json" target="_blank" rel="noopener">config</a>
+    <a class="pill" href="data/latest.json" target="_blank" rel="noopener">data</a>
+    <button class="pill" id="lang">VI / EN</button>
+    <button class="pill" id="theme">🌗</button>
   </div>
 
   <!-- HERO -->
@@ -51,22 +51,22 @@
 
     <div class="kpi">
       <div class="box">
-        <div class="muted">Cơ hội đang hiển thị</div>
+        <div class="muted" id="k1lbl">Cơ hội đang hiển thị</div>
         <div class="big" id="k-opps">0</div>
       </div>
       <div class="box">
-        <div class="muted">Lần cập nhật</div>
+        <div class="muted" id="k2lbl">Lần cập nhật</div>
         <div class="big" id="k-upd">—</div>
       </div>
       <div class="box">
-        <div class="muted">Ngôn ngữ</div>
+        <div class="muted" id="k3lbl">Ngôn ngữ</div>
         <div class="big" id="k-loc">vi/en</div>
       </div>
     </div>
 
     <div class="row" style="margin-top:12px">
-      <a class="btn" href="index.html">🚀 Vào Ứng Dụng AI</a>
-      <a class="btn ghost" href="#buy">💳 Mua quyền xem Premium</a>
+      <a class="btn" href="index.html" id="cta-app">🚀 Vào Ứng Dụng AI</a>
+      <a class="btn ghost" href="#buy" id="cta-buy">💳 Mua quyền xem Premium</a>
     </div>
 
     <div class="ticker"><div id="tick" class="marquee">—</div></div>
@@ -74,40 +74,40 @@
 
   <!-- LÝ DO / SOCIAL PROOF -->
   <div class="card">
-    <h2>Vì sao LightUnfold khác biệt?</h2>
+    <h2 id="whyTitle">Vì sao LightUnfold khác biệt?</h2>
     <div class="grid">
-      <div><h3>⚡ Tốc độ & tự động</h3><div class="muted">Cron 24/7 quét đa nguồn, hợp nhất & xếp hạng theo điểm động lực (momentum + volume).</div></div>
-      <div><h3>🧠 Tóm tắt AI</h3><div class="muted">Sinh mô tả ngắn gọn “điểm chớp thời cơ” để người mới cũng nắm được trong 10 giây.</div></div>
-      <div><h3>🔒 Paywall thông minh</h3><div class="muted">Mã mở khóa sau thanh toán (on/off-chain), lưu cục bộ – bạn không cần duyệt tay.</div></div>
-      <div><h3>🌎 Đa ngôn ngữ</h3><div class="muted">Tự đổi VI/EN; dễ mở rộng 200+ ngôn ngữ khi cần.</div></div>
+      <div><h3>⚡ <span id="b1H">Tốc độ & tự động</span></h3><div class="muted" id="b1">Cron 24/7 quét đa nguồn, hợp nhất & xếp hạng theo điểm động lực (momentum + volume).</div></div>
+      <div><h3>🧠 <span id="b2H">Tóm tắt AI</span></h3><div class="muted" id="b2">Sinh mô tả ngắn gọn “điểm chớp thời cơ” để người mới cũng nắm được trong 10 giây.</div></div>
+      <div><h3>🔒 <span id="b3H">Paywall thông minh</span></h3><div class="muted" id="b3">Mã mở khóa sau thanh toán (on/off-chain), lưu cục bộ – bạn không cần duyệt tay.</div></div>
+      <div><h3>🌎 <span id="b4H">Đa ngôn ngữ</span></h3><div class="muted" id="b4">Tự đổi VI/EN; dễ mở rộng 200+ ngôn ngữ khi cần.</div></div>
     </div>
   </div>
 
   <!-- GÓI PREMIUM / BUNDLE -->
   <div class="card" id="buy">
-    <div class="row"><h2 style="margin:0">🧰 Gói Premium</h2><span class="badge" id="plan-sla">—</span></div>
+    <div class="row"><h2 style="margin:0" id="planTitle">🧰 Gói Premium</h2><span class="badge" id="plan-sla">—</span></div>
     <div class="grid" id="plans"></div>
-    <div class="center" style="margin-top:10px"><a class="btn" href="index.html#unlock">Mua & nhập mã mở khóa</a></div>
+    <div class="center" style="margin-top:10px"><a class="btn" href="index.html#unlock" id="planCta">Mua & nhập mã mở khóa</a></div>
   </div>
 
   <!-- THANH TOÁN TẮT / CTA NHANH -->
   <div class="card">
-    <h2>Thanh toán nhanh</h2>
+    <h2 id="payTitle">Thanh toán nhanh</h2>
     <div class="grid" id="quickpay"></div>
   </div>
 
   <!-- AFFILIATES -->
   <div class="card">
-    <h2>Đối tác</h2>
+    <h2 id="affTitle">Đối tác</h2>
     <div class="grid" id="affs"></div>
   </div>
 
-  <div class="foot">© <span id="year"></span> LightUnfold — Portal • Tự động 24/7</div>
+  <div class="foot">© <span id="year"></span> LightUnfold — Portal • <span id="footAuto">Tự động 24/7</span></div>
 </div>
 
 <script>
 (async function(){
-  const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+  const $=s=>document.querySelector(s);
   const num=n=>(n||0).toLocaleString(undefined,{maximumFractionDigits:2});
   const ago=iso=>{try{const d=new Date(iso);const s=(Date.now()-d)/1e3;return s<60?Math.floor(s)+"s":s<3600?Math.floor(s/60)+"m":s<86400?Math.floor(s/3600)+"h":Math.floor(s/86400)+"d";}catch(e){return"—"}};
   const DARK={"--bg":"#0b0f13","--card":"#0f141a","--border":"#1f2a3a","--text":"#e9eef4","--muted":"#9fb3c8"};
@@ -115,17 +115,46 @@
   function themeApply(m){const v=(m==='light'?LIGHT:DARK);for(const k in v)document.documentElement.style.setProperty(k,v[k]);}
   let theme=localStorage.getItem("theme")||"dark"; themeApply(theme);
   $('#theme').onclick=()=>{theme=(theme==='dark'?'light':'dark');localStorage.setItem('theme',theme);themeApply(theme);};
-
-  // i18n siêu gọn
-  const T={vi:{buy:"Mua quyền xem Premium",pay:"Thanh toán nhanh"},en:{buy:"Buy Premium Access",pay:"Quick Payments"}};
-  let LANG=(localStorage.getItem("lang")||navigator.language||"vi").slice(0,2).toLowerCase().startsWith("vi")?"vi":"en";
-  $('#lang').onclick=()=>{LANG=(LANG==='vi'?'en':'vi');localStorage.setItem('lang',LANG);};
   $('#year').textContent=new Date().getFullYear();
+
+  // i18n
+  const I={
+    vi:{k1:"Cơ hội đang hiển thị",k2:"Lần cập nhật",k3:"Ngôn ngữ",ctaApp:"🚀 Vào Ứng Dụng AI",ctaBuy:"💳 Mua quyền xem Premium",
+        why:"Vì sao LightUnfold khác biệt?",b1H:"Tốc độ & tự động",b1:"Cron 24/7 quét đa nguồn, hợp nhất & xếp hạng theo điểm động lực (momentum + volume).",
+        b2H:"Tóm tắt AI",b2:"Sinh mô tả ngắn gọn “điểm chớp thời cơ” để người mới cũng nắm được trong 10 giây.",
+        b3H:"Paywall thông minh",b3:"Mã mở khóa sau thanh toán (on/off-chain), lưu cục bộ – bạn không cần duyệt tay.",
+        b4H:"Đa ngôn ngữ",b4:"Tự đổi VI/EN; dễ mở rộng 200+ ngôn ngữ khi cần.",
+        plan:"🧰 Gói Premium",planCta:"Mua & nhập mã mở khóa",
+        pay:"Thanh toán nhanh",aff:"Đối tác",foot:"Tự động 24/7"},
+    en:{k1:"Opportunities visible",k2:"Last update",k3:"Languages",ctaApp:"🚀 Open AI App",ctaBuy:"💳 Buy Premium Access",
+        why:"Why LightUnfold is different",b1H:"Speed & automation",b1:"24/7 cron scans multi‑sources, unifies & ranks by momentum + volume.",
+        b2H:"AI summaries",b2:"10‑second ‘why it matters’ snippets for quick decisions.",
+        b3H:"Smart paywall",b3:"Unlock code after on/off‑chain payment; stored locally, no manual review.",
+        b4H:"Multi‑language",b4:"Quick VI/EN toggle; ready for 200+ languages.",
+        plan:"🧰 Premium Packages",planCta:"Buy & enter unlock code",
+        pay:"Quick Payments",aff:"Affiliates",foot:"Always‑on 24/7"}
+  };
+  let LANG=(localStorage.getItem("lang")||navigator.language||"vi").slice(0,2).toLowerCase().startsWith("vi")?"vi":"en";
+  function applyI18n(){
+    const L=I[LANG];
+    $('#k1lbl').textContent=L.k1; $('#k2lbl').textContent=L.k2; $('#k3lbl').textContent=L.k3;
+    $('#cta-app').textContent=L.ctaApp; $('#cta-buy').textContent=L.ctaBuy;
+    $('#whyTitle').textContent=L.why; $('#b1H').textContent=L.b1H; $('#b1').textContent=L.b1;
+    $('#b2H').textContent=L.b2H; $('#b2').textContent=L.b2; $('#b3H').textContent=L.b3H; $('#b3').textContent=L.b3;
+    $('#b4H').textContent=L.b4H; $('#b4').textContent=L.b4;
+    $('#planTitle').textContent=L.plan; $('#planCta').textContent=L.planCta;
+    $('#payTitle').textContent=L.pay; $('#affTitle').textContent=L.aff; $('#footAuto').textContent=L.foot;
+    $('#lang').textContent = LANG==='vi' ? 'VI / EN' : 'EN / VI';
+  }
+  $('#lang').onclick=()=>{LANG=(LANG==='vi'?'en':'vi');localStorage.setItem('lang',LANG);applyI18n();};
+  applyI18n();
 
   async function getJSON(url,key){
     try{const j=await (await fetch(url,{cache:'no-store'})).json();localStorage.setItem(key,JSON.stringify(j));return j;}
     catch(e){const c=localStorage.getItem(key);return c?JSON.parse(c):{}}
   }
+
+  // Load config + latest
   const cfg=await getJSON('config.json','cfg');
   const latest=await getJSON('data/latest.json','latest');
 
@@ -133,7 +162,7 @@
   $('#brand').textContent = cfg.site?.brand || 'LightUnfold • Web3 AI X1000';
   $('#tagline').textContent = cfg.site?.tagline || '20,000+ AI • tự động 24/7';
   $('#ens').textContent = cfg.site?.ens || '—';
-  $('#hb').innerHTML = latest.items ? '<span class="ok">LIVE</span>' : '—';
+  $('#hb').innerHTML = (latest && Array.isArray(latest.items)) ? '<span class="ok">LIVE</span>' : '—';
   $('#k-opps').textContent = (latest.items||[]).length||0;
   $('#k-upd').textContent = latest.generated_at ? ago(latest.generated_at) : '—';
   $('#k-loc').textContent = (cfg.site?.locales||['vi','en']).join('/');
@@ -142,14 +171,15 @@
   const tick = (latest.items||[]).slice(0,20).map(x=>`${x.symbol}: $${num(x.price)} (${(x.ch24h||0).toFixed(2)}%)`).join(' • ');
   $('#tick').textContent = tick || '—';
 
-  // Plans (lấy từ config.store.bundles nếu có)
-  const plans = cfg.store?.bundles || [
+  // Plans
+  const plans = (cfg.store?.bundles && cfg.store.bundles.length) ? cfg.store.bundles : [
     {title:"Alpha Feed Pro", desc:"Bản tin alpha tốc độ cao, ưu tiên lệch pha thị trường.", price:19, tags:["ms-speed","moneyflow"], sla:"5-10m"},
     {title:"Premium Signals", desc:"Bộ lọc momentum + volume + risk.", price:49, tags:["signals","momentum"], sla:"10m"},
     {title:"VIP Research", desc:"Báo cáo chuyên sâu + backtest.", price:199, tags:["deep research"], sla:"24h"}
   ];
   $('#plan-sla').textContent = "SLA: " + (plans.map(p=>p.sla).filter(Boolean).join(", ")||"—");
   const plansWrap = $('#plans');
+  plansWrap.innerHTML = "";
   plans.forEach(p=>{
     const el=document.createElement('div'); el.className='card';
     el.innerHTML=`<h3 style="margin:0">${p.title}</h3>
@@ -161,40 +191,72 @@
     plansWrap.appendChild(el);
   });
 
-  // Quick payments (ETH/USDT/MoMo/VCB/PayPal…) từ config.site.payments
-  function QR(text,size=180){const u=`https://chart.googleapis.com/chart?cht=qr&chs=${size}x${size}&chl=${encodeURIComponent(text)}`;return `<img class="qr" width="${size}" height="${size}" src="${u}" alt="QR">`}
-  const qpWrap = $('#quickpay'); const pay = cfg.site?.payments || {};
-  const qpList = [
-    pay.eth ? {title:'ETH (EVM)', val:pay.eth, hint:'Nạp ETH/USDT mạng EVM'} : null,
-    pay.usdt_erc20 ? {title:'USDT (ERC20)', val:pay.usdt_erc20, hint:'USDT ERC20'} : null,
-    pay.momo ? {title:'MoMo', val:pay.momo, hint:'Thanh toán MoMo'} : null,
-    pay.vietcombank ? {title:'Vietcombank', val:pay.vietcombank, hint:'Chuyển khoản VCB'} : null,
-    pay.paypal ? {title:'PayPal', val:pay.paypal, hint:'Thanh toán PayPal'} : null
-  ].filter(Boolean);
-  qpList.forEach(p=>{
+  // Quick payments — tương thích cấu trúc mới (site.payments.chains + offchain)
+  const pSite = cfg.site?.payments || {};
+  const pRoot = cfg.payments || {}; // fallback
+  const chains = pSite.chains || pRoot.chains || [];           // mảng {name,address,explorer,min}
+  const off    = pSite.offchain || pRoot.offchain || {};       // {momo, vietcombank, paypal}
+
+  function QR(text,size=180){const u=`https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}`;return `<img class="qr" width="${size}" height="${size}" src="${u}" alt="QR">`}
+  const qpWrap = $('#quickpay'); qpWrap.innerHTML = "";
+
+  // on-chain
+  chains.forEach(c=>{
     const el=document.createElement('div'); el.className='card';
-    el.innerHTML=`<h3 style="margin:0">${p.title}</h3>
+    el.innerHTML=`<h3 style="margin:0">${c.name}</h3>
       <div class="grid" style="align-items:center">
-        <div>${QR(p.val)}</div>
+        <div>${QR(c.address)}</div>
         <div>
-          <div class="muted">${p.hint}</div>
-          <div class="row" style="margin-top:8px">
-            <span class="badge">${p.val}</span>
-            <button class="btn" onclick="navigator.clipboard.writeText('${p.val}')">Sao chép</button>
+          <div class="muted">${c.min?`Min: ${c.min}`:''}</div>
+          <div class="row" style="margin-top:8px;align-items:center">
+            <a class="badge" target="_blank" rel="noopener" href="${c.explorer||'#'}">${c.address}</a>
+            <button class="btn" onclick="navigator.clipboard.writeText('${c.address}')">${LANG==='vi'?'Sao chép':'Copy'}</button>
+            <a class="btn ghost" target="_blank" rel="noopener" href="https://metamask.app.link/">${LANG==='vi'?'Mở ví/ứng dụng':'Open wallet/app'} ↗</a>
           </div>
         </div>
       </div>`;
     qpWrap.appendChild(el);
   });
 
-  // Affiliates
-  const affWrap = $('#affs'); (cfg.site?.affiliates||[]).forEach(a=>{
+  // off‑chain
+  const offList = [
+    off.momo ? {label:'MoMo', val:off.momo, hint:(LANG==='vi'?'Ví MoMo Việt Nam.':'Vietnam MoMo wallet.')} : null,
+    off.vietcombank ? {label:'Vietcombank', val:off.vietcombank, hint:(LANG==='vi'?'Chuyển khoản VCB.':'VCB bank transfer.')} : null,
+    off.paypal ? {label:'PayPal', val:off.paypal, hint:(LANG==='vi'?'Thanh toán PayPal.':'Pay via PayPal.'), link:`https://www.paypal.me/${String(off.paypal).split('@')[0]}`} : null
+  ].filter(Boolean);
+  offList.forEach(p=>{
     const el=document.createElement('div'); el.className='card';
-    el.innerHTML=`<div class="row"><h3 style="margin:0">${a.name}</h3>
-      <a class="badge" target="_blank" href="${a.url}">Tham gia ↗</a></div>
-      <div class="muted">${a.desc||''}</div>`;
+    el.innerHTML=`<h3 style="margin:0">${p.label}</h3>
+      <div class="grid" style="align-items:center">
+        <div>${QR(p.val)}</div>
+        <div>
+          <div class="muted">${p.hint||''}</div>
+          <div class="row" style="margin-top:8px;align-items:center">
+            <span class="badge">${p.val}</span>
+            <button class="btn" onclick="navigator.clipboard.writeText('${p.val}')">${LANG==='vi'?'Sao chép':'Copy'}</button>
+            ${p.link?`<a class="btn ghost" target="_blank" rel="noopener" href="${p.link}">PayPal.me ↗</a>`:''}
+          </div>
+        </div>
+      </div>`;
+    qpWrap.appendChild(el);
+  });
+
+  // Affiliates — clickable
+  const affWrap = $('#affs'); affWrap.innerHTML = "";
+  (cfg.site?.affiliates||cfg.affiliates||[]).forEach(a=>{
+    const el=document.createElement('div'); el.className='card';
+    el.innerHTML=`<div class="row" style="justify-content:space-between;align-items:center">
+        <h3 style="margin:0">${a.name}</h3>
+        <a class="badge" target="_blank" rel="noopener" href="${a.url}">${LANG==='vi'?'Tham gia':'Join'} ↗</a>
+      </div>
+      <div class="muted">${a.tag||''}</div>`;
     affWrap.appendChild(el);
   });
+
+  // Brand/topline
+  $('#brand').textContent = cfg.site?.brand || 'LightUnfold • Web3 AI X1000';
+  $('#tagline').textContent = cfg.site?.tagline || '';
+
 })();
 </script>
 </body>
