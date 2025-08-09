@@ -1,0 +1,57 @@
+{
+  "hero": {
+    "tagline": "Web3 AI runs itself 24/7",
+    "slogan": "Multi‑source scanning, scoring opportunities, big‑move alerts.",
+    "pulse": "Updated: —"
+  },
+  "sections": {
+    "hot": "🔥 Hot opportunities",
+    "pay": "💳 Payments",
+    "lock": "🔓 Premium content",
+    "packs": "🧰 Products / Reports",
+    "aff": "🤝 Affiliate",
+    "hub": "🧭 Command Center",
+    "cta": "🚀 Get started"
+  },
+  "labels": {
+    "scan": "scan: data",
+    "scanFallback": "scan: fallback",
+    "refresh": "↻ Refresh",
+    "minimum": "Minimum",
+    "contact": "Contact",
+    "how": "How it works",
+    "unlock": "Unlock",
+    "remember": "Remember on device",
+    "unlocked": "✔ Unlocked",
+    "relock": "Lock again",
+    "updated": "Updated: ",
+    "openWallet": "Open wallet/app",
+    "copy": "Copy",
+    "dlqr": "Download QR",
+    "join": "Join/Visit",
+    "copyLink": "Copy link",
+    "buy": "Buy & enter code",
+    "openData": "Open data",
+    "badcode": "Invalid code.",
+    "saved": "Saved on device.",
+    "always": "Always‑on 24/7",
+    "largeMove": "Large move",
+    "checkBelow": "check opportunities below.",
+    "details": "Details",
+    "price": "Price",
+    "volume": "Volume",
+    "hubHint": "Hub that auto‑detects and links to legacy tools."
+  },
+  "placeholders": {
+    "code": "Enter unlock code…",
+    "tx": "(Optional) Paste TX / proof"
+  },
+  "usp": {
+    "whyH1": "Why UltraHub?",
+    "whyH2": "Unlock value",
+    "whyH3": "How to join",
+    "why1": "Multi‑source scanning, scored opportunities — refreshed every minute.",
+    "why2": "Alpha/private feeds, heatmaps, vesting calendars, cycle signals.",
+    "why3": "Pay on/off‑chain → receive code → unlock premium."
+  }
+}
