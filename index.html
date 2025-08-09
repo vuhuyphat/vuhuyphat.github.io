@@ -254,7 +254,7 @@ const DEF={
           {name:"OKX",url:"https://www.okx.com/join/your-code",tag:"CEX"},
           {name:"Bybit",url:"https://www.bybit.com/invite?ref=your-code",tag:"Derivatives"}]},
   feeds:{top_n:12}, schedule:{refresh_minutes:10},
-  secrets:{unlock_code:"23061988"}, /* theo yêu cầu founder */
+  secrets:{unlock_code:"23061988"},
   store:{bundles:[
       {title:"Alpha Signals X",price:99,desc:"Tín hiệu ngắn hạn xác suất cao.",tags:["Scalping","DeFi","Spot"]},
       {title:"ETF & BTC Flow",price:79,desc:"Dòng vốn ETF/BTC – quỹ & miner.",tags:["BTC","ETF","Flow"]},
@@ -271,22 +271,97 @@ const DEF={
 
 let CFG=DEF, lastRefreshTS=Date.now();
 
+/* =============== V5 SWITCH – nạp 6 tệp V5 và ghi đè =============== */
+const V5_ON = true;
+const V5_PATHS = {
+  vi:   'lang/vi.v5.json',
+  en:   'lang/en.v5.json',
+  site: 'site.v5.json',
+  ui:   'ui.v5.json',
+  feeds:'feeds.v5.json',
+  min:  'v5min.json'   // bạn đã đổi từ v5.min.json -> v5min.json
+};
+async function getJSONNoCache(p){ try{const r=await fetch(p,{cache:'no-store'}); if(!r.ok) throw 0; return await r.json();}catch(_){return null} }
+function applyLangV5Dict(dict){
+  if(!dict) return;
+  if(dict.hero){
+    if(dict.hero.tagline)   {const el=document.getElementById('tagline'); if(el) el.textContent=dict.hero.tagline;}
+    if(dict.hero.slogan)    {const el=document.getElementById('slogan');  if(el) el.textContent=dict.hero.slogan;}
+  }
+  if(dict.sections){
+    const S=dict.sections;
+    if(S.hot)      {const el=document.getElementById('hotTitle'); if(el) el.textContent=S.hot;}
+    if(S.pay)      {const el=document.getElementById('payTitle'); if(el) el.textContent=S.pay;}
+    if(S.lock)     {const el=document.getElementById('lockTitle'); if(el) el.textContent=S.lock;}
+    if(S.packs)    {const el=document.getElementById('packTitle'); if(el) el.textContent=S.packs;}
+    if(S.cta)      {const el=document.getElementById('ctaTitle'); if(el) el.textContent=S.cta;}
+    if(S.unlocked) {const el=document.getElementById('unlockedLbl'); if(el) el.textContent=S.unlocked;}
+  }
+  if(dict.footer?.auto){ const el=document.getElementById('autoLbl'); if(el) el.textContent=dict.footer.auto; }
+  if(dict.labels){
+    const L=dict.labels;
+    if(L.minLbl){const el=document.getElementById('minLbl'); if(el) el.textContent=L.minLbl;}
+    if(L.contactLbl){const el=document.getElementById('contactLbl'); if(el) el.textContent=L.contactLbl;}
+    if(L.howTitle){const el=document.getElementById('howTitle'); if(el) el.textContent=L.howTitle;}
+  }
+}
+function mergeCfgV5(parts){
+  const next={...CFG};
+  if(parts.site){ next.site = parts.site.site ? {...next.site, ...parts.site.site} : {...next.site, ...parts.site}; }
+  if(parts.ui){   next.ui   = parts.ui.ui     ? {...next.ui,   ...parts.ui.ui}     : {...next.ui,   ...parts.ui}; }
+  if(parts.feeds){next.feeds= parts.feeds.feeds?{...next.feeds,...parts.feeds.feeds}:{...next.feeds,...parts.feeds};}
+  if(parts.min){
+    if(parts.min.secrets?.unlock_code) next.secrets={unlock_code:String(parts.min.secrets.unlock_code)};
+    if(parts.min.unlock_code)          next.secrets={unlock_code:String(parts.min.unlock_code)};
+  }
+  return next;
+}
+async function loadV5All(){
+  if(!V5_ON) return;
+  const [viV5,enV5,siteV5,uiV5,feedsV5,minV5] = await Promise.all([
+    getJSONNoCache(V5_PATHS.vi),
+    getJSONNoCache(V5_PATHS.en),
+    getJSONNoCache(V5_PATHS.site),
+    getJSONNoCache(V5_PATHS.ui),
+    getJSONNoCache(V5_PATHS.feeds),
+    getJSONNoCache(V5_PATHS.min)
+  ]);
+  const current=(localStorage.getItem('lang')||navigator.language||'vi').toLowerCase().startsWith('vi')?'vi':'en';
+  if(current==='vi' && viV5) applyLangV5Dict(viV5);
+  if(current==='en' && enV5) applyLangV5Dict(enV5);
+  CFG = mergeCfgV5({site:siteV5, ui:uiV5, feeds:feedsV5, min:minV5});
+
+  const cfgBtn=document.getElementById('openCfg');
+  if(cfgBtn && siteV5){
+    cfgBtn.onclick=()=>{const m=document.getElementById('modal');const f=document.getElementById('frame');const a=document.getElementById('openNew');document.getElementById('modalTitle').textContent='site.v5.json';f.src='site.v5.json';a.href='site.v5.json';m.style.display='flex';};
+  }
+
+  // Repaint theo CFG mới
+  try{renderPays();renderAffs();renderBundles('day');paintPremium();}catch(_){}
+}
+/* =============== /V5 SWITCH =============== */
+
 /* =============== Boot =============== */
 (async function boot(){
   $('#year').textContent=new Date().getFullYear();
 
-  // modal openers (config/data luôn bấm được)
+  // modal openers
   bindModal('#openCfg','config.json','config.json');
   bindModal('#openData','data/latest.json','data/latest.json');
 
+  // nạp config cũ (nếu có)
   const cfg=await j('config.json'); if(cfg) CFG=Object.assign({},DEF,cfg);
 
+  // >>> GỌI V5: ghi đè CFG + i18n nếu có file V5
+  await loadV5All();
+
+  // Header
   $('#brand').textContent=CFG.site.brand||'LightUnfold • UltraHub';
   $('#ens').textContent=CFG.site.ens||'—';
 
   // Contact
-  const contact = (CFG.site?.contact?.email || CFG.site?.contact || CFG.site.ens || '').toString();
-  const pp = document.getElementById('pp'); if(pp) pp.innerHTML = contact ? `<a href="mailto:${contact}" target="_blank" rel="noopener">${contact}</a>` : '—';
+  const contact=(CFG.site?.contact?.email||CFG.site?.contact||CFG.site.ens||'').toString();
+  const pp=document.getElementById('pp'); if(pp) pp.innerHTML = contact ? `<a href="mailto:${contact}" target="_blank" rel="noopener">${contact}</a>` : '—';
 
   // Share links
   const u=encodeURIComponent(location.href), t=encodeURIComponent(document.title);
@@ -299,7 +374,7 @@ let CFG=DEF, lastRefreshTS=Date.now();
   $('#refreshNow').onclick=loadDataSmart;
   $('#goTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
 
-  // Payments + Affiliates + Bundles + Premium + Paywall
+  // Render chính
   renderPays();
   renderAffs();
   renderBundles('day');
@@ -390,7 +465,7 @@ function renderAffs(){
 }
 
 /* =============== Data (ticker + alert) =============== */
-window.LAST_ITEMS = []; // để re-render khi đổi ngôn ngữ
+window.LAST_ITEMS = [];
 
 async function loadDataSmart(){
   const latest=await j('data/latest.json'); lastRefreshTS=Date.now();
@@ -426,19 +501,12 @@ async function scanLive(){
   const best={}; for(const it of items){if(!it.symbol) continue; const k=it.symbol; if(!best[k]||it.score>best[k].score) best[k]=it;}
   return Object.values(best).sort((a,b)=>b.score-a.score).slice(0, CFG.feeds?.top_n||12);
 }
-
-// Bọc renderOpps để lưu LAST_ITEMS cho i18n re-render
-const __renderOppsOrig = function(items){
-  // ticker
-  $('#ticker').innerHTML = (items||[]).map(x=>`<span class="tag">${x.symbol}: $${fmt(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join('') || '—';
-  // alert
-  const maxAbs = items?.length ? Math.max(...items.map(x=>Math.abs(x.ch24h||0))) : 0;
-  const ALERT_TH = 12;
-  const alertBox = $('#alertBox');
-  if(maxAbs>=ALERT_TH){ alertBox.classList.remove('hidden'); alertBox.innerHTML = `⚠️ <b>Alert:</b> ${LANG==='vi'?'Biến động lớn':'Large move'} (${maxAbs.toFixed(2)}%) – ${LANG==='vi'?'kiểm tra các cơ hội bên dưới.':'check opportunities below.'}`; }
-  else { alertBox.classList.add('hidden'); alertBox.textContent=''; }
-
-  // list
+const __renderOppsOrig=function(items){
+  $('#ticker').innerHTML=(items||[]).map(x=>`<span class="tag">${x.symbol}: $${fmt(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join('')||'—';
+  const maxAbs=items?.length?Math.max(...items.map(x=>Math.abs(x.ch24h||0))):0;
+  const ALERT_TH=12, alertBox=$('#alertBox');
+  if(maxAbs>=ALERT_TH){alertBox.classList.remove('hidden');alertBox.innerHTML=`⚠️ <b>Alert:</b> ${LANG==='vi'?'Biến động lớn':'Large move'} (${maxAbs.toFixed(2)}%) – ${LANG==='vi'?'kiểm tra các cơ hội bên dưới.':'check opportunities below.'}`;}
+  else{alertBox.classList.add('hidden');alertBox.textContent='';}
   const L=i18n[LANG];
   $('#opps').innerHTML=(items||[]).map(x=>{
     const ch=x.ch24h||0, pct=`${ch>=0?'+':''}${ch.toFixed(2)}%`;
@@ -457,9 +525,9 @@ const __renderOppsOrig = function(items){
         </div>
       </div>
     </div>`;
-  }).join('') || '<div style="color:#9fb3c8">—</div>';
+  }).join('')||'<div style="color:#9fb3c8">—</div>';
 };
-function renderOpps(items){ window.LAST_ITEMS = items||[]; __renderOppsOrig(window.LAST_ITEMS); }
+function renderOpps(items){ window.LAST_ITEMS=items||[]; __renderOppsOrig(window.LAST_ITEMS); }
 
 /* =============== Bundles =============== */
 function renderBundles(mode='day'){
@@ -487,7 +555,7 @@ function paintPremium(){
   </div>`).join('');
 }
 function bindPaywall(){
-  const SECRET=String(CFG.secrets?.unlock_code||'23061988'); // theo yêu cầu
+  const SECRET=String(CFG.secrets?.unlock_code||'23061988');
   const saved=localStorage.getItem('unlocked_code')||'';
   function gate(open){$('#locked').classList.toggle('hidden',open);$('#opened').classList.toggle('hidden',!open);}
   if(saved===SECRET){gate(true); paintPremium(); const th=localStorage.getItem('tx_hash'); if(th) $('#uMsg').innerHTML='<span class="ok">TX: '+th+'</span>';}
@@ -501,7 +569,6 @@ function bindPaywall(){
 /* =============== i18n apply (toàn trang) =============== */
 function applyLang(){
   const L=i18n[LANG];
-  // Tiêu đề / nhãn lớn
   $('#hotTitle').textContent=L.hot; $('#payTitle').textContent=L.pay; $('#minLbl').textContent=L.minLbl;
   $('#contactLbl').textContent=L.contactLbl; $('#lockTitle').textContent=L.lock; $('#howTitle').textContent=L.how;
   $('#unlockedLbl').textContent=L.unlocked; $('#packTitle').textContent=L.packs; $('#hubHint').textContent=L.hub;
@@ -510,11 +577,7 @@ function applyLang(){
   $('#autoLbl').textContent=L.auto; $('#whyH1').textContent=L.whyH1; $('#whyH2').textContent=L.whyH2; $('#whyH3').textContent=L.whyH3;
   $('#why1').textContent=L.why1; $('#why2').textContent=L.why2; $('#why3').textContent=L.why3;
   $('#lang').textContent=LANG==='vi'?'VI/EN':'EN/VI';
-
-  // Nút / placeholder / badge
-  const uc=$('#unlockCode'), tx=$('#txhash');
-  if(uc) uc.placeholder=L.unlock_ph;
-  if(tx) tx.placeholder=L.tx_ph;
+  const uc=$('#unlockCode'), tx=$('#txhash'); if(uc) uc.placeholder=L.unlock_ph; if(tx) tx.placeholder=L.tx_ph;
   const btnUnlock=$('#doUnlock'), btnRemember=$('#remember'), btnRelock=$('#relock');
   if(btnUnlock) btnUnlock.textContent=L.unlock_btn;
   if(btnRemember) btnRemember.textContent=L.remember_btn;
@@ -522,16 +585,11 @@ function applyLang(){
   const scan=$('#scanMode'); if(scan){const fb=/fallback/i.test(scan.textContent); scan.textContent=fb?L.scan_fallback:L.scan_data;}
   const rn=$('#refreshNow'); if(rn) rn.textContent=L.refresh;
 
-  // Re-render các vùng phụ thuộc ngôn ngữ
   try{ renderPays(); }catch(e){}
-  try{
-    const act=document.querySelector('#timeTabs .tab.act');
-    renderBundles(act?act.dataset.t:'day');
-  }catch(e){}
+  try{ const act=document.querySelector('#timeTabs .tab.act'); renderBundles(act?act.dataset.t:'day'); }catch(e){}
   try{ paintPremium(); }catch(e){}
   try{ if(window.LAST_ITEMS && window.LAST_ITEMS.length) renderOpps(window.LAST_ITEMS); }catch(e){}
 }
-
 // toggle ngôn ngữ
 $('#lang').onclick=()=>{LANG=LANG==='vi'?'en':'vi';localStorage.setItem('lang',LANG);applyLang();};
 
