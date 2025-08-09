@@ -3,64 +3,79 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>LightUnfold • Web3 AI X1000</title>
-<meta name="description" content="Web3 AI tự động 24/7: cơ hội nổi bật, thanh toán QR, nội dung cao cấp (mã/mã giao dịch), đa ngôn ngữ, PWA nhẹ.">
+<title>LightUnfold • Web3 AI X1000 — Ultra Hub</title>
+<meta name="description" content="Web3 AI tự động 24/7: cơ hội nổi bật realtime, thanh toán QR (không lộ email), nội dung premium (mã), affiliate, Command Center, i18n, PWA nhẹ.">
 <link rel="canonical" href="https://vuhuyphat.github.io/">
-<meta property="og:title" content="LightUnfold • Web3 AI X1000">
-<meta property="og:description" content="Nền tảng Web3 AI X1000 tự vận hành 24/7: quét đa nguồn, cơ hội, thanh toán, paywall, affiliate.">
+<meta property="og:title" content="LightUnfold • Web3 AI X1000 — Ultra Hub">
+<meta property="og:description" content="Nền tảng Web3 AI tự vận hành 24/7: quét đa nguồn, cảnh báo, thanh toán, paywall, affiliate.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0b0f13">
 <style>
 :root{--bg:#0b0f13;--card:#10161d;--line:#1c2836;--txt:#e9eef4;--mut:#9fb3c8;--brand:#7dc1ff;--accent:#ffb000;--ok:#20c997;--bad:#ff4d4f;--pill:#0f141c}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
-a{color:var(--brand);text-decoration:none}
-.wrap{max-width:1100px;margin:0 auto;padding:18px}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+a{color:#8ecbff;text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:16px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .pill{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--pill);color:var(--mut)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px}
 .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
 .btn{display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#1a1300;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
-.btn.out{background:transparent;border:1px solid var(--line);color:var(--txt)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--txt)}
 .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
 .list .item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px dashed var(--line)}
 .score{min-width:60px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:4px 6px;color:#ffdca8;background:#241a00}
 .tag{display:inline-block;border:1px solid var(--line);border-radius:8px;padding:2px 8px;margin:2px 4px 0 0;color:#bcd;font-size:12px}
-.pay{display:flex;gap:14px}.pay img{width:160px;height:160px;border-radius:12px;border:1px solid var(--line);background:#000}
-.pay .meta{flex:1;min-width:0}.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;word-break:break-all}
+.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;word-break:break-all}
 .hidden{display:none}
 .footer{padding:28px 0;text-align:center;color:#9fb3c8}
-.sharebar{position:fixed;right:12px;bottom:12px;display:flex;gap:8px;background:#10161d;border:1px solid #1c2836;border-radius:12px;padding:8px;z-index:9999}
-.sharebar a{font-size:18px;text-decoration:none}
-.ok{color:var(--ok)}.err{color:var(--bad)}
 .marquee{white-space:nowrap;overflow:hidden}.marquee>div{display:inline-block;animation:mar 25s linear infinite}
 @keyframes mar{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .tabbar{display:flex;gap:8px;flex-wrap:wrap}.tab{padding:6px 10px;border:1px solid var(--line);border-radius:999px;cursor:pointer}
 .tab.act{background:var(--accent);color:#1a1300;border-color:transparent}
 .appgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 .appgrid a{display:block;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--pill);text-align:center}
+.share{position:fixed;right:12px;bottom:82px;display:flex;gap:8px;background:var(--pill);border:1px solid var(--line);border-radius:12px;padding:8px;z-index:50}
+.share a{font-size:18px}
+.fab{position:fixed;left:12px;bottom:82px;background:var(--pill);border:1px solid var(--line);border-radius:999px;padding:10px 12px;color:var(--mut);z-index:50;cursor:pointer}
+/* modal */
+.modal{position:fixed;inset:0;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.35);z-index:90}
+.modal.open{display:flex}
+.sheet{width:100%;max-width:1100px;background:var(--card);border:1px solid var(--line);border-radius:16px 16px 0 0;padding:14px;max-height:87vh;overflow:auto}
+.sheet h4{margin:6px 0 10px}
+pre.json{white-space:pre-wrap;word-break:break-word;background:#0c1218;border:1px solid var(--line);border-radius:10px;padding:10px}
+/* light */
 .light{--bg:#f7fafc;--card:#ffffff;--line:#e2e8f0;--txt:#0b0f13;--mut:#4a5568;--brand:#2563eb;--pill:#f3f6fb}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="row">
+    <button class="pill" id="backBtn">⬅ Back</button>
     <span class="pill">ENS: <b id="ens">—</b></span>
     <span class="pill">Heartbeat: <b id="hb">—</b></span>
-    <a class="pill" href="config.json" target="_blank">config</a>
-    <a class="pill" href="data/latest.json" target="_blank">data</a>
-    <span class="pill" id="lang">VI/EN</span>
-    <span class="pill" id="theme">🌗 Theme</span>
+    <button class="pill" id="viewData">data</button>
+    <button class="pill" id="viewCfg">config</button>
+    <button class="pill" id="lang">VI/EN</button>
+    <button class="pill" id="theme">🌗 Theme</button>
   </div>
 
   <h1 id="brand">LightUnfold • Web3 AI X1000</h1>
-  <div id="tagline" style="color:#9fb3c8">—</div>
+  <div id="tagline" class="muted">—</div>
+
+  <section class="card">
+    <div class="row" style="justify-content:space-between">
+      <div class="muted">20,000+ AI • 200+ quốc gia • 200+ ngôn ngữ • Tự động 24/7 • Chuyển đổi X1000</div>
+      <div class="badge">Cập nhật: <span id="updated">—</span></div>
+    </div>
+    <div id="alert" class="hidden" style="margin-top:8px;background:#1a2300;border:1px solid #344600;color:#e5ff9a;border-radius:10px;padding:8px">⚠️ <b>Alert:</b> Biến động lớn – kiểm tra các cơ hội bên dưới.</div>
+  </section>
 
   <section class="card">
     <div class="row" style="justify-content:space-between">
       <h3 style="margin:0">🔥 Cơ hội nổi bật</h3>
       <div class="row">
-        <span class="badge" id="scanMode">quét: data</span>
-        <button class="btn out" id="refreshNow">↻ Làm mới</button>
+        <span class="pill" id="scanMode">quét: —</span>
+        <button class="pill" id="refreshNow">↻ Làm mới</button>
       </div>
     </div>
     <div class="marquee" style="margin:4px 0 8px;color:#bcd"><div id="ticker">—</div></div>
@@ -68,36 +83,27 @@ a{color:var(--brand);text-decoration:none}
   </section>
 
   <section class="card">
-    <h3 style="margin:0 0 8px">💳 Thanh toán</h3>
-    <div id="pays" class="grid"></div>
-    <div style="color:#9fb3c8;margin-top:6px">Quét QR / click để thanh toán. Tối thiểu: <span id="mins"></span>. Liên hệ <span id="pp"></span>.</div>
+    <div class="row" style="justify-content:space-between">
+      <h3 style="margin:0">💳 Thanh toán</h3>
+      <button class="btn" id="openPay">Mở phương thức</button>
+    </div>
+    <div class="muted">Sau thanh toán, bạn nhận <b>mã mở khóa</b> để xem nội dung cao cấp. Hỗ trợ: <span id="support"></span></div>
   </section>
 
   <section class="card">
     <h3 style="margin:0 0 8px">🔓 Nội dung cao cấp</h3>
     <div id="locked">
-      <div class="grid">
-        <div>
-          <input id="unlockCode" placeholder="Nhập mã mở khóa…" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--pill);color:var(--txt)">
-          <input id="txhash" style="margin-top:8px;width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--pill);color:var(--txt)" placeholder="(Tùy chọn) Dán mã giao dịch/bằng chứng">
-          <div class="row" style="margin-top:8px">
-            <button class="btn" id="doUnlock">Mở khóa</button>
-            <button class="btn out" id="remember">Nhớ trên thiết bị</button>
-          </div>
-          <div id="uMsg" style="margin-top:6px;color:#9fb3c8"></div>
-        </div>
-        <div style="color:#9fb3c8">
-          <b>Cách hoạt động</b>
-          <ul>
-            <li>Thanh toán (ETH/USDT/MoMo/VCB/PayPal…)</li>
-            <li>Nhận mã → nhập để mở khóa nội dung</li>
-            <li>Có thể lưu mã & mã giao dịch ngay trên thiết bị của bạn</li>
-          </ul>
-        </div>
+      <input id="unlockCode" placeholder="Nhập mã mở khóa…" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--pill);color:var(--txt)">
+      <input id="txhash" placeholder="(Tùy chọn) Dán mã giao dịch/bằng chứng" style="margin-top:8px;width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--pill);color:var(--txt)">
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="doUnlock">Mở khóa</button>
+        <button class="btn ghost" id="remember">Nhớ trên thiết bị</button>
       </div>
+      <div id="uMsg" class="muted" style="margin-top:6px"></div>
+      <div class="muted" style="margin-top:8px">Cách hoạt động: Thanh toán ➜ nhận mã ➜ nhập để mở khóa; có thể lưu mã & TX trên thiết bị.</div>
     </div>
     <div id="opened" class="hidden">
-      <div class="row"><span class="pill ok">✔ Đã mở khóa</span><button class="btn out" id="relock">Khoá lại</button></div>
+      <div class="row"><span class="pill" style="color:var(--ok)">✔ Đã mở khóa</span><button class="btn ghost" id="relock">Khoá lại</button></div>
       <div id="premium" class="grid" style="margin-top:10px"></div>
     </div>
   </section>
@@ -123,51 +129,66 @@ a{color:var(--brand);text-decoration:none}
   <section class="card">
     <h3 style="margin:0 0 8px">🧭 Command Center</h3>
     <div id="apps" class="appgrid"></div>
-    <div style="color:#9fb3c8;margin-top:6px">Hub tự phát hiện & liên kết tới các công cụ cũ (dex, hyper_v2, pro, super_auto, super_share, xportal…).</div>
+    <div class="muted" style="margin-top:6px">Tự phát hiện & liên kết tới các công cụ cũ (dex, hyper_v2, pro, super_auto, super_share, xpeotl, xportal…).</div>
   </section>
 
   <div class="footer">© <span id="year"></span> LightUnfold • Tự động 24/7</div>
 </div>
 
-<!-- Share floating -->
-<div class="sharebar" id="sharebar">
+<!-- floating -->
+<div class="share" id="shareBar">
   <a id="sh_tg" target="_blank">📣</a>
-  <a id="sh_x"  target="_blank">𝕏</a>
+  <a id="sh_x" target="_blank">𝕏</a>
   <a id="sh_fb" target="_blank">f</a>
   <a id="sh_in" target="_blank">in</a>
 </div>
+<div class="fab" id="toTop">↑ Top</div>
+
+<!-- modal -->
+<div class="modal" id="modal">
+  <div class="sheet">
+    <div class="row" style="justify-content:space-between">
+      <h4 id="modalTitle">Modal</h4>
+      <button class="pill" id="closeModal">Đóng</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
 
 <script>
-/* ==== Theme + i18n ==== */
+/* ========= helpers ========= */
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const LIGHT={"--bg":"#f7fafc","--card":"#ffffff","--line":"#e2e8f0","--txt":"#0b0f13","--mut":"#4a5568","--brand":"#2563eb","--pill":"#f3f6fb"};
-function setTheme(m){document.documentElement.classList.toggle('light',m==='light');localStorage.setItem('theme',m)}
-setTheme(localStorage.getItem('theme')||'dark'); $('#theme').onclick=()=>setTheme(document.documentElement.classList.contains('light')?'dark':'light');
-let LANG=(localStorage.getItem('lang')||navigator.language||'vi').toLowerCase().startsWith('vi')?'vi':'en';
-$('#lang').onclick=()=>{LANG=LANG==='vi'?'en':'vi';localStorage.setItem('lang',LANG);$('#lang').textContent=LANG==='vi'?'VI/EN':'EN/VI';}; $('#lang').textContent=LANG==='vi'?'VI/EN':'EN/VI';
-
-/* ==== Utils ==== */
 const fmt=n=>Number(n||0).toLocaleString(undefined,{maximumFractionDigits:8});
-const ago=iso=>{if(!iso) return "—"; const s=(Date.now()-new Date(iso))/1000|0; if(s<60) return s+"s"; const m=s/60|0; if(m<60) return m+"m"; const h=m/60|0; return h<24?h+"h":(h/24|0)+"d";}
-const qrlink=t=>`https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(t)}`;
-async function j(url){try{const r=await fetch(url,{cache:'no-store'});if(!r.ok) throw 0;return await r.json()}catch(_){return null}}
+const ago=iso=>{if(!iso)return"—";const s=(Date.now()-new Date(iso))/1000|0;if(s<60)return s+"s";const m=s/60|0;if(m<60)return m+"m";const h=m/60|0;return h<24?h+"h":(h/24|0)+"d";}
+const qrlink=v=>`https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(v)}`;
+const getJSON=async(u,k)=>{try{const r=await fetch(u,{cache:"no-store"});const j=await r.json();if(k)localStorage.setItem(k,JSON.stringify(j));return j}catch(e){if(k){try{return JSON.parse(localStorage.getItem(k)||"{}")}catch{return{}}}return{}}}
+function setTheme(m){document.body.classList.toggle('light',m==='light');localStorage.setItem('theme',m)}
+function openModal(t,html){$('#modalTitle').textContent=t;$('#modalBody').innerHTML=html;$('#modal').classList.add('open')}
+function closeModal(){ $('#modal').classList.remove('open'); $('#modalBody').innerHTML=''; }
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
 
-/* ==== Defaults ==== */
+/* ========= defaults ========= */
 const DEF={
-  site:{brand:"LightUnfold • Web3 AI X1000",ens:"lightunfold.eth",tagline:"20,000+ AI • 200+ quốc gia • 200+ ngôn ngữ • tự động 24/7 • chuyển đổi X1000",
-        contact:{email:"vumumabada@gmail.com"},
-        payments:{qr_auto:true,chains:[
-          {name:"ETH (EVM)",address:"0x54E15A7b6d4213beE87800432A151d794638E3C2",explorer:"https://etherscan.io/address/0x54E15A7b6d4213beE87800432A151d794638E3C2",min:0.0005},
-          {name:"USDT (ERC20)",address:"0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",explorer:"https://etherscan.io/token/USDT?a=0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",min:5}
-        ],offchain:{momo:"0567892030",vietcombank:"9567892030",paypal:"vumumabada@gmail.com"}},
-        affiliates:[
-          {name:"Binance",url:"https://www.binance.com/vi/register?ref=GRO_20338_9V44N"},
-          {name:"AlgosOne",url:"https://algosone.page.link/MbtR"},
-          {name:"OKX",url:"https://www.okx.com/join/your-code"},
-          {name:"Bybit",url:"https://www.bybit.com/invite?ref=your-code"}]},
-  feeds:{top_n:12}, schedule:{refresh_minutes:10},
+  site:{
+    brand:"LightUnfold • Web3 AI X1000",ens:"lightunfold.eth",
+    tagline:"20,000+ AI • 200+ quốc gia • 200+ ngôn ngữ • tự động 24/7 • chuyển đổi X1000",
+    contact:{ email:"" },
+    payments:{
+      eth:"0x54E15A7b6d4213beE87800432A151d794638E3C2",
+      usdt_erc20:"0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",
+      momo:"0567892030",vietcombank:"9567892030",paypal:""
+    },
+    affiliates:[
+      {name:"Binance",url:"https://www.binance.com/vi/register?ref=GRO_20338_9V44N",tag:"Top CEX"},
+      {name:"AlgosOne",url:"https://algosone.page.link/MbtR",tag:"AI Trading"},
+      {name:"OKX",url:"https://www.okx.com/join/your-code",tag:"CEX"},
+      {name:"Bybit",url:"https://www.bybit.com/invite?ref=your-code",tag:"Derivatives"}
+    ]
+  },
+  feeds:{top_n:12},schedule:{refresh_minutes:10},
   secrets:{unlock_code:"X1000VIP"},
-  store:{bundles:[
+  store:{
+    bundles:[
       {title:"Alpha Signals X",price:99,desc:"Tín hiệu ngắn hạn xác suất cao.",tags:["Scalping","DeFi","Spot"]},
       {title:"ETF & BTC Flow",price:79,desc:"Dòng vốn ETF/BTC – quỹ & miner.",tags:["BTC","ETF","Flow"]},
       {title:"Altseason Radar",price:69,desc:"Chu kỳ vốn hóa & leader/laggard.",tags:["Cycle","Momentum"]},
@@ -177,151 +198,143 @@ const DEF={
       {title:"Narrative Scanner",price:49,desc:"Xu hướng L2, AI, RWA, GameFi.",tags:["Narrative"]},
       {title:"Risk Guard",price:39,desc:"Cảnh báo rủi ro smart‑money & dev activity.",tags:["Risk","Safety"]},
       {title:"Tokenomics Lens",price:69,desc:"Lịch vesting & pha loãng.",tags:["Vesting","FDV"]},
-      {title:"Copy‑Trade Radar",price:59,desc:"Theo dõi trader mẫu & tín hiệu sao chép.",tags:["Copy","Social"]},
+      {title:"Copy‑Trade Radar",price:59,desc:"Theo dõi trader mẫu & tín hiệu sao chép.",tags:["Copy","Social"]}
     ],
     premium:[
       {title:"Alpha Feed Pro",desc:"Dòng tin alpha siêu nhanh (độ trễ ms).",bullets:["Bất thường dòng tiền","Nguồn đa kênh","Bộ lọc nhiễu"],link:"data/latest.json"},
-      {title:"Deal Flow Private",desc:"Tổng hợp deal/seed đang mở private.",bullets:["Điều kiện","Ưu tiên thời gian"]}
+      {title:"Deal Flow Private",desc:"Tổng hợp deal/seed mở private.",bullets:["Điều kiện","Ưu tiên thời gian"]}
     ]
   }
 };
 
-/* ==== Boot ==== */
-let CFG=DEF;
-(async function boot(){
+/* ========= boot ========= */
+(async function(){
+  // theme / lang / nav
+  setTheme(localStorage.getItem('theme')||'dark'); $('#theme').onclick=()=>setTheme(document.body.classList.contains('light')?'dark':'light');
+  let LANG=(localStorage.getItem('lang')||navigator.language||'vi').toLowerCase().startsWith('vi')?'vi':'en';
+  $('#lang').textContent=LANG==='vi'?'VI/EN':'EN/VI'; $('#lang').onclick=()=>{LANG=LANG==='vi'?'en':'vi';localStorage.setItem('lang',LANG);$('#lang').textContent=LANG==='vi'?'VI/EN':'EN/VI';};
+  $('#backBtn').onclick=()=>history.length>1?history.back():window.scrollTo({top:0,behavior:'smooth'});
+  $('#toTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
   $('#year').textContent=new Date().getFullYear();
 
-  const cfg=await j('config.json'); if(cfg) CFG=Object.assign({},DEF,cfg);
+  // config + contact
+  const CFG=Object.assign({},DEF, await getJSON('config.json','cfg'));
   $('#brand').textContent=CFG.site.brand; $('#ens').textContent=CFG.site.ens; $('#tagline').textContent=CFG.site.tagline;
+  const support = CFG.site.contact?.telegram ? `<a target="_blank" href="${CFG.site.contact.telegram}">Telegram</a>` :
+                  CFG.site.contact?.discord  ? `<a target="_blank" href="${CFG.site.contact.discord}">Discord</a>` :
+                  CFG.site.contact?.email    ? `<a href="mailto:${CFG.site.contact.email}">Email</a>` : '@lightunfold';
+  $('#support').innerHTML=support;
 
-  // contact text fix
-  const contactText = (CFG.site.contact?.email || CFG.site.contact || CFG.site.ens || '').toString();
-  $('#pp').innerHTML = contactText ? `<a href="mailto:${contactText}" target="_blank">${contactText}</a>` : '—';
+  // JSON viewer (không mở trắng)
+  $('#viewCfg').onclick=async()=>{const j=await getJSON('config.json');openModal('config.json',`<div class="row"><a class="pill" target="_blank" href="config.json">Mở tab mới ↗</a></div><pre class="json">${escapeHTML(JSON.stringify(j,null,2))}</pre>`);}
+  $('#viewData').onclick=async()=>{const j=await getJSON('data/latest.json');openModal('data/latest.json',`<div class="row"><a class="pill" target="_blank" href="data/latest.json">Mở tab mới ↗</a></div><pre class="json">${escapeHTML(JSON.stringify(j,null,2))}</pre>`);}
+  $('#closeModal').onclick=closeModal; $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
 
-  // Payments
-  renderPays();
-
-  // Affiliates
-  $('#affs').innerHTML=(CFG.site.affiliates||[]).map(a=>`<a class="card" target="_blank" href="${a.url}">
-    <b>${a.name}</b><div style="color:#9fb3c8">${a.tag||'Đối tác'}</div></a>`).join('');
-
-  // Bundles + tabs
-  renderBundles('day'); $('#timeTabs').onclick=e=>{const t=e.target.closest('.tab'); if(!t) return; $$('#timeTabs .tab').forEach(x=>x.classList.remove('act')); t.classList.add('act'); renderBundles(t.dataset.t)};
-
-  // Premium render & paywall
-  paintPremium(); bindPaywall();
-
-  // Command center (tự phát hiện link cũ)
-  const names=["dex.html","hyper_v2.html","pro.html","super_auto.html","super_share.html","xpeotl.html","xportal.html"];
-  $('#apps').innerHTML=names.map(n=>`<a href="${n}" target="_blank">${n.replace('.html','').replaceAll('_',' ').toUpperCase()}</a>`).join('');
-
-  // Share
+  // share
   const u=encodeURIComponent(location.href), t=encodeURIComponent(document.title);
-  $('#sh_tg').href=`https://t.me/share/url?url=${u}`;
-  $('#sh_x').href =`https://twitter.com/intent/tweet?text=${t}&url=${u}`;
-  $('#sh_fb').href=`https://www.facebook.com/sharer/sharer.php?u=${u}`;
-  $('#sh_in').href=`https://www.linkedin.com/sharing/share-offsite/?url=${u}`;
+  $('#sh_tg').href=`https://t.me/share/url?url=${u}`; $('#sh_x').href=`https://twitter.com/intent/tweet?text=${t}&url=${u}`; $('#sh_fb').href=`https://www.facebook.com/sharer/sharer.php?u=${u}`; $('#sh_in').href=`https://www.linkedin.com/sharing/share-offsite/?url=${u}`;
 
-  // Data
-  await loadDataSmart();
-  const every=Math.max(3, Number(CFG.schedule?.refresh_minutes||10)); setInterval(loadDataSmart,every*60*1000);
+  // command center (phát hiện tự động)
+  const tools=["dex.html","hyper_v2.html","pro.html","super_auto.html","super_share.html","xpeotl.html","xportal.html"];
+  const exists=await Promise.all(tools.map(p=>fetch(p,{method:'HEAD'}).then(r=>r.ok?p:null).catch(()=>null)));
+  const apps=exists.filter(Boolean); $('#apps').innerHTML=apps.length?apps.map(p=>`<a href="${p}" target="_blank">${p.replace('.html','').replaceAll('_',' ').toUpperCase()}</a>`).join(''):'<div class="muted">Chưa phát hiện công cụ cũ.</div>';
+
+  // bundles
+  renderBundles(CFG,'day'); $('#timeTabs').onclick=e=>{const tab=e.target.closest('.tab'); if(!tab) return; $$('#timeTabs .tab').forEach(x=>x.classList.remove('act')); tab.classList.add('act'); renderBundles(CFG,tab.dataset.t);};
+
+  // premium + paywall
+  paintPremium(CFG); bindPaywall(CFG);
+
+  // affiliates
+  $('#affs').innerHTML=(CFG.site.affiliates||[]).map(a=>`<a class="card" target="_blank" href="${a.url}"><b>${a.name}</b><div class="muted">${a.tag||'Đối tác'}</div></a>`).join('');
+
+  // payments modal
+  $('#openPay').onclick=()=>openPayments(CFG);
+
+  // data & alerts
+  async function loadData(){
+    const latest=await getJSON('data/latest.json','latest');
+    let items, mode='data', ts;
+    if(latest && Array.isArray(latest.items)){ items=latest.items; ts=latest.generated_at; }
+    else { items=await scanLive(CFG); mode='fallback'; ts=new Date().toISOString(); }
+    $('#hb').textContent=mode==='fallback'?'LIVE':'LIVE'; $('#scanMode').textContent='quét: '+mode; $('#updated').textContent=ago(ts);
+    const alerting=(items||[]).some(x=>Math.abs(x.ch24h||0)>=12||(x.vol24h||0)>1_000_000_000); $('#alert').classList.toggle('hidden',!alerting);
+    renderOpps(items);
+  }
+  $('#refreshNow').onclick=loadData; await loadData();
+  setInterval(loadData, Math.max(3, Number(CFG.schedule?.refresh_minutes||10))*60*1000);
 
   // PWA mini
   try{registerSW()}catch(_){}
 })();
 
-/* ==== Payments render ==== */
-function renderPays(){
-  const P=CFG.site.payments||{}; const chains=P.chains||[]; const off=P.offchain||{};
-  const mins=(()=>{const m={}; chains.forEach(c=>{if(/ETH/i.test(c.name)) m.ETH=c.min||0.0005; if(/USDT/i.test(c.name)) m.USDT=c.min||5}); return m})();
-  $('#mins').textContent=["ETH ≥ "+(mins.ETH||0.0005),"USDT ≥ "+(mins.USDT||5)].join(", ");
-
-  const items=[];
-  chains.forEach(c=>{
-    const isETH=/ETH/i.test(c.name), isUSDT=/USDT/i.test(c.name);
-    const open = (isETH||isUSDT) ? "https://metamask.app.link/" : "#";
-    items.push(`
-      <div class="card"><div class="pay">
-        <img alt="QR" src="${qrlink(c.address)}" loading="lazy">
-        <div class="meta">
-          <div class="row" style="justify-content:space-between"><b>${c.name}</b><a class="btn out" target="_blank" href="${open}">Mở ví/ứng dụng ↗</a></div>
-          <div class="mono">${c.address}</div>
-          ${c.explorer?`<div style="color:#9fb3c8">Explorer: <a target="_blank" href="${c.explorer}">Xem on‑chain ↗</a></div>`:""}
-          ${c.min?`<div style="color:#9fb3c8">Tối thiểu: ${c.min} ${isETH?'ETH':'USDT'}</div>`:""}
-          <div class="row" style="margin-top:8px">
-            <button class="btn" onclick="navigator.clipboard.writeText('${c.address}')">Sao chép</button>
-            <a class="btn out" href="${qrlink(c.address)}" download>⚡ Tải QR</a>
-          </div>
-        </div>
-      </div></div>`);
-  });
-  if(off.momo) items.push(payBox("MoMo",off.momo,"Ví MoMo Việt Nam."));
-  if(off.vietcombank) items.push(payBox("Vietcombank",off.vietcombank,"Chuyển khoản VCB."));
-  if(off.paypal) items.push(payBox("PayPal",off.paypal,`Thanh toán PayPal. <a target="_blank" href="https://www.paypal.me/${off.paypal.split('@')[0]}">PayPal.me ↗</a>`));
-  $('#pays').innerHTML=items.join("");
-
-  function payBox(label,addr,hint){return `
-    <div class="card"><div class="pay">
-      <img alt="QR" src="${qrlink(addr)}" loading="lazy">
-      <div class="meta">
-        <div class="row" style="justify-content:space-between"><b>${label}</b><span></span></div>
-        <div style="color:#9fb3c8">${hint||""}</div>
-        <div class="mono">${addr}</div>
-        <div class="row" style="margin-top:8px">
-          <button class="btn" onclick="navigator.clipboard.writeText('${addr}')">Sao chép</button>
-          <a class="btn out" href="${qrlink(addr)}" download>⚡ Tải QR</a>
-        </div>
-      </div>
-    </div></div>`}
+/* ========= renderers ========= */
+function renderBundles(CFG,mode){
+  const B=CFG.store?.bundles||[];
+  $('#bundles').innerHTML=B.map(b=>`
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><b>${b.title}</b><span class="badge">$${b.price}</span></div>
+      <div class="muted">${b.desc||''}</div>
+      <div style="margin-top:6px">${(b.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <div class="row" style="margin-top:8px"><button class="btn" onclick="document.getElementById('unlockCode').focus()">Mua & nhập mã</button><span class="badge">${mode}</span></div>
+    </div>`).join('');
 }
 
-/* ==== Data load ==== */
-async function loadDataSmart(){
-  const latest=await j('data/latest.json');
-  if(latest && Array.isArray(latest.items)){
-    $('#hb').textContent='LIVE'; $('#scanMode').textContent='quét: data';
-    renderOpps(latest.items, latest.generated_at); return;
-  }
-  const items=await scanLive();
-  $('#hb').textContent='LIVE'; $('#scanMode').textContent='quét: fallback';
-  renderOpps(items, new Date().toISOString());
+function paintPremium(CFG){
+  const P=CFG.store?.premium||[];
+  $('#premium').innerHTML=P.map(p=>`
+    <div class="card"><b>${p.title}</b>
+      <div class="muted">${p.desc||''}</div>
+      ${p.bullets?`<ul>${p.bullets.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}
+      ${p.link?`<a class="pill" target="_blank" href="${p.link}">Xem dữ liệu ↗</a>`:''}
+    </div>`).join('');
 }
-$('#refreshNow').onclick=loadDataSmart;
 
-async function scanLive(){
-  const items=[];
+function bindPaywall(CFG){
+  const SECRET=String(CFG.secrets?.unlock_code||'X1000VIP');
+  const keep=localStorage.getItem('unlocked_code')||'';
+  function gate(open){$('#locked').classList.toggle('hidden',open);$('#opened').classList.toggle('hidden',!open);}
+  if(keep===SECRET){ gate(true); const th=localStorage.getItem('tx_hash'); if(th) $('#uMsg').innerHTML='TX đã lưu: '+th; }
+  $('#doUnlock').onclick=()=>{ const code=$('#unlockCode').value.trim(), tx=$('#txhash').value.trim();
+    if(code===SECRET){ gate(true); if(tx) localStorage.setItem('tx_hash',tx); $('#uMsg').innerHTML='<span style="color:var(--ok)">Đã mở khóa!</span>'; }
+    else $('#uMsg').innerHTML='<span style="color:var(--bad)">Mã không đúng.</span>'; };
+  $('#remember').onclick=()=>{ const c=$('#unlockCode').value.trim(); if(c){ localStorage.setItem('unlocked_code',c); $('#uMsg').textContent='Đã lưu trên thiết bị.'; } };
+  $('#relock').onclick=()=>{ localStorage.removeItem('unlocked_code'); gate(false); };
+}
+
+async function scanLive(CFG){
+  const out=[];
   try{
-    const cg=await j('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=50&page=1&price_change_percentage=1h,24h,7d');
+    const cg=await getJSON('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=40&page=1&price_change_percentage=1h,24h,7d');
     if(Array.isArray(cg)) for(const c of cg){
-      items.push({source:"coingecko",symbol:(c.symbol||"").toUpperCase(),name:c.name,
+      out.push({source:'coingecko',symbol:(c.symbol||'').toUpperCase(),name:c.name,
         price:+c.current_price||0,ch24h:+c.price_change_percentage_24h_in_currency||0,vol24h:+c.total_volume||0,
         score:(+c.price_change_percentage_1h_in_currency||0)*0.4+(+c.price_change_percentage_24h_in_currency||0)*0.35+(+c.price_change_percentage_7d_in_currency||0)*0.25+Math.log10((+c.total_volume||1)),
         link:`https://www.coingecko.com/en/coins/${c.id}`});
     }
-  }catch(_){}
+  }catch{}
   try{
-    const cl=await j('https://api.coinlore.net/api/tickers/?start=0&limit=50');
-    const data=cl?.data||[];
-    for(const c of data){
-      items.push({source:"coinlore",symbol:(c.symbol||"").toUpperCase(),name:c.name,
+    const cl=await getJSON('https://api.coinlore.net/api/tickers/?start=0&limit=40');
+    (cl?.data||[]).forEach(c=>{
+      out.push({source:'coinlore',symbol:(c.symbol||'').toUpperCase(),name:c.name,
         price:+c.price_usd||0,ch24h:+c.percent_change_24h||0,vol24h:+c.volume24||0,
         score:(+c.percent_change_24h||0)*0.7+Math.log10((+c.volume24||1)),
-        link:`https://www.coinlore.com/coin/${(c.name||"").toLowerCase().replace(/\s+/g,"-")}`});
-    }
-  }catch(_){}
-  const best={}; for(const it of items){if(!it.symbol) continue; const k=it.symbol; if(!best[k]||it.score>best[k].score) best[k]=it;}
+        link:`https://www.coinlore.com/coin/${(c.name||'').toLowerCase().replace(/\s+/g,'-')}`});
+    });
+  }catch{}
+  const best={}; out.forEach(it=>{if(!it.symbol)return; if(!best[it.symbol]||it.score>best[it.symbol].score) best[it.symbol]=it;});
   return Object.values(best).sort((a,b)=>b.score-a.score).slice(0, CFG.feeds?.top_n||12);
 }
 
-function renderOpps(items, ts){
+function renderOpps(items){
   $('#opps').innerHTML=(items||[]).map(x=>{
-    const ch=x.ch24h||0, pct=`${ch>=0?'+':''}${ch.toFixed(2)}%`;
+    const ch=x.ch24h||0, pct=`${ch>=0?'+':''}${(ch||0).toFixed(2)}%`;
     return `<div class="item">
-      <div class="score">+${(x.score||0).toFixed(2)}</div>
+      <div class="score">${(x.score>=0?'+':'')}${(x.score||0).toFixed(2)}</div>
       <div style="flex:1;min-width:0">
         <div class="row" style="justify-content:space-between;gap:8px">
-          <div><b>${x.symbol}</b> · <span style="color:#9fb3c8">${x.name||''}</span></div>
-          <a class="btn out" target="_blank" href="${x.link||'#'}">Chi tiết ↗</a>
+          <div><b>${x.symbol}</b> · <span class="muted">${x.name||''}</span></div>
+          <a class="pill" target="_blank" href="${x.link||'#'}">Chi tiết ↗</a>
         </div>
         <div class="row" style="gap:8px">
           <span class="tag">Giá: $${fmt(x.price||0)}</span>
@@ -331,57 +344,44 @@ function renderOpps(items, ts){
         </div>
       </div>
     </div>`;
-  }).join('') || '<div style="color:#9fb3c8">Chưa có dữ liệu.</div>';
-  $('#ticker').innerHTML = (items||[]).map(x=>`<span class="tag">${x.symbol}: $${fmt(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join('') || '—';
+  }).join('') || '<div class="muted">Chưa có dữ liệu.</div>';
+  $('#ticker').innerHTML=(items||[]).slice(0,8).map(x=>`<span class="tag">${x.symbol}: $${fmt(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join('')||'—';
 }
 
-/* ==== Bundles + tabs ==== */
-function renderBundles(mode='day'){
-  const B=CFG.store?.bundles||[];
-  $('#bundles').innerHTML=B.map(b=>{
-    const tags=(b.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
-    return `<div class="card">
-      <div class="row" style="justify-content:space-between"><b>${b.title}</b><span class="badge">$${b.price}</span></div>
-      <div style="color:#9fb3c8">${b.desc||''}</div>
-      <div style="margin-top:6px">${tags}</div>
-      <div class="row" style="margin-top:8px"><button class="btn" onclick="document.getElementById('unlockCode').focus()">Mua & nhập mã</button><span class="badge">${mode}</span></div>
-    </div>`;
-  }).join('');
+/* ========= payments modal ========= */
+function openPayments(CFG){
+  const P=CFG.site?.payments||{}, blocks=[];
+  if(P.eth) blocks.push(payBox('ETH (EVM)',P.eth,'Nạp ETH/USDT trên EVM.','https://metamask.app.link/'));
+  if(P.usdt_erc20) blocks.push(payBox('USDT (ERC20)',P.usdt_erc20,'USDT mạng ERC20.'));
+  if(P.momo) blocks.push(payBox('MoMo',P.momo,'Ví MoMo Việt Nam.'));
+  if(P.vietcombank) blocks.push(payBox('Vietcombank',P.vietcombank,'Ngân hàng VCB.'));
+  if(P.paypal) blocks.push(payBox('PayPal',P.paypal,`Thanh toán PayPal. <a target="_blank" href="https://www.paypal.me/${P.paypal.split('@')[0]}">PayPal.me ↗</a>`));
+  openModal('Phương thức thanh toán', blocks.join('')||'<div class="muted">Chưa cấu hình.</div>');
+}
+function payBox(label,addr,hint,openUrl){
+  const qr=qrlink(addr);
+  return `<div class="card">
+    <div class="row" style="justify-content:space-between"><b>${label}</b>${openUrl?`<a class="pill" target="_blank" href="${openUrl}">Mở ví ↗</a>`:''}</div>
+    <div class="row" style="gap:14px;align-items:flex-start">
+      <img alt="QR" src="${qr}" style="width:160px;height:160px;border-radius:12px;border:1px solid var(--line);background:#000">
+      <div style="flex:1;min-width:0">
+        <div class="muted">${hint||''}</div>
+        <div class="mono" style="margin-top:6px">${addr}</div>
+        <div class="row" style="margin-top:8px">
+          <button class="btn" onclick="navigator.clipboard.writeText('${addr}')">Sao chép</button>
+          <a class="btn ghost" href="${qr}" download>⚡ Tải QR</a>
+        </div>
+      </div>
+    </div>
+  </div>`;
 }
 
-/* ==== Premium + Paywall ==== */
-function paintPremium(){
-  const P=CFG.store?.premium||[];
-  $('#premium').innerHTML=P.map(p=>`<div class="card"><b>${p.title}</b>
-    <div style="color:#9fb3c8">${p.desc||''}</div>
-    ${p.bullets?`<ul>${p.bullets.map(x=>`<li>${x}</li>`).join('')}</ul>`:""}
-    ${p.link?`<a class="btn out" target="_blank" href="${p.link}">Xem dữ liệu ↗</a>`:""}
-  </div>`).join('');
-}
-function bindPaywall(){
-  const SECRET=String(CFG.secrets?.unlock_code||'X1000VIP');
-  const saved=localStorage.getItem('unlocked_code')||'';
-  function gate(open){$('#locked').classList.toggle('hidden',open);$('#opened').classList.toggle('hidden',!open);}
-  if(saved===SECRET){gate(true); paintPremium(); const th=localStorage.getItem('tx_hash'); if(th) $('#uMsg').innerHTML='<span class="ok">TX: '+th+'</span>';}
-  $('#doUnlock').onclick=()=>{const code=$('#unlockCode').value.trim(),tx=$('#txhash').value.trim();
-    if(code===SECRET){gate(true); paintPremium(); $('#uMsg').innerHTML='<span class="ok">Đã mở khóa!</span>'; if(tx) localStorage.setItem('tx_hash',tx);}
-    else $('#uMsg').innerHTML='<span class="err">Mã không đúng.</span>';};
-  $('#remember').onclick=()=>{const c=$('#unlockCode').value.trim(); if(c){localStorage.setItem('unlocked_code',c); $('#uMsg').textContent='Đã lưu trên thiết bị.'}};
-  $('#relock').onclick=()=>{localStorage.removeItem('unlocked_code'); gate(false);};
-}
-
-/* ==== PWA mini (inline SW) ==== */
+/* ========= PWA mini ========= */
 function registerSW(){
-  const sw=`
-    const CORE=['./','index.html','config.json','data/latest.json'];
-    self.addEventListener('install',e=>{e.waitUntil(caches.open('hp-core').then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
-    self.addEventListener('activate',e=>{e.waitUntil(self.clients.claim())});
-    self.addEventListener('fetch',e=>{
-      const u=new URL(e.request.url);
-      if(u.origin===location.origin){e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));return;}
-      e.respondWith(fetch(e.request).catch(()=>caches.match('./')));
-    });
-  `;
+  const sw=`const CORE=['./','index.html','config.json','data/latest.json'];
+self.addEventListener('install',e=>{e.waitUntil(caches.open('hp-core').then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
+self.addEventListener('activate',e=>{e.waitUntil(self.clients.claim())});
+self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(u.origin===location.origin){e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));return}e.respondWith(fetch(e.request).catch(()=>caches.match('./')))});`;
   const url=URL.createObjectURL(new Blob([sw],{type:'text/javascript'}));
   navigator.serviceWorker.register(url,{scope:'./'});
 }
