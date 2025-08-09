@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>UltraMaster V10 • LightUnfold</title>
-<meta name="description" content="Web3 AI UltraMaster V10: tự vận hành 24/7, đa ngôn ngữ, thanh toán on/off-chain, cơ hội thị trường, affiliate toàn cầu.">
-<meta property="og:title" content="UltraMaster V10 • LightUnfold">
-<meta property="og:description" content="Nền tảng Web3 AI tự vận hành 24/7: quét đa nguồn, cơ hội, thanh toán, paywall, affiliate.">
+<title>UltraMaster V15 • Web3 Singularity</title>
+<meta name="description" content="V15: AI tài chính 24/7, kho học liệu, cơ hội thị trường, 1 QR thanh toán, nâng cấp bằng Quantum Key.">
+<meta property="og:title" content="UltraMaster V15 • Web3 Singularity">
+<meta property="og:description" content="AI 24/7 • Kho sách & khóa học • BTC/ETH/USDT • Paywall • Binance & AlgosOne.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0b0f13">
 <style>
@@ -60,88 +60,89 @@ a{color:var(--brand);text-decoration:none}
 .cmctable table{width:100%;border-collapse:collapse}
 .cmctable th, .cmctable td{padding:8px;border-bottom:1px solid var(--line);text-align:left}
 .bad{color:var(--bad)}.ok{color:var(--ok)}
+/* Globe */
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;align-items:center}
+@media (max-width:900px){.hero{grid-template-columns:1fr}}
+.globe{width:100%;aspect-ratio:1;border-radius:50%;position:relative;box-shadow:inset 0 0 30px rgba(0,0,0,.6),0 6px 30px rgba(0,0,0,.25)}
+.globe .sphere{position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, #5bbcff 0%, #2563eb 42%, #0b3a8a 60%, #071a3a 100%)}
+.globe .map{position:absolute;inset:0;border-radius:50%;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 800 400\"><g fill=\"%23a7e5ff\" opacity=\"0.35\"><path d=\"M84 145l18-7 12 5 10 14-5 11-12 4-15-4-10-10z\"/><circle cx=\"500\" cy=\"130\" r=\"50\"/></g></svg>');
+  background-size:200% 100%;animation:spin 18s linear infinite;mix-blend-mode:screen;filter:contrast(110%)}
+@keyframes spin{from{background-position:0 0}to{background-position:-200% 0}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="row">
-    <span class="pill logo-hero"><span class="logo-dot"></span><b>UltraMaster V10</b></span>
+    <span class="pill logo-hero"><span class="logo-dot"></span><b>UltraMaster V15</b></span>
     <span class="pill">ENS: <b id="ens">lightunfold.eth</b></span>
-    <span class="pill">Heartbeat: <b id="hb">—</b></span>
+    <span class="pill">Heartbeat: <b id="hb">LIVE</b></span>
     <button class="pill" id="openCfg">config</button>
     <button class="pill" id="openData">data</button>
     <span class="pill" id="lang">VI/EN</span>
     <span class="pill" id="theme">🌗 Theme</span>
   </div>
 
-  <h1 id="brand">LightUnfold • UltraMaster V10</h1>
-  <div id="tagline" style="color:#9fb3c8">200+ AI • 200+ ngôn ngữ • Tự động 24/7 • Web3 bất khả xâm phạm</div>
+  <h1 id="brand">LightUnfold • UltraMaster V15</h1>
+  <div id="tagline" style="color:#9fb3c8">AI 24/7 • 200+ ngôn ngữ • Web3 tự vận hành • Bất tử IPFS/ENS</div>
 
-  <!-- KPI -->
-  <div class="kpi">
-    <div class="kbox"><div class="muted">Cơ hội</div><div class="now" id="kOpps">0</div></div>
-    <div class="kbox"><div class="muted">Cập nhật</div><div class="now" id="kUpd">—</div></div>
-    <div class="kbox"><div class="muted">Đang xem</div><div class="now" id="kLive">—</div></div>
-    <div class="kbox"><div class="muted">Doanh thu</div><div class="now">$<span id="kRev">0</span></div></div>
-  </div>
-
-  <!-- Hero -->
+  <!-- HERO with Globe + Partners -->
   <section class="card" id="about">
-    <div class="row" style="justify-content:space-between;align-items:flex-start">
+    <div class="hero">
       <div>
-        <div id="slogan">Quét đa nguồn • Chấm điểm cơ hội • Cảnh báo nhịp tim thị trường.</div>
+        <div id="slogan">Quét đa nguồn • Chấm điểm cơ hội • Nhịp tim thị trường theo giây.</div>
         <div id="pulse" class="tag" style="margin-top:8px">Cập nhật: —</div>
-      </div>
-      <div class="row partner">
-        <div class="glow">
-          <div class="name">Binance</div>
-          <div class="muted" id="bn-intro">Sàn giao dịch hàng đầu: phí thấp, thanh khoản sâu, Earn & Futures.</div>
-          <a class="btn out" target="_blank" rel="noopener" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N" id="bn-btn">Đăng ký Binance ↗</a>
+        <div class="hero-cta" style="margin-top:10px">
+          <div class="item"><b id="whyH1">Vì sao UltraMaster?</b><br><span id="why1">AI đa nguồn, xếp hạng cơ hội theo điểm – làm mới từng phút, tự vận hành 24/7.</span></div>
+          <div class="item"><b id="whyH2">Giá trị mở khóa</b><br><span id="why2">Alpha feed, heatmap, vesting, tín hiệu chu kỳ – sẵn sàng hành động.</span></div>
+          <div class="item"><b id="whyH3">Cách tham gia</b><br><span id="why3">Thanh toán on/off-chain → nhận mã → mở khóa nội dung.</span></div>
         </div>
-        <div class="glow">
-          <div class="name">AlgosOne</div>
-          <div class="muted" id="ao-intro">Nền tảng AI Trading: thuật toán, tối ưu chiến lược, cảnh báo real‑time.</div>
-          <a class="btn out" target="_blank" rel="noopener" href="https://algosone.page.link/MbtR" id="ao-btn">Dùng thử AlgosOne ↗</a>
+      </div>
+      <div>
+        <div class="globe"><div class="sphere"></div><div class="map"></div></div>
+        <div class="row partner" style="margin-top:12px;justify-content:space-between">
+          <div class="glow" style="flex:1">
+            <div class="name">Binance</div>
+            <div class="muted" id="bn-intro">Sàn số 1: phí thấp, thanh khoản sâu, Earn & Futures.</div>
+            <a class="btn out" target="_blank" rel="noopener" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N" id="bn-btn">Đăng ký Binance ↗</a>
+          </div>
+          <div class="glow" style="flex:1">
+            <div class="name">AlgosOne</div>
+            <div class="muted" id="ao-intro">AI Trading: thuật toán, tối ưu chiến lược, cảnh báo real-time.</div>
+            <a class="btn out" target="_blank" rel="noopener" href="https://algosone.page.link/MbtR" id="ao-btn">Dùng thử AlgosOne ↗</a>
+          </div>
         </div>
       </div>
     </div>
     <div id="alertBox" class="alert hidden" style="margin-top:10px"></div>
-    <div class="hero-cta" style="margin-top:10px">
-      <div class="item"><b id="whyH1">Vì sao UltraMaster?</b><br><span id="why1">AI đa nguồn, xếp hạng cơ hội theo điểm – làm mới từng phút, tự vận hành 24/7.</span></div>
-      <div class="item"><b id="whyH2">Giá trị mở khóa</b><br><span id="why2">Alpha feed, heatmap, vesting, tín hiệu chu kỳ – sẵn sàng hành động.</span></div>
-      <div class="item"><b id="whyH3">Cách tham gia</b><br><span id="why3">Thanh toán on/off‑chain → nhận mã → mở khóa nội dung.</span></div>
-    </div>
   </section>
 
-  <!-- Opportunities -->
-  <section class="card">
-    <div class="row" style="justify-content:space-between">
-      <h3 id="hotTitle" style="margin:0">🔥 Cơ hội nổi bật</h3>
-      <div class="row">
-        <span class="badge" id="scanMode">quét: data</span>
-        <button class="btn out" id="refreshNow">↻ Làm mới</button>
+  <!-- DOCS / COURSES — moved to 2nd -->
+  <section class="card" id="edu">
+    <h3 style="margin:0 0 8px">📚 Học viện & Sách số</h3>
+    <div class="grid" id="ebooks">
+      <div class="shop-card">
+        <h4>Crypto 101: Nền tảng & Quản trị rủi ro</h4>
+        <div class="note">Ví, bảo mật, chu kỳ, quản trị vốn, checklist.</div>
+        <div class="row"><button class="btn" onclick="document.getElementById('unlockCode').focus()">Mua & nhập mã</button><span class="badge">$19</span></div>
+      </div>
+      <div class="shop-card">
+        <h4>DeFi Mastery: Yield, Lending, Perp</h4>
+        <div class="note">Săn APY, đo risk, perp an toàn, case study.</div>
+        <div class="row"><button class="btn" onclick="document.getElementById('unlockCode').focus()">Mua & nhập mã</button><span class="badge">$29</span></div>
       </div>
     </div>
-    <div class="marquee" style="margin:4px 0 8px;color:#bcd"><div id="ticker">—</div></div>
-    <div id="opps" class="list"></div>
   </section>
 
-  <!-- Payments -->
+  <!-- PAYMENTS (1 QR chung + danh sách) -->
   <section class="card">
     <h3 id="payTitle" style="margin:0 0 8px">💳 Thanh toán</h3>
-    <div id="pays" class="grid"></div>
+    <div class="grid" id="pays"></div>
     <div class="muted" style="margin-top:6px"><span id="minLbl">Tối thiểu</span>: <span id="mins"></span> · <span id="contactLbl">Liên hệ</span>: <span id="pp"></span></div>
-    <div class="card" style="margin-top:10px">
-      <b id="howPayH">Hướng dẫn thanh toán</b>
-      <ol id="howPay">
-        <li>Chọn phương thức phù hợp (ETH/USDT/MoMo/VCB/PayPal).</li>
-        <li>Quét QR hoặc sao chép địa chỉ/ID → chuyển đúng số tiền.</li>
-        <li>Nhận mã mở khóa qua email/ghi chú → nhập mã ở mục “Nội dung cao cấp”.</li>
-      </ol>
-    </div>
   </section>
 
-  <!-- Unlock -->
+  <!-- UNLOCK -->
   <section class="card">
     <h3 id="lockTitle" style="margin:0 0 8px">🔓 Nội dung cao cấp</h3>
     <div id="locked">
@@ -158,7 +159,7 @@ a{color:var(--brand);text-decoration:none}
         <div style="color:#9fb3c8">
           <b id="howTitle">Cách hoạt động</b>
           <ul id="howList">
-            <li>Thanh toán on/off‑chain.</li>
+            <li>Thanh toán on/off-chain.</li>
             <li>Nhận mã → nhập để mở khóa nội dung.</li>
             <li>Lưu mã & TX hash ngay trên thiết bị của bạn.</li>
           </ul>
@@ -171,7 +172,7 @@ a{color:var(--brand);text-decoration:none}
     </div>
   </section>
 
-  <!-- Store (with per‑product guides) -->
+  <!-- STORE -->
   <section class="card">
     <div class="row" style="justify-content:space-between">
       <h3 id="packTitle" style="margin:0">🧰 Gói sản phẩm / Báo cáo</h3>
@@ -186,34 +187,45 @@ a{color:var(--brand);text-decoration:none}
     <div class="card" style="margin-top:10px">
       <b>Hướng dẫn chọn gói</b>
       <ul class="muted" id="bundleGuide">
-        <li><b>Alpha Signals X</b>: phù hợp scalping/ngắn hạn. Thanh toán → nhập mã → nhận tín hiệu real‑time.</li>
-        <li><b>ETF & BTC Flow</b>: theo dõi dòng vốn, miner, ETF – hỗ trợ quyết định macro.</li>
-        <li><b>Altseason Radar</b>: săn leader/laggard, xoay vòng vốn theo chu kỳ.</li>
+        <li><b>Alpha Signals X</b>: phù hợp scalping/ngắn hạn.</li>
+        <li><b>ETF & BTC Flow</b>: theo dõi dòng vốn, miner, ETF.</li>
+        <li><b>Altseason Radar</b>: săn leader/laggard theo chu kỳ.</li>
       </ul>
     </div>
   </section>
 
-  <!-- Affiliate spotlight (long form) -->
+  <!-- AFFILIATES -->
   <section class="card">
     <h3 style="margin:0 0 8px">🤝 Affiliate • Giới thiệu chi tiết</h3>
     <div class="grid" id="affSpot">
       <div class="shop-card">
         <h4>Binance — tại sao nên đăng ký?</h4>
-        <div class="note">• Phí giao dịch thấp, thanh khoản sâu • Earn/Futures/Options • Launchpad/Launchpool • Bảo mật cấp sàn top đầu</div>
-        <div class="note">• Tích hợp API mạnh: dễ tự động hóa chiến lược • Ứng dụng mượt, hỗ trợ đa ngôn ngữ</div>
+        <div class="note">Phí thấp, thanh khoản sâu • Earn/Futures/Options • Launchpad/Launchpool • Bảo mật mạnh.</div>
         <a class="btn" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N" target="_blank" rel="noopener">Đăng ký Binance ↗</a>
       </div>
       <div class="shop-card">
         <h4>AlgosOne — lợi ích cho trader</h4>
-        <div class="note">• Máy học gợi ý chiến lược • Cảnh báo theo ngưỡng rủi ro • Backtest nhanh • Tối ưu vị thế & điểm vào/ra</div>
-        <div class="note">• Kết nối nhiều sàn • Dashboard trực quan, đa thiết bị</div>
+        <div class="note">AI chiến lược • Cảnh báo theo rủi ro • Backtest nhanh • Kết nối nhiều sàn.</div>
         <a class="btn" href="https://algosone.page.link/MbtR" target="_blank" rel="noopener">Dùng thử AlgosOne ↗</a>
       </div>
     </div>
     <div id="affs" class="grid" style="margin-top:10px"></div>
   </section>
 
-  <!-- CoinMarketCap mini (fallback with CG/CL) -->
+  <!-- OPPORTUNITIES -->
+  <section class="card">
+    <div class="row" style="justify-content:space-between">
+      <h3 id="hotTitle" style="margin:0">🔥 Cơ hội nổi bật</h3>
+      <div class="row">
+        <span class="badge" id="scanMode">quét: data</span>
+        <button class="btn out" id="refreshNow">↻ Làm mới</button>
+      </div>
+    </div>
+    <div class="marquee" style="margin:4px 0 8px;color:#bcd"><div id="ticker">—</div></div>
+    <div id="opps" class="list"></div>
+  </section>
+
+  <!-- MARKET at bottom -->
   <section class="card">
     <h3 style="margin:0 0 8px">📊 Thị trường (mini)</h3>
     <div class="cmctable" id="mktMini">
@@ -224,24 +236,7 @@ a{color:var(--brand);text-decoration:none}
     </div>
   </section>
 
-  <!-- Docs / Courses -->
-  <section class="card">
-    <h3 style="margin:0 0 8px">📚 Học viện & Sách số</h3>
-    <div class="grid" id="ebooks">
-      <div class="shop-card">
-        <h4>Crypto 101: Nền tảng & Quản trị rủi ro</h4>
-        <div class="note">Hướng dẫn dễ hiểu cho người mới: ví, bảo mật, chu kỳ, quản lý vốn, checklist.</div>
-        <div class="row"><button class="btn" onclick="document.getElementById('unlockCode').focus()">Mua & nhập mã</button><span class="badge">$19</span></div>
-      </div>
-      <div class="shop-card">
-        <h4>DeFi Mastery: Yield, Lending, Perp</h4>
-        <div class="note">Lộ trình thực chiến: săn APY, đo risk, sử dụng perp an toàn, case study.</div>
-        <div class="row"><button class="btn" onclick="document.getElementById('unlockCode').focus()">Mua & nhập mã</button><span class="badge">$29</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Command Center -->
+  <!-- COMMANDS -->
   <section class="card">
     <h3 style="margin:0 0 8px">🧭 Command Center</h3>
     <div id="apps" class="appgrid"></div>
@@ -259,6 +254,51 @@ a{color:var(--brand);text-decoration:none}
   <a id="sh_fb" target="_blank" title="Share Facebook">f</a>
   <a id="sh_in" target="_blank" title="Share LinkedIn">in</a>
 </div>
+
+<!-- ========= AI Chat 24/7 (built-in) ========= -->
+<style>
+  .um15-fab{position:fixed;right:16px;bottom:88px;width:56px;height:56px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--accent);color:#1a1300;
+    box-shadow:0 10px 30px rgba(3,10,30,.35);font-weight:900;z-index:9998}
+  .um15-chat{position:fixed;right:16px;bottom:150px;width:min(92vw,420px);height:min(72vh,640px);display:none;
+    flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;z-index:9999}
+  .um15-chat header{display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid var(--line)}
+  .um15-chat .msgs{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:10px;background:linear-gradient(180deg,#0b0f13 0%,#0f141a 100%)}
+  .um15-bubble{max-width:86%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0f1826;color:var(--txt)}
+  .um15-bubble.me{align-self:flex-end;background:#192233}
+  .um15-chat .inputbar{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}
+  .um15-chat .inputbar input{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--pill);color:var(--txt)}
+  .um15-btn{display:inline-flex;gap:8px;align-items:center;background:var(--accent);color:#1a1300;border:0;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer}
+  .um15-btn.out{background:transparent;border:1px solid var(--line);color:var(--txt)}
+  .um15-quick{display:flex;gap:6px;flex-wrap:wrap;padding:8px;border-top:1px dashed var(--line)}
+  .um15-quick button{border:1px solid var(--line);background:var(--pill);color:var(--txt);border-radius:999px;padding:6px 10px;cursor:pointer}
+  .um15-small{font-size:12px;color:#9fb3c8}
+</style>
+<div class="um15-fab" id="um15Fab" title="AI Chat 24/7">💬</div>
+<div class="um15-chat" id="um15Box" role="dialog" aria-label="AI Chat 24/7">
+  <header>
+    <div style="display:flex;gap:8px;align-items:center">
+      <b id="um15Title">AI Tài chính 24/7</b>
+      <span class="pill" style="padding:2px 8px" id="um15Mode">demo</span>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="um15-btn out" id="um15Min">—</button>
+      <button class="um15-btn" id="um15Close">✖</button>
+    </div>
+  </header>
+  <div class="um15-quick" id="um15Quick">
+    <button data-q="Cập nhật BTC/ETH/USDT bây giờ">BTC/ETH/USDT</button>
+    <button data-q="Có cơ hội coin nào đáng chú ý không?">Cơ hội hôm nay</button>
+    <button data-q="Gợi ý khóa học nhanh cho người mới">Khóa học nhanh</button>
+    <button data-q="Hướng dẫn giao dịch an toàn cho người mới">An toàn giao dịch</button>
+  </div>
+  <div class="msgs" id="um15Msgs"></div>
+  <div class="inputbar">
+    <input id="um15Ask" placeholder="Hỏi về thị trường, khóa học, BNB, AlgosOne…">
+    <button class="um15-btn" id="um15Send">Gửi</button>
+  </div>
+</div>
+<!-- ========= /AI Chat 24/7 ========= -->
 
 <script>
 /* ===== helpers & theme ===== */
@@ -281,7 +321,7 @@ const i18n={
       whyH1:"Vì sao UltraMaster?",whyH2:"Giá trị mở khóa",whyH3:"Cách tham gia",
       why1:"AI đa nguồn, xếp hạng cơ hội – làm mới từng phút.",
       why2:"Alpha feed, heatmap, vesting, tín hiệu chu kỳ.",
-      why3:"Thanh toán on/off‑chain → nhận mã → mở khóa premium.",
+      why3:"Thanh toán on/off-chain → nhận mã → mở khóa premium.",
       refresh:"↻ Làm mới", theme:"🌗 Giao diện", scan_data:"quét: data", scan_fallback:"quét: fallback",
       unlock_ph:"Nhập mã mở khóa…", tx_ph:"(Tuỳ chọn) Dán TX hash / bằng chứng",
       unlock_btn:"Mở khóa", remember_btn:"Nhớ trên thiết bị", relock_btn:"Khoá lại",
@@ -289,13 +329,13 @@ const i18n={
   en:{hot:"🔥 Hot opportunities",pay:"💳 Payments",minLbl:"Minimum",contactLbl:"Contact",lock:"🔓 Premium content",
       how:"How it works",unlocked:"✔ Unlocked",packs:"🧰 Products / Reports",hub:"Hub links to legacy tools.",
       cta:"🚀 Get started now",cta1H:"Information edge",cta1:"Track outsized moves & early signals — ahead of the crowd.",
-      cta2H:"Cost‑efficient",cta2:"Day/Month/Quarter plans — pay only for what you use.",
-      cta3H:"Auto‑viral growth",cta3:"One‑tap share (Telegram/X/Facebook/LinkedIn) + Affiliate.",
-      auto:"Always‑on 24/7",
+      cta2H:"Cost-efficient",cta2:"Day/Month/Quarter plans — pay only for what you use.",
+      cta3H:"Auto-viral growth",cta3:"One-tap share (Telegram/X/Facebook/LinkedIn) + Affiliate.",
+      auto:"Always-on 24/7",
       whyH1:"Why UltraMaster?",whyH2:"Unlock value",whyH3:"How to join",
-      why1:"Multi‑source AI scanning, scored opportunities — refreshed every minute.",
+      why1:"Multi-source AI scanning, scored opportunities — refreshed every minute.",
       why2:"Alpha feeds, heatmaps, vesting calendars, cycle signals.",
-      why3:"Pay on/off‑chain → receive code → unlock premium.",
+      why3:"Pay on/off-chain → receive code → unlock premium.",
       refresh:"↻ Refresh", theme:"🌗 Theme", scan_data:"scan: data", scan_fallback:"scan: fallback",
       unlock_ph:"Enter unlock code…", tx_ph:"(Optional) Paste TX hash / proof",
       unlock_btn:"Unlock", remember_btn:"Remember on device", relock_btn:"Lock again",
@@ -304,9 +344,9 @@ const i18n={
 let LANG=(localStorage.getItem('lang')||navigator.language||'vi').toLowerCase().startsWith('vi')?'vi':'en';
 $('#lang').onclick=()=>{LANG=LANG==='vi'?'en':'vi';localStorage.setItem('lang',LANG);applyLang();};
 
-/* ===== defaults (fallback) & V10 config switch ===== */
+/* ===== defaults (fallback) & V15 config ===== */
 const DEF={
-  site:{brand:"LightUnfold • UltraMaster V10",ens:"lightunfold.eth",
+  site:{brand:"LightUnfold • UltraMaster V15",ens:"lightunfold.eth",
     contact:{email:"vumumabada@gmail.com"},
     payments:{qr_auto:true,chains:[
       {name:"ETH (EVM)",address:"0x54E15A7b6d4213beE87800432A151d794638E3C2",explorer:"https://etherscan.io/address/0x54E15A7b6d4213beE87800432A151d794638E3C2",min:0.0005},
@@ -314,10 +354,8 @@ const DEF={
     ],offchain:{momo:"0567892030",vietcombank:"9567892030",paypal:"vumumabada@gmail.com"}},
     affiliates:[
       {name:"Binance",url:"https://www.binance.com/vi/register?ref=GRO_20338_9V44N",tag:"Top CEX"},
-      {name:"AlgosOne",url:"https://algosone.page.link/MbtR",tag:"AI Trading"},
-      {name:"OKX",url:"https://www.okx.com/join/your-code",tag:"CEX"},
-      {name:"Bybit",url:"https://www.bybit.com/invite?ref=your-code",tag:"Derivatives"}]
-  },
+      {name:"AlgosOne",url:"https://algosone.page.link/MbtR",tag:"AI Trading"}
+    ]},
   feeds:{top_n:12}, schedule:{refresh_minutes:10},
   secrets:{unlock_code:"23061988"},
   store:{bundles:[
@@ -334,24 +372,24 @@ const DEF={
 
 let CFG=DEF, lastRefreshTS=Date.now();
 
-/* ===== V10 external config (tùy chọn) – one‑click replace ===== */
-const V10_ON=true;
-const V10_PATHS={
-  lang_vi:'lang/vi.v10.json',
-  lang_en:'lang/en.v10.json',
-  site:'site.v10.json',
-  ui:'ui.v10.json',
-  feeds:'feeds.v10.json',
-  secrets:'secrets.v10.json'
+/* ===== External overlays (tùy chọn) ===== */
+const V15_ON=true;
+const V15_PATHS={
+  lang_vi:'lang/vi.v15.json',
+  lang_en:'lang/en.v15.json',
+  site:'site.v15.json',
+  ui:'ui.v15.json',
+  feeds:'feeds.v15.json',
+  secrets:'secrets.v15.json'
 };
 async function getNoCache(p){try{const r=await fetch(p,{cache:'no-store'});if(!r.ok) throw 0;return await r.json()}catch(_){return null}}
 function mergeDeep(base, patch){return (typeof base==='object'&&base&&typeof patch==='object'&&patch)?Object.assign({},base, ...Object.keys(patch).map(k=>({[k]:mergeDeep(base[k],patch[k])}))) : (patch??base)}
-async function loadV10All(){
-  if(!V10_ON) return;
+async function loadV15All(){
+  if(!V15_ON) return;
   const [vi,en,site,ui,feeds,sec]=await Promise.all([
-    getNoCache(V10_PATHS.lang_vi),getNoCache(V10_PATHS.lang_en),
-    getNoCache(V10_PATHS.site),getNoCache(V10_PATHS.ui),
-    getNoCache(V10_PATHS.feeds),getNoCache(V10_PATHS.secrets)
+    getNoCache(V15_PATHS.lang_vi),getNoCache(V15_PATHS.lang_en),
+    getNoCache(V15_PATHS.site),getNoCache(V15_PATHS.ui),
+    getNoCache(V15_PATHS.feeds),getNoCache(V15_PATHS.secrets)
   ]);
   if(vi||en){ if(LANG==='vi'&&vi) window.i18n.vi = mergeDeep(window.i18n?.vi||{},vi);
               if(LANG==='en'&&en) window.i18n.en = mergeDeep(window.i18n?.en||{},en); }
@@ -362,18 +400,16 @@ async function loadV10All(){
 (async function boot(){
   $('#year').textContent=new Date().getFullYear();
 
-  // modal preview buttons
   bindModal('#openCfg','config.json','config.json');
   bindModal('#openData','data/latest.json','data/latest.json');
 
   // optional legacy config.json
   const cfg=await j('config.json'); if(cfg) CFG=mergeDeep(CFG,cfg);
 
-  // V10 external overlays
-  await loadV10All();
+  await loadV15All();
 
   // Header + contact
-  $('#brand').textContent=CFG.site?.brand||'LightUnfold • UltraMaster V10';
+  $('#brand').textContent=CFG.site?.brand||'LightUnfold • UltraMaster V15';
   $('#ens').textContent=CFG.site?.ens||'—';
   const contact=(CFG.site?.contact?.email||CFG.site?.contact||CFG.site?.ens||'').toString();
   const pp=$('#pp'); if(pp) pp.innerHTML = contact?`<a href="mailto:${contact}" target="_blank" rel="noopener">${contact}</a>`:'—';
@@ -409,6 +445,10 @@ async function loadV10All(){
 
   applyLang();
   try{registerSW()}catch(_){}
+
+  // AI Chat init
+  initAIChat();
+
 })();
 
 /* ===== Modal helper ===== */
@@ -430,41 +470,53 @@ function bindModal(btnSel,url,title){
   modal.addEventListener('click',e=>{if(e.target.id==='__close'||e.target===modal) modal.style.display='none';});
 }
 
-/* ===== Payments ===== */
+/* ===== Payments: 1 QR chung + danh sách ===== */
 function renderPays(){
   const P=CFG.site?.payments||{}; const chains=P.chains||[]; const off=P.offchain||{};
+  const first=chains[0]; // dùng 1 QR đại diện (mặc định ETH)
   const mins=(()=>{const m={}; chains.forEach(c=>{if(/ETH/i.test(c.name)) m.ETH=c.min||0.0005; if(/USDT/i.test(c.name)) m.USDT=c.min||5}); return m})();
   $('#mins').textContent=["ETH ≥ "+(mins.ETH||0.0005),"USDT ≥ "+(mins.USDT||5)].join(", ");
 
   const items=[];
-  chains.forEach(c=>{
-    const open="https://metamask.app.link/";
+  // Khối QR đại diện
+  if(first){
     items.push(`<div class="card"><div class="pay">
-      <img alt="QR" src="${qrlink(c.address)}" loading="lazy" title="Quét để thanh toán">
+      <img alt="QR" src="${qrlink(first.address)}" loading="lazy" title="Quét để thanh toán nhanh">
       <div class="meta">
-        <div class="row" style="justify-content:space-between"><b>${c.name}</b>
-          <a class="btn out" target="_blank" rel="noopener" href="${open}">${LANG==='vi'?'Mở ví/ứng dụng':'Open wallet/app'} ↗</a></div>
-        <div class="mono"><a href="${c.explorer||'#'}" target="_blank" rel="noopener">${c.address}</a></div>
-        ${c.explorer?`<div class="muted">Explorer: <a target="_blank" rel="noopener" href="${c.explorer}">On‑chain ↗</a></div>`:""}
-        ${c.min?`<div class="muted">${LANG==='vi'?'Tối thiểu':'Minimum'}: ${c.min}</div>`:""}
+        <div class="row" style="justify-content:space-between"><b>QR chung (ưu tiên: ${first.name})</b>
+          <a class="btn out" target="_blank" rel="noopener" href="https://metamask.app.link/">${LANG==='vi'?'Mở ví/ứng dụng':'Open wallet/app'} ↗</a></div>
+        <div class="mono"><a href="${first.explorer||'#'}" target="_blank" rel="noopener">${first.address}</a></div>
+        <div class="muted">${LANG==='vi'?'Quét QR này để thanh toán nhanh. Có thể chọn phương thức khác ở danh sách bên dưới.':'Scan this QR to pay fast. Other methods listed below.'}</div>
         <div class="row" style="margin-top:8px">
-          <button class="btn" onclick="navigator.clipboard.writeText('${c.address}')">${LANG==='vi'?'Sao chép':'Copy'}</button>
-          <a class="btn out" href="${qrlink(c.address)}" download>⚡ ${LANG==='vi'?'Tải QR':'Download QR'}</a>
+          <button class="btn" onclick="navigator.clipboard.writeText('${first.address}')">${LANG==='vi'?'Sao chép địa chỉ':'Copy address'}</button>
+          <a class="btn out" href="${qrlink(first.address)}" download>⚡ ${LANG==='vi'?'Tải QR':'Download QR'}</a>
         </div>
       </div></div></div>`);
+  }
+  // Danh sách chi tiết
+  const detail = [];
+  chains.forEach(c=>{
+    detail.push(`<div class="shop-card">
+      <h4>${c.name}</h4>
+      <div class="mono">${c.address}</div>
+      ${c.explorer?`<div class="muted">Explorer: <a target="_blank" rel="noopener" href="${c.explorer}">On-chain ↗</a></div>`:""}
+      ${c.min?`<div class="muted">${LANG==='vi'?'Tối thiểu':'Minimum'}: ${c.min}</div>`:""}
+      <div class="row" style="margin-top:8px">
+        <button class="btn" onclick="navigator.clipboard.writeText('${c.address}')">${LANG==='vi'?'Sao chép':'Copy'}</button>
+      </div>
+    </div>`);
   });
-  if(off.momo) items.push(payBox("MoMo",off.momo,LANG==='vi'?"Ví MoMo Việt Nam.":"Vietnam MoMo wallet."));
-  if(off.vietcombank) items.push(payBox("Vietcombank",off.vietcombank,LANG==='vi'?"Chuyển khoản VCB.":"VCB bank transfer."));
-  if(off.paypal) items.push(payBox("PayPal",off.paypal,`${LANG==='vi'?'Thanh toán PayPal.':'Pay via PayPal.'} <a target="_blank" rel="noopener" href="https://www.paypal.me/${off.paypal.split('@')[0]}">PayPal.me ↗</a>`));
+  if(off.momo) detail.push(simplePay("MoMo",off.momo,LANG==='vi'?"Ví MoMo Việt Nam.":"Vietnam MoMo wallet."));
+  if(off.vietcombank) detail.push(simplePay("Vietcombank",off.vietcombank,LANG==='vi'?"Chuyển khoản VCB.":"VCB bank transfer."));
+  if(off.paypal) detail.push(simplePay("PayPal",off.paypal,`${LANG==='vi'?'Thanh toán PayPal.':'Pay via PayPal.'}`));
+
+  items.push(`<div class="grid">${detail.join("")}</div>`);
   $('#pays').innerHTML=items.join("");
-  function payBox(label,addr,hint){return `<div class="card"><div class="pay">
-    <img alt="QR" src="${qrlink(addr)}" loading="lazy"><div class="meta">
-    <div class="row" style="justify-content:space-between"><b>${label}</b><span></span></div>
-    <div class="muted">${hint||""}</div><div class="mono">${addr}</div>
-    <div class="row" style="margin-top:8px">
-      <button class="btn" onclick="navigator.clipboard.writeText('${addr}')">${LANG==='vi'?'Sao chép':'Copy'}</button>
-      <a class="btn out" href="${qrlink(addr)}" download>⚡ ${LANG==='vi'?'Tải QR':'Download QR'}</a>
-    </div></div></div></div>`}
+
+  function simplePay(label,addr,hint){return `<div class="shop-card">
+    <h4>${label}</h4><div class="muted">${hint||""}</div><div class="mono">${addr}</div>
+    <div class="row" style="margin-top:8px"><button class="btn" onclick="navigator.clipboard.writeText('${addr}')">${LANG==='vi'?'Sao chép':'Copy'}</button></div>
+  </div>`}
 }
 
 /* ===== Affiliates ===== */
@@ -472,7 +524,7 @@ function renderAffs(){
   const A=CFG.site?.affiliates||[];
   $('#affs').innerHTML=A.map(a=>`<div class="shop-card">
     <h4>${a.name}</h4>
-    <div class="note">Ưu đãi đối tác: ${a.tag||'Partner'}. Trải nghiệm mượt, hỗ trợ đa ngôn ngữ, API tự động hóa.</div>
+    <div class="note">Ưu đãi đối tác: ${a.tag||'Partner'}.</div>
     <div class="row"><a class="btn" href="${a.url}" target="_blank" rel="noopener">${LANG==='vi'?'Đăng ký/Truy cập':'Join/Visit'} ↗</a>
     <button class="btn out" onclick="navigator.clipboard.writeText('${a.url}')">${LANG==='vi'?'Sao chép link':'Copy link'}</button></div>
   </div>`).join('');
@@ -482,8 +534,8 @@ function renderAffs(){
 let LAST_ITEMS=[];
 async function loadDataSmart(){
   const latest=await j('data/latest.json'); lastRefreshTS=Date.now();
-  if(latest && Array.isArray(latest.items)){ $('#hb').textContent='LIVE'; $('#scanMode').textContent=i18n[LANG].scan_data; renderOpps(latest.items); renderMini(latest.items); return; }
-  const items=await scanLive(); $('#hb').textContent='LIVE'; $('#scanMode').textContent=i18n[LANG].scan_fallback; renderOpps(items); renderMini(items);
+  if(latest && Array.isArray(latest.items)){ $('#scanMode').textContent=i18n[LANG].scan_data; renderOpps(latest.items); renderMini(latest.items); return; }
+  const items=await scanLive(); $('#scanMode').textContent=i18n[LANG].scan_fallback; renderOpps(items); renderMini(items);
 }
 async function scanLive(){
   const items=[];
@@ -511,8 +563,6 @@ async function scanLive(){
 }
 function renderOpps(items){
   LAST_ITEMS=items||[];
-  $('#kOpps').textContent = LAST_ITEMS.length||0;
-  $('#kUpd').textContent = '0s';
   $('#ticker').innerHTML=(LAST_ITEMS||[]).map(x=>`<span class="tag">${x.symbol}: $${fmt(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join('')||'—';
   const maxAbs = LAST_ITEMS?.length ? Math.max(...LAST_ITEMS.map(x=>Math.abs(x.ch24h||0))) : 0;
   const alertBox=$('#alertBox'); if(maxAbs>=12){alertBox.classList.remove('hidden'); alertBox.innerHTML=`⚠️ <b>Alert:</b> ${LANG==='vi'?'Biến động lớn':'Large move'} (${maxAbs.toFixed(2)}%) — ${LANG==='vi'?'kiểm tra cơ hội bên dưới.':'check opportunities below.'}`;} else {alertBox.classList.add('hidden'); alertBox.textContent='';}
@@ -600,7 +650,7 @@ function applyLang(){
 function registerSW(){
   const sw=`
     const CORE=['./','index.html','config.json','data/latest.json'];
-    self.addEventListener('install',e=>{e.waitUntil(caches.open('umv10-core').then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
+    self.addEventListener('install',e=>{e.waitUntil(caches.open('umv15-core').then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
     self.addEventListener('activate',e=>{e.waitUntil(self.clients.claim())});
     self.addEventListener('fetch',e=>{
       const u=new URL(e.request.url);
@@ -612,21 +662,167 @@ function registerSW(){
   navigator.serviceWorker.register(url,{scope:'./'});
 }
 function liveCounter(){
-  const k='umv10_peers'; const now=Date.now(), ttl=25*1000;
+  const k='umv15_peers'; const now=Date.now(), ttl=25*1000;
   const id=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2);
   localStorage.setItem('peer_id',id);
   const raw=localStorage.getItem(k); let list=raw?JSON.parse(raw):[];
   list=list.filter(x=>now-x.t<ttl); const me=list.find(x=>x.id===id);
   if(me) me.t=now; else list.push({id,t:now});
   localStorage.setItem(k,JSON.stringify(list));
-  $('#kLive').textContent=list.length;
+  // KPI hiển thị tượng trưng
+  const kLive=$('#kLive'); if(kLive) kLive.textContent=list.length;
 }
 function revBoot(){
-  const k='umv10_rev'; let val=Number(localStorage.getItem(k)||0);
+  const k='umv15_rev'; let val=Number(localStorage.getItem(k)||0);
   val += (Math.random()*0.5+0.2);
   localStorage.setItem(k,val);
-  $('#kRev').textContent = fmt(val);
+  const el=$('#kRev'); if(el) el.textContent = fmt(val);
 }
+
+/* ====== AI Chat 24/7 (rule-based + price fetch) ====== */
+function initAIChat(){
+  const L = ( (localStorage.getItem('lang')||navigator.language||'vi').toLowerCase().startsWith('vi') ? 'vi' : 'en' );
+  const T={
+    vi:{title:'AI Tài chính 24/7', hello:'Xin chào! Tôi là AI tài chính 24/7. Tôi có thể cập nhật BTC/ETH/USDT, gợi ý cơ hội, khóa học và hướng dẫn an toàn.',
+        typing:'đang nhập…', askph:'Hỏi về thị trường, khóa học, BNB, AlgosOne…',
+        open:'Mở', join:'Đăng ký', learn:'Xem khóa học', more:'Xem thêm',
+        fallback:'Bạn có thể hỏi: “BTC/ETH/USDT bây giờ?”, “Cơ hội hôm nay?”, “Khóa học nhanh?”, “An toàn giao dịch?”'},
+    en:{title:'24/7 Finance AI', hello:'Hi! I can update BTC/ETH/USDT, suggest opportunities, courses and safe trading tips.',
+        typing:'typing…', askph:'Ask about market, courses, BNB, AlgosOne…',
+        open:'Open', join:'Join', learn:'See course', more:'More',
+        fallback:'You can ask: “BTC/ETH/USDT now?”, “Today’s opportunities?”, “Quick course?”, “Safe trading?”'}
+  }[L];
+
+  const box=$('#um15Box'), fab=$('#um15Fab'), msgs=$('#um15Msgs');
+  const sendBtn=$('#um15Send'), ask=$('#um15Ask');
+  $('#um15Title').textContent=T.title; ask.placeholder=T.askph;
+
+  fab.onclick=()=>{box.style.display='flex'; if(!msgs.dataset.boot){botSay(T.hello); msgs.dataset.boot=1;}};
+  $('#um15Close').onclick=()=>box.style.display='none';
+  $('#um15Min').onclick=()=>box.style.height = (box.style.height==='54px'?'min(72vh,640px)':'54px');
+  $('#um15Quick').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return; ask.value=b.dataset.q||''; send();
+  });
+  sendBtn.onclick=send; ask.onkeydown=e=>{if(e.key==='Enter'){send();}};
+
+  function userSay(t){const b=document.createElement('div'); b.className='um15-bubble me'; b.textContent=t; msgs.appendChild(b); scroll();}
+  function botSay(t){const b=document.createElement('div'); b.className='um15-bubble'; b.innerHTML=t; msgs.appendChild(b); scroll();}
+  function typing(on){if(on){botSay('<span class="um15-small">'+T.typing+'</span>'); msgs.dataset.typing='1'; scroll();}
+                     else{ if(msgs.dataset.typing){msgs.removeChild(msgs.lastElementChild); delete msgs.dataset.typing;} }}
+  function scroll(){msgs.scrollTop=msgs.scrollHeight;}
+
+  async function send(){
+    const q=ask.value.trim(); if(!q) return; userSay(q); ask.value=''; typing(true);
+    try{ const ans = await route(q); typing(false); botSay(ans); }
+    catch(_){ typing(false); botSay(L==='vi'?'Xin lỗi, có lỗi xảy ra.':'Sorry, something went wrong.'); }
+  }
+
+  async function route(q){
+    const s=q.toLowerCase();
+    if(/btc|eth|usdt/.test(s)) return await pricePanel();
+    if(/cơ hội|opportunity|coin nào|token nào/.test(s)) return await oppsPanel();
+    if(/khóa học|khoa hoc|course|học nhanh|hoc nhanh/.test(s)) return coursePanel();
+    if(/an toàn|safe|quản trị rủi ro|risk/.test(s)) return safetyPanel();
+    if(/binance|bnb/.test(s)) return binancePanel();
+    if(/algosone|algo/i.test(s)) return algosonePanel();
+    return (L==='vi'
+      ? `${T.fallback}<br>Đăng ký <a target="_blank" rel="noopener" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N">Binance</a> · <a target="_blank" rel="noopener" href="https://algosone.page.link/MbtR">AlgosOne</a>.`
+      : `${T.fallback}<br>Join <a target="_blank" rel="noopener" href="https://www.binance.com/en/register?ref=GRO_20338_9V44N">Binance</a> · <a target="_blank" rel="noopener" href="https://algosone.page.link/MbtR">AlgosOne</a>.`);
+  }
+
+  async function pricePanel(){
+    let data=null;
+    try{
+      const ids='bitcoin,ethereum,tether';
+      const r=await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`,{cache:'no-store'});
+      if(r.ok) data=await r.json();
+    }catch(_){}
+    if(!data) return (L==='vi'?'Tạm thời không lấy được giá. Thử lại sau nhé.':'Unable to fetch prices now. Please try again.');
+    const row = (sym,name,obj) => {
+      const p=obj?.usd??0, ch=Number(obj?.usd_24h_change||0);
+      const arrow = ch>=0?'▲':'▼';
+      const c = ch>=0?'#22c55e':'#ff4d4f';
+      return `<div style="display:flex;justify-content:space-between;gap:8px;margin:4px 0">
+        <b>${sym}</b> <span class="um15-small" style="flex:1">${name}</span>
+        <span>$${p.toLocaleString(undefined,{maximumFractionDigits:8})}</span>
+        <span style="color:${c}">${arrow} ${ch.toFixed(2)}%</span>
+      </div>`;
+    };
+    return `<div><b>${L==='vi'?'Giá hiện tại (USD)':'Live prices (USD)'}:</b>
+      <div style="margin-top:6px">${row('BTC','Bitcoin',data.bitcoin)}
+      ${row('ETH','Ethereum',data.ethereum)}
+      ${row('USDT','Tether',data.tether)}</div>
+      <div class="um15-small">${L==='vi'?'Nguồn: CoinGecko':'Source: CoinGecko'}</div></div>`;
+  }
+
+  async function oppsPanel(){
+    try{
+      const list = Array.from(document.querySelectorAll('#opps .item')).slice(0,5).map(el=>{
+        const s=el.querySelector('b')?.textContent||''; const name=el.querySelector('.muted')?.textContent||'';
+        const tags=Array.from(el.querySelectorAll('.tag')).map(t=>t.textContent).join(' · ');
+        return `• <b>${s}</b> <span class="um15-small">${name}</span> — ${tags}`;
+      });
+      if(list.length){
+        return `<div><b>${L==='vi'?'Cơ hội đáng chú ý':'Notable opportunities'}</b><br>${list.join('<br>')}
+        <div class="um15-small" style="margin-top:6px">${L==='vi'?'Mẹo: bấm “↻ Làm mới” trên trang để cập nhật.':'Tip: press “↻ Refresh” on page to update.'}</div></div>`;
+      }
+    }catch(_){}
+    return (L==='vi'?'Hiện chưa có dữ liệu cơ hội. Hãy bấm “↻ Làm mới” hoặc hỏi lại sau.'
+                   :'No opportunity data yet. Click “↻ Refresh” or ask again later.');
+  }
+
+  function coursePanel(){
+    return (L==='vi'
+      ? `<div><b>Lộ trình học nhanh</b>
+         <ul style="margin:6px 0 0 16px">
+           <li><b>Crypto 101</b> — ví & bảo mật, chu kỳ, quản trị rủi ro. <span class="um15-small">$19</span></li>
+           <li><b>DeFi Mastery</b> — Yield/Lending/Perp. <span class="um15-small">$29</span></li>
+         </ul>
+         <div style="margin-top:8px"><button class="um15-btn" onclick="document.getElementById('unlockCode').focus()">${'Mua & nhập mã'}</button></div></div>`
+      : `<div><b>Fast learning path</b>
+         <ul style="margin:6px 0 0 16px">
+           <li><b>Crypto 101</b> — wallet & security, cycles, risk. <span class="um15-small">$19</span></li>
+           <li><b>DeFi Mastery</b> — Yield/Lending/Perp. <span class="um15-small">$29</span></li>
+         </ul>
+         <div style="margin-top:8px"><button class="um15-btn" onclick="document.getElementById('unlockCode').focus()">${'Buy & enter code'}</button></div></div>`);
+  }
+  function safetyPanel(){
+    return (L==='vi'
+      ? `<div><b>Nguyên tắc an toàn</b>
+         <ol style="margin:6px 0 0 18px">
+           <li>Không all-in; chia nhỏ vị thế.</li>
+           <li>Luôn đặt stoploss; tỉ lệ R:R ≥ 1:2.</li>
+           <li>Ưu tiên sàn uy tín; 2FA & chống phishing.</li>
+           <li>Ghi chép nhật ký giao dịch.</li>
+         </ol></div>`
+      : `<div><b>Safety principles</b>
+         <ol style="margin:6px 0 0 18px">
+           <li>No all-in; scale in/out.</li>
+           <li>Always use stoploss; R:R ≥ 1:2.</li>
+           <li>Reputable exchanges; 2FA & anti-phishing.</li>
+           <li>Keep a trading journal.</li>
+         </ol></div>`);
+  }
+  function binancePanel(){
+    return (L==='vi'
+      ? `<div><b>Binance — sàn số 1</b><br>Phí thấp, thanh khoản sâu, Earn/Futures/Options, Launchpad/Launchpool.<br>
+         <a class="um15-btn" target="_blank" rel="noopener" href="https://www.binance.com/vi/register?ref=GRO_20338_9V44N">Đăng ký Binance ↗</a></div>`
+      : `<div><b>Binance — #1 exchange</b><br>Low fees, deep liquidity, Earn/Futures/Options, Launchpad/Launchpool.<br>
+         <a class="um15-btn" target="_blank" rel="noopener" href="https://www.binance.com/en/register?ref=GRO_20338_9V44N">Join Binance ↗</a></div>`);
+  }
+  function algosonePanel(){
+    return (L==='vi'
+      ? `<div><b>AlgosOne — AI giao dịch</b><br>Tối ưu chiến lược, cảnh báo realtime, backtest nhanh, kết nối nhiều sàn.<br>
+         <a class="um15-btn" target="_blank" rel="noopener" href="https://algosone.page.link/MbtR">Dùng thử miễn phí ↗</a></div>`
+      : `<div><b>AlgosOne — AI trading</b><br>Strategy optimization, realtime alerts, fast backtest, multi-exchange.<br>
+         <a class="um15-btn" target="_blank" rel="noopener" href="https://algosone.page.link/MbtR">Try for free ↗</a></div>`);
+  }
+
+  // Auto open on first visit? bật nếu muốn
+  // setTimeout(()=>{document.getElementById('um15Fab').click()}, 1000);
+}
+
+/* ===== END AI Chat ===== */
 </script>
 </body>
 </html>
