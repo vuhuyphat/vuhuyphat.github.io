@@ -1,0 +1,73 @@
+{
+  "hero": {
+    "tagline": "Nền tảng Web3 AI tự vận hành 24/7.",
+    "slogan": "Quét đa nguồn, chấm điểm cơ hội, nhắc biến động lớn.",
+    "pulse": "Cập nhật: —"
+  },
+  "ui": {
+    "lang_toggle_vi": "VI/EN",
+    "lang_toggle_en": "EN/VI",
+    "theme": "🌗 Theme",
+    "back": "◀ Quay lại",
+    "live": "LIVE",
+    "scan_data": "quét: data",
+    "scan_fallback": "quét: fallback",
+    "refresh": "↻ Làm mới",
+    "top": "↑ Top",
+    "contact": "Liên hệ",
+    "minimum": "Tối thiểu",
+    "details": "Chi tiết",
+    "price": "Giá",
+    "volume": "Khối lượng",
+    "open_data": "Xem dữ liệu",
+    "buy_enter": "Mua & nhập mã",
+    "copy": "Sao chép",
+    "download_qr": "Tải QR",
+    "open_wallet": "Mở ví/ứng dụng",
+    "saved": "Đã lưu trên thiết bị.",
+    "unlocked": "✔ Đã mở khóa",
+    "locked_how": "Cách hoạt động",
+    "invalid_code": "Mã không đúng."
+  },
+  "sections": {
+    "hot": "🔥 Cơ hội nổi bật",
+    "pay": "💳 Thanh toán",
+    "lock": "🔓 Nội dung cao cấp",
+    "packs": "🧰 Gói sản phẩm / Báo cáo",
+    "aff": "🤝 Affiliate",
+    "cmd": "🧭 Command Center",
+    "cta": "🚀 Bắt đầu ngay",
+    "hub_hint": "Hub tự phát hiện & liên kết tới công cụ cũ (dex, hyper_v2, pro, super_auto, super_share, xportal…)."
+  },
+  "about": {
+    "why_h1": "Vì sao UltraHub?",
+    "why_h2": "Giá trị mở khóa",
+    "why_h3": "Cách tham gia",
+    "why_1": "Quét dữ liệu đa nguồn, xếp hạng cơ hội theo điểm – cập nhật từng phút.",
+    "why_2": "Alpha/private feed, heatmap, vesting, tín hiệu chu kỳ – sẵn sàng hành động.",
+    "why_3": "Thanh toán on/off‑chain → nhận mã → mở khóa nội dung."
+  },
+  "lock": {
+    "placeholder_code": "Nhập mã mở khóa…",
+    "placeholder_tx": "(Tuỳ chọn) Dán mã giao dịch/bằng chứng",
+    "btn_unlock": "Mở khóa",
+    "btn_remember": "Nhớ trên thiết bị",
+    "btn_relock": "Khoá lại"
+  },
+  "cta": {
+    "h1": "Tạo lợi thế thông tin",
+    "t1": "Theo dõi biến động lớn & tín hiệu sớm – trước đám đông.",
+    "h2": "Tối ưu chi phí",
+    "t2": "Gói ngày/tháng/quý – trả cho thứ bạn dùng.",
+    "h3": "Lan tỏa tự động",
+    "t3": "Chia sẻ 1 chạm (Telegram/X/Facebook/LinkedIn) + Affiliate."
+  },
+  "footer": {
+    "auto": "Tự động 24/7"
+  },
+  "alert": {
+    "title": "Alert",
+    "large_move_vi": "Biến động lớn",
+    "check_below": "kiểm tra các cơ hội bên dưới."
+  }
+}
