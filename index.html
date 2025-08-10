@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>UltraMaster V∞ • R3 Final++++</title>
+<title>UltraMaster V∞ • R3 Final++++ Nexus</title>
 <meta name="description" content="Top 3 token tiềm năng • Token chọn lọc miễn phí • SuperGate mở khóa tức thì • AI hỏi đáp 24/7 • QR thanh toán 1 chạm.">
-<meta property="og:title" content="UltraMaster V∞ • R3 Final++++">
+<meta property="og:title" content="UltraMaster V∞ • R3 Final++++ Nexus">
 <meta property="og:description" content="Top 3 Premium • Token chọn lọc miễn phí • Học viện tinh gọn • QR thanh toán 1 chạm • Radar Alpha realtime.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0b0f13">
@@ -37,12 +37,17 @@ a{color:var(--brand);text-decoration:none}
 .kpi{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
 .kbox{background:#0f1720;border:1px solid var(--line);border-radius:12px;padding:10px}
 
-/* Light mode redesigned */
+/* Light mode redesigned (mặt sáng/“lật phía sau”) */
 .light{
   --bg:#f5f9fb;--card:#ffffff;--line:#e2e8f0;--txt:#0b0f13;--mut:#4a5568;
   --brand:#2563eb;--pill:#eef4ff;--ctaGreen:#e8f5ef;--ctaBorder:#bfe1cf;--ctaSoft:#f2fbf7;
   --ocean:#2F6B8A;--land:#E5C37A;--halo:#7adbd4;--moon:#f8f1c7
 }
+.light .accent-veil{background:
+  radial-gradient(120% 120% at 50% -20%, rgba(18,53,36,.18), transparent 55%),
+  linear-gradient(180deg, rgba(255,214,153,.18), rgba(255,255,255,0) 60%),
+  var(--card);border-color:#cfe7d9}
+.light .qr-wrap{background:#ffffff;border-color:#e2e8f0;box-shadow:0 10px 24px rgba(0,0,0,.06)}
 
 /* Accent veil applied to key sections */
 .accent-veil{background:
@@ -67,7 +72,7 @@ a{color:var(--brand);text-decoration:none}
 @media (max-width:900px){.header-flex{grid-template-columns:1fr}}
 
 /* Globe + moon + radar */
-.globe-wrap{position:relative;display:grid;place-items:center;gap:8px}
+.globe-wrap{position:relative;display:grid;place-items:center;gap:10px}
 .globe{position:relative;width:min(300px,60vw);aspect-ratio:1;border-radius:50%;
   box-shadow:0 18px 34px var(--shadow), inset 0 0 40px rgba(101,214,206,.12);
   background:
@@ -78,7 +83,7 @@ a{color:var(--brand);text-decoration:none}
 @keyframes earthSpin{to{transform:rotate(360deg)}}
 .glow{position:absolute;inset:-6px;border-radius:50%;box-shadow:0 0 35px 10px rgba(101,214,206,.25);pointer-events:none}
 
-/* correct moon orbit (around earth) */
+/* Moon orbit around earth */
 .orbit{position:absolute;inset:0;transform-origin:center;animation:orbit 20s linear infinite}
 @keyframes orbit{to{transform:rotate(360deg)}}
 .moon{position:absolute;top:50%;left:50%;width:20px;height:20px;border-radius:50%;background:var(--moon);
@@ -95,15 +100,23 @@ a{color:var(--brand);text-decoration:none}
 .radar-bar{width:28px;height:4px;background:linear-gradient(90deg,transparent,rgba(101,214,206,.9),transparent);animation:scan 1.8s linear infinite}
 @keyframes scan{from{transform:translateX(-14px)}to{transform:translateX(14px)}}
 
-/* Subtle 3-dots signal (no text) */
-.signal{display:flex;gap:6px;align-items:center;justify-content:center}
-.dot{width:7px;height:7px;border-radius:50%;background:#6b7280;border:1px solid rgba(255,255,255,.2)}
+/* BTC/ETH/USDT strip */
+.tri{justify-content:center}
+.tbox{display:flex;gap:8px;align-items:center;border:1px solid var(--line);background:#0f1720;border-radius:10px;padding:6px 8px}
+.tbox b{min-width:42px;display:inline-block}
+.tval{font-variant-numeric:tabular-nums}
+.up{color:var(--ok)} .dn{color:var(--bad)}
 
 /* Pay area */
 .paygrid{display:grid;gap:12px;grid-template-columns:1.1fr 1fr}
 @media(max-width:900px){.paygrid{grid-template-columns:1fr}}
 .qrbox{display:flex;gap:12px}
-.qr{width:136px;height:136px;border-radius:12px;border:1px solid var(--line);background:#000}
+.qr-wrap{display:grid;place-items:center;border:1px solid var(--line);border-radius:14px;
+  background:
+    radial-gradient(120% 100% at 50% -30%, rgba(255,176,0,.10), transparent 60%),
+    #070b0f;
+  box-shadow:0 12px 28px rgba(255,176,0,.12), inset 0 0 0 1px rgba(255,176,0,.15)}
+.qr{width:152px;height:152px;border-radius:10px;background:#000}
 .paylist{display:grid;gap:8px}
 .paybtn{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#0e1720;cursor:pointer}
 .paybtn.active{outline:2px solid var(--accent);box-shadow:0 0 0 4px rgba(255,176,0,.12)}
@@ -139,7 +152,7 @@ a{color:var(--brand);text-decoration:none}
 .h-accent{color:#d1ffe3}
 
 /* Inputs */
-input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0e1720;color:var(--txt)}
+input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0e1720;color:#var(--txt)}
 .light input,.light select{background:#f7fafc}
 </style>
 </head>
@@ -182,6 +195,14 @@ input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--l
             <div class="radar-bar"></div>
           </div>
         </div>
+
+        <!-- BTC/ETH/USDT realtime strip -->
+        <div class="row tri" id="tri">
+          <div class="tbox"><b>BTC</b><span class="tval" id="btcP">—</span><span id="btcC" class="tval">0.00%</span></div>
+          <div class="tbox"><b>ETH</b><span class="tval" id="ethP">—</span><span id="ethC" class="tval">0.00%</span></div>
+          <div class="tbox"><b>USDT</b><span class="tval" id="usdP">—</span><span id="usdC" class="tval">0.00%</span></div>
+        </div>
+
         <div class="signal"><span class="dot" id="d1"></span><span class="dot" id="d2"></span><span class="dot" id="d3"></span></div>
         <div class="muted" id="globeCap">Trái Đất trực tuyến · Moon & Radar giám sát 24/7</div>
       </div>
@@ -236,7 +257,7 @@ input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--l
     <div class="paygrid">
       <div class="card accent-veil">
         <div class="qrbox">
-          <img id="qr" class="qr" alt="QR" src="" loading="lazy">
+          <div class="qr-wrap"><img id="qr" class="qr" alt="QR" src="" loading="lazy"></div>
           <div style="flex:1;min-width:0" id="payArea">
             <div class="muted" id="gatePitch"><b>Thanh toán nhỏ để nhận mã mở khóa ngay tại đây.</b></div>
             <div class="muted"><span id="addrLbl">Địa chỉ/ID:</span> <span class="mono" id="payAddr">—</span></div>
@@ -261,7 +282,7 @@ input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--l
     </div>
   </section>
 
-  <!-- 7) AgolosOne -->
+  <!-- 7) AgolsOne -->
   <section class="card accent-veil" id="secAlgos">
     <h3 style="margin:0 0 8px">🤝 <span id="algosTitle">AgolsOne</span></h3>
     <div class="shop-card" style="border-color:#6b4e00;background:#1a1400">
@@ -341,6 +362,34 @@ const qrlink=t=>`https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=$
 async function j(url){try{const r=await fetch(url,{cache:'no-store'});if(!r.ok) throw 0;return await r.json()}catch(_){return null}}
 $('#year').textContent=new Date().getFullYear();
 $('#goTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+
+/* ===== Web3 AI Nexus hooks (gắn AI tổng sau này) ===== */
+window.Web3AINexus={
+  onMarketFeed:null, onPremiumOpen:null, onLangChange:null, onPayEvent:null, onThemeChange:null,
+  pushEvent(type,payload){ try{ (this['on'+type]||(()=>{}))(payload) }catch(e){} }
+};
+
+/* ===== external config (chỉ sửa file JSON, không chạm HTML) ===== */
+let CFG={
+  site:{brand:"LightUnfold • UltraMaster V∞",ens:"lightunfold.eth",
+    payments:{chains:[
+      {name:"ETH (EVM)",address:"0x54E15A7b6d4213beE87800432A151d794638E3C2",min:"≥ 0.0005 ETH"},
+      {name:"USDT (ERC20)",address:"0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",min:"≥ $5"},
+      {name:"MoMo",address:"0567892030",min:"Ghi nội dung: ULTRA"},
+      {name:"Vietcombank",address:"9567892030",min:"Ghi nội dung: ULTRA"},
+      {name:"PayPal",address:"vumumabada@gmail.com",min:"Note: ULTRA"}
+    ]}
+  },
+  secrets:{unlock_code:"23061988"}
+};
+async function loadExternal(){
+  const ext = await j('./um-config.json'); if(ext){
+    if(ext.site) CFG.site=Object.assign({},CFG.site,ext.site);
+    if(ext.secrets) CFG.secrets=Object.assign({},CFG.secrets,ext.secrets);
+  }
+  const vi = await j('./i18n-vi.json'); if(vi) I.vi=Object.assign({},I.vi,vi);
+  const en = await j('./i18n-en.json'); if(en) I.en=Object.assign({},I.en,en);
+}
 
 /* ===== i18n ===== */
 let LANG=(localStorage.getItem('lang')||navigator.language||'vi').toLowerCase().startsWith('vi')?'vi':'en';
@@ -458,12 +507,11 @@ function applyI18N(){
   $('#bnBT').textContent=t.bnBT; $('#bnBH').textContent=t.bnBH; $('#bnBD').textContent=t.bnBD; $('#bnBC').textContent=t.bnBC;
   $('#ctaH').textContent=t.ctaH; $('#ctaD').innerHTML=t.ctaD; $('#ctaOpen').textContent=t.ctaOpen; $('#chatH').textContent=t.chatH; $('#mTitle').textContent=t.mTitle;
   $('#cta_binance').textContent=t.bnBC; $('#cta_algos').textContent=t.algosC; $('#ctaB').textContent=t.bnBC; $('#ctaA').textContent=t.algosC;
-  // rebuild chips + plans + ebooks to update language
   chatInit(true); paintPlans(); paintEdu();
-  // bundles dropdown synced to plans
   const plans=I[LANG].planCopy;
   $('#bundleSel').innerHTML=plans.map(b=>`<option value="${b.id}">${b.title} — $${b.price}</option>`).join('');
   localStorage.setItem('lang',LANG);
+  (window.Web3AINexus||{}).pushEvent?.('LangChange',{lang:LANG});
 }
 $('#lang')?.addEventListener('click',()=>{LANG=LANG==='vi'?'en':'vi';applyI18N()});
 
@@ -485,28 +533,18 @@ $('#lang')?.addEventListener('click',()=>{LANG=LANG==='vi'?'en':'vi';applyI18N()
   $('#shareMine').onclick=async()=>{try{if(navigator.share){await navigator.share({title:document.title,text:'Khám phá UltraMaster',url:myRef});}else{await navigator.clipboard.writeText(myRef);alert(LANG==='vi'?'Đã sao chép liên kết của bạn!':'Your referral link is copied!');}}catch(_){}}; 
 })();
 
-/* ===== Config ===== */
-const CFG={
-  site:{brand:"LightUnfold • UltraMaster V∞",ens:"lightunfold.eth",
-    payments:{chains:[
-      {name:"ETH (EVM)",address:"0x54E15A7b6d4213beE87800432A151d794638E3C2",min:"≥ 0.0005 ETH"},
-      {name:"USDT (ERC20)",address:"0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",min:"≥ $5"},
-      {name:"MoMo",address:"0567892030",min:"Ghi nội dung: ULTRA"},
-      {name:"Vietcombank",address:"9567892030",min:"Ghi nội dung: ULTRA"},
-      {name:"PayPal",address:"vumumabada@gmail.com",min:"Note: ULTRA"}
-    ]}
-  },
-  secrets:{unlock_code:"23061988"}
-};
-
-/* ===== BTC/ETH/USDT signal dots (no text) ===== */
+/* ===== BTC/ETH/USDT dots + strip ===== */
 async function tick3(){
   try{
-    const ids=['bitcoin','ethereum','tether'].join(',');
-    const r=await j('https://api.coingecko.com/api/v3/simple/price?ids='+ids+'&vs_currencies=usd&include_24hr_change=true');
+    const r=await j('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,tether&vs_currencies=usd&include_24hr_change=true');
     if(!r) return;
     const arr=[r.bitcoin?.usd_24h_change,r.ethereum?.usd_24h_change,r.tether?.usd_24h_change];
     [$('#d1'),$('#d2'),$('#d3')].forEach((d,i)=>{const v=+(arr[i]||0); d.style.background=v>=0?'#22c55e':'#ff4d4f';});
+    // strip values
+    const set=(idP,idC,px,cx)=>{ const up=cx>=0; $(idP).textContent='$'+Number(px||0).toLocaleString(); const el=$(idC); el.textContent=(cx>=0?'+':'')+cx.toFixed(2)+'%'; el.className='tval '+(up?'up':'dn'); };
+    set('#btcP','#btcC', r.bitcoin?.usd, r.bitcoin?.usd_24h_change||0);
+    set('#ethP','#ethC', r.ethereum?.usd, r.ethereum?.usd_24h_change||0);
+    set('#usdP','#usdC', r.tether?.usd, r.tether?.usd_24h_change||0);
   }catch(_){}
 }
 setInterval(tick3, 10000); tick3();
@@ -523,12 +561,11 @@ async function fetchLive(){
     const bestBySymbol={}; for(const it of items){const k=it.symbol; if(!bestBySymbol[k]||it.score>bestBySymbol[k].score) bestBySymbol[k]=it;}
     LAST_ITEMS=Object.values(bestBySymbol).sort((a,b)=>b.score-a.score).slice(0,24);
     renderAll(LAST_ITEMS);
+    (window.Web3AINexus||{}).pushEvent?.('MarketFeed',{items:LAST_ITEMS});
   }catch(_){}
 }
 function renderAll(items){
   const t=I[LANG];
-
-  // Top 3 (masked)
   const pro=items.slice(0,3);
   $('#tokenPro').innerHTML=pro.map((x,i)=>`
     <div class="shop-card">
@@ -542,7 +579,6 @@ function renderAll(items){
       </div>
     </div>`).join('');
 
-  // Free curated
   const free=items.slice(3,10);
   $('#tokenFree').innerHTML=free.map(x=>{
     const c=x.ch24h||0, rr=c>=0?'ok':'bad';
@@ -556,7 +592,6 @@ function renderAll(items){
     </div>`;
   }).join('');
 
-  // ticker & list
   $('#kOpps').textContent=items.length;
   $('#ticker').innerHTML=items.slice(0,14).map(x=>`<span class="tag">${x.symbol}: $${fmt(x.price)} (${(x.ch24h||0).toFixed(2)}%)</span>`).join('')||'—';
 
@@ -604,7 +639,7 @@ function paintEdu(){
 }
 
 /* ===== Payments: selectable + copy ===== */
-const pays=CFG.site.payments.chains;
+let pays=[];
 function buildPayList(){
   const row=c=>`<div class="paybtn" onclick="selPay('${c.address}', this)">
       <div><b>${c.name}</b><div class="muted" style="font-size:12px">${c.min||''}</div></div>
@@ -613,26 +648,29 @@ function buildPayList(){
   $('#payList').innerHTML=pays.map(row).join('');
   const firstBtn=$('#payList .paybtn'); if(firstBtn) firstBtn.classList.add('active');
 }
-(function paintPay(){
+function paintPay(){
+  pays=CFG.site.payments.chains||[];
   const first=pays[0]; if(first){ $('#qr').src=qrlink(first.address); $('#payAddr').textContent=first.address; }
   buildPayList();
-})();
+}
 function selPay(addr,el){
   $('#qr').src=qrlink(addr); $('#payAddr').textContent=addr;
   $$('#payList .paybtn').forEach(x=>x.classList.remove('active')); el.classList.add('active');
+  (window.Web3AINexus||{}).pushEvent?.('PayEvent',{type:'select',addr});
 }
 async function copyAddr(addr){
-  try{await navigator.clipboard.writeText(addr); alert(LANG==='vi'?'Đã sao chép địa chỉ!':'Address copied!');}catch(_){}
+  try{await navigator.clipboard.writeText(addr); alert(LANG==='vi'?'Đã sao chép địa chỉ!':'Address copied!'); (window.Web3AINexus||{}).pushEvent?.('PayEvent',{type:'copy',addr}); }catch(_){}
 }
 
 /* ===== Paywall ===== */
-const SECRET=String(CFG.secrets.unlock_code||'23061988');
+let SECRET="23061988";
 function gate(open){$('#opened').classList.toggle('hidden',!open);}
 (function bindPaywall(){
   const saved=localStorage.getItem('unlocked_code')||'';
-  if(saved===SECRET){gate(true); paintPremium(); const th=localStorage.getItem('tx_hash'); if(th) $('#uMsg').innerHTML='<span style="color:#bff5d0">TX: '+th+'</span>';}
-  $('#doUnlock').onclick=()=>{const code=$('#unlockCode').value.trim(),tx=$('#txhash').value.trim();
-    if(code===SECRET){gate(true); paintPremium(); $('#uMsg').innerHTML='<span style="color:#bff5d0">✔ '+(LANG==='vi'?'Đã mở khóa':'Unlocked')+'</span>'; if(tx) localStorage.setItem('tx_hash',tx); localStorage.setItem('unlocked_code',code);}
+  const setOpen=(ok,tx)=>{ gate(ok); if(ok){ paintPremium(); if(tx) $('#uMsg').innerHTML='<span style="color:#bff5d0">TX: '+tx+'</span>'; } };
+  if(saved){ SECRET=String(CFG.secrets.unlock_code||SECRET); if(saved===SECRET) setOpen(true, localStorage.getItem('tx_hash')); }
+  $('#doUnlock').onclick=()=>{const code=$('#unlockCode').value.trim(),tx=$('#txhash').value.trim(); SECRET=String(CFG.secrets.unlock_code||SECRET);
+    if(code===SECRET){ setOpen(true,tx); if(tx) localStorage.setItem('tx_hash',tx); localStorage.setItem('unlocked_code',code); $('#uMsg').innerHTML='<span style="color:#bff5d0">✔ '+(LANG==='vi'?'Đã mở khóa':'Unlocked')+'</span>'; (window.Web3AINexus||{}).pushEvent?.('PremiumOpen',{}); }
     else $('#uMsg').innerHTML='<span style="color:#ff9b9d">'+(LANG==='vi'?'Mã không đúng.':'Wrong code.')+'</span>';};
   $('#remember').onclick=()=>{const c=$('#unlockCode').value.trim(); if(c){localStorage.setItem('unlocked_code',c); $('#uMsg').textContent=(LANG==='vi'?'Đã lưu trên thiết bị.':'Saved on device.')}};
   $('#relock').onclick=()=>{localStorage.removeItem('unlocked_code'); gate(false);};
@@ -678,9 +716,8 @@ function chatInit(rebuild=false){
     $('#chatSend').onclick=()=>{const v=$('#chatIn').value.trim(); if(!v) return; addBubble(v,'me'); $('#chatIn').value=''; addBubble(smartReply(v),'ai');};
   }
 }
-chatInit();
 
-/* ===== Modal data with outside/Esc close ===== */
+/* ===== Modal data ===== */
 const PREMIUM_DATA={ updated_at:new Date().toISOString(),
   alpha_feed:[
     {type:"flow", text:"ETF/BTC inflow duy trì – theo dõi vùng phản ứng cung."},
@@ -698,7 +735,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') $('#dataModal').st
 /* ===== Radar click opens data ===== */
 $('#radar').addEventListener('click', openDataModal);
 
-/* ===== Live counters (local heartbeat) ===== */
+/* ===== Live counters ===== */
 (function peers(){
   const k='umv18_peers'; const now=Date.now(), ttl=25e3; const id=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2); localStorage.setItem('peer_id',id);
   const raw=localStorage.getItem(k); let list=raw?JSON.parse(raw):[]; list=list.filter(x=>now-x.t<ttl); const me=list.find(x=>x.id===id); if(me) me.t=now; else list.push({id,t:now});
@@ -707,11 +744,11 @@ $('#radar').addEventListener('click', openDataModal);
 
 /* ===== Boot ===== */
 function mountStatic(){
-  applyI18N(); paintPlans(); paintEdu();
+  applyI18N(); paintPlans(); paintEdu(); paintPay();
   const plans=I[LANG].planCopy;
   $('#bundleSel').innerHTML=plans.map(b=>`<option value="${b.id}">${b.title} — $${b.price}</option>`).join('');
 }
-async function boot(){ mountStatic(); await fetchLive(); setInterval(fetchLive, 60*1000); $('#autoLbl').textContent=(LANG==='vi'?'Tự động 24/7':'Always-on 24/7');}
+async function boot(){ await loadExternal(); mountStatic(); await fetchLive(); setInterval(fetchLive, 60*1000); $('#autoLbl').textContent=(LANG==='vi'?'Tự động 24/7':'Always-on 24/7');}
 boot();
 
 /* ===== Simple AI hint placeholder ===== */
