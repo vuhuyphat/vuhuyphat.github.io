@@ -142,7 +142,7 @@ a{color:var(--brand);text-decoration:none}
 .modal pre{flex:1;margin:0;padding:12px;overflow:auto;background:#0b0f13;color:#cfe0ef}
 
 /* Inputs */
-input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0e1720;color:var(--txt)}
+input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0e1720;color:#var(--txt)}
 .light input,.light select{background:#f7fafc}
 </style>
 </head>
@@ -193,7 +193,6 @@ input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--l
           <div class="tbox"><b>USDT</b><span class="tval" id="usdP">—</span><span id="usdC" class="tval">0.00%</span></div>
         </div>
 
-        <div class="signal"><span class="dot" id="d1"></span><span class="dot" id="d2"></span><span class="dot" id="d3"></span></div>
         <div class="muted" id="globeCap">Trái Đất trực tuyến · Moon & Radar giám sát 24/7</div>
       </div>
     </div>
@@ -486,15 +485,14 @@ function applyI18N(){
   $('#hOpp').textContent=t.hOpp; $('#btnRefresh').textContent=t.btnRefresh; $('#hPlan').textContent=t.hPlan;
   $('#hGate').textContent=t.hGate; $('#gatePitch').innerHTML=t.gatePitch;
   $('#addrLbl').childNodes[0].nodeValue = t.addrLbl+" ";
-  $('#bundleLbl').textContent=t.bundleLbl; $('#codeLbl').textContent=t.codeLbl; $('#afterUnlockHint').textContent=t.afterUnlockHint;
+  $('#bundleSel').innerHTML=I[LANG].planCopy.map(b=>`<option value="${b.id}">${b.title} — $${b.price}</option>`).join('');
+  $('#codeLbl').textContent=t.codeLbl; $('#afterUnlockHint').textContent=t.afterUnlockHint;
   $('#unlockedLbl').textContent=t.unlockedLbl;
   $('#algosTitle').textContent=t.algosTitle; $('#algosH').textContent=t.algosH; $('#algosD').textContent=t.algosD; $('#algosC').textContent=t.algosC;
   $('#bnBT').textContent=t.bnBT; $('#bnBH').textContent=t.bnBH; $('#bnBD').textContent=t.bnBD; $('#bnBC').textContent=t.bnBC;
   $('#ctaH').textContent=t.ctaH; $('#ctaD').innerHTML=t.ctaD; $('#ctaOpen').textContent=t.ctaOpen; $('#chatH').textContent=t.chatH; $('#mTitle').textContent=t.mTitle;
   $('#cta_binance').textContent=t.bnBC; $('#cta_algos').textContent=t.algosC; $('#ctaB').textContent=t.bnBC; $('#ctaA').textContent=t.algosC;
   chatInit(true); paintPlans(); paintEdu();
-  const plans=I[LANG].planCopy;
-  $('#bundleSel').innerHTML=plans.map(b=>`<option value="${b.id}">${b.title} — $${b.price}</option>`).join('');
   localStorage.setItem('lang',LANG);
   window.SingularityKernel.push('LangChange',{lang:LANG});
 }
@@ -699,7 +697,7 @@ function chatInit(rebuild=false){
 }
 
 /* ===== Modal data & radar ===== */
-const PREMIUM_DATA={ updated_at:new Date().toISOString(),
+let PREMIUM_DATA={ updated_at:new Date().toISOString(),
   alpha_feed:[
     {type:"flow", text:"ETF/BTC inflow duy trì – theo dõi vùng phản ứng cung."},
     {type:"onchain", text:"Ví lớn gom mid-cap hệ ETH; khối lượng tăng theo giờ."},
@@ -726,12 +724,258 @@ function mountStatic(){
   applyI18N(); paintPlans(); paintEdu();
   const plans=I[LANG].planCopy;
   $('#bundleSel').innerHTML=plans.map(b=>`<option value="${b.id}">${b.title} — $${b.price}</option>`).join('');
+  $('#year').textContent=new Date().getFullYear();
 }
 async function boot(){ mountStatic(); await fetchLive(); setInterval(fetchLive, 60*1000); $('#autoLbl').textContent=(LANG==='vi'?'Tự động 24/7':'Always-on 24/7');}
 boot();
 
 /* ===== Simple AI hint placeholder ===== */
 function aiHint(sym){ alert((LANG==='vi'?'Phân tích nhanh: ':'Quick take: ')+sym); }
+
+/* =============== UltraMaster V∞ ONE-PASTE ADD-ON (perma-run) ===============
+ * AutoUpdate (tự cập nhật), AI Gateway (nếu có endpoint), PWA offline,
+ * Revenue tracker, Self-heal UI. Copy 1 lần là chạy.
+ * Tham số URL: ?cfg=<url_json>&ai=<endpoint>&at=<token>
+ * ========================================================================== */
+
+/* ---------- 0) Tiny utils ---------- */
+const UMV=(()=>{const S=localStorage;const L=(k,v)=>v===undefined?S.getItem(k):S.setItem(k,v);
+const J=(k,v)=>v===undefined?JSON.parse(S.getItem(k)||'null'):S.setItem(k,JSON.stringify(v));
+const q=(s)=>document.querySelector(s);const qa=(s)=>document.querySelectorAll(s);
+const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
+const log=(...a)=>console.log('[UltraMaster]',...a);
+return {L,J,q,qa,sleep,log}})();
+
+/* ---------- 1) AI Gateway (true AI nếu bạn cấp endpoint) ---------- */
+(function attachAI(){
+  const P=new URLSearchParams(location.search);
+  if(P.get('ai')) UMV.L('ai_ep',P.get('ai'));
+  if(P.get('at')) UMV.L('ai_key',P.get('at'));
+
+  async function ensureOnce(){
+    if(!window.SingularityKernel){ await UMV.sleep(300); return ensureOnce(); }
+    if(!UMV.L('ai_ep')){
+      try{
+        const ask=confirm('Bạn muốn cấu hình AI Gateway thực? (OK để nhập, Cancel để dùng bản gợi ý có sẵn)');
+        if(ask){
+          const ep=prompt('Dán endpoint AI (ví dụ: https://your-worker.workers.dev/chat)','');
+          if(ep) UMV.L('ai_ep',ep);
+          const tk=prompt('Dán khoá/bí mật (nếu endpoint yêu cầu). Có thể bỏ trống.','');
+          if(tk!==null) UMV.L('ai_key',tk||'');
+        }
+      }catch(_){}
+    }
+
+    const aiEP=UMV.L('ai_ep'); if(!aiEP) return;
+    UMV.log('AI gateway attached →', aiEP);
+
+    async function callAI(userMsg){
+      const body={messages:[
+        {role:'system',content:'Bạn là Finance Copilot nói tiếng Việt/Anh linh hoạt, trả lời ngắn, rõ, có cảnh báo rủi ro.'},
+        {role:'user',content:String(userMsg||'')}
+      ]};
+      const hdr={'Content-Type':'application/json'};
+      const token=UMV.L('ai_key'); if(token) hdr['Authorization']='Bearer '+token;
+      try{
+        const r=await fetch(aiEP,{method:'POST',headers:hdr,body:JSON.stringify(body)});
+        if(!r.ok) throw new Error('AI gateway HTTP '+r.status);
+        const data=await r.json();
+        const text=data?.reply || data?.choices?.[0]?.message?.content || 'Không có phản hồi từ AI gateway.';
+        return text;
+      }catch(e){
+        console.error(e);
+        return 'AI gateway hiện không phản hồi. Mình sẽ dùng gợi ý nhanh tạm thời.';
+      }
+    }
+
+    const sendBtn=document.getElementById('chatSend');
+    const input=document.getElementById('chatIn');
+    const body=document.getElementById('chatBody');
+    if(sendBtn && input && body){
+      const addBubble=(txt,who='ai')=>{
+        const b=document.createElement('div'); b.className='bubble '+(who==='me'?'me':'ai');
+        b.innerHTML=txt; body.appendChild(b); body.scrollTop=1e6;
+      };
+      if(!sendBtn.dataset.aiBound){
+        sendBtn.dataset.aiBound='1';
+        sendBtn.addEventListener('click', async ()=>{
+          const v=input.value.trim(); if(!v) return;
+          addBubble(v,'me'); input.value='';
+          addBubble('Đang suy nghĩ…','ai');
+          const out=await callAI(v);
+          body.lastElementChild.innerHTML=out;
+        });
+      }
+    }
+
+    window.SingularityKernel.onMarketFeed=(p)=>navigator.sendBeacon?.(aiEP+'/events', new Blob([JSON.stringify({t:'MarketFeed',p})],{type:'application/json'}));
+    window.SingularityKernel.onPayEvent =(p)=>navigator.sendBeacon?.(aiEP+'/events', new Blob([JSON.stringify({t:'PayEvent', p})],{type:'application/json'}));
+    window.SingularityKernel.onLangChange=(p)=>navigator.sendBeacon?.(aiEP+'/events', new Blob([JSON.stringify({t:'Lang',     p})],{type:'application/json'}));
+  }
+  ensureOnce();
+})();
+
+/* ---------- 2) AutoUpdate (tự cập nhật từ JSON) ---------- */
+(function autoUpdate(){
+  const P=new URLSearchParams(location.search);
+  if(P.get('cfg')) UMV.L('remote_cfg',P.get('cfg'));
+
+  async function askOnce(){
+    if(!UMV.L('remote_cfg')){
+      try{
+        const ok=confirm('Bạn muốn cấu hình nguồn cập nhật từ xa (JSON)?');
+        if(ok){
+          const u=prompt('Dán URL JSON (Gist raw/Worker/Google Apps Script, v.v.)','');
+          if(u) UMV.L('remote_cfg',u);
+        }
+      }catch(_){}
+    }
+  }
+
+  function patchI18N(json){
+    if(!json?.i18n) return;
+    try{
+      const cur=window.I||{};
+      const merged=JSON.parse(JSON.stringify(cur));
+      for(const lang of Object.keys(json.i18n)){
+        merged[lang]=Object.assign({}, merged[lang]||{}, json.i18n[lang]);
+      }
+      window.I=merged;
+      if(typeof window.applyI18N==='function') window.applyI18N();
+    }catch(e){console.error(e);}
+  }
+  function patchPayments(json){
+    if(!json?.payments) return;
+    try{
+      const CFG=window.CFG||{};
+      CFG.site=CFG.site||{}; CFG.site.payments=CFG.site.payments||{};
+      CFG.site.payments.chains=json.payments;
+      window.CFG=CFG;
+      if(typeof window['buildPayList']==='function'){ window['buildPayList'](); }
+      if(json.payments?.[0]){
+        const first=json.payments[0];
+        const img=document.getElementById('qr'), addr=document.getElementById('payAddr');
+        if(img) img.src=qrlink(first.address); if(addr) addr.textContent=first.address;
+      }
+    }catch(e){console.error(e);}
+  }
+  function patchPremium(json){
+    if(!json?.premium_data) return;
+    window.PREMIUM_DATA = json.premium_data;
+    if(document.getElementById('opened') && !document.getElementById('opened').classList.contains('hidden')){
+      if(typeof window['openDataModal']==='function') window['openDataModal']();
+    }
+  }
+  function injectCSSHTML(json){
+    if(json?.inject_css){
+      const s=document.createElement('style'); s.textContent=String(json.inject_css); document.head.appendChild(s);
+    }
+    if(json?.inject_html){
+      const box=document.createElement('div'); box.innerHTML=json.inject_html;
+      const anchor=document.getElementById('lastCTA')||document.body.lastElementChild;
+      anchor?.parentNode?.insertBefore(box, anchor);
+    }
+  }
+
+  async function pullAndPatch(){
+    const url=UMV.L('remote_cfg'); if(!url) return;
+    try{
+      const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw 0;
+      const data=await r.json();
+      UMV.J('remote_cfg_last',data);
+      patchI18N(data); patchPayments(data); patchPremium(data); injectCSSHTML(data);
+      UMV.log('AutoUpdate → áp dụng bản vá từ xa', url);
+    }catch(_){
+      const cached=UMV.J('remote_cfg_last'); if(cached){
+        patchI18N(cached); patchPayments(cached); patchPremium(cached); injectCSSHTML(cached);
+        UMV.log('AutoUpdate → dùng bản cache cuối cùng');
+      }
+    }
+  }
+
+  (async function boot(){
+    await askOnce();
+    await pullAndPatch();
+    setInterval(pullAndPatch, 30*60*1000);
+  })();
+})();
+
+/* ---------- 3) PWA Offline + Tự phục hồi ---------- */
+(function pwa(){
+  if(!('serviceWorker' in navigator)) return;
+  const swCode = `
+    const CNAME='umv-cache-v1';
+    const API_PAT=/coingecko\\.com\\/api/;
+    self.addEventListener('install',e=>{
+      e.waitUntil(caches.open(CNAME).then(c=>c.addAll([location.href])));
+      self.skipWaiting();
+    });
+    self.addEventListener('activate',e=>{
+      e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CNAME).map(k=>caches.delete(k)))));
+      self.clients.claim();
+    });
+    async function swr(req){
+      const cache=await caches.open(CNAME);
+      const hit=await cache.match(req);
+      const net=fetch(req).then(r=>{ if(r.ok) cache.put(req,r.clone()); return r; }).catch(_=>hit);
+      return hit||net;
+    }
+    async function networkFirst(req){
+      const cache=await caches.open(CNAME);
+      try{ const r=await fetch(req); if(r&&r.ok) cache.put(req,r.clone()); return r; }
+      catch(_){ const hit=await cache.match(req); if(hit) return hit; throw _; }
+    }
+    self.addEventListener('fetch',e=>{
+      const url=new URL(e.request.url);
+      if(e.request.method!=='GET') return;
+      if(API_PAT.test(url.href)) { e.respondWith(networkFirst(e.request)); return; }
+      e.respondWith(swr(e.request));
+    });
+  `;
+  const blobURL = URL.createObjectURL(new Blob([swCode],{type:'text/javascript'}));
+  navigator.serviceWorker.register(blobURL).catch(()=>{});
+})();
+
+/* ---------- 4) Revenue tracker + tự vận hành nhỏ ---------- */
+(function runtimeOps(){
+  const hb=document.getElementById('hb');
+  if(hb){ setInterval(()=>{ hb.textContent=new Date().toLocaleTimeString(); }, 5000); }
+
+  const revEl=document.getElementById('kRev');
+  function addRev(x){ const cur=Number(localStorage.getItem('rev')||'0'); const next=Math.max(0,cur+Number(x||0)); localStorage.setItem('rev',next); if(revEl) revEl.textContent=next.toLocaleString(); }
+  if(revEl){ revEl.textContent=(Number(localStorage.getItem('rev')||'0')).toLocaleString(); }
+
+  const btn=document.getElementById('doUnlock');
+  if(btn && !btn.dataset.revBound){
+    btn.dataset.revBound='1';
+    btn.addEventListener('click', ()=>{
+      setTimeout(()=>{
+        const msg=document.getElementById('uMsg')?.textContent||'';
+        if(/Đã mở khóa|Unlocked/.test(msg)){
+          const sel=document.getElementById('bundleSel'); 
+          const price = sel?.selectedOptions?.[0]?.textContent?.match(/\$(\d+)/)?.[1] || '9';
+          addRev(Number(price));
+        }
+      },300);
+    });
+  }
+})();
+
+/* ---------- 5) Tự phục hồi giao diện ---------- */
+(function selfHeal(){
+  window.addEventListener('error',(e)=>{
+    console.warn('UI error captured',e.message);
+    const t=document.createElement('div');
+    t.style.cssText='position:fixed;left:12px;bottom:12px;background:#1f2937;color:#fff;padding:8px 12px;border-radius:10px;z-index:9999;border:1px solid #374151';
+    t.textContent='Đã tự phục hồi một lỗi giao diện. Bạn có thể tiếp tục dùng bình thường.';
+    document.body.appendChild(t); setTimeout(()=>t.remove(),4000);
+    try{
+      if(typeof window['paintPlans']==='function') window['paintPlans']();
+      if(typeof window['paintEdu']==='function') window['paintEdu']();
+      if(typeof window['renderAll']==='function' && window['LAST_ITEMS']) window['renderAll'](window['LAST_ITEMS']);
+    }catch(_){}
+  }, true);
+})();
 </script>
 </body>
 </html>
