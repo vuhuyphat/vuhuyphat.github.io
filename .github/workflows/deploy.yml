@@ -1,68 +1,109 @@
-name: Deploy to IPFS & Update ENS
+name: Auto IPFS + ENS (no HTML change)
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - "index.html"      # chỉ chạy khi index.html đổi
+    branches: [ main ]  # cứ push main là chạy (không cần chạm HTML)
 
 jobs:
-  deploy:
+  ipfs_and_ens:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-          npm i content-hash ethers@5
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-      # 1) Upload index.html lên Pinata để lấy CID
-      - name: Pin index.html to IPFS (Pinata)
-        id: pin
-        env:
-          # ⛳️ Nếu secret của bạn tên PINATA_SECRET (ảnh của bạn đang hiện "PINATA_SECR…")
-          # thì dùng dòng dưới:
-          PINATA_JWT: ${{ secrets.PINATA_SECRET }}
-          # Nếu bạn đặt là PINATA_JWT thì đổi lại thành:
-          # PINATA_JWT: ${{ secrets.PINATA_JWT }}
+      - name: Install deps for inline script
         run: |
-          CID=$(curl -s -X POST "https://api.pinata.cloud/pinning/pinFileToIPFS" \
-            -H "Authorization: Bearer $PINATA_JWT" \
-            -F file=@index.html | jq -r '.IpfsHash')
-          echo "cid=$CID" >> $GITHUB_OUTPUT
-          echo "Pinned CID: $CID"
+          npm init -y
+          npm install @pinata/sdk ethers content-hash glob@10
 
-      # 2) Cập nhật ENS contenthash -> ipfs://CID
-      - name: Update ENS contenthash
+      - name: Pin site to IPFS via Pinata (JWT) & update ENS
         env:
+          PINATA_JWT: ${{ secrets.PINATA_JWT }}
           RPC_URL: ${{ secrets.RPC_URL }}
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-          ENS_NAME: lightunfold.eth
-          CID: ${{ steps.pin.outputs.cid }}
+          ENS_NAME: ${{ secrets.ENS_NAME }}
         run: |
-          node - <<'NODE'
+          node <<'NODE'
+          const PinataClient = require('@pinata/sdk');
+          const { glob } = require('glob');
+          const fs = require('fs');
+          const path = require('path');
           const contentHash = require('content-hash');
-          const { ethers } = require('ethers');
-          const name = process.env.ENS_NAME;
-          const cid  = process.env.CID;
-
-          if (!cid) { console.error('CID trống! Bước Pinata thất bại?'); process.exit(1); }
-
-          const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
-          const wallet   = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+          const { ethers, namehash } = require('ethers');
 
           (async () => {
-            const resolver = await provider.getResolver(name);
-            if (!resolver) throw new Error('Không tìm thấy resolver cho ' + name);
+            // 1) Pin directory (chọn thư mục gốc repo; bạn có thể đổi thành ./dist nếu dùng build)
+            const pinata = new PinataClient({ pinataJWTKey: process.env.PINATA_JWT });
 
-            const encoded = '0x' + contentHash.fromIpfs(cid);
-            const tx = await resolver.connect(wallet).setContenthash(encoded);
-            console.log('Tx gửi:', tx.hash);
-            await tx.wait();
-            console.log('✅ Đã cập nhật', name, '→ ipfs://' + cid);
-          })().catch(e => { console.error(e); process.exit(1); });
+            // Gom tất cả file tĩnh để pin (bỏ qua .git, node_modules, .github…)
+            const files = await glob('**/*', {
+              nodir: true,
+              ignore: ['node_modules/**','**/.git/**','**/.github/**']
+            });
+
+            if (files.length === 0) {
+              throw new Error('Không tìm thấy file để pin.');
+            }
+
+            // Tạo stream list cho SDK
+            const streams = files.map((f) => ({
+              path: f,
+              content: fs.createReadStream(path.join(process.cwd(), f)),
+            }));
+
+            const pinRes = await pinata.pinFileToIPFS(streams, {
+              pinataMetadata: { name: 'site-' + Date.now() },
+            });
+
+            const cid = pinRes.IpfsHash; // CID v1/v0 do Pinata trả về
+            console.log('✅ Pinned to IPFS:', cid);
+
+            // 2) Encode contenthash theo EIP-1577
+            // ENS yêu cầu CID v1 base32 → contenthash dạng bytes
+            const encoded = '0x' + contentHash.encode('ipfs-ns', cid);
+            console.log('Contenthash (bytes):', encoded);
+
+            // 3) Update ENS resolver.setContenthash
+            const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+            // PRIVATE_KEY không có '0x' ở đầu → thêm vào
+            const pk = process.env.PRIVATE_KEY.startsWith('0x')
+              ? process.env.PRIVATE_KEY
+              : '0x' + process.env.PRIVATE_KEY;
+            const wallet = new ethers.Wallet(pk, provider);
+
+            const ENS_REGISTRY = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e';
+            const ensAbi = [
+              'function resolver(bytes32 node) external view returns (address)'
+            ];
+            const registry = new ethers.Contract(ENS_REGISTRY, ensAbi, provider);
+
+            const node = namehash(process.env.ENS_NAME);
+            const resolverAddr = await registry.resolver(node);
+            if (resolverAddr === ethers.ZeroAddress) {
+              throw new Error('Tên ENS chưa có resolver.');
+            }
+
+            const resolverAbi = [
+              'function setContenthash(bytes32 node, bytes hash) external'
+            ];
+            const resolver = new ethers.Contract(resolverAddr, resolverAbi, wallet);
+
+            const tx = await resolver.setContenthash(node, encoded);
+            console.log('⛽ Gửi giao dịch setContenthash:', tx.hash);
+            const rc = await tx.wait();
+            console.log('🎉 Đã cập nhật ENS. Block:', rc.blockNumber);
+
+            // In thêm URL tham khảo
+            console.log('➡️  ENS (eth.limo): https://' + process.env.ENS_NAME + '.eth.limo/');
+            console.log('➡️  IPFS (gateway pinata): https://gateway.pinata.cloud/ipfs/' + cid + '/');
+          })().catch((e) => {
+            console.error('❌ Lỗi:', e);
+            process.exit(1);
+          });
           NODE
