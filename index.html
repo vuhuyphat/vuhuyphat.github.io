@@ -4,26 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>LightUnfold • One‑Paste UltraMaster</title>
-<meta name="description" content="Dán 1 lần là chạy: đa kênh thanh toán, affiliate tối ưu CTR, feed cơ hội VI/EN tự cập nhật (GitHub/IPNS), siêu bền & an toàn.">
+<meta name="description" content="Dán 1 lần là chạy: thanh toán đa kênh, affiliate tối ưu CTR, feed VI/EN tự tạo theo thời điểm, siêu bền & an toàn.">
 <meta name="theme-color" content="#0b0f13">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; img-src * data: blob:; script-src 'self' https://cdn.jsdelivr.net https://threejs.org 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src *;">
 <style>
-:root{--bg:#0b0f13;--card:#0f141a;--line:#233041;--txt:#e9eef4;--mut:#a9b8c8;--gold:#ffd700;--btn:#ffd700;--btnTxt:#0b0f13;--ring:rgba(255,215,0,.25);--ok:#16a34a;--warn:#f59e0b;--err:#ef4444}
-*{box-sizing:border-box}html,body{height:100%}
-body{margin:0;background:radial-gradient(60% 140% at 50% -10%, rgba(109,40,217,.18),transparent 60%),linear-gradient(180deg, rgba(22,163,74,.10),transparent 40%),var(--bg);color:var(--txt);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
+:root{--bg:#0b0f13;--card:#0f141a;--line:#233041;--txt:#e9eef4;--mut:#a9b8c8;--gold:#ffd700;--btn:#ffd700;--btnTxt:#0b0f13;--ring:rgba(255,215,0,.25)}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:
+radial-gradient(60% 140% at 50% -10%, rgba(109,40,217,.18),transparent 60%),
+linear-gradient(180deg, rgba(22,163,74,.10),transparent 40%),var(--bg);
+color:var(--txt);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
 .wrap{max-width:1200px;margin:0 auto;padding:18px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 10px 30px rgba(0,0,0,.28)}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
 .pill{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:#101827}
-.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:999px}
-.badge.ok{background:rgba(22,163,74,.15);border-color:#1f3e2b}
-.badge.warn{background:rgba(245,158,11,.12);border-color:#3d2e12}
-.badge.err{background:rgba(239,68,68,.12);border-color:#3a1212}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 14px;border:0;border-radius:12px;font-weight:800;background:var(--btn);color:var(--btnTxt);cursor:pointer;box-shadow:0 0 0 0 var(--ring);transition:.2s}
 .btn:hover{transform:translateY(-1px);box-shadow:0 0 0 6px var(--ring)}
 .btn.out{background:transparent;color:var(--txt);border:1px solid var(--line)}
 .muted{color:var(--mut)} .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:999px}
+.ok{background:rgba(22,163,74,.15);border-color:#1f3e2b}
+.warn{background:rgba(245,158,11,.12);border-color:#3d2e12}
+.err{background:rgba(239,68,68,.12);border-color:#3a1212}
 .globe3d{width:300px;height:300px;border-radius:50%;display:block;margin:auto}
 .qr{width:180px;height:180px;border-radius:12px;background:#fff}
 .paybtn{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:transparent;cursor:pointer}
@@ -31,7 +33,6 @@ body{margin:0;background:radial-gradient(60% 140% at 50% -10%, rgba(109,40,217,.
 .copy{font-size:13px;border:1px dashed var(--line);border-radius:8px;padding:4px 10px;background:transparent;color:var(--txt);cursor:pointer}
 .float-share{position:fixed;right:16px;bottom:16px;display:flex;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;z-index:9}
 .tag{display:inline-block;border:1px solid var(--line);border-radius:10px;padding:3px 8px;margin:2px 6px 0 0;color:var(--txt);opacity:.85;font-size:12px}
-small.note{color:#a7b4c9}
 </style>
 </head>
 <body>
@@ -41,7 +42,7 @@ small.note{color:#a7b4c9}
     <span class="pill">ENS: <b id="ens">lightunfold.eth</b></span>
     <span class="pill">Heartbeat: <b id="hb">—</b></span>
     <span class="badge ok" id="statusNet">Online</span>
-    <span class="badge warn" id="statusFeed">Feed: mặc định</span>
+    <span class="badge warn" id="statusFeed">Feed: seed</span>
     <button class="pill" id="lang">VI/EN</button>
   </div>
 
@@ -50,7 +51,7 @@ small.note{color:#a7b4c9}
     <div class="row" style="justify-content:space-between">
       <div style="min-width:320px;flex:1">
         <h1 style="margin:6px 0 8px" id="hTitle">Một lần dán là chạy</h1>
-        <div class="muted" id="tagline">Thanh toán đa kênh • Affiliate tối ưu CTR • Feed VI/EN tự cập nhật • Bền bỉ IPFS/IPNS • Không spam</div>
+        <div class="muted" id="tagline">Thanh toán đa kênh • Affiliate tối ưu CTR • Feed VI/EN tự tạo theo thời điểm • Không spam • Bền bỉ</div>
         <div class="row" style="margin-top:12px">
           <a class="btn out" id="ctaB" href="#" target="_blank" rel="noopener">Mở Binance Miễn Phí ↗</a>
           <a class="btn out" id="ctaA" href="#" target="_blank" rel="noopener">Mở AlgosOne Miễn Phí ↗</a>
@@ -74,7 +75,7 @@ small.note{color:#a7b4c9}
       </div>
       <div class="row" style="margin-top:10px">
         <div class="qr-wrap" style="border:1px dashed var(--line);border-radius:14px;padding:10px"><img id="qr" class="qr" alt="QR"></div>
-        <small class="note" id="payNote">Quét VietQR / ví crypto / PayPal.me. Nội dung chuyển: <b>LightUnfold</b>.</small>
+        <small class="muted" id="payNote">Quét VietQR / ví crypto / PayPal.me. Nội dung chuyển: <b>LightUnfold</b>.</small>
       </div>
     </div>
     <div class="card">
@@ -86,14 +87,14 @@ small.note{color:#a7b4c9}
         <button class="btn out" data-region="GLOBAL">Global</button>
         <button class="btn out" data-region="CRYPTO">Crypto</button>
       </div>
-      <small class="note" id="offerNote">Thuật toán ε‑greedy + UCB tối ưu CTR cục bộ (lưu trên thiết bị).</small>
+      <small class="muted" id="offerNote">ε‑greedy + UCB (học CTR cục bộ, không server).</small>
     </div>
   </section>
 
   <!-- FEED: Cơ hội nổi bật -->
   <section class="card" id="secFeed">
     <h3 style="margin:0 0 10px" id="hFeed">🔥 Cơ hội / Tin nhanh</h3>
-    <div class="muted" id="feedInfo" style="margin-bottom:8px">Hiển thị tức thì từ feed VI/EN. Không nhồi bài; ưu tiên mới & chất lượng.</div>
+    <div class="muted" id="feedInfo" style="margin-bottom:8px">Hiển thị 4–8 mục tinh gọn theo thời điểm ngày/đêm. Không nhồi bài.</div>
     <div id="feedList" class="grid"></div>
   </section>
 
@@ -111,42 +112,24 @@ small.note{color:#a7b4c9}
 
   <div class="card" id="inlet">
     Lối vào: <a href="https://vuhuyphat.github.io/" target="_blank" rel="noopener">Web2</a> •
-    <a href="https://lightunfold.eth.limo/" target="_blank" rel="noopener">ENS</a> — Trang tự cập nhật khi feed/JSON đổi (không cần đổi CID HTML).
+    <a href="https://lightunfold.eth.limo/" target="_blank" rel="noopener">ENS</a> — Chỉ cần file này. Nếu có feed/IPNS sau này, trang tự nhận—không cần đổi CID.
   </div>
 </div>
 
 <!-- Floating share -->
 <div class="float-share">
   <a id="sh_tg" target="_blank" title="Share Telegram" rel="noopener noreferrer">📣</a>
-  <a id="sh_x"  target="_blank" title="Share X" rel="noopener noreferrer">𝕏</a>
+  <a id="sh_x"  target="_blank" title="Share X"        rel="noopener noreferrer">𝕏</a>
   <a id="sh_fb" target="_blank" title="Share Facebook" rel="noopener noreferrer">f</a>
   <a id="sh_in" target="_blank" title="Share LinkedIn" rel="noopener noreferrer">in</a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
 <script>
-/* ===== MULTILANG • RESILIENT ENGINE ===== */
-const IPNS_ID = 'YOUR_IPNS_ID'; // có thể để trống; HTML vẫn chạy
-const CONFIG_URLS = [
-  'https://raw.githubusercontent.com/vuhuyphat/vuhuyphat.github.io/main/payments.json',
-  IPNS_ID ? `https://ipfs.io/ipns/${IPNS_ID}/payments.json` : null,
-  IPNS_ID ? `https://cloudflare-ipfs.com/ipns/${IPNS_ID}/payments.json` : null
-].filter(Boolean);
+/* ======== ONE‑PASTE ENGINE (no other files required) ======== */
 
-// Feed đa ngôn ngữ (VI/EN) + đa gateway (GitHub/IPNS)
-function feedSources(lang){
-  const base = 'https://raw.githubusercontent.com/vuhuyphat/vuhuyphat.github.io/main';
-  const file = lang==='en' ? 'feed.en.json' : 'feed.vi.json';
-  const arr = [
-    `${base}/${file}`,
-    IPNS_ID ? `https://ipfs.io/ipns/${IPNS_ID}/${file}` : null,
-    IPNS_ID ? `https://cloudflare-ipfs.com/ipns/${IPNS_ID}/${file}` : null
-  ].filter(Boolean);
-  return arr;
-}
-
-/*** Defaults ***/
-const defaults = {
+/*** 0) Config mặc định – đủ dùng ngay ***/
+const CFG = {
   ens:'lightunfold.eth',
   links:{
     binance:'https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N',
@@ -159,148 +142,138 @@ const defaults = {
     bank:{label:'Vietcombank',id:'9567892030|TRẦN VĂN VŨ'},
     paypal:{label:'PayPal',id:'vumumabada@gmail.com'}
   },
-  premium:{unlock_code:'23061988'}
-};
-
-// Seed VI/EN để luôn có nội dung (không spam, chỉ 2–4 mục)
-const FEED_SEED = {
-  vi:{
-    updated_at:new Date().toISOString(),
-    items:[
-      {id:'seed-vi-1',title:'Mở Binance nhận thưởng – bắt nhịp thị trường',body_html:'<p>Ưu đãi người mới, theo dõi thị trường, phí cạnh tranh.</p>',cta:{label:'Mở Binance',url:defaults.links.binance},tags:['onboarding','cex'],lang:'vi'},
-      {id:'seed-vi-2',title:'AlgosOne – Tín hiệu & chiến lược AI',body_html:'<p>Nhận cảnh báo realtime, playbook kịch bản 2 chiều.</p>',cta:{label:'Mở AlgosOne',url:defaults.links.algos},tags:['ai','signals'],lang:'vi'}
-    ]
-  },
-  en:{
-    updated_at:new Date().toISOString(),
-    items:[
-      {id:'seed-en-1',title:'Open Binance – kickstart your journey',body_html:'<p>New user perks, market tracking, competitive fees.</p>',cta:{label:'Open Binance',url:defaults.links.binance},tags:['onboarding','cex'],lang:'en'},
-      {id:'seed-en-2',title:'AlgosOne – AI signals & strategies',body_html:'<p>Realtime alerts, two‑sided scenarios, disciplined plan.</p>',cta:{label:'Open AlgosOne',url:defaults.links.algos},tags:['ai','signals'],lang:'en'}
-    ]
-  }
+  premium:{unlock_code:'23061988'},
+  // (Tùy chọn) Nếu sau này bạn có IPNS/JSON bên ngoài, chỉ cần đặt 2 dòng dưới—KHÔNG cần đổi file:
+  ipns_id:'', // ví dụ: 'k51qzi5u...'; để trống vẫn chạy bình thường
+  repo_raw:'https://raw.githubusercontent.com/vuhuyphat/vuhuyphat.github.io/main' // để trống nếu không dùng
 };
 
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const LS_CFG='onepaste_cfg_v2', LS_FEED_VI='onepaste_feed_vi_v2', LS_FEED_EN='onepaste_feed_en_v2', LS_STATS='onepaste_stats_v2';
-
-function isVN(){ const lang=(navigator.language||'').toLowerCase(); const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''; return lang.startsWith('vi')||tz.includes('Bangkok')||tz.includes('Ho_Chi_Minh'); }
+const LS_STATS='onepaste_stats_v3';
+function isVN(){ const l=(navigator.language||'').toLowerCase(); const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''; return l.startsWith('vi')||tz.includes('Bangkok')||tz.includes('Ho_Chi_Minh'); }
 let LANG=(localStorage.getItem('lang')||(isVN()?'vi':'en'));
-function setLang(l){ LANG=l; localStorage.setItem('lang',l); applyLang(); bootFeed(); }
+function setLang(l){ LANG=l; localStorage.setItem('lang',l); applyLang(); renderOffers(); renderFeed(lastFeed, lastSource); }
 
+/*** 1) UI ngôn ngữ ***/
 function applyLang(){
-  const vi = LANG==='vi';
+  const vi=LANG==='vi';
   $('#hTitle').textContent = vi?'Một lần dán là chạy':'One‑paste and go';
-  $('#tagline').textContent = vi?'Thanh toán đa kênh • Affiliate tối ưu CTR • Feed VI/EN tự cập nhật • Bền bỉ IPFS/IPNS • Không spam':
-                                'Multi‑channel payments • CTR‑optimized affiliate • Auto VI/EN feed • IPFS/IPNS resilience • No spam';
-  $('#hPay').textContent = vi?'Thanh toán nhanh':'Payments';
-  $('#idLbl').textContent = vi?'ID/Địa chỉ:':'ID/Address:';
-  $('#payNote').innerHTML = vi?'Quét VietQR / ví crypto / PayPal.me. Nội dung chuyển: <b>LightUnfold</b>.':
+  $('#tagline').textContent= vi?'Thanh toán đa kênh • Affiliate tối ưu CTR • Feed VI/EN tự tạo theo thời điểm • Không spam • Bền bỉ':
+                               'Multi‑channel payments • CTR‑optimized affiliate • Time‑aware VI/EN feed • No spam • Resilient';
+  $('#hPay').textContent   = vi?'Thanh toán nhanh':'Payments';
+  $('#idLbl').textContent  = vi?'ID/Địa chỉ:':'ID/Address:';
+  $('#payNote').innerHTML  = vi?'Quét VietQR / ví crypto / PayPal.me. Nội dung chuyển: <b>LightUnfold</b>.':
                                'Scan VietQR / crypto wallet / PayPal.me. Note: <b>LightUnfold</b>.';
   $('#hOffer').textContent = vi?'Ưu đãi nổi bật (tự học & xoay)':'Featured offers (learn & rotate)';
-  $('#offerNote').textContent = vi?'Thuật toán ε‑greedy + UCB tối ưu CTR cục bộ (lưu trên thiết bị).':
-                                  'ε‑greedy + UCB bandit (on‑device) to optimize CTR.';
-  $('#hFeed').textContent = vi?'🔥 Cơ hội / Tin nhanh':'🔥 Opportunities / Quick briefs';
-  $('#hGate').textContent = vi?'SuperGate (mở khoá nội dung)':'SuperGate (unlock content)';
-  $('#codeLbl').textContent = vi?'Mã mở khoá:':'Unlock code:';
-  $('#globeCap').textContent = vi?'Trái Đất On‑Chain · 3D':'On‑Chain Earth · 3D';
-  $('#lang').textContent = vi?'VI/EN':'EN/VI';
+  $('#offerNote').textContent = vi?'ε‑greedy + UCB (học CTR cục bộ, không server).':'ε‑greedy + UCB (local CTR learning, no server).';
+  $('#hFeed').textContent  = vi?'🔥 Cơ hội / Tin nhanh':'🔥 Opportunities / Quick briefs';
+  $('#hGate').textContent  = vi?'SuperGate (mở khoá nội dung)':'SuperGate (unlock content)';
+  $('#codeLbl').textContent= vi?'Mã mở khoá:':'Unlock code:';
+  $('#globeCap').textContent=vi?'Trái Đất On‑Chain · 3D':'On‑Chain Earth · 3D';
+  $('#lang').textContent   = vi?'VI/EN':'EN/VI';
 }
-applyLang();
-$('#lang').onclick=()=>setLang(LANG==='vi'?'en':'vi');
+applyLang(); $('#lang').onclick=()=>setLang(LANG==='vi'?'en':'vi');
 setInterval(()=>{ $('#hb').textContent=new Date().toLocaleTimeString(); },1000);
+$('#ens').textContent=CFG.ens;
+(function share(){ const base=location.origin+location.pathname; const peer=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2); localStorage.setItem('peer_id',peer);
+  const myRef=`${base}?ref=${peer}`, t=encodeURIComponent(document.title), u=encodeURIComponent(myRef);
+  const map={sh_tg:`https://t.me/share/url?url=${u}&text=${t}`,sh_x:`https://twitter.com/intent/tweet?text=${t}&url=${u}`,sh_fb:`https://www.facebook.com/sharer/sharer.php?u=${u}`,sh_in:`https://www.linkedin.com/sharing/share-offsite/?url=${u}`};
+  for(const id in map){ const el=document.getElementById(id); if(el) el.href=map[id]; }
+})();
 
-/*** Net, fetch, sanitize ***/
-function netBadge(ok){ const el=$('#statusNet'); if(!el) return; el.textContent = ok?'Online':'Offline'; el.className='badge '+(ok?'ok':'err'); }
+/*** 2) Net badges ***/
+function netBadge(ok){ const el=$('#statusNet'); el.textContent=ok?'Online':'Offline'; el.className='badge '+(ok?'ok':'err'); }
 window.addEventListener('online',()=>netBadge(true)); window.addEventListener('offline',()=>netBadge(false)); netBadge(navigator.onLine);
-function timeout(ms){ return new Promise((_,rej)=>setTimeout(()=>rej(new Error('TIMEOUT')),ms)); }
-async function fetchJSON(url,ms=7000){ return Promise.race([fetch(url,{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject(new Error(r.status))), timeout(ms)]); }
-async function trySources(urls, cacheKey, fallback){
-  for(const u of urls){ try{ const d=await fetchJSON(u); localStorage.setItem(cacheKey,JSON.stringify(d)); return {data:d, source:u}; }catch(e){} }
-  try{ const c=localStorage.getItem(cacheKey); if(c) return {data:JSON.parse(c), source:'cache'}; }catch(e){}
-  return {data:fallback, source:'default'};
-}
-function sanitize(html){
-  try{
-    const tmp=document.createElement('div'); tmp.innerHTML=html||'';
-    const ALLOWED=new Set(['B','I','EM','STRONG','P','BR','UL','OL','LI','A','CODE','PRE','SPAN','SMALL']);
-    (function walk(n){ [...n.children].forEach(ch=>{
-      if(!ALLOWED.has(ch.tagName)){ ch.replaceWith(document.createTextNode(ch.textContent||'')); return; }
-      [...ch.attributes].forEach(a=>{ if(!(ch.tagName==='A' && ['href','target','rel'].includes(a.name.toLowerCase()))) ch.removeAttribute(a.name); });
-      if(ch.tagName==='A'){ try{ const u=new URL(ch.getAttribute('href'),location.href); if(!/^https?:/i.test(u.protocol)) ch.removeAttribute('href'); }catch(_){ ch.removeAttribute('href'); } ch.setAttribute('rel','noopener noreferrer'); ch.setAttribute('target','_blank'); }
-      walk(ch);
-    }); })(tmp);
-    return tmp.innerHTML;
-  }catch(_){ return ''; }
-}
 
-/*** CTR learning ***/
-function stats(){ try{return JSON.parse(localStorage.getItem(LS_STATS)||'{}')}catch{return{}} }
-function saveStats(s){ localStorage.setItem(LS_STATS, JSON.stringify(s)); }
-function region(){ const v=localStorage.getItem('ab_region'); if(v) return v; return isVN()?'VN':'GLOBAL'; }
-function banditPick(pool){
-  const s=stats(); s.stats=s.stats||{}; s.total=s.total||0; const eps=0.12;
-  if(Math.random()<eps) return pool[Math.floor(Math.random()*pool.length)];
-  let best=pool[0],score=-1;
-  for(const o of pool){ const st=s.stats[o.id]||{}; const ctr=(st.c||0)/Math.max(1,(st.v||0));
-    const ucb=ctr+Math.sqrt(2*Math.log(1+(s.total||1))/Math.max(1,(st.v||0))); if(ucb>score){score=ucb;best=o;} }
-  return best;
-}
-function markView(id){ const s=stats(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{v:0,c:0}; s.stats[id].v++; s.total=(s.total||0)+1; saveStats(s); }
-function markClick(id){ const s=stats(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{v:0,c:0}; s.stats[id].c++; saveStats(s); }
-
-/*** Payments & Offers ***/
+/*** 3) Payments ***/
 function setQR(text){ $('#qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=340x340&data=${encodeURIComponent(text)}`; }
 function copy(txt){ return navigator.clipboard.writeText(txt).then(()=>alert(LANG==='vi'?'Đã sao chép.':'Copied.')).catch(()=>alert(LANG==='vi'?'Thiết bị chặn clipboard.':'Clipboard blocked.')); }
-
-function paintPayments(cfg){
-  const pays=cfg.payments||{}; const list=$('#payList'); list.innerHTML=''; const rows=[];
+function paintPayments(){
+  const pays=CFG.payments, list=$('#payList'); list.innerHTML=''; const rows=[];
   const map={
-    eth:v=>({title:'ETH (ENS/Address)',id:v.id,qr:(v.scheme||'ethereum:')+(v.id||'')}),
+    eth:v=>({title:'ETH (ENS/Address)',id:v.id,qr:(v.scheme||'ethereum:')+v.id}),
     usdt:v=>({title:'USDT (ERC‑20)',id:v.id,qr:v.id}),
     momo:v=>({title:'MoMo',id:v.id,qr:v.id}),
-    bank:v=>{ const [acc,name]=(v.id||'').split('|'); return {title:'Vietcombank',id:`${acc} • ${name||''}`,qr:`VCB:${acc}?memo=LightUnfold&name=${encodeURIComponent(name||'')}`}},
+    bank:v=>{const [acc,name]=(v.id||'').split('|');return {title:'Vietcombank',id:`${acc} • ${name||''}`,qr:`VCB:${acc}?memo=LightUnfold&name=${encodeURIComponent(name||'')}`}},
     paypal:v=>({title:'PayPal',id:v.id,qr:`paypal.me/${encodeURIComponent((v.id||'').split('@')[0])}`})
   };
   Object.entries(map).forEach(([k,fn])=>{
-    if(!pays[k]) return; const norm=fn(pays[k]); const row=document.createElement('div'); row.className='paybtn';
+    if(!pays[k]) return; const norm=fn(pays[k]);
+    const row=document.createElement('div'); row.className='paybtn';
     row.innerHTML=`<div><b>${norm.title}</b><div class="muted mono">${norm.id}</div></div><button class="copy">Copy</button>`;
     row.onclick=()=>{ $('#payAddr').textContent=norm.id; setQR(norm.qr); $$('.paybtn').forEach(x=>x.classList.remove('active')); row.classList.add('active'); };
     row.querySelector('.copy').onclick=(e)=>{ e.stopPropagation(); copy(norm.id); };
     list.appendChild(row); rows.push(row);
   });
-  if(rows[0]) rows[0].click();
-  $('#btnCopy').onclick=()=>copy($('#payAddr').textContent||'');
+  if(rows[0]) rows[0].click(); $('#btnCopy').onclick=()=>copy($('#payAddr').textContent||'');
 }
-function paintOffers(cfg){
+
+/*** 4) Offers – bandit (CTR local) ***/
+function region(){ const v=localStorage.getItem('ab_region'); if(v) return v; return isVN()?'VN':'GLOBAL'; }
+function stats(){ try{return JSON.parse(localStorage.getItem(LS_STATS)||'{}')}catch{return{}} }
+function saveStats(s){ localStorage.setItem(LS_STATS, JSON.stringify(s)); }
+function banditPick(pool){ const s=stats(); s.stats=s.stats||{}; s.total=s.total||0; if(Math.random()<0.12) return pool[Math.floor(Math.random()*pool.length)];
+  let best=pool[0],score=-1; for(const o of pool){ const st=s.stats[o.id]||{}; const ctr=(st.c||0)/Math.max(1,(st.v||0));
+    const ucb=ctr+Math.sqrt(2*Math.log(1+(s.total||1))/Math.max(1,(st.v||0))); if(ucb>score){score=ucb;best=o;} } return best; }
+function markView(id){ const s=stats(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{v:0,c:0}; s.stats[id].v++; s.total=(s.total||0)+1; saveStats(s); }
+function markClick(id){ const s=stats(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{v:0,c:0}; s.stats[id].c++; saveStats(s); }
+function renderOffers(){
   const r=region(); $('#tagRegion').textContent='Region: '+r;
   const OFFERS=[
-    {id:'binance',title:LANG==='vi'?'Mở Binance Miễn Phí':'Open Binance Free',url:cfg.links?.binance,regions:['VN','GLOBAL']},
-    {id:'algos',title:LANG==='vi'?'Mở AlgosOne Miễn Phí':'Open AlgosOne Free',url:cfg.links?.algos,regions:['GLOBAL','CRYPTO','VN']}
-  ].filter(o=>o.url);
-  const pool=OFFERS.filter(o=>o.regions.includes(r)) || OFFERS;
-  const pick=banditPick(pool.length?pool:OFFERS); const box=$('#offerBox');
+    {id:'binance',title:LANG==='vi'?'Mở Binance Miễn Phí':'Open Binance Free',url:CFG.links.binance,regions:['VN','GLOBAL']},
+    {id:'algos',title:LANG==='vi'?'Mở AlgosOne Miễn Phí':'Open AlgosOne Free',url:CFG.links.algos,regions:['GLOBAL','CRYPTO','VN']}
+  ];
+  const pool=OFFERS.filter(o=>o.regions.includes(r)); const pick=banditPick(pool.length?pool:OFFERS);
+  const box=$('#offerBox');
   box.innerHTML=`<a class="btn out" id="offer" href="${pick.url}" target="_blank" rel="noopener">🔥 ${pick.title}</a>
-                 ${cfg.links?.binance?`<a class="btn out" href="${cfg.links.binance}" target="_blank" rel="noopener">🚀 Binance</a>`:''}
-                 ${cfg.links?.algos?`<a class="btn out" href="${cfg.links.algos}" target="_blank" rel="noopener">🌐 AlgosOne</a>`:''}`;
+                 <a class="btn out" href="${CFG.links.binance}" target="_blank" rel="noopener">🚀 Binance</a>
+                 <a class="btn out" href="${CFG.links.algos}"   target="_blank" rel="noopener">🌐 AlgosOne</a>`;
   $('#offer').addEventListener('click',()=>markClick(pick.id)); markView(pick.id);
-  if(cfg.links?.binance) $('#ctaB').href=cfg.links.binance; if(cfg.links?.algos) $('#ctaA').href=cfg.links.algos;
+  $('#ctaB').href=CFG.links.binance; $('#ctaA').href=CFG.links.algos;
 }
-function bindRegionButtons(){ $$('button[data-region]').forEach(b=>b.onclick=()=>{ localStorage.setItem('ab_region', b.dataset.region); location.reload(); }); }
+$$('button[data-region]').forEach(b=>b.onclick=()=>{ localStorage.setItem('ab_region', b.dataset.region); location.reload(); });
 
-/*** Feed loader (multilang, no‑spam): ưu tiên 6–8 mục gần nhất, bỏ trùng ID ***/
-function sanitizeFeed(data){
-  const seen=new Set(); const items=(data.items||[]).filter(x=>{
-    if(!x || !x.id || seen.has(x.id)) return false; seen.add(x.id); return true;
-  });
-  // Giới hạn hiển thị để không “nhồi bài”
-  return {updated_at:data.updated_at||new Date().toISOString(), items: items.slice(0,8)};
+/*** 5) FEED – “Tự tạo theo thời điểm” + tự động lấy ngoài (nếu có), không spam ***/
+function sanitize(html){
+  try{
+    const tmp=document.createElement('div'); tmp.innerHTML=html||'';
+    const OK=new Set(['B','I','EM','STRONG','P','BR','UL','OL','LI','A','CODE','PRE','SPAN','SMALL']);
+    (function walk(n){ [...n.children].forEach(ch=>{
+      if(!OK.has(ch.tagName)){ ch.replaceWith(document.createTextNode(ch.textContent||'')); return; }
+      [...ch.attributes].forEach(a=>{ if(!(ch.tagName==='A' && ['href','target','rel'].includes(a.name.toLowerCase()))) ch.removeAttribute(a.name); });
+      if(ch.tagName==='A'){ try{ const u=new URL(ch.getAttribute('href'),location.href); if(!/^https?:/i.test(u.protocol)) ch.removeAttribute('href'); }catch(_){ ch.removeAttribute('href'); }
+        ch.setAttribute('rel','noopener noreferrer'); ch.setAttribute('target','_blank'); }
+      walk(ch);
+    }); })(tmp);
+    return tmp.innerHTML;
+  }catch(_){ return ''; }
 }
+function timeSlot(){
+  const h=new Date().getHours();
+  if(h<11) return {vi:['Sáng','Layer2','Theo dõi cầu nối & volume tăng.'], en:['Morning','Layer2','Bridge flow & rising volume.']};
+  if(h<17) return {vi:['Trưa','Funding','Quan sát funding & độ lệch.'],      en:['Midday','Funding','Watch funding & skew.']};
+  return           {vi:['Tối','Stable Flows','Theo dõi netflow CEX/DEX.'],    en:['Evening','Stable Flows','Track CEX/DEX netflow.']};
+}
+function seedFeed(lang){
+  const slot=timeSlot()[lang];
+  const items=[
+    {t:`${slot[0]} • ${slot[1]} • Binance`, url:CFG.links.binance, body:lang==='vi'?'Ưu đãi người mới, phí cạnh tranh.':'New user perks, competitive fees.', tags:[slot[1].toLowerCase(),'onboarding','cex']},
+    {t:`${slot[0]} • ${slot[1]} • AlgosOne`, url:CFG.links.algos, body:lang==='vi'?'Cảnh báo realtime, kịch bản 2 chiều.':'Realtime alerts, two‑sided plays.', tags:[slot[1].toLowerCase(),'ai','signals']}
+  ];
+  return {
+    updated_at:new Date().toISOString(),
+    items:items.map(x=>({id:x.t.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-'+Date.now(), title:x.t,
+      body_html:`<p>${x.body}</p>`, cta:{label: x.t.includes('Binance')?(lang==='vi'?'Mở Binance':'Open Binance'):(lang==='vi'?'Mở AlgosOne':'Open AlgosOne'), url:x.url}, tags:x.tags, lang}))
+  };
+}
+let lastFeed=null, lastSource='seed';
 function renderFeed(feed, source){
-  $('#statusFeed').textContent = 'Feed: ' + (source==='default'?(LANG==='vi'?'mặc định':'default'): source==='cache'?'cache':'remote');
-  $('#statusFeed').className = 'badge ' + (source==='default'?'warn':'ok');
-  $('#feedInfo').textContent = (LANG==='vi'?'Cập nhật: ':'Updated: ') + new Date(feed.updated_at).toLocaleString() + ' • source: ' + source;
+  lastFeed=feed; lastSource=source;
+  $('#statusFeed').textContent='Feed: '+(source); $('#statusFeed').className='badge '+(source==='remote'?'ok':(source==='cache'?'warn':'warn'));
+  $('#feedInfo').textContent=(LANG==='vi'?'Cập nhật: ':'Updated: ')+new Date(feed.updated_at).toLocaleString()+' • '+source;
   const box=$('#feedList'); box.innerHTML='';
-  feed.items.forEach(it=>{
+  const seen=new Set(); const list=(feed.items||[]).filter(x=>x&&x.id&&!seen.has(x.id)&&(seen.add(x.id),true)).slice(0,8);
+  list.forEach(it=>{
     const card=document.createElement('div'); card.className='card';
     const body=sanitize(it.body_html||''); const tags=(it.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join(' ');
     card.innerHTML=`<b>${it.title||''}</b><div class="muted" style="margin:6px 0">${tags}</div><div>${body}</div>
@@ -308,27 +281,20 @@ function renderFeed(feed, source){
     box.appendChild(card);
   });
 }
-
-/*** Loaders ***/
-async function loadConfig(){
-  const {data} = await trySources(CONFIG_URLS, LS_CFG, defaults);
-  return {...defaults, ...data, payments:{...defaults.payments, ...(data.payments||{})}};
-}
-async function loadFeedFor(lang){
-  const urls = feedSources(lang);
-  const cacheKey = lang==='en'?LS_FEED_EN:LS_FEED_VI;
-  const fallback = FEED_SEED[lang] || FEED_SEED.vi;
-  const {data, source} = await trySources(urls, cacheKey, fallback);
-  return {feed: sanitizeFeed(data), source};
-}
-async function bootFeed(){
-  const {feed, source} = await loadFeedFor(LANG);
-  renderFeed(feed, source);
+async function tryFetch(url){ try{ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw 0; return await r.json(); }catch(_){ return null; } }
+async function loadExternalFeed(){
+  const files = LANG==='en' ? ['feed.en.json'] : ['feed.vi.json'];
+  const urls=[];
+  if(CFG.repo_raw) urls.push(`${CFG.repo_raw}/${files[0]}`);
+  if(CFG.ipns_id){ urls.push(`https://ipfs.io/ipns/${CFG.ipns_id}/${files[0]}`); urls.push(`https://cloudflare-ipfs.com/ipns/${CFG.ipns_id}/${files[0]}`); }
+  for(const u of urls){ const d=await tryFetch(u); if(d&&d.items?.length){ return {data:d, source:'remote'}; }
+  }
+  return null;
 }
 
-/*** Gate, Share, 3D ***/
-function bindGate(cfg){
-  const SECRET=String(cfg.premium?.unlock_code||'');
+/*** 6) Gate ***/
+function bindGate(){
+  const SECRET=String(CFG.premium?.unlock_code||'');
   $('#doUnlock').onclick=()=>{ const ok=(String($('#unlockCode').value||'').trim()===SECRET);
     $('#uMsg').textContent= ok ? (LANG==='vi'?'✅ Đã mở khoá':'✅ Unlocked') : (LANG==='vi'?'❌ Sai mã':'❌ Wrong code');
     $('#opened').style.display = ok ? 'block':'none';
@@ -337,13 +303,8 @@ function bindGate(cfg){
   $('#remember').onclick=()=> localStorage.setItem('remember_code',$('#unlockCode').value||'');
   if(localStorage.getItem('premium_unlocked')==='1') $('#opened').style.display='block';
 }
-(function share(){
-  const base=location.origin+location.pathname; const peer=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2);
-  localStorage.setItem('peer_id',peer); const myRef=`${base}?ref=${peer}`;
-  const t=encodeURIComponent(document.title), u=encodeURIComponent(myRef);
-  const map={sh_tg:`https://t.me/share/url?url=${u}&text=${t}`,sh_x:`https://twitter.com/intent/tweet?text=${t}&url=${u}`,sh_fb:`https://www.facebook.com/sharer/sharer.php?u=${u}`,sh_in:`https://www.linkedin.com/sharing/share-offsite/?url=${u}`};
-  for(const id in map){ const el=document.getElementById(id); if(el) el.href=map[id]; }
-})();
+
+/*** 7) 3D Earth (nhẹ) ***/
 (function earth(){
   try{
     const canvas=document.getElementById('globe3d'); const pref=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -360,25 +321,32 @@ function bindGate(cfg){
   }catch(e){ $('#globeCap').textContent='—'; }
 })();
 
-/*** BOOT ***/
-document.getElementById('ens').textContent=defaults.ens;
-(async function start(){
-  try{
-    const cfg = await loadConfig();
-    paintPayments(cfg);
-    paintOffers(cfg);
-    bindRegionButtons();
-    bindGate(cfg);
-    await bootFeed();
-  }catch(e){ console.warn('Boot failed', e); $('#statusFeed').textContent='Feed: lỗi'; $('#statusFeed').className='badge err'; }
+/*** 8) Boot – ONE‑PASTE ***/
+(function start(){
+  // Net badge
+  $('#statusNet').textContent = navigator.onLine ? 'Online' : 'Offline';
+  $('#statusNet').className   = 'badge ' + (navigator.onLine ? 'ok' : 'err');
+
+  // Payments & offers
+  paintPayments(); renderOffers();
+
+  // Feed: ưu tiên lấy ngoài nếu có, nếu không tự tạo theo thời điểm
+  (async ()=>{
+    const ext = await loadExternalFeed();
+    if(ext){ renderFeed(ext.data, ext.source); }
+    else   { renderFeed(seedFeed(LANG), 'seed'); }
+  })();
+
+  // Region toggle
+  bindGate();
 })();
 </script>
 
-<!-- Service Worker (cache nhẹ) -->
+<!-- Service Worker (cache gọn) -->
 <script>
 if('serviceWorker' in navigator){
   const sw = `
-    const CACHE='onepaste-v2';
+    const CACHE='onepaste-v3';
     self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./'])) )});
     self.addEventListener('fetch',e=>{
       e.respondWith(
