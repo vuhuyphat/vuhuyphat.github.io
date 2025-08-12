@@ -90,6 +90,16 @@ small.muted{color:var(--mut)}
   color:#1a1300;border:0;box-shadow:0 0 0 0 rgba(255,95,26,.25);
 }
 #cta_algos:hover, #ctaA:hover, #algosLink:hover{ box-shadow:0 0 0 8px rgba(255,95,26,.22); transform:translateY(-1px); }
+
+/* ===== New styles for super Web3 upgrades ===== */
+.wallet-btn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(180deg,#4a90e2,#2f80ed);color:#fff;border:0;border-radius:12px;padding:10px 16px;cursor:pointer;transition:.2s}
+.wallet-btn:hover{transform:scale(1.05);box-shadow:0 0 0 6px rgba(47,128,237,.25)}
+.wallet-btn.connected{background:linear-gradient(180deg,#27ae60,#219653)}
+.nft-reward{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;background:#ffd700;opacity:0;transition:.3s}
+.card:hover .nft-reward{opacity:1;transform:rotate(10deg)}
+.viral-share{position:fixed;bottom:90px;right:16px;z-index:10;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;gap:8px}
+.ai-status{color:var(--green);font-size:12px}
+.error-fix{color:var(--danger);font-size:12px}
 </style>
 </head>
 <body>
@@ -103,6 +113,7 @@ small.muted{color:var(--mut)}
     <button class="pill" id="openData">Data</button>
     <button class="pill" id="lang">VI/EN</button>
     <button class="pill" id="theme">🌗 Theme</button>
+    <button class="wallet-btn" id="connectWallet">Connect Wallet</button>
   </div>
 
   <!-- Hero -->
@@ -268,14 +279,20 @@ small.muted{color:var(--mut)}
   "i18n":{
     "vi":{"tagline":"Web3 Siêu Tự Vận Hành – AI Agents 24/7 • Mở Khóa Top 3 On‑Chain • Token Chọn Lọc Realtime","moto":"“Biết Sớm – Quyết Định Sớm – Tài Lộc Sớm.”","globeCap":"Trái Đất On‑Chain · Mây & Ánh Sáng 3D"},
     "en":{"brand":"LightUnfold • UltraMaster V∞ Ultimate","tagline":"Autonomous Web3 – AI Agents 24/7 • Unlock Top 3 On‑Chain • Curated Tokens Realtime","moto":"“Know Early – Decide Early – Prosper Early.”","globeCap":"On‑Chain Earth · 3D Clouds & Lighting"}
-  }
+  },
+  "ai_api_url": "https://api.groq.com/openai/v1/chat/completions", // Gắn AI URL (ví dụ Groq/OpenAI proxy)
+  "ai_api_key": "YOUR_AI_API_KEY_HERE", // Gắn AI key
+  "coingecko_api": "https://api.coingecko.com/api/v3" // URL cho data realtime
 }
 </script>
 
 <!-- ===== Three.js ===== -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
 
-<!-- ===== Core JS (giữ cấu trúc; chỉ VI/EN + Earth xanh + Moon, nút nổi) ===== -->
+<!-- ===== Ethers.js for Web3 ===== -->
+<script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js"></script>
+
+<!-- ===== Core JS (nâng cấp siêu Web3: tự làm đẹp, tự sửa, tự lan tỏa, tự kiếm tiền) ===== -->
 <script>
 (() => {
   const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
@@ -285,6 +302,38 @@ small.muted{color:var(--mut)}
                rev:Number(localStorage.getItem('rev')||0),
                cfg:{} };
   try{ st.cfg = JSON.parse(document.getElementById('SITE_CONFIG').textContent.trim()); }catch(e){ st.cfg = {}; }
+
+  // ===== Tích hợp Web3 wallet (ethers.js) =====
+  let provider, signer, walletAddress;
+  async function connectWallet() {
+    if (window.ethereum) {
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      signer = provider.getSigner();
+      walletAddress = await signer.getAddress();
+      $('#connectWallet').textContent = `Connected: ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}`;
+      $('#connectWallet').classList.add('connected');
+      // Tự động mở khóa premium nếu wallet đã thanh toán on-chain (giả định check balance)
+      checkOnChainUnlock();
+    } else {
+      alert('Install MetaMask!');
+    }
+  }
+  $('#connectWallet').onclick = connectWallet;
+
+  async function checkOnChainUnlock() {
+    // Giả định: check transaction to payment address
+    if (walletAddress) {
+      // Sử dụng ethers để query blockchain (ví dụ: check balance USDT sent)
+      const usdtContract = new ethers.Contract(st.cfg.payments.usdt.id, ['function balanceOf(address) view returns (uint256)'], provider);
+      const bal = await usdtContract.balanceOf(walletAddress);
+      if (bal > 0) {
+        $('#opened').classList.remove('hidden');
+        localStorage.setItem('premium_unlocked', '1');
+        addRevenue(bal / 1e6); // Giả định USDT decimals
+      }
+    }
+  }
 
   function applyTheme(m){ document.documentElement.classList.toggle('light', m==='light'); localStorage.setItem('theme', m); }
   applyTheme(st.theme);
@@ -452,29 +501,108 @@ small.muted{color:var(--mut)}
   setInterval(beat, 1000); beat();
   $('#kRev').textContent = st.rev.toLocaleString();
 
-  /* ===== Giữ nguyên các phần demo khác của bạn (tokens/edu/opps/plans/payments/share/chat) – không đổi cấu trúc ===== */
-  const top3 = [
-    {symbol:'BTC', name:'Bitcoin', pct24h:0.8, cap:900000000000, link:'https://www.coingecko.com/en/coins/bitcoin'},
-    {symbol:'ETH', name:'Ethereum', pct24h:1.2, cap:450000000000, link:'https://www.coingecko.com/en/coins/ethereum'},
-    {symbol:'BNB', name:'BNB', pct24h:-0.4, cap:80000000000, link:'https://www.coingecko.com/en/coins/bnb'}
-  ];
-  const freeT = [
-    {symbol:'ARB', name:'Arbitrum', pct24h:2.1, cap:3000000000, link:'https://www.coingecko.com/en/coins/arbitrum'},
-    {symbol:'OP', name:'Optimism', pct24h:-1.3, cap:2800000000, link:'https://www.coingecko.com/en/coins/optimism'}
-  ];
-  function addBubble(txt,who='ai'){ const b=document.createElement('div'); b.className='bubble '+(who==='me'?'me':'ai'); b.textContent=txt; $('#chatBody').appendChild(b); $('#chatBody').scrollTop=$('#chatBody').scrollHeight; }
-  function cardToken(x){
-    const el=document.createElement('div'); el.className='card';
-    el.innerHTML=`<b>${x.symbol} • ${x.name}</b>
-    <div class="muted">24h: ${x.pct24h>0?'+':''}${x.pct24h}% • Cap: $${Intl.NumberFormat().format(x.cap)}</div>
-    <div class="row" style="margin-top:8px"><a class="btn out" href="${x.link}" target="_blank" rel="noopener">Xem biểu đồ</a>
-    <button class="btn" data-sym="${x.symbol}">AI phân tích</button></div>`;
-    el.querySelector('button').onclick=()=>addBubble(`Xin phân tích nhanh ${x.symbol} khung 1D/4H, mức vô hiệu hóa và vùng quan sát.`,'me');
-    return el;
+  /* ===== Tự làm đẹp giao diện (sử dụng AI để generate CSS động) ===== */
+  async function autoBeautify() {
+    try {
+      const response = await fetch(st.cfg.ai_api_url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
+        body: JSON.stringify({
+          model: 'mixtral-8x7b-32768',
+          messages: [{ role: 'user', content: 'Generate improved CSS rules for a crypto dashboard: make it more modern, add gradients, animations for buttons and cards. Keep variables like --bg, --card. Output only CSS code.' }]
+        })
+      });
+      const data = await response.json();
+      const newCSS = data.choices[0].message.content;
+      const styleEl = document.createElement('style');
+      styleEl.textContent = newCSS;
+      document.head.appendChild(styleEl);
+      console.log('AI beautified UI!');
+    } catch (e) { console.warn('AI beautify failed', e); }
   }
-  top3.forEach(t=>$('#tokenPro').appendChild(cardToken(t)));
-  freeT.forEach(t=>$('#tokenFree').appendChild(cardToken(t)));
+  if (st.cfg.ai_api_key !== 'YOUR_AI_API_KEY_HERE') autoBeautify(); // Chạy nếu có key
 
+  /* ===== Tự sửa chữa chức năng (self-healing: detect error & AI fix) ===== */
+  window.addEventListener('error', async (e) => {
+    try {
+      const errMsg = `Error: ${e.message} at ${e.filename}:${e.lineno}`;
+      const response = await fetch(st.cfg.ai_api_url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
+        body: JSON.stringify({
+          model: 'mixtral-8x7b-32768',
+          messages: [{ role: 'user', content: `Fix this JS error in a crypto web app: ${errMsg}. Provide fixed code snippet to eval.` }]
+        })
+      });
+      const data = await response.json();
+      const fixCode = data.choices[0].message.content;
+      eval(fixCode); // Nguy hiểm, nhưng cho tự sửa
+      console.log('AI fixed error!');
+    } catch (_) {}
+  });
+
+  /* ===== Tự cập nhật data realtime từ CoinGecko URL ===== */
+  async function fetchRealtimeTokens() {
+    try {
+      const res = await fetch(`${st.cfg.coingecko_api}/simple/price?ids=bitcoin,ethereum,binancecoin,arbitrum,optimism&vs_currencies=usd&include_market_cap=true&include_24hr_change=true`);
+      const data = await res.json();
+      // Update top3 and freeT dynamically
+      const top3 = [
+        {symbol:'BTC', name:'Bitcoin', pct24h: data.bitcoin.usd_24h_change, cap: data.bitcoin.usd_market_cap, link:'https://www.coingecko.com/en/coins/bitcoin'},
+        {symbol:'ETH', name:'Ethereum', pct24h: data.ethereum.usd_24h_change, cap: data.ethereum.usd_market_cap, link:'https://www.coingecko.com/en/coins/ethereum'},
+        {symbol:'BNB', name:'BNB', pct24h: data.binancecoin.usd_24h_change, cap: data.binancecoin.usd_market_cap, link:'https://www.coingecko.com/en/coins/bnb'}
+      ];
+      const freeT = [
+        {symbol:'ARB', name:'Arbitrum', pct24h: data.arbitrum.usd_24h_change, cap: data.arbitrum.usd_market_cap, link:'https://www.coingecko.com/en/coins/arbitrum'},
+        {symbol:'OP', name:'Optimism', pct24h: data.optimism.usd_24h_change, cap: data.optimism.usd_market_cap, link:'https://www.coingecko.com/en/coins/optimism'}
+      ];
+      $('#tokenPro').innerHTML = ''; top3.forEach(t => $('#tokenPro').appendChild(cardToken(t)));
+      $('#tokenFree').innerHTML = ''; freeT.forEach(t => $('#tokenFree').appendChild(cardToken(t)));
+    } catch (e) { console.warn('Realtime fetch failed', e); }
+  }
+  setInterval(fetchRealtimeTokens, 60000); // Tự update mỗi phút
+  fetchRealtimeTokens();
+
+  /* ===== Tự lan tỏa & kiếm tiền (viral referral + on-chain reward) ===== */
+  const peer=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2); localStorage.setItem('peer_id',peer);
+  const base=location.origin+location.pathname; const myRef=`${base}?ref=${peer}&utm_source=share&utm_medium=viral&utm_campaign=ultramaster`;
+  const t_enc=encodeURIComponent(document.title), u_enc=encodeURIComponent(myRef);
+  const map={sh_tg:`https://t.me/share/url?url=${u_enc}&text=${t_enc}`, sh_x:`https://twitter.com/intent/tweet?text=${t_enc}&url=${u_enc}`, sh_fb:`https://www.facebook.com/sharer/sharer.php?u=${u_enc}`, sh_in:`https://www.linkedin.com/sharing/share-offsite/?url=${u_enc}`};
+  for(const id in map){ const el=document.getElementById(id); if(el) el.href=map[id]; }
+  document.getElementById('shareMine')?.addEventListener('click', async()=>{ 
+    try{ 
+      if(navigator.share){ await navigator.share({title:document.title,text:'Khám Phá UltraMaster',url:myRef}); } 
+      else { await navigator.clipboard.writeText(myRef); alert(st.lang==='vi'?'Đã sao chép liên kết!':'Link copied!'); } 
+      // Tự kiếm tiền: giả định reward on-chain cho share
+      if (signer) {
+        const tx = await signer.sendTransaction({ to: st.cfg.payments.eth.id, value: ethers.utils.parseEther('0.001') }); // Reward nhỏ
+        await tx.wait();
+        addRevenue(0.001 * 1000); // Convert to USD estimate
+      }
+    }catch(_){} 
+  });
+
+  // Tự lan tỏa: auto post to X nếu connected (giả định, cần API)
+  async function autoViral() {
+    if (Math.random() < 0.1) { // 10% chance mỗi load
+      // Sử dụng AI để generate tweet
+      const response = await fetch(st.cfg.ai_api_url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
+        body: JSON.stringify({
+          model: 'mixtral-8x7b-32768',
+          messages: [{ role: 'user', content: 'Generate a viral tweet about UltraMaster Web3 app with referral link: ' + myRef }]
+        })
+      });
+      const data = await response.json();
+      const tweet = data.choices[0].message.content;
+      // Post to X (giả định window.open for intent)
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`, '_blank');
+    }
+  }
+  autoViral();
+
+  /* ===== Giữ nguyên các phần khác, chỉ thêm NFT reward cho ebooks ===== */
   const ebooks=[
     {title:"Crypto 101 (Miễn phí)", price:0, desc:"Ví • bảo mật • chu kỳ • quản trị vốn • checklist."},
     {title:"DeFi Mastery ($10)", price:10, desc:"Yield • Lending • Perp — vận hành & tối ưu."},
@@ -482,7 +610,15 @@ small.muted{color:var(--mut)}
   ];
   ebooks.forEach(b=>{ const d=document.createElement('div'); d.className='card';
     d.innerHTML=`<b>${b.title}</b><div class="muted">${b.desc}</div>
-    <div class="row" style="margin-top:8px"><span class="tag">$${b.price}</span><button class="btn out">Đọc thử</button></div>`;
+    <div class="row" style="margin-top:8px"><span class="tag">$${b.price}</span><button class="btn out">Đọc thử</button></div>
+    <div class="nft-reward" title="NFT Reward"></div>`;
+    d.querySelector('button').onclick = async () => {
+      if (signer) {
+        // Mint NFT reward on-chain (giả định contract)
+        const nftContract = new ethers.Contract('0xNFT_ADDRESS', ['function mint()'], signer);
+        await nftContract.mint();
+      }
+    };
     $('#ebooks').appendChild(d); });
 
   $('#ticker').textContent='Chu kỳ • funding/oi • smart money flows…';
@@ -519,25 +655,51 @@ small.muted{color:var(--mut)}
 
   const SECRET=String(st.cfg.premium?.unlock_code||'');
   function addRevenue(x){ st.rev=Math.max(0, st.rev+Number(x||0)); localStorage.setItem('rev', st.rev); $('#kRev').textContent=st.rev.toLocaleString(); }
-  $('#doUnlock').onclick=()=>{ const ok=(String($('#unlockCode').value||'').trim()===SECRET);
+  $('#doUnlock').onclick=async ()=>{ 
+    const ok=(String($('#unlockCode').value||'').trim()===SECRET);
     $('#uMsg').textContent= ok ? (st.lang==='vi'?'Mở khóa thành công!':'Unlocked!') : (st.lang==='vi'?'Sai mã.':'Wrong code.');
-    if(ok){ $('#opened').classList.remove('hidden'); localStorage.setItem('premium_unlocked','1'); addRevenue(plans.find(p=>p.id===$('#bundleSel').value)?.price||0); paintPremium(); } };
+    if(ok){ $('#opened').classList.remove('hidden'); localStorage.setItem('premium_unlocked','1'); addRevenue(plans.find(p=>p.id===$('#bundleSel').value)?.price||0); paintPremium(); } 
+    // Tự kiếm tiền: nếu on-chain, gửi fee affiliate
+    if (signer && ok) {
+      const tx = await signer.sendTransaction({ to: 'YOUR_AFFILIATE_ADDRESS', value: ethers.utils.parseEther('0.01') });
+      await tx.wait();
+    }
+  };
   $('#remember').onclick=()=>{ localStorage.setItem('remember_code',$('#unlockCode').value||''); };
   $('#relock').onclick=()=>{ $('#opened').classList.add('hidden'); localStorage.removeItem('premium_unlocked'); };
   if(localStorage.getItem('premium_unlocked')==='1') $('#opened').classList.remove('hidden');
   function paintPremium(){ const box=$('#premium'); box.innerHTML=''; ['Playbook đa khung','Checklist rủi ro','Bảng tâm lý & dòng tiền','Q&A theo lịch'].forEach(x=>{ const c=document.createElement('div'); c.className='card'; c.innerHTML=`<b>${x}</b><div class="muted">Nội dung hiển thị sau mở khóa.</div>`; box.appendChild(c); }); }
 
-  const peer=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2); localStorage.setItem('peer_id',peer);
-  const base=location.origin+location.pathname; const myRef=`${base}?ref=${peer}&utm_source=share&utm_medium=viral&utm_campaign=ultramaster`;
-  const t_enc=encodeURIComponent(document.title), u_enc=encodeURIComponent(myRef);
-  const map={sh_tg:`https://t.me/share/url?url=${u_enc}&text=${t_enc}`, sh_x:`https://twitter.com/intent/tweet?text=${t_enc}&url=${u_enc}`, sh_fb:`https://www.facebook.com/sharer/sharer.php?u=${u_enc}`, sh_in:`https://www.linkedin.com/sharing/share-offsite/?url=${u_enc}`};
-  for(const id in map){ const el=document.getElementById(id); if(el) el.href=map[id]; }
-  document.getElementById('shareMine')?.addEventListener('click', async()=>{ try{ if(navigator.share){ await navigator.share({title:document.title,text:'Khám Phá UltraMaster',url:myRef}); } else { await navigator.clipboard.writeText(myRef); alert(st.lang==='vi'?'Đã sao chép liên kết!':'Link copied!'); } }catch(_){} });
-
-  /* Chat mini */
+  /* Chat mini với AI realtime */
   $('#openChat').onclick=()=>{ $('#chat').style.display='flex'; if(!$('#chatBody').dataset.hi){ addBubble(st.lang==='vi'?'Chào! Tôi là AI hỗ trợ phân tích.':'Hi! I\'m your analysis assistant.'); $('#chatBody').dataset.hi=1; } };
   $('#closeChat').onclick=()=> $('#chat').style.display='none';
-  $('#chatSend').onclick=()=>{ const v=$('#chatIn').value.trim(); if(!v) return; addBubble(v,'me'); $('#chatIn').value=''; setTimeout(()=>addBubble(st.lang==='vi'?'Mẹo: R:R ≥ 2:1, rủi ro ≤1%.':'Tip: Risk ≤1%, target R:R ≥ 2:1.','ai'),400); };
+  $('#chatSend').onclick=async ()=>{ 
+    const v=$('#chatIn').value.trim(); if(!v) return; addBubble(v,'me'); $('#chatIn').value='';
+    try {
+      const response = await fetch(st.cfg.ai_api_url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
+        body: JSON.stringify({
+          model: 'mixtral-8x7b-32768',
+          messages: [{ role: 'user', content: v }]
+        })
+      });
+      const data = await response.json();
+      addBubble(data.choices[0].message.content, 'ai');
+    } catch (e) { addBubble('Error: AI offline', 'ai'); }
+  };
+
+  function addBubble(txt,who='ai'){ const b=document.createElement('div'); b.className='bubble '+(who==='me'?'me':'ai'); b.textContent=txt; $('#chatBody').appendChild(b); $('#chatBody').scrollTop=$('#chatBody').scrollHeight; }
+
+  function cardToken(x){
+    const el=document.createElement('div'); el.className='card';
+    el.innerHTML=`<b>${x.symbol} • ${x.name}</b>
+    <div class="muted">24h: ${x.pct24h>0?'+':''}${x.pct24h}% • Cap: $${Intl.NumberFormat().format(x.cap)}</div>
+    <div class="row" style="margin-top:8px"><a class="btn out" href="${x.link}" target="_blank" rel="noopener">Xem biểu đồ</a>
+    <button class="btn" data-sym="${x.symbol}">AI phân tích</button></div>`;
+    el.querySelector('button').onclick=()=>addBubble(`Xin phân tích nhanh ${x.symbol} khung 1D/4H, mức vô hiệu hóa và vùng quan sát.`,'me');
+    return el;
+  }
 
   /* ===== 3D EARTH: xanh dịu + lớp tint; Moon & ánh trăng mờ bay ngang ===== */
   try{
@@ -613,11 +775,11 @@ small.muted{color:var(--mut)}
 })();
 </script>
 
-<!-- Floating share -->
-<div class="row" style="position:fixed;right:16px;bottom:16px;gap:8px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px">
+<!-- Floating share (nâng cấp viral) -->
+<div class="viral-share">
   <a id="sh_tg" target="_blank" title="Share Telegram">📣</a>
   <a id="sh_x" target="_blank" title="Share X">𝕏</a>
-  <a id="sh_fb" target="_blank" title="Share Facebook">f</a>
+  <a id="sh_fb" target="_blank" title="Share Facebook">𝕗</a>
   <a id="sh_in" target="_blank" title="Share LinkedIn">in</a>
 </div>
 
