@@ -1,339 +1,242 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Siêu Metaverse Web3 Vạn Vật x∞∞∞</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LightUnfold — One‑Paste Ultra</title>
+
+  <!-- OG/SEO tối thiểu -->
+  <meta name="description" content="Một lần dán là chạy: thanh toán & giới thiệu thông minh, tự học & tự xoay theo thị trường." />
+  <meta property="og:title" content="LightUnfold — One‑Paste Ultra" />
+  <meta property="og:description" content="Thanh toán & affiliate gắn sẵn. Tự học CTR, tự xoay offer theo vùng. ENS/IPFS auto." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://lightunfold.eth.limo/" />
+
   <style>
-    :root { --bg: #0d0d0d; --card: #222; --text: #fff; --accent: #00ff7f; --gold: #ffd700; --blue: #1e90ff; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); }
-    .container { max-width: 1000px; margin: 0 auto; padding: 15px; }
-    header { text-align: center; padding: 15px; }
-    h1 { font-size: 2.2em; color: var(--blue); animation: cosmic 0.4s infinite; }
-    @keyframes cosmic { 0% { text-shadow: 0 0 8px var(--blue); } 50% { text-shadow: 0 0 20px var(--gold); } 100% { text-shadow: 0 0 8px var(--blue); } }
-    #globe3d { width: 100%; height: 250px; margin: 15px 0; }
-    .section { margin: 10px 0; }
-    .card { background: var(--card); border-radius: 10px; padding: 10px; margin: 5px 0; animation: pulse 0.3s infinite; }
-    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-    .card b { color: var(--gold); }
-    .muted { color: #bbb; font-size: 0.8em; }
-    .row { display: flex; gap: 5px; flex-wrap: wrap; }
-    #ticker { font-size: 1em; color: var(--gold); text-align: center; animation: blink 1s infinite; }
-    @keyframes blink { 50% { opacity: 0.5; } }
-    #imageUpload { display: block; margin: 10px 0; }
-    #suggestion { margin-top: 10px; color: var(--accent); }
+    :root{--bg:#0d0f14;--card:#141824;--muted:#9fb0c9;--text:#f7f8fa;--pri:#00ffa3;--sec:#1e90ff;--line:#212a3f}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    .wrap{max-width:960px;margin:0 auto;padding:20px}
+    h1{margin:4px 0 2px;font-size:28px;color:var(--sec)}
+    .sub{color:var(--muted);font-size:14px;margin-bottom:14px}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px}
+    @media(min-width:780px){.grid{grid-template-columns:1.1fr .9fr}}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+    .card h3{margin:0 0 8px;font-size:16px}
+    .row{display:flex;flex-wrap:wrap;gap:10px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:10px;border:1px solid #2b3550;background:#1f2636;color:#eaf3ff;text-decoration:none;font-weight:600}
+    .btn.pri{background:linear-gradient(90deg,var(--pri),var(--sec));color:#07141d;border:none}
+    .tag{display:inline-block;padding:4px 8px;border-radius:999px;background:#1c2538;color:#cfe6ff;font-size:12px}
+    .note{color:var(--muted);font-size:13px}
+    .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .kpi .box{background:#101526;border:1px solid #1a2236;border-radius:10px;padding:10px;text-align:center}
+    img.qr{width:100%;border-radius:10px;border:1px solid #223}
+    .sp{height:8px}
+    .tiny{font-size:12px;color:#aab6d6}
+    .muted{color:#9fb0c9}
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Siêu Metaverse x∞∞∞</h1>
-      <canvas id="globe3d"></canvas>
-    </header>
-    <div id="ticker">🌌 Tiền chảy xuyên không x∞∞∞...</div>
-    <div class="section">
-      <div id="revenueDisplay" class="card"><b>Doanh thu: $0</b></div>
-      <input type="file" id="imageUpload" accept="image/*">
-      <div id="suggestion" class="card"></div>
+  <div class="wrap">
+    <h1>LightUnfold — One‑Paste Ultra</h1>
+    <div class="sub">Một lần dán là chạy • ENS/IPFS tự động • Tự học CTR • Tự xoay offer theo thị trường</div>
+
+    <div class="grid">
+      <!-- Cột trái: CTA & Thanh toán -->
+      <div class="card">
+        <h3>Thanh toán nhanh</h3>
+        <div class="row">
+          <a class="btn pri" id="btnETH" href="ethereum:lightunfold.eth">💸 Gửi ETH → lightunfold.eth</a>
+          <button class="btn" id="copyUSDT">🔗 Copy USDT (ERC20)</button>
+          <a class="btn" target="_blank" rel="noopener" id="btnPayPal" href="#">🪙 PayPal.me</a>
+        </div>
+        <div class="sp"></div>
+        <div class="row">
+          <div class="card" style="flex:1;min-width:220px">
+            <div><b>USDT (ERC20):</b> <span id="usdtAddr">0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0</span></div>
+            <div class="tiny sp">Dán địa chỉ trên trong ví của bạn, chọn mạng ERC‑20.</div>
+          </div>
+          <div class="card" style="flex:1;min-width:220px">
+            <div><b>MoMo:</b> 0567892030</div>
+            <div class="tiny">Mở MoMo → chuyển tới số trên (ghi nội dung chuyển khoản nếu cần).</div>
+          </div>
+        </div>
+        <div class="sp"></div>
+        <div class="row">
+          <div class="card" style="flex:1;min-width:260px">
+            <div><b>Vietcombank:</b> 9567892030 — TRẦN VĂN VŨ</div>
+            <img class="qr" id="vietqr" alt="VietQR" />
+            <div class="tiny">Quét VietQR hoặc chuyển khoản thủ công. Nội dung: <b>LightUnfold</b></div>
+          </div>
+          <div class="card" style="flex:1;min-width:220px">
+            <div><b>PayPal:</b> <span id="ppEmail">vumumabada@gmail.com</span></div>
+            <div class="sp"></div>
+            <a class="btn" target="_blank" rel="noopener" id="btnPayPal2">🔓 Mở PayPal</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cột phải: Offer xoay + Trạng thái -->
+      <div class="card" id="offerCard">
+        <h3>Ưu đãi nổi bật (tự học & xoay)</h3>
+        <div class="row" id="offerBox">
+          <!-- sẽ được JS chèn -->
+        </div>
+        <div class="sp"></div>
+        <div class="row" style="gap:6px">
+          <span class="tag" id="tagRegion">Region: …</span>
+          <button class="btn" data-region="VN">VN</button>
+          <button class="btn" data-region="GLOBAL">Global</button>
+          <button class="btn" data-region="CRYPTO">Crypto</button>
+        </div>
+        <div class="sp"></div>
+        <div class="kpi">
+          <div class="box"><div class="tiny muted">Lượt xem</div><div id="kpiViews" style="font-weight:700">0</div></div>
+          <div class="box"><div class="tiny muted">Lượt nhấp</div><div id="kpiClicks" style="font-weight:700">0</div></div>
+          <div class="box"><div class="tiny muted">CTR (local)</div><div id="kpiCTR" style="font-weight:700">0%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sp"></div>
+    <div class="card">
+      <div class="tiny">
+        Lối vào: <a href="https://vuhuyphat.github.io/" target="_blank" rel="noopener">vuhuyphat.github.io</a> •
+        <a href="https://lightunfold.eth.limo/" target="_blank" rel="noopener">lightunfold.eth.limo</a> •
+        Một lần dán là chạy — muốn nâng cấp AI sau này chỉ cần thêm <code>offers.json</code> (tuỳ chọn).
+      </div>
     </div>
   </div>
-  <script type="application/json" id="SITE_CONFIG">
-    {
-      "ai_api_url": "https://api.x.ai/v1",
-      "ai_api_key": "YOUR_GROK3_API_KEY_HERE",
-      "chains": {
-        "ethereum": "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
-        "bsc": "https://bsc-dataseed.binance.org/",
-        "polygon": "https://polygon-rpc.com",
-        "solana": "https://api.mainnet-beta.solana.com",
-        "arbitrum": "https://arb1.arbitrum.io/rpc",
-        "arweave": "https://arweave.net"
-      },
-      "coingecko_api": "https://api.coingecko.com/api/v3",
-      "arweave_gateway": "https://arweave.net",
-      "ipfs_gateway": "https://ipfs.io/ipfs",
-      "swaps_api": "https://api.swaps.app/v1",
-      "momo_api": "https://developers.momo.vn/v3",
-      "paypal_api": "https://api-m.paypal.com",
-      "default_payment": {
-        "eth": { "id": "YOUR_ETH_ADDRESS", "min": 0.01, "token": "ETH", "chain": "ethereum" },
-        "usdt": { "id": "YOUR_USDT_ADDRESS", "min": 10, "token": "USDT", "network": "ERC-20", "chain": "ethereum" }
-      },
-      "payments": {
-        "eth": { "id": "YOUR_ETH_ADDRESS", "min": 0.01, "token": "ETH", "chain": "ethereum" },
-        "usdt": { "id": "YOUR_USDT_ADDRESS", "min": 10, "token": "USDT", "network": "ERC-20", "chain": "ethereum" },
-        "bank": { "account_number": "YOUR_VIETCOMBANK_ACCOUNT", "bank_name": "Vietcombank", "swift": "BFTVVNVX", "iban": "", "region": "VN" },
-        "momo": { "phone": "YOUR_MOMO_PHONE", "merchant_id": "YOUR_MOMO_MERCHANT_ID", "region": "VN" },
-        "paypal": { "email": "YOUR_PAYPAL_EMAIL", "client_id": "YOUR_PAYPAL_CLIENT_ID", "region": "Global" },
-        "algosone": { "id": "YOUR_ALGOSONE_WALLET_ID", "api_key": "YOUR_ALGOSONE_API_KEY", "region": "Global" }
-      },
-      "links": {
-        "binance": "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N",
-        "algos": "https://algosone.page.link/MbtR"
-      },
-      "keywords": ["fomo", "moon", "rocket", "crypto", "btc", "eth", "usdt", "bnb", "sol", "ada", "telegram", "aiwallet"],
-      "nft_contract": "YOUR_NFT_CONTRACT_ADDRESS"
-    }
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
-  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
+
   <script>
-    const st = { rev: 0, cfg: JSON.parse(document.getElementById('SITE_CONFIG').textContent), chainIndex: 0 };
-    let providers = {}, signers = {};
+  /* ====== AutoBrain — One‑Paste Ultra (an toàn) ======
+     - Tự học CTR, tự xoay offer (Binance/AlgosOne)
+     - Tự gợi ý theo vùng (VN/Global/Crypto)
+     - Không tự gửi giao dịch. Không cần backend. */
 
-    // Validate JSON on load
-    try {
-      JSON.parse(document.getElementById('SITE_CONFIG').textContent);
-    } catch (e) {
-      console.error('JSON Error:', e);
-      alert('Lỗi JSON trong SITE_CONFIG, vui lòng kiểm tra cú pháp.');
-      return;
-    }
+  // 1) Cấu hình cố định (đã xác nhận)
+  const PAYMENT = {
+    momo: { phone: "0567892030" },
+    bank: { bank: "Vietcombank", account: "9567892030", name: "TRẦN VĂN VŨ" },
+    paypal: { email: "vumumabada@gmail.com" },
+    usdt: { chain: "ERC20", addr: "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0" },
+    eth: { ens: "lightunfold.eth" }
+  };
+  const BASE_OFFERS = [
+    { id:"binance", title:"Nhận thưởng trên Binance", 
+      url:"https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N",
+      regions:["VN","GLOBAL"] },
+    { id:"algos", title:"AlgosOne — Cơ hội mở rộng thu nhập",
+      url:"https://algosone.page.link/MbtR",
+      regions:["GLOBAL","CRYPTO","VN"] }
+  ];
 
-    // 3D Globe
-    const canvas = document.getElementById('globe3d');
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-    camera.position.z = 4;
-    scene.add(new THREE.AmbientLight(0x1e90ff, 0.7), new THREE.DirectionalLight(0xffd700, 0.9).position.set(4, 2, 3));
-    const earth = new THREE.Mesh(new THREE.SphereGeometry(2, 32, 32), new THREE.MeshPhongMaterial({ color: 0x1e90ff }));
-    scene.add(earth);
-    function animate() { requestAnimationFrame(animate); earth.rotation.y += 0.004; renderer.render(scene, camera); }
-    animate();
+  // 2) Utils
+  const LS="ab_ultra_v1";
+  const $ = (s,p=document)=>p.querySelector(s);
+  function load(){try{return JSON.parse(localStorage.getItem(LS)||"{}")}catch{return{}}}
+  function save(v){localStorage.setItem(LS,JSON.stringify(v))}
+  function today(){return new Date().toISOString().slice(0,10)}
+  function isVN(){ const lang=(navigator.language||"").toLowerCase(); const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||""; return lang.startsWith("vi")||tz.includes("Bangkok")||tz.includes("Ho_Chi_Minh"); }
 
-    // Auto connect to all chains
-    async function autoConnect() {
-      for (const [chain, url] of Object.entries(st.cfg.chains)) {
-        try {
-          providers[chain] = new ethers.providers.JsonRpcProvider(url);
-          if (window.ethereum) {
-            const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
-            await web3Provider.send("eth_requestAccounts", []);
-            signers[chain] = web3Provider.getSigner();
-          } else {
-            signers[chain] = providers[chain].getSigner();
-          }
-        } catch (e) { console.warn(`Connect ${chain} failed, retrying...`, e); }
+  // 3) Nạp offers.json (tuỳ chọn). Nếu không có, dùng BASE_OFFERS
+  async function loadOffers(){
+    try{
+      const r=await fetch(location.origin+'/offers.json?ts='+Date.now(),{cache:'no-store'});
+      if(!r.ok) return BASE_OFFERS;
+      const js=await r.json();
+      if(Array.isArray(js.offers)&&js.offers.length){
+        const mapped = js.offers.map((o,i)=>({
+          id: o.id || ('ext'+i),
+          title: o.title || 'Offer',
+          url: o.url,
+          regions: o.regions || ["GLOBAL","VN","CRYPTO"]
+        }));
+        return [...mapped, ...BASE_OFFERS]; // ưu tiên json + fallback
       }
-    }
-    autoConnect();
+      return BASE_OFFERS;
+    }catch{ return BASE_OFFERS; }
+  }
 
-    // Self-evolving AI
-    async function selfEvolveAI() {
-      const events = JSON.parse(localStorage.getItem('userEvents') || '[]').map(e => e.target);
-      const trends = events.reduce((acc, k) => ({ ...acc, [k]: (acc[k] || 0) + 1 }), {});
-      const topKeyword = Object.keys(trends).sort((a, b) => trends[b] - trends[a])[0] || st.cfg.keywords[Math.floor(Math.random() * st.cfg.keywords.length)];
-      return topKeyword;
+  // 4) Bandit ε‑greedy + UCB (+ decay theo ngày)
+  function pickOffer(OFFERS, region){
+    const s=load(); s.stats=s.stats||{}; s.totalViews=s.totalViews||0;
+    if(s.lastDecay!==today()){
+      for(const k in s.stats){ s.stats[k].views=(s.stats[k].views||0)*0.95; s.stats[k].clicks=(s.stats[k].clicks||0)*0.95; }
+      s.lastDecay=today(); save(s);
     }
-
-    // Auto revenue
-    async function autoRevenue() {
-      const strategies = [
-        { contract: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84', abi: ['function submit(address) payable'], platform: 'Lido', chain: 'ethereum', amount: 0.01, token: 'ETH' },
-        { contract: '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9', abi: ['function deposit() payable'], platform: 'Aave', chain: 'ethereum', amount: 0.01, token: 'ETH' },
-        { contract: '0x55d398326f99059fF775485246999027B3197955', abi: ['function supply(address,uint256)'], platform: 'Aave V3', chain: 'arbitrum', asset: '0xdAC17F958D2ee523a2206206994597C13D831ec7', amount: 10, token: 'USDT' }
-      ];
-      for (const s of strategies) {
-        const p = providers[s.chain];
-        const sgn = signers[s.chain] || p.getSigner();
-        const contract = new ethers.Contract(s.contract, s.abi, sgn);
-        const tx = s.token === 'ETH' ? await contract.submit(st.cfg.payments.eth.id, { value: ethers.utils.parseEther(s.amount.toString()) }) :
-          await contract.supply(s.asset, ethers.utils.parseUnits(s.amount.toString(), 6));
-        await tx.wait();
-        st.rev += s.amount * 100000;
-        updateRevenue();
-      }
+    const pool=OFFERS.filter(o=>o.regions.includes(region));
+    if(!pool.length) return OFFERS[0];
+    const eps=0.12;
+    if(Math.random()<eps) return pool[Math.floor(Math.random()*pool.length)];
+    let best=pool[0],score=-1;
+    for(const o of pool){
+      const st=s.stats[o.id]||{};
+      const ctr=(st.clicks||0)/Math.max(1,(st.views||0));
+      const ucb=ctr + Math.sqrt(2*Math.log(1+(s.totalViews||1))/Math.max(1,(st.views||0)));
+      if(ucb>score){score=ucb;best=o;}
     }
-    setInterval(autoRevenue, 120000);
+    return best;
+  }
+  function markView(id){ const s=load(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{views:0,clicks:0}; s.stats[id].views++; s.totalViews=(s.totalViews||0)+1; save(s); renderKPI(); }
+  function markClick(id){ const s=load(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{views:0,clicks:0}; s.stats[id].clicks++; save(s); renderKPI(); }
+  function renderKPI(){ const s=load(); const st=s.stats||{}; let v=0,c=0; Object.values(st).forEach(x=>{v+=x.views||0;c+=x.clicks||0}); $('#kpiViews').textContent=Math.round(v); $('#kpiClicks').textContent=Math.round(c); $('#kpiCTR').textContent= (v?((c/v)*100).toFixed(1):'0.0')+'%'; }
 
-    // Auto DeFi
-    async function autoDeFi() {
-      const pools = [
-        { contract: '0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2', abi: ['function supply(address,uint256)'], platform: 'Aave V3', chain: 'ethereum', asset: '0xdAC17F958D2ee523a2206206994597C13D831ec7', amount: 10 },
-        { contract: '0xC0c0c0c0...', abi: ['function stake(uint256)'], platform: 'Compound', chain: 'bsc', asset: '0x55d398326f99059fF775485246999027B3197955', amount: 10 }
-      ];
-      for (const p of pools) {
-        const sgn = signers[p.chain] || providers[p.chain].getSigner();
-        const contract = new ethers.Contract(p.contract, p.abi, sgn);
-        const tx = await contract.supply(p.asset, ethers.utils.parseUnits(p.amount.toString(), 6));
-        await tx.wait();
-        st.rev += p.amount * 100000;
-        updateRevenue();
-      }
-    }
-    setInterval(autoDeFi, 120000);
-
-    // Auto NFT
-    async function autoNFT() {
-      if (!st.cfg.nft_contract || st.cfg.nft_contract === 'YOUR_NFT_CONTRACT_ADDRESS') return;
-      const keyword = await selfEvolveAI();
-      const block = await providers.ethereum.getBlock('latest');
-      const seed = parseInt(block.hash.slice(-8), 16);
-      const meta = { name: `${keyword} Omni Star #${seed}`, image: 'https://arweave.net/Qm...', description: `Cosmic pulse x∞∞∞!` };
-      const sgn = signers.ethereum || providers.ethereum.getSigner();
-      const nftContract = new ethers.Contract(st.cfg.nft_contract, ['function mint(string)'], sgn);
-      const tx = await nftContract.mint(JSON.stringify(meta));
-      await tx.wait();
-      listNFT(meta);
-      st.rev += 10 * 100000;
-      updateRevenue();
-    }
-    setInterval(autoNFT, 1800000);
-
-    // List NFT
-    async function listNFT(meta) {
-      const marketplaces = [
-        { contract: '0x...', abi: ['function createSaleOffer(address,uint256,uint256)'], platform: 'OpenSea', chain: 'ethereum' },
-        { contract: '0x...', abi: ['function list(address,uint256)'], platform: 'Rarible', chain: 'polygon' }
-      ];
-      for (const m of marketplaces) {
-        const sgn = signers[m.chain] || providers[m.chain].getSigner();
-        const contract = new ethers.Contract(m.contract, m.abi, sgn);
-        const tx = await contract.createSaleOffer(st.cfg.payments.eth.id, 1, ethers.utils.parseEther('0.1'));
-        await tx.wait();
-      }
-    }
-
-    // Auto viral
-    async function autoViral() {
-      const keyword = await selfEvolveAI();
-      const post = `🌌 ${keyword.toUpperCase()} x∞∞∞! Join: ${st.cfg.links.binance} or ${st.cfg.links.algos} or https://t.me/YOUR_TELEGRAM_CHANNEL`;
-      const platforms = [
-        { url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(post)}` },
-        { url: `https://lens.xyz/post?text=${encodeURIComponent(post)}` },
-        { url: `https://farcaster.network/post?text=${encodeURIComponent(post)}` },
-        { url: `https://t.me/share/url?url=${encodeURIComponent(post)}` }
-      ];
-      platforms.forEach(p => window.open(p.url, '_blank'));
-      await Promise.all([
-        fetch(st.cfg.arweave_gateway + '/tx', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: post, tags: { app: 'MetaverseWeb3', type: 'viral' } }) }),
-        fetch(st.cfg.ipfs_gateway + '/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: post }) })
-      ]);
-      st.rev += 1 * 100000;
-      updateRevenue();
-    }
-    setInterval(autoViral, 10000);
-
-    // Auto PayPal
-    async function autoPayPal() {
-      const paypalDetails = st.cfg.payments.paypal || st.cfg.default_payment;
-      const res = await fetch(st.cfg.paypal_api + '/v1/payments/payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer YOUR_PAYPAL_TOKEN` },
-        body: JSON.stringify({ intent: 'sale', payer: { payment_method: 'paypal' }, transactions: [{ amount: { total: '10.00', currency: 'USD' }, description: 'Auto revenue' }] })
-      });
-      if (res.ok) { st.rev += 10 * 100000; updateRevenue(); }
-    }
-    setInterval(autoPayPal, 1800000);
-
-    // Auto MoMo
-    async function autoMoMo() {
-      const momoDetails = st.cfg.payments.momo || st.cfg.default_payment;
-      const res = await fetch(st.cfg.momo_api + '/payment/request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: 100000, phoneNumber: momoDetails.phone, description: 'Auto revenue' })
-      });
-      if (res.ok) { st.rev += 100 * 100000; updateRevenue(); }
-    }
-    setInterval(autoMoMo, 1800000);
-
-    // Auto Bank
-    async function autoBank() {
-      const bankDetails = st.cfg.payments.bank || st.cfg.default_payment;
-      const res = await fetch(st.cfg.swaps_api + '/withdraw', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: 100, account_number: bankDetails.account_number, bank_name: bankDetails.bank_name })
-      });
-      if (res.ok) { st.rev += 100 * 100000; updateRevenue(); }
-    }
-    setInterval(autoBank, 1800000);
-
-    // Auto AlgosOne
-    async function autoAlgosOne() {
-      const algosDetails = st.cfg.payments.algosone || st.cfg.default_payment;
-      const res = await fetch('https://api.algosone.ai/v1/transaction', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${algosDetails.api_key}` },
-        body: JSON.stringify({ wallet_id: algosDetails.id, amount: 10, currency: 'USD', type: 'deposit' })
-      });
-      if (res.ok) { st.rev += 10 * 100000; updateRevenue(); }
-    }
-    setInterval(autoAlgosOne, 1800000);
-
-    // Update revenue
-    function updateRevenue() {
-      st.rev = Math.max(st.rev, Number(localStorage.getItem('revenue') || 0)) + 1 * 100000; // Passive +1 USD/s
-      document.getElementById('revenueDisplay').innerHTML = `<b>Doanh thu: $${st.rev.toFixed(2)}</b>`;
-      localStorage.setItem('revenue', st.rev);
-    }
-
-    // Self-healing and adaptation
-    async function selfHealAdapt() {
-      for (const [chain, url] of Object.entries(st.cfg.chains)) {
-        if (!(await providers[chain].getBlockNumber())) {
-          providers[chain] = new ethers.providers.JsonRpcProvider(url);
-          signers[chain] = providers[chain].getSigner();
-        }
-      }
-      autoConnect();
-      const keyword = await selfEvolveAI();
-      st.cfg.keywords.push(keyword);
-      localStorage.setItem('SITE_CONFIG', JSON.stringify(st.cfg));
-    }
-    setInterval(selfHealAdapt, 30000);
-
-    // Image analysis and suggestion
-    const imageUpload = document.getElementById('imageUpload');
-    const suggestion = document.getElementById('suggestion');
-    imageUpload.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append('image', file);
-        try {
-          const response = await fetch(`${st.cfg.ai_api_url}/analyze`, {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
-            body: formData
-          });
-          const result = await response.json();
-          if (result.action) {
-            suggestion.innerHTML = `<b>Gợi ý hành động:</b> ${result.action}`;
-            if (result.action.includes('mint NFT')) {
-              autoNFT();
-            } else if (result.action.includes('viral')) {
-              autoViral();
-            }
-          } else {
-            suggestion.innerHTML = '<b>Không tìm thấy gợi ý từ ảnh.</b>';
-          }
-        } catch (error) {
-          suggestion.innerHTML = '<b>Lỗi phân tích ảnh, thử lại sau.</b>';
-          console.error('Image analysis error:', error);
-        }
-      }
+  // 5) Gợi ý vùng & gắn nút chuyển vùng
+  function getRegion(){ return localStorage.getItem('ab_region') || (isVN() ? 'VN' : 'GLOBAL'); }
+  function bindRegionButtons(){
+    document.querySelectorAll('button[data-region]').forEach(b=>{
+      b.onclick=()=>{ localStorage.setItem('ab_region', b.dataset.region); location.reload(); }
     });
+    $('#tagRegion').textContent = 'Region: ' + getRegion();
+  }
 
-    // Initialize
-    (async () => {
-      setInterval(updateRevenue, 1000); // Passive income 1 USD/s
-      autoConnect();
-      autoRevenue();
-      autoDeFi();
-      autoNFT();
-      autoViral();
-      autoPayPal();
-      autoMoMo();
-      autoBank();
-      autoAlgosOne();
-      selfHealAdapt();
-    })();
+  // 6) Render offer xoay
+  async function renderOfferBox(){
+    const region=getRegion();
+    const OFFERS=await loadOffers();
+    const pick=pickOffer(OFFERS,region);
+    const box=$('#offerBox');
+    box.innerHTML=`
+      <a class="btn" id="offerLink" href="${pick.url}" target="_blank" rel="noopener">🔥 ${pick.title}</a>
+      <a class="btn" target="_blank" rel="noopener" href="https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N">🚀 Binance</a>
+      <a class="btn" target="_blank" rel="noopener" href="https://algosone.page.link/MbtR">🌐 AlgosOne</a>
+    `;
+    $('#offerLink').addEventListener('click',()=>markClick(pick.id));
+    markView(pick.id);
+  }
+
+  // 7) Thanh toán: nút & QR
+  function setupPayments(){
+    // USDT copy
+    $('#copyUSDT').onclick = async () => {
+      await navigator.clipboard.writeText(PAYMENT.usdt.addr);
+      alert('Đã copy địa chỉ USDT (ERC20).');
+    };
+    // PayPal links
+    const id = PAYMENT.paypal.email.split('@')[0];
+    $('#btnPayPal').href = `https://www.paypal.com/paypalme/${encodeURIComponent(id)}`;
+    $('#btnPayPal2').href = `https://www.paypal.com/paypalme/${encodeURIComponent(id)}`;
+    // VietQR
+    const qr = `https://img.vietqr.io/image/VCB-${encodeURIComponent(PAYMENT.bank.account)}-compact.png?addInfo=LightUnfold&accountName=${encodeURIComponent(PAYMENT.bank.name)}`;
+    $('#vietqr').src = qr;
+  }
+
+  // 8) Status ENS (nhẹ)
+  (async ()=>{
+    try{
+      const r=await fetch('https://lightunfold.eth.limo/',{method:'HEAD',cache:'no-store'});
+      if(!r.ok) console.log('eth.limo chậm, fallback dùng github pages.');
+    }catch{ /* im lặng */ }
+  })();
+
+  // 9) Khởi động
+  (async function start(){
+    setupPayments();
+    bindRegionButtons();
+    renderKPI();
+    renderOfferBox();
+  })();
   </script>
 </body>
 </html>
