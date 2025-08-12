@@ -5,21 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>UltraMaster V∞ • Wealthverse Ultimate</title>
 <meta name="description" content="Siêu Web3 • AI Agents 24/7 • Premium on-chain insights • QR thanh toán 1 chạm • Viral share.">
-<meta property="og:title" content="UltraMaster V∞ • Wealthverse Ultimate">
-<meta property="og:description" content="Web3 tự vận hành, theme sáng/tối, tự cấu hình, QR thanh toán và viral sharing.">
 <meta name="theme-color" content="#0b0f13">
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
 <style>
-/* ===== Design tokens (dark + feng-shui gold/green/purple) ===== */
+/* ===== Design tokens ===== */
 :root{
   --bg:#0b0f13;--card:#0f141a;--line:#233041;--txt:#e9eef4;--mut:#a9b8c8;
-  --gold:#ffd700;--green:#16a34a;--purple:#6d28d9;--danger:#ff4d4f;--ok:#16a34a;
+  --gold:#ffd700;--green:#16a34a;--purple:#6d28d9;--danger:#ff4d4f;
   --pill:#0f1725;--btn:#ffd700;--btnTxt:#0b0f13;--ring:rgba(255,215,0,.25);
   --shadow:0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.02) inset;
 }
 :root.light{
   --bg:#f6f9fc;--card:#ffffff;--line:#e2e8f0;--txt:#0b1020;--mut:#4a5568;
-  --gold:#d4af37;--green:#0f7a2a;--purple:#5b21b6;--danger:#e11d48;--ok:#0f7a2a;
+  --gold:#d4af37;--green:#0f7a2a;--purple:#5b21b6;--danger:#e11d48;
   --pill:#eef2f7;--btn:#d4af37;--btnTxt:#121212;--ring:rgba(212,175,55,.25);
   --shadow:0 10px 24px rgba(0,0,0,.08);
 }
@@ -41,8 +38,19 @@ color:var(--txt);font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto}
 .logo-dot{width:12px;height:12px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 0 rgba(255,215,0,.7);animation:glow 1.8s infinite}
 @keyframes glow{0%{box-shadow:0 0 0 0 rgba(255,215,0,.7)}70%{box-shadow:0 0 0 14px rgba(255,215,0,0)}100%{box-shadow:0 0 0 0 rgba(255,215,0,0)}}
 .hero{position:relative;overflow:hidden}
-.globe{width:300px;height:300px;border-radius:50%;background:conic-gradient(from 0deg, var(--purple) 0 25%, var(--gold) 25% 50%, var(--green) 50% 75%, var(--purple) 75% 100%);animation:spin 40s linear infinite;margin:auto}
-@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== Animated Globe (no libs) ===== */
+.globe{
+  width:300px;height:300px;border-radius:50%;
+  background-image:url('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/land_ocean_ice_cloud_2048.jpg');
+  background-size:auto 100%; background-repeat:repeat-x;
+  box-shadow:inset 12px 0 40px rgba(0,0,0,.35), inset -12px 0 40px rgba(0,0,0,.25), 0 10px 30px rgba(0,0,0,.35);
+  animation:spinGlobe 28s linear infinite;
+}
+@keyframes spinGlobe{from{background-position:0 50%}to{background-position:-2048px 50%}}
+.globe-cap{color:var(--mut);text-align:center;margin-top:8px}
+
+/* KPI, tags */
 .kpi{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
 .kbox{background:linear-gradient(180deg, rgba(255,215,0,.12), transparent 60%),var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
 .now{font-size:22px;font-weight:800;color:var(--gold)}
@@ -68,6 +76,13 @@ small.muted{color:var(--mut)}
 .hidden{display:none}
 .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace}
 @media(max-width:900px){.header-flex{display:grid;gap:16px}}
+
+/* ===== Partner cards contrast fix (light theme) ===== */
+.partner-card{background:#1a1400;border-color:#6b4e00}
+.partner-card .btn{background:#ffb000;color:#1a1300}
+:root.light .partner-card{background:#fffbe6 !important;border-color:#f2d38a !important;color:#1a1300}
+:root.light .partner-card .muted{color:#3a2e00}
+:root.light .partner-card .btn{background:#ffc83d;color:#1a1300;border:0}
 </style>
 </head>
 <body>
@@ -100,7 +115,7 @@ small.muted{color:var(--mut)}
       </div>
       <div>
         <div class="globe" aria-hidden="true"></div>
-        <div class="muted" id="globeCap" style="text-align:center;margin-top:8px">Trái Đất On‑Chain · Radar 24/7</div>
+        <div class="globe-cap" id="globeCap">Trái Đất On‑Chain · Radar 24/7</div>
       </div>
     </div>
   </section>
@@ -179,20 +194,20 @@ small.muted{color:var(--mut)}
     </div>
   </section>
 
-  <!-- Partners -->
+  <!-- Partners (contrast fixed) -->
   <section class="card" id="secPartners">
     <div class="grid">
-      <div class="card" style="background:#1a1400;border-color:#6b4e00">
+      <div class="card partner-card">
         <h4>AlgosOne – Chiến lược AI & cảnh báo realtime</h4>
-        <div class="muted">Copy‑trading/chiến lược tự động có rủi ro. Cân nhắc kỹ quy định & khẩu vị rủi ro trước khi dùng.</div>
-        <a class="btn" style="background:#ffb000;color:#1a1300;margin-top:8px" id="algosLink" href="#" target="_blank" rel="noopener">Mở miễn phí ↗</a>
+        <div class="muted">Copy‑trading/chiến lược tự động có rủi ro. Cân nhắc quy định & khẩu vị rủi ro trước khi dùng.</div>
+        <a class="btn" style="margin-top:8px" id="algosLink" href="#" target="_blank" rel="noopener">Mở miễn phí ↗</a>
       </div>
-      <div class="card" style="background:#1a1400;border-color:#6b4e00">
+      <div class="card partner-card">
         <h4>BNB – Hệ sinh thái giao dịch</h4>
         <ul class="muted" style="margin:10px 0 0 18px">
           <li>Thanh khoản sâu • phí cạnh tranh</li><li>Bảo mật nhiều lớp • 2FA</li><li>Hệ sinh thái Earn • Launchpool</li>
         </ul>
-        <a class="btn" style="background:#ffb000;color:#1a1300;margin-top:8px" id="bnbLink" href="#" target="_blank" rel="noopener">Mở miễn phí ↗</a>
+        <a class="btn" style="margin-top:8px" id="bnbLink" href="#" target="_blank" rel="noopener">Mở miễn phí ↗</a>
       </div>
     </div>
   </section>
@@ -214,34 +229,7 @@ small.muted{color:var(--mut)}
   <div class="footer">© <span id="year"></span> Wealthverse • <span id="autoLbl">Tự vận hành 24/7</span></div>
 </div>
 
-<!-- Floating share -->
-<div class="row" style="position:fixed;right:16px;bottom:16px;gap:8px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px">
-  <a id="sh_tg" target="_blank" title="Share Telegram">📣</a>
-  <a id="sh_x" target="_blank" title="Share X">𝕏</a>
-  <a id="sh_fb" target="_blank" title="Share Facebook">f</a>
-  <a id="sh_in" target="_blank" title="Share LinkedIn">in</a>
-</div>
-
-<!-- Chat mini -->
-<button class="btn chatfab" id="openChat">🧠 Chat AI 24/7</button>
-<div class="chatwin" id="chat">
-  <div class="chathead"><b id="chatH">AI Tài chính</b><button class="btn out" id="closeChat">Đóng</button></div>
-  <div class="chatbody" id="chatBody"></div>
-  <div class="chatinput">
-    <input id="chatIn" placeholder="Hỏi về token, kế hoạch lệnh…">
-    <button class="btn" id="chatSend">Gửi</button>
-  </div>
-</div>
-
-<!-- Modal data -->
-<div id="dataModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.55);place-items:center;z-index:99">
-  <div class="card" style="width:min(95vw,960px);height:min(85vh,760px);display:flex;flex-direction:column">
-    <div class="row" style="justify-content:space-between"><b id="mTitle">Dữ liệu Premium On‑Chain</b><button class="btn out" id="closeData">Đóng</button></div>
-    <pre id="dataPre" style="flex:1;margin:0;padding:12px;overflow:auto;background:#0b0f13;color:#cfe0ef;border:1px solid var(--line);border-radius:12px"></pre>
-  </div>
-</div>
-
-<!-- ===== Inline CONFIG (chỉ sửa khối này để thay đổi toàn site) ===== -->
+<!-- ===== Inline CONFIG (sửa ở đây) ===== -->
 <script id="SITE_CONFIG" type="application/json">
 {
   "brand":"LightUnfold • UltraMaster V∞ Ultimate",
@@ -266,99 +254,45 @@ small.muted{color:var(--mut)}
     ]
   },
   "i18n":{
-    "vi":{
-      "tagline":"Web3 Siêu Tự Vận Hành – AI Agents 24/7 • Mở Khóa Top 3 On‑Chain • Token Chọn Lọc Realtime",
-      "moto":"“Biết Sớm – Quyết Định Sớm – Tài Lộc Sớm.”",
-      "globeCap":"Trái Đất On‑Chain · Radar 24/7"
-    },
-    "en":{
-      "brand":"LightUnfold • UltraMaster V∞ Ultimate",
-      "tagline":"Autonomous Web3 – AI Agents 24/7 • Unlock Top 3 On‑Chain • Curated Tokens Realtime",
-      "moto":"“Know Early – Decide Early – Prosper Early.”",
-      "globeCap":"On‑Chain Earth · 24/7 Radar"
-    }
+    "vi":{"tagline":"Web3 Siêu Tự Vận Hành – AI Agents 24/7 • Mở Khóa Top 3 On‑Chain • Token Chọn Lọc Realtime","moto":"“Biết Sớm – Quyết Định Sớm – Tài Lộc Sớm.”","globeCap":"Trái Đất On‑Chain · Radar 24/7"},
+    "en":{"brand":"LightUnfold • UltraMaster V∞ Ultimate","tagline":"Autonomous Web3 – AI Agents 24/7 • Unlock Top 3 On‑Chain • Curated Tokens Realtime","moto":"“Know Early – Decide Early – Prosper Early.”","globeCap":"On‑Chain Earth · 24/7 Radar"}
   }
 }
 </script>
 
-<!-- ===== Core JS (no external keys; tự hàn gắn + tự cấu hình) ===== -->
+<!-- ===== Core JS (tự cấu hình + tự hàn gắn) ===== -->
 <script>
 (() => {
   const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
-  const state = { lang: (localStorage.getItem('lang') || (navigator.language||'vi')).toLowerCase().startsWith('vi') ? 'vi' : 'en',
-                  theme: localStorage.getItem('theme') || 'dark',
-                  points: Number(localStorage.getItem('points')||0), rev: Number(localStorage.getItem('rev')||0),
-                  config: {} };
+  const st = { lang:(localStorage.getItem('lang')||(navigator.language||'vi')).toLowerCase().startsWith('vi')?'vi':'en',
+               theme:localStorage.getItem('theme')||'dark',
+               points:Number(localStorage.getItem('points')||0),
+               rev:Number(localStorage.getItem('rev')||0),
+               cfg:{} };
+  try{ st.cfg = JSON.parse(document.getElementById('SITE_CONFIG').textContent.trim()); }catch(e){ st.cfg = {}; }
 
-  // Load config
-  try { state.config = JSON.parse(document.getElementById('SITE_CONFIG').textContent.trim()); }
-  catch(e){ state.config = {}; console.error('CONFIG parse error', e); }
+  function applyTheme(m){ document.documentElement.classList.toggle('light', m==='light'); localStorage.setItem('theme', m); }
+  applyTheme(st.theme);
+  $('#theme').onclick = ()=>{ st.theme = st.theme==='dark'?'light':'dark'; applyTheme(st.theme); };
 
-  // Theme
-  function applyTheme(mode){ document.documentElement.classList.toggle('light', mode==='light'); localStorage.setItem('theme', mode); }
-  applyTheme(state.theme);
-  $('#theme')?.addEventListener('click', () => { state.theme = (state.theme==='dark'?'light':'dark'); applyTheme(state.theme); });
+  function t(k){ const L = st.cfg.i18n?.[st.lang]||{}; return L[k] || (st.cfg.i18n?.vi||{})[k] || ''; }
+  function i18n(){ $('#brand').textContent = (st.lang==='vi'? st.cfg.brand : (st.cfg.i18n?.en?.brand||st.cfg.brand));
+    $('#tagline').textContent = t('tagline'); $('#moto').textContent = t('moto'); $('#globeCap').textContent = t('globeCap');
+    $('#autoLbl').textContent = (st.lang==='vi'?'Tự vận hành 24/7':'Always‑On 24/7'); }
+  i18n(); $('#lang').onclick = ()=>{ st.lang = st.lang==='vi'?'en':'vi'; localStorage.setItem('lang', st.lang); i18n(); };
 
-  // I18N minimal
-  function t(k){ const lang = state.lang; const base = state.config.i18n?.[lang]||{}; return base[k] || (state.config.i18n?.vi||{})[k] || ''; }
-  function applyI18N(){
-    $('#brand').textContent = (state.lang==='vi'? state.config.brand : (state.config.i18n?.en?.brand || state.config.brand));
-    $('#tagline').textContent = t('tagline');
-    $('#moto').textContent = t('moto');
-    $('#globeCap').textContent = t('globeCap');
-    $('#autoLbl').textContent = (state.lang==='vi'?'Tự vận hành 24/7':'Always‑On 24/7');
-  }
-  $('#lang')?.addEventListener('click', ()=>{ state.lang = (state.lang==='vi'?'en':'vi'); localStorage.setItem('lang', state.lang); applyI18N(); });
-  applyI18N();
+  $('#year').textContent = new Date().getFullYear(); $('#ens').textContent = st.cfg.ens || 'lightunfold.eth';
+  const setHref=(id,url)=>{ const el=$(id); if(el&&url) el.href=url; };
+  setHref('#cta_binance', st.cfg.links?.binance); setHref('#cta_algos', st.cfg.links?.algos);
+  setHref('#bnbLink', st.cfg.links?.binance); setHref('#algosLink', st.cfg.links?.algos);
+  setHref('#ctaB', st.cfg.links?.binance); setHref('#ctaA', st.cfg.links?.algos);
 
-  // Brand / ENS / Links
-  $('#t_brand').textContent = 'UltraMaster V∞';
-  $('#ens').textContent = state.config.ens || 'lightunfold.eth';
-  const L = state.config.links||{};
-  const setHref = (id, url) => { const el = $(id); if (el && url) el.href = url; };
-  setHref('#cta_binance', L.binance); setHref('#cta_algos', L.algos);
-  setHref('#bnbLink', L.binance); setHref('#algosLink', L.algos);
-  setHref('#ctaB', L.binance); setHref('#ctaA', L.algos);
-
-  // Year / Top button
-  $('#year').textContent = new Date().getFullYear();
   $('#goTop').onclick = () => window.scrollTo({top:0, behavior:'smooth'});
-
-  // Viral share
-  const u = new URL(location.href);
-  const peer = localStorage.getItem('peer_id') || Math.random().toString(36).slice(2);
-  localStorage.setItem('peer_id', peer);
-  const base = location.origin + location.pathname;
-  const myRef = `${base}?ref=${peer}&utm_source=share&utm_medium=viral&utm_campaign=ultramaster`;
-  const t_enc = encodeURIComponent(document.title), u_enc = encodeURIComponent(myRef);
-  $('#sh_tg').href = `https://t.me/share/url?url=${u_enc}&text=${t_enc}`;
-  $('#sh_x').href  = `https://twitter.com/intent/tweet?text=${t_enc}&url=${u_enc}`;
-  $('#sh_fb').href = `https://www.facebook.com/sharer/sharer.php?u=${u_enc}`;
-  $('#sh_in').href = `https://www.linkedin.com/sharing/share-offsite/?url=${u_enc}`;
-  $('#shareMine').onclick = async () => {
-    try{
-      if(navigator.share){ await navigator.share({title:document.title,text:'Khám phá UltraMaster',url:myRef}); }
-      else { await navigator.clipboard.writeText(myRef); alert(state.lang==='vi'?'Đã sao chép liên kết!':'Referral link copied!'); }
-      state.points += 20; localStorage.setItem('points', state.points);
-      if(state.points>=100) alert('NFT reward unlocked!');
-    }catch(_){}
-  };
-
-  // KPI & heartbeat
-  function beat(){ $('#hb').textContent = new Date().toLocaleTimeString(); $('#kUpd').textContent = new Date().toLocaleString(); $('#kLive').textContent = Intl.NumberFormat().format(Math.floor(performance.now()/1000)); }
+  function beat(){ $('#hb').textContent = new Date().toLocaleTimeString(); $('#kUpd').textContent = new Date().toLocaleString(); }
   setInterval(beat, 1000); beat();
-  $('#kRev').textContent = state.rev.toLocaleString();
+  $('#kRev').textContent = st.rev.toLocaleString();
 
-  // Top3 / Free (placeholder renderers; có thể nối API sau)
-  function cardToken(x){
-    const el = document.createElement('div'); el.className='card';
-    el.innerHTML = `<b>${x.symbol} • ${x.name}</b>
-      <div class="muted">24h: ${x.pct24h > 0 ? '+' : ''}${x.pct24h}% • Cap: $${Intl.NumberFormat().format(x.cap)}</div>
-      <div class="row" style="margin-top:8px"><a class="btn out" href="${x.link}" target="_blank" rel="noopener">Xem biểu đồ</a>
-      <button class="btn" data-sym="${x.symbol}">AI phân tích</button></div>`;
-    el.querySelector('button').onclick = () => addBubble(`Xin phân tích nhanh ${x.symbol} khung 1D/4H, mức vô hiệu hóa và vùng quan sát.`, 'me');
-    return el;
-  }
+  // Tokens (demo)
   const sampleTop = [
     {symbol:'BTC', name:'Bitcoin', pct24h:0.8, cap:900000000000, link:'https://www.coingecko.com/en/coins/bitcoin'},
     {symbol:'ETH', name:'Ethereum', pct24h:1.2, cap:450000000000, link:'https://www.coingecko.com/en/coins/ethereum'},
@@ -368,112 +302,90 @@ small.muted{color:var(--mut)}
     {symbol:'ARB', name:'Arbitrum', pct24h:2.1, cap:3000000000, link:'https://www.coingecko.com/en/coins/arbitrum'},
     {symbol:'OP', name:'Optimism', pct24h:-1.3, cap:2800000000, link:'https://www.coingecko.com/en/coins/optimism'}
   ];
-  const proWrap = $('#tokenPro'); sampleTop.forEach(t=>proWrap.appendChild(cardToken(t)));
-  const freeWrap = $('#tokenFree'); sampleFree.forEach(t=>freeWrap.appendChild(cardToken(t)));
+  function cardToken(x){
+    const el=document.createElement('div'); el.className='card';
+    el.innerHTML=`<b>${x.symbol} • ${x.name}</b>
+    <div class="muted">24h: ${x.pct24h>0?'+':''}${x.pct24h}% • Cap: $${Intl.NumberFormat().format(x.cap)}</div>
+    <div class="row" style="margin-top:8px"><a class="btn out" href="${x.link}" target="_blank" rel="noopener">Xem biểu đồ</a>
+    <button class="btn" data-sym="${x.symbol}">AI phân tích</button></div>`;
+    el.querySelector('button').onclick=()=>addBubble(`Xin phân tích nhanh ${x.symbol} khung 1D/4H, mức vô hiệu hóa và vùng quan sát.`,'me');
+    return el;
+  }
+  sampleTop.forEach(t=>$('#tokenPro').appendChild(cardToken(t)));
+  sampleFree.forEach(t=>$('#tokenFree').appendChild(cardToken(t)));
 
-  // Học viện
-  const ebooks = [
-    {title:"Crypto 101 (Miễn phí)", price:0, desc:"Ví • bảo mật • chu kỳ • quản trị vốn • checklist khởi động."},
+  // Edu
+  const ebooks=[
+    {title:"Crypto 101 (Miễn phí)", price:0, desc:"Ví • bảo mật • chu kỳ • quản trị vốn • checklist."},
     {title:"DeFi Mastery ($10)", price:10, desc:"Yield • Lending • Perp — vận hành & tối ưu."},
     {title:"Risk & Psychology ($19)", price:19, desc:"Kỷ luật • nhật ký lệnh • khung R:R."}
   ];
-  const edu = $('#ebooks');
-  ebooks.forEach(b=>{
-    const d = document.createElement('div'); d.className='card';
-    d.innerHTML = `<b>${b.title}</b><div class="muted">${b.desc}</div>
-                   <div class="row" style="margin-top:8px"><span class="tag">$${b.price}</span>
-                   <button class="btn out">Đọc thử</button></div>`;
-    edu.appendChild(d);
-  });
+  ebooks.forEach(b=>{ const d=document.createElement('div'); d.className='card';
+    d.innerHTML=`<b>${b.title}</b><div class="muted">${b.desc}</div>
+    <div class="row" style="margin-top:8px"><span class="tag">$${b.price}</span><button class="btn out">Đọc thử</button></div>`;
+    $('#ebooks').appendChild(d); });
 
-  // Opportunities (placeholder)
-  $('#ticker').textContent = 'Quan sát chu kỳ • Tin tức on‑chain • Tín hiệu funding/oi • Smart money flows…';
-  const opps = $('#opps');
+  // Opportunities (demo)
+  $('#ticker').textContent='Chu kỳ • funding/oi • smart money flows…';
   ['L2 bridge spike','DEX volume surge','Stablecoin netflow'].forEach(k=>{
-    const c = document.createElement('div'); c.className='card';
-    c.innerHTML = `<b>${k}</b><div class="muted">Theo dõi điều kiện kích hoạt • chỉ là gợi ý – không phải khuyến nghị.</div>`;
-    opps.appendChild(c);
+    const c=document.createElement('div'); c.className='card';
+    c.innerHTML=`<b>${k}</b><div class="muted">Theo dõi điều kiện kích hoạt • chỉ là gợi ý – không phải khuyến nghị.</div>`;
+    $('#opps').appendChild(c);
   });
-  $('#refreshNow').onclick = () => { $('#kOpps').textContent = (+$('#kOpps').textContent || 0)+Math.ceil(Math.random()*3); $('#kUpd').textContent = new Date().toLocaleString(); };
+  $('#refreshNow').onclick=()=>{ $('#kOpps').textContent=(+$('#kOpps').textContent||0)+Math.ceil(Math.random()*3); beat(); };
 
   // Plans
-  const plans = state.config.premium?.plans || [];
-  const plansWrap = $('#plans');
+  const plans = st.cfg.premium?.plans||[];
   plans.forEach(p=>{
-    const el = document.createElement('div'); el.className='card';
-    el.innerHTML = `<b>${p.title}</b><div class="muted" style="min-height:42px">${p.desc}</div>
+    const el=document.createElement('div'); el.className='card';
+    el.innerHTML=`<b>${p.title}</b><div class="muted" style="min-height:42px">${p.desc}</div>
     <div class="row" style="margin-top:8px"><span class="tag">$${p.price}</span><button class="btn" data-plan="${p.id}">Chọn</button></div>`;
-    el.querySelector('button').onclick = ()=>{ $('#bundleSel').value = p.id; window.location.hash = '#supergate'; };
-    plansWrap.appendChild(el);
+    el.querySelector('button').onclick=()=>{ $('#bundleSel').value=p.id; location.hash='#supergate'; };
+    $('#plans').appendChild(el);
   });
 
-  // SuperGate payments
-  const pay = state.config.payments||{};
-  const payList = $('#payList');
-  const qr = $('#qr'), payAddr = $('#payAddr');
-  const bundleSel = $('#bundleSel'); plans.forEach(p=>{ const o=document.createElement('option'); o.value=p.id; o.textContent=`${p.title} – $${p.price}`; bundleSel.appendChild(o); });
-  function setQR(text){ qr.src = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(text)}`; }
-  function paintPays(){
-    payList.innerHTML='';
-    Object.entries(pay).forEach(([k,v])=>{
-      const row = document.createElement('div'); row.className='paybtn'; row.role='button'; row.tabIndex=0;
-      row.innerHTML = `<div><b>${v.label}</b><div class="muted mono">${v.id}</div></div><button class="copy" data-id="${v.id}">Copy</button>`;
-      row.onclick = ()=> selectPay(k);
-      row.querySelector('.copy').onclick = (e)=>{ e.stopPropagation(); navigator.clipboard.writeText(v.id); toast('Đã copy'); };
-      payList.appendChild(row);
-    });
-  }
-  function selectPay(key){
-    $$('.paybtn').forEach(x=>x.classList.remove('active'));
-    const idx = Array.from(payList.children).findIndex(n => n.querySelector('.mono')?.textContent===pay[key].id);
-    if(idx>-1) payList.children[idx].classList.add('active');
-    payAddr.textContent = pay[key].id;
-    setQR(pay[key].qr || pay[key].id);
-  }
+  // Payments
+  const pay=st.cfg.payments||{}; const payList=$('#payList'); const qr=$('#qr'), payAddr=$('#payAddr');
+  const bundleSel=$('#bundleSel'); plans.forEach(p=>{ const o=document.createElement('option'); o.value=p.id; o.textContent=`${p.title} – $${p.price}`; bundleSel.appendChild(o); });
+  function setQR(text){ qr.src=`https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(text)}`; }
+  function paintPays(){ payList.innerHTML=''; Object.entries(pay).forEach(([k,v])=>{
+    const row=document.createElement('div'); row.className='paybtn'; row.role='button'; row.tabIndex=0;
+    row.innerHTML=`<div><b>${v.label}</b><div class="muted mono">${v.id}</div></div><button class="copy" data-id="${v.id}">Copy</button>`;
+    row.onclick=()=>selectPay(k);
+    row.querySelector('.copy').onclick=(e)=>{ e.stopPropagation(); navigator.clipboard.writeText(v.id); toast('Đã copy'); };
+    payList.appendChild(row);
+  });}
+  function selectPay(key){ $$('.paybtn').forEach(x=>x.classList.remove('active'));
+    const v=pay[key]; const idx=Array.from(payList.children).findIndex(n=>n.querySelector('.mono')?.textContent===v.id);
+    if(idx>-1) payList.children[idx].classList.add('active'); payAddr.textContent=v.id; setQR(v.qr||v.id); }
   function toast(msg){ const t=document.createElement('div'); t.className='pill'; t.textContent=msg; Object.assign(t.style,{position:'fixed',left:'50%',top:'16px',transform:'translateX(-50%)',zIndex:9999}); document.body.appendChild(t); setTimeout(()=>t.remove(),1500); }
-  paintPays(); // default select first
-  const firstKey = Object.keys(pay)[0]; if(firstKey) selectPay(firstKey);
+  paintPays(); const firstKey=Object.keys(pay)[0]; if(firstKey) selectPay(firstKey);
 
   // Unlock
-  const SECRET = String(state.config.premium?.unlock_code || '');
-  $('#doUnlock').onclick = ()=>{
-    const ok = (String($('#unlockCode').value||'').trim() === SECRET);
-    const msg = ok ? (state.lang==='vi'?'Mở khóa thành công!':'Unlocked!') : (state.lang==='vi'?'Sai mã.':'Wrong code.');
-    $('#uMsg').textContent = msg;
-    if(ok){ $('#opened').classList.remove('hidden'); localStorage.setItem('premium_unlocked','1'); addRevenue(plans.find(p=>p.id === $('#bundleSel').value)?.price || 0); paintPremium(); }
-  };
-  $('#remember').onclick = ()=>{ localStorage.setItem('remember_code',$('#unlockCode').value||''); toast('Đã nhớ mã'); };
-  $('#relock').onclick = ()=>{ $('#opened').classList.add('hidden'); localStorage.removeItem('premium_unlocked'); };
+  const SECRET=String(st.cfg.premium?.unlock_code||'');
+  function addRevenue(x){ st.rev=Math.max(0, st.rev+Number(x||0)); localStorage.setItem('rev', st.rev); $('#kRev').textContent=st.rev.toLocaleString(); }
+  $('#doUnlock').onclick=()=>{ const ok=(String($('#unlockCode').value||'').trim()===SECRET);
+    $('#uMsg').textContent= ok ? 'Mở khóa thành công!' : 'Sai mã.'; if(ok){ $('#opened').classList.remove('hidden'); localStorage.setItem('premium_unlocked','1'); addRevenue(plans.find(p=>p.id===$('#bundleSel').value)?.price||0); paintPremium(); } };
+  $('#remember').onclick=()=>{ localStorage.setItem('remember_code',$('#unlockCode').value||''); toast('Đã nhớ mã'); };
+  $('#relock').onclick=()=>{ $('#opened').classList.add('hidden'); localStorage.removeItem('premium_unlocked'); };
   if(localStorage.getItem('premium_unlocked')==='1') $('#opened').classList.remove('hidden');
+  function paintPremium(){ const box=$('#premium'); box.innerHTML=''; ['Playbook đa khung','Checklist rủi ro','Bảng tâm lý & dòng tiền','Q&A theo lịch'].forEach(x=>{ const c=document.createElement('div'); c.className='card'; c.innerHTML=`<b>${x}</b><div class="muted">Nội dung hiển thị sau mở khóa.</div>`; box.appendChild(c); }); }
 
-  function paintPremium(){
-    const box = $('#premium'); box.innerHTML='';
-    ['Playbook đa khung','Checklist rủi ro','Bảng tâm lý & dòng tiền','Q&A theo lịch'].forEach(x=>{
-      const c=document.createElement('div'); c.className='card'; c.innerHTML = `<b>${x}</b><div class="muted">Nội dung hiển thị sau mở khóa.</div>`; box.appendChild(c);
-    });
-  }
-  function addRevenue(x){ state.rev = Math.max(0, state.rev + Number(x||0)); localStorage.setItem('rev', state.rev); $('#kRev').textContent = state.rev.toLocaleString(); }
+  // Share
+  const u=new URL(location.href); const peer=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2); localStorage.setItem('peer_id',peer);
+  const base=location.origin+location.pathname; const myRef=`${base}?ref=${peer}&utm_source=share&utm_medium=viral&utm_campaign=ultramaster`;
+  const t_enc=encodeURIComponent(document.title), u_enc=encodeURIComponent(myRef);
+  const map={sh_tg:`https://t.me/share/url?url=${u_enc}&text=${t_enc}`, sh_x:`https://twitter.com/intent/tweet?text=${t_enc}&url=${u_enc}`, sh_fb:`https://www.facebook.com/sharer/sharer.php?u=${u_enc}`, sh_in:`https://www.linkedin.com/sharing/share-offsite/?url=${u_enc}`};
+  for(const id in map){ const el=document.getElementById(id); if(el) el.href=map[id]; }
+  document.getElementById('shareMine')?.addEventListener('click', async()=>{ try{ if(navigator.share){ await navigator.share({title:document.title,text:'Khám Phá UltraMaster',url:myRef}); } else { await navigator.clipboard.writeText(myRef); alert('Đã sao chép liên kết!'); } }catch(_){} });
 
-  // Data modal
-  const PREMIUM_DATA = { updated_at: new Date().toISOString(), alpha_feed: [], deals: [] };
-  function openData(){ $('#dataPre').textContent = JSON.stringify(PREMIUM_DATA,null,2); $('#dataModal').classList.remove('hidden'); }
-  $('#openData').onclick = openData;
-  $('#closeData').onclick = () => $('#dataModal').classList.add('hidden');
-  $('#dataModal').addEventListener('click', e => { if(e.target.id==='dataModal') $('#dataModal').classList.add('hidden'); });
+  // Chat (offline helper)
+  function addBubble(txt,who='ai'){ const b=document.createElement('div'); b.className='bubble '+(who==='me'?'me':'ai'); b.textContent=txt; $('#chatBody').appendChild(b); $('#chatBody').scrollTop=$('#chatBody').scrollHeight; }
+  $('#openChat').onclick=()=>{ $('#chat').style.display='flex'; if(!$('#chatBody').dataset.hi){ addBubble('Chào! Tôi là AI hỗ trợ phân tích.'); $('#chatBody').dataset.hi=1; } };
+  $('#closeChat').onclick=()=> $('#chat').style.display='none';
+  $('#chatSend').onclick=()=>{ const v=$('#chatIn').value.trim(); if(!v) return; addBubble(v,'me'); $('#chatIn').value=''; setTimeout(()=>addBubble('Mẹo: chọn vùng quan sát, mức vô hiệu hóa, R:R ≥ 2:1, rủi ro ≤1%.','ai'),400); };
 
-  // Chat (no API key exposed; fallback smart replies)
-  function addBubble(txt, who='ai'){ const b=document.createElement('div'); b.className='bubble '+(who==='me'?'me':'ai'); b.textContent=txt; $('#chatBody').appendChild(b); $('#chatBody').scrollTop = $('#chatBody').scrollHeight; }
-  $('#openChat').onclick = ()=>{ $('#chat').style.display='flex'; if(!$('#chatBody').dataset.hi){ addBubble(state.lang==='vi'?'Chào! Tôi là AI hỗ trợ phân tích.':'Hi! I am the analysis helper.'); $('#chatBody').dataset.hi=1; } };
-  $('#closeChat').onclick = ()=> $('#chat').style.display='none';
-  $('#chatSend').onclick = ()=>{ const v=$('#chatIn').value.trim(); if(!v) return; addBubble(v,'me'); $('#chatIn').value=''; setTimeout(()=>addBubble('Mẹo: xác định vùng quan sát, mức vô hiệu hóa, tỉ lệ R:R ≥ 2:1, và giới hạn rủi ro ≤1%.','ai'),400); };
-
-  // Self‑heal (không reload vô hạn): nếu widget lỗi, render tối thiểu an toàn
-  window.addEventListener('error', () => {
-    try{ $('#plans')?.children.length || plans.forEach(p=>{ const e=document.createElement('div'); e.className='card'; e.textContent=p.title; $('#plans').appendChild(e); }); }catch(_){}
-  });
-
-  // Shortcuts
-  $('#ctaOpen').onclick = ()=> location.hash = '#supergate';
+  window.addEventListener('error', ()=>{ try{ $('#plans')?.children.length || plans.forEach(p=>{ const e=document.createElement('div'); e.className='card'; e.textContent=p.title; $('#plans').appendChild(e); }); }catch(_){ } });
 })();
 </script>
 </body>
