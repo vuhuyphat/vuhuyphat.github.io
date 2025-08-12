@@ -7,7 +7,6 @@
 <meta name="description" content="Web3 tự vận hành • AI Agents 24/7 • Cơ hội on-chain • QR thanh toán 1 chạm • Viral share.">
 <meta name="theme-color" content="#0b0f13">
 <style>
-/* ===== Design tokens ===== */
 :root{
   --bg:#0b0f13;--card:#0f141a;--line:#233041;--txt:#e9eef4;--mut:#a9b8c8;
   --gold:#ffd700;--green:#16a34a;--purple:#6d28d9;--danger:#ff4d4f;
@@ -25,7 +24,7 @@ body{margin:0;background:
   radial-gradient(60% 140% at 50% -10%, rgba(109,40,217,.25),transparent 60%),
   linear-gradient(180deg, rgba(22,163,74,.12),transparent 40%),
   var(--bg);
-color:var(--txt);font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto}
+color:var(--txt);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
 .wrap{max-width:1200px;margin:0 auto;padding:20px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);margin:12px 0;transition:.25s}
 .card:hover{transform:translateY(-2px)}
@@ -38,13 +37,9 @@ color:var(--txt);font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto}
 .logo-dot{width:12px;height:12px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 0 rgba(255,215,0,.7);animation:glow 1.8s infinite}
 @keyframes glow{0%{box-shadow:0 0 0 0 rgba(255,215,0,.7)}70%{box-shadow:0 0 0 14px rgba(255,215,0,0)}100%{box-shadow:0 0 0 0 rgba(255,215,0,0)}}
 .hero{position:relative;overflow:hidden}
-
-/* ===== 3D Earth canvas ===== */
 .globe3d{width:300px;height:300px;border-radius:50%;display:block;margin:auto;box-shadow:
   inset 12px 0 40px rgba(0,0,0,.35), inset -12px 0 40px rgba(0,0,0,.25), 0 10px 30px rgba(0,0,0,.35)}
 .globe-cap{color:var(--mut);text-align:center;margin-top:8px}
-
-/* KPI, tags */
 .kpi{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
 .kbox{background:linear-gradient(180deg, rgba(255,215,0,.12), transparent 60%),var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
 .now{font-size:22px;font-weight:800;color:var(--gold)}
@@ -57,7 +52,6 @@ color:var(--txt);font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto}
 .copy{font-size:13px;border:1px dashed var(--line);border-radius:8px;padding:4px 10px;background:transparent;color:var(--txt);cursor:pointer}
 .footer{padding:32px 0;text-align:center;color:var(--mut)}
 small.muted{color:var(--mut)}
-/* Chat mini */
 .chatfab{position:fixed;right:16px;bottom:16px;z-index:50}
 .chatwin{position:fixed;right:16px;bottom:80px;width:min(420px,95vw);max-height:75vh;display:none;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;z-index:49;box-shadow:var(--shadow)}
 .chathead{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)}
@@ -68,10 +62,8 @@ small.muted{color:var(--mut)}
 .chatinput{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
 .chatinput input{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--txt)}
 .hidden{display:none}
-.mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
 @media(max-width:900px){.header-flex{display:grid;gap:16px}}
-
-/* ===== Partner cards contrast fix (light theme) ===== */
 .partner-card{background:#1a1400;border-color:#6b4e00}
 .partner-card .btn{background:#ffb000;color:#1a1300}
 :root.light .partner-card{background:#fffbe6 !important;border-color:#f2d38a !important;color:#1a1300}
@@ -110,7 +102,6 @@ small.muted{color:var(--mut)}
         </div>
       </div>
       <div>
-        <!-- REAL 3D EARTH -->
         <canvas id="globe3d" class="globe3d"></canvas>
         <div class="globe-cap" id="globeCap">Trái Đất On‑Chain · Mây & Ánh Sáng 3D</div>
       </div>
@@ -159,7 +150,7 @@ small.muted{color:var(--mut)}
     <div id="plans" class="grid"></div>
   </section>
 
-  <!-- SuperGate: QR + Paywall -->
+  <!-- SuperGate -->
   <section class="card" id="supergate">
     <h3 style="margin:0 0 10px" id="hGate">🔓 SuperGate (Unlock On‑Chain)</h3>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
@@ -191,7 +182,7 @@ small.muted{color:var(--mut)}
     </div>
   </section>
 
-  <!-- Partners (contrast fixed) -->
+  <!-- Partners -->
   <section class="card" id="secPartners">
     <div class="grid">
       <div class="card partner-card">
@@ -211,7 +202,7 @@ small.muted{color:var(--mut)}
     </div>
   </section>
 
-  <!-- CTA cuối -->
+  <!-- CTA -->
   <section class="card" id="lastCTA">
     <h3 style="margin:0 0 8px" id="ctaH">🚀 Cơ hội nhanh – Chủ động đón lấy</h3>
     <div id="ctaD">Mở khóa hoặc mở tài khoản miễn phí để Theo dõi – Phân tích – Hành động một nơi.</div>
@@ -223,12 +214,10 @@ small.muted{color:var(--mut)}
     </div>
   </section>
 
-  <!-- Footer -->
   <button class="pill" id="goTop" style="position:fixed;left:16px;bottom:90px;z-index:10">↑ Top</button>
   <div class="footer">© <span id="year"></span> Wealthverse • <span id="autoLbl">Tự vận hành 24/7</span></div>
 </div>
 
-<!-- ===== Inline CONFIG (sửa ở đây) ===== -->
 <script id="SITE_CONFIG" type="application/json">
 {
   "brand":"LightUnfold • UltraMaster V∞ Ultimate",
@@ -259,55 +248,50 @@ small.muted{color:var(--mut)}
 }
 </script>
 
-<!-- ===== Libraries: Three.js (only for globe) ===== -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
 
-<!-- ===== Core JS (VI/EN toàn trang + Trái Đất 3D có ánh trăng) ===== -->
 <script>
 (() => {
-  const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
-  const st = { lang:(localStorage.getItem('lang')||(navigator.language||'vi')).toLowerCase().startsWith('vi')?'vi':'en',
-               theme:localStorage.getItem('theme')||'dark',
-               points:Number(localStorage.getItem('points')||0),
-               rev:Number(localStorage.getItem('rev')||0),
-               cfg:{} };
-  try{ st.cfg = JSON.parse(document.getElementById('SITE_CONFIG').textContent.trim()); }catch(e){ st.cfg = {}; }
+  const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+  const st={lang:(localStorage.getItem('lang')||(navigator.language||'vi')).toLowerCase().startsWith('vi')?'vi':'en',
+            theme:localStorage.getItem('theme')||'dark',
+            points:Number(localStorage.getItem('points')||0),
+            rev:Number(localStorage.getItem('rev')||0),
+            cfg:{}};
+  try{st.cfg=JSON.parse(document.getElementById('SITE_CONFIG').textContent.trim());}catch(e){st.cfg={};}
+  function applyTheme(m){document.documentElement.classList.toggle('light',m==='light');localStorage.setItem('theme',m)}
+  applyTheme(st.theme); $('#theme').onclick=()=>{st.theme=st.theme==='dark'?'light':'dark';applyTheme(st.theme);};
 
-  // ===== Theme giữ nguyên =====
-  function applyTheme(m){ document.documentElement.classList.toggle('light', m==='light'); localStorage.setItem('theme', m); }
-  applyTheme(st.theme);
-  $('#theme').onclick = ()=>{ st.theme = st.theme==='dark'?'light':'dark'; applyTheme(st.theme); };
-
-  // ===== VI/EN (A→Z): chỉ thay TEXT, KHÔNG thay cấu trúc/ID/link =====
-  const DI = {
+  // ====== COPY MARKETING “ĐỈNH” (VI/EN) – CHỈ THAY TEXT, KHÔNG ĐỔI CẤU TRÚC ======
+  const DI={
     vi:{
       brand: st.cfg.brand || 'LightUnfold • UltraMaster V∞ Ultimate',
       heartbeat:'Nhịp tim',
-      tagline: st.cfg.i18n?.vi?.tagline || '',
-      moto: st.cfg.i18n?.vi?.moto || '',
-      motoDesc:'Hội tụ: <b>Khóa học tinh gọn</b>, <b>Phân tích crypto realtime</b>, <b>AI hỏi đáp</b>, <b>Cơ hội sớm nhất</b>.',
-      globeCap: st.cfg.i18n?.vi?.globeCap || 'Trái Đất On‑Chain · Mây & Ánh Sáng 3D',
+      tagline:'Ví Web3 tự vận hành • AI Agents 24/7 • Tín hiệu on‑chain tức thời • Tối ưu chuyển đổi thành tài lộc.',
+      moto:'“Thấy trước – Quyết định chuẩn – Nhận phần tốt nhất.”',
+      motoDesc:'Toàn diện để tăng trưởng: <b>Khoá học tinh gọn</b> • <b>Bản đồ luồng tiền realtime</b> • <b>AI cố vấn tức thì</b> • <b>Cơ hội sớm, rủi ro kiểm soát</b>.',
+      globeCap:'Trái Đất On‑Chain • Mây & Ánh trăng 3D – trường năng lượng tài lộc.',
       k1t:'Cơ Hội',k2t:'Cập Nhật',k3t:'Đang Xem',k4t:'Doanh Thu',
-      hTop3:'⭐ Top 3 Token Tiềm Năng Hôm Nay',
-      hFree:'📊 Token Chọn Lọc (Miễn Phí)',
-      hEdu:'📚 Học Nhanh – NFT Rewards',
-      hOpp:'🔥 Cơ Hội Nổi Bật (Multi‑Chain)',
+      hTop3:'⭐ Top 3 Token Đáng Hành Động Hôm Nay',
+      hFree:'📊 Token Chọn Lọc (Miễn Phí – vào xem ngay)',
+      hEdu:'📚 Học Nhanh – Nhận NFT Khen Thưởng',
+      hOpp:'🔥 Cơ Hội Nổi Bật (Multi‑Chain, cập nhật liên tục)',
       scanMode:'Quét: On‑Chain',
       btnRefresh:'Làm mới',
-      hPlan:'💠 Premium – Phân Tích Chuyên Sâu & Lộ Trình',
-      hGate:'🔓 SuperGate (Unlock On‑Chain)',
-      gatePitch:'<b>Thanh toán nhỏ để nhận mã mở khóa.</b>',
+      hPlan:'💠 Premium – Chiến Lược Thực Chiến & Playbook',
+      hGate:'🔓 SuperGate (Mở khoá On‑Chain)',
+      gatePitch:'<b>Thanh toán nhỏ – nhận mã mở khoá ngay • giá trị mở rộng dài hạn.</b>',
       addrLbl:'Địa chỉ/ID:',
       bundleLbl:'Chọn gói',
-      codeLbl:'Mã mở khóa (sau thanh toán)',
+      codeLbl:'Mã mở khoá (sau thanh toán)',
       placeUnlock:'Nhập mã…',
       placeTx:'(Tuỳ chọn) Dán TX Hash / ghi chú',
-      afterUnlockHint:'Sau mở khóa, nội dung Premium xuất hiện. Mã được lưu trên thiết bị.',
-      unlockedLbl:'✔ Đã mở khóa',
+      afterUnlockHint:'Sau mở khoá, nội dung Premium hiển thị tức thì. Mã được lưu trên thiết bị của bạn.',
+      unlockedLbl:'✔ Đã mở khoá',
       relock:'Khoá lại',
-      ctaH:'🚀 Cơ hội nhanh – Chủ động đón lấy',
-      ctaD:'Mở khóa hoặc mở tài khoản miễn phí để Theo dõi – Phân tích – Hành động một nơi.',
-      ctaOpen:'Mở khóa ngay',
+      ctaH:'🚀 Hành động sớm – Đón dòng tiền',
+      ctaD:'Mở khoá hoặc mở tài khoản miễn phí để Theo dõi • Phân tích • Hành động trong một nơi.',
+      ctaOpen:'Mở khoá ngay',
       ctaBinance:'Mở Binance Miễn Phí ↗',
       ctaAlgos:'Mở AlgosOne Miễn Phí ↗',
       shareMine:'Chia sẻ liên kết của tôi',
@@ -315,9 +299,9 @@ small.muted{color:var(--mut)}
       openData:'Dữ liệu',
       partners:{
         algosH:'AlgosOne – Chiến lược AI & cảnh báo realtime',
-        algosD:'Copy‑trading/chiến lược tự động có rủi ro. Luôn hiểu rõ sản phẩm, quy định & khẩu vị rủi ro trước khi dùng.',
+        algosD:'Hiệu suất cần kỷ luật và hiểu rủi ro: luôn tuân thủ quy định và khẩu vị rủi ro cá nhân.',
         open:'Mở miễn phí ↗',
-        bnbH:'BNB – Hệ sinh thái giao dịch',
+        bnbH:'BNB – Hệ sinh thái giao dịch dẫn dắt',
         b1:'Khớp lệnh nhanh • phí cạnh tranh',
         b2:'Bảo mật nhiều lớp • 2FA',
         b3:'Hệ sinh thái Earn • Launchpool'
@@ -332,30 +316,30 @@ small.muted{color:var(--mut)}
     en:{
       brand: st.cfg.i18n?.en?.brand || 'LightUnfold • UltraMaster V∞ Ultimate',
       heartbeat:'Heartbeat',
-      tagline: st.cfg.i18n?.en?.tagline || 'Autonomous Web3 – AI Agents 24/7 • Unlock Top 3 On‑Chain • Curated Tokens Realtime',
-      moto: st.cfg.i18n?.en?.moto || '“Know Early – Decide Early – Prosper Early.”',
-      motoDesc:'All‑in‑one: <b>Lean courses</b>, <b>Realtime crypto analysis</b>, <b>AI Q&A</b>, <b>Earliest opportunities</b>.',
-      globeCap: st.cfg.i18n?.en?.globeCap || 'On‑Chain Earth · 3D Clouds & Lighting',
+      tagline:'Autonomous Web3 Wallet • AI Agents 24/7 • Instant on‑chain signals • Turn intent into outcomes.',
+      moto:'“See earlier – Decide better – Capture the upside.”',
+      motoDesc:'Built for conversion: <b>Lean courses</b> • <b>Realtime money‑flow map</b> • <b>Instant AI advisory</b> • <b>Early plays, risk‑controlled</b>.',
+      globeCap:'On‑Chain Earth • 3D Clouds & Moonlight – tuned for prosperity.',
       k1t:'Opportunities',k2t:'Updates',k3t:'Live Views',k4t:'Revenue',
-      hTop3:'⭐ Top 3 Tokens Today',
-      hFree:'📊 Curated Tokens (Free)',
-      hEdu:'📚 Learn Fast – NFT Rewards',
-      hOpp:'🔥 Featured Opportunities (Multi‑Chain)',
+      hTop3:'⭐ Top 3 Tokens to Act on Today',
+      hFree:'📊 Curated Tokens (Free – check now)',
+      hEdu:'📚 Learn Fast – Earn NFT Rewards',
+      hOpp:'🔥 Featured Opportunities (Multi‑Chain, live)',
       scanMode:'Scan: On‑Chain',
       btnRefresh:'Refresh',
-      hPlan:'💠 Premium – Deep Analysis & Playbooks',
-      hGate:'🔓 SuperGate (Unlock On‑Chain)',
-      gatePitch:'<b>Make a small payment to receive the unlock code.</b>',
+      hPlan:'💠 Premium – Practical Strategy & Playbooks',
+      hGate:'🔓 SuperGate (On‑Chain Unlock)',
+      gatePitch:'<b>Small payment → instant unlock • long‑tail value.</b>',
       addrLbl:'Address/ID:',
       bundleLbl:'Choose plan',
       codeLbl:'Unlock code (after payment)',
       placeUnlock:'Enter code…',
       placeTx:'(Optional) Paste TX hash / note',
-      afterUnlockHint:'After unlocking, Premium content appears. The code is stored on this device.',
+      afterUnlockHint:'After unlocking, Premium content appears instantly. The code is stored on your device.',
       unlockedLbl:'✔ Unlocked',
       relock:'Relock',
-      ctaH:'🚀 Move first – Capture upside',
-      ctaD:'Unlock or open a free account to Track – Analyze – Act in one place.',
+      ctaH:'🚀 Move first – Ride the flows',
+      ctaD:'Unlock or open a free account to Track • Analyze • Act in one place.',
       ctaOpen:'Unlock now',
       ctaBinance:'Open Binance Free ↗',
       ctaAlgos:'Open AlgosOne Free ↗',
@@ -364,9 +348,9 @@ small.muted{color:var(--mut)}
       openData:'Data',
       partners:{
         algosH:'AlgosOne – AI strategies & realtime alerts',
-        algosD:'Copy‑trading/automation carries risk. Understand products, regulations and your risk tolerance first.',
+        algosD:'Performance needs discipline & risk awareness: follow regulations and your own risk tolerance.',
         open:'Open free ↗',
-        bnbH:'BNB – Trading ecosystem',
+        bnbH:'BNB – Leading trading ecosystem',
         b1:'Fast matching • competitive fees',
         b2:'Multi‑layer security • 2FA',
         b3:'Ecosystem: Earn • Launchpool'
@@ -380,264 +364,147 @@ small.muted{color:var(--mut)}
     }
   };
 
-  function setTxt(sel, val, html=false){ const el=$(sel); if(!el) return; html ? (el.innerHTML=val) : (el.textContent=val); }
+  function setTxt(sel,val,html=false){const el=$(sel);if(!el)return;html?(el.innerHTML=val):(el.textContent=val)}
   function applyLang(){
-    const L = DI[st.lang];
-
-    // Hero & header text
-    setTxt('#brand', L.brand);
-    setTxt('#tagline', L.tagline, true);
-    setTxt('#moto', L.moto);
-    setTxt('#motoDesc', L.motoDesc, true);
-    setTxt('#globeCap', L.globeCap);
-
-    // Heartbeat label (không đổi cấu trúc, chỉ thay text trước <b id="hb">)
-    const hb = $('#hb'); if(hb){ const pill = hb.closest('.pill'); if(pill){ pill.innerHTML = `${L.heartbeat}: <b id="hb">${hb.textContent}</b>`; } }
-
-    // KPI / sections
-    setTxt('#k1t', L.k1t); setTxt('#k2t', L.k2t); setTxt('#k3t', L.k3t); setTxt('#k4t', L.k4t);
-    setTxt('#hTop3', L.hTop3); setTxt('#hFree', L.hFree); setTxt('#hEdu', L.hEdu); setTxt('#hOpp', L.hOpp);
-    setTxt('#scanMode', L.scanMode);
-
-    // Refresh button (giữ biểu tượng ↻)
-    const rn = $('#refreshNow'); if(rn){ rn.innerHTML = `↻ ${L.btnRefresh}`; }
-
-    // Plans / Gate
-    setTxt('#hPlan', L.hPlan); setTxt('#hGate', L.hGate);
-    setTxt('#gatePitch', L.gatePitch, true);
-    setTxt('#addrLbl', L.addrLbl);
-    setTxt('#bundleLbl', L.bundleLbl);
-    setTxt('#codeLbl', L.codeLbl);
-    setTxt('#afterUnlockHint', L.afterUnlockHint);
-    setTxt('#unlockedLbl', L.unlockedLbl);
-    setTxt('#relock', L.relock);
-
-    // Placeholders
+    const L=DI[st.lang];
+    setTxt('#brand',L.brand);
+    setTxt('#tagline',L.tagline,true);
+    setTxt('#moto',L.moto);
+    setTxt('#motoDesc',L.motoDesc,true);
+    setTxt('#globeCap',L.globeCap);
+    const hb=$('#hb'); if(hb){const pill=hb.closest('.pill'); if(pill){pill.innerHTML=`${L.heartbeat}: <b id="hb">${hb.textContent}</b>`;}}
+    setTxt('#k1t',L.k1t);setTxt('#k2t',L.k2t);setTxt('#k3t',L.k3t);setTxt('#k4t',L.k4t);
+    setTxt('#hTop3',L.hTop3);setTxt('#hFree',L.hFree);setTxt('#hEdu',L.hEdu);setTxt('#hOpp',L.hOpp);
+    setTxt('#scanMode',L.scanMode);
+    const rn=$('#refreshNow'); if(rn){rn.innerHTML=`↻ ${L.btnRefresh}`;}
+    setTxt('#hPlan',L.hPlan);setTxt('#hGate',L.hGate);
+    setTxt('#gatePitch',L.gatePitch,true);
+    setTxt('#addrLbl',L.addrLbl);setTxt('#bundleLbl',L.bundleLbl);setTxt('#codeLbl',L.codeLbl);
     const uc=$('#unlockCode'); if(uc) uc.placeholder=L.placeUnlock;
     const tx=$('#txhash'); if(tx) tx.placeholder=L.placeTx;
-
-    // CTA
-    setTxt('#ctaH', L.ctaH); setTxt('#ctaD', L.ctaD); setTxt('#ctaOpen', L.ctaOpen);
-    setTxt('#cta_binance', L.ctaBinance); setTxt('#cta_algos', L.ctaAlgos);
-    setTxt('#ctaB', L.ctaBinance); setTxt('#ctaA', L.ctaAlgos);
-    setTxt('#shareMine', L.shareMine);
-    setTxt('#autoLbl', L.autoLbl);
-    setTxt('#openData', L.openData);
-
-    // Partners (dùng vị trí, không thêm ID mới)
-    const cards = $$('#secPartners .partner-card');
-    if(cards[0]){
-      const h4 = cards[0].querySelector('h4'), p = cards[0].querySelector('.muted'), a = cards[0].querySelector('a.btn');
-      if(h4) h4.textContent = L.partners.algosH;
-      if(p)  p.textContent  = L.partners.algosD;
-      if(a)  a.textContent  = L.partners.open;
-    }
-    if(cards[1]){
-      const h4 = cards[1].querySelector('h4'), lis = cards[1].querySelectorAll('li'), a = cards[1].querySelector('a.btn');
-      if(h4) h4.textContent = L.partners.bnbH;
-      if(lis[0]) lis[0].textContent = L.partners.b1;
-      if(lis[1]) lis[1].textContent = L.partners.b2;
-      if(lis[2]) lis[2].textContent = L.partners.b3;
-      if(a)  a.textContent  = L.partners.open;
-    }
-
-    // Chat & Modal Data
-    setTxt('#chatH', L.chatH);
-    const closeChatBtn = $('#closeChat'); if(closeChatBtn) closeChatBtn.textContent = L.chatClose;
-    const chatIn = $('#chatIn'); if(chatIn) chatIn.placeholder = L.chatPH;
-    const chatSend = $('#chatSend'); if(chatSend) chatSend.textContent = L.chatSend;
-    setTxt('#mTitle', L.mTitle);
-    const closeData = $('#closeData'); if(closeData) closeData.textContent = L.closeData;
+    setTxt('#afterUnlockHint',L.afterUnlockHint);setTxt('#unlockedLbl',L.unlockedLbl);setTxt('#relock',L.relock);
+    setTxt('#ctaH',L.ctaH);setTxt('#ctaD',L.ctaD);setTxt('#ctaOpen',L.ctaOpen);
+    setTxt('#cta_binance',L.ctaBinance);setTxt('#cta_algos',L.ctaAlgos);
+    setTxt('#ctaB',L.ctaBinance);setTxt('#ctaA',L.ctaAlgos);
+    setTxt('#shareMine',L.shareMine);setTxt('#autoLbl',L.autoLbl);setTxt('#openData',L.openData);
+    const cards=$$('#secPartners .partner-card');
+    if(cards[0]){const h4=cards[0].querySelector('h4'),p=cards[0].querySelector('.muted'),a=cards[0].querySelector('a.btn');
+      if(h4)h4.textContent=L.partners.algosH; if(p)p.textContent=L.partners.algosD; if(a)a.textContent=L.partners.open;}
+    if(cards[1]){const h4=cards[1].querySelector('h4'),lis=cards[1].querySelectorAll('li'),a=cards[1].querySelector('a.btn');
+      if(h4)h4.textContent=L.partners.bnbH; if(lis[0])lis[0].textContent=L.partners.b1; if(lis[1])lis[1].textContent=L.partners.b2; if(lis[2])lis[2].textContent=L.partners.b3; if(a)a.textContent=L.partners.open;}
+    setTxt('#chatH',L.chatH); const closeChatBtn=$('#closeChat'); if(closeChatBtn) closeChatBtn.textContent=L.chatClose;
+    const chatIn=$('#chatIn'); if(chatIn) chatIn.placeholder=L.chatPH;
+    const chatSend=$('#chatSend'); if(chatSend) chatSend.textContent=L.chatSend;
+    setTxt('#mTitle',L.mTitle); const closeData=$('#closeData'); if(closeData) closeData.textContent=L.closeData;
   }
-
-  // Init text + toggle
   applyLang();
-  $('#lang').onclick = ()=>{ st.lang = st.lang==='vi' ? 'en':'vi'; localStorage.setItem('lang', st.lang); applyLang(); };
+  $('#lang').onclick=()=>{st.lang=st.lang==='vi'?'en':'vi';localStorage.setItem('lang',st.lang);applyLang();};
 
-  // ===== giữ nguyên liên kết/hành vi khác =====
-  $('#year').textContent = new Date().getFullYear(); $('#ens').textContent = st.cfg.ens || 'lightunfold.eth';
-  const setHref=(id,url)=>{ const el=$(id); if(el&&url) el.href=url; };
-  setHref('#cta_binance', st.cfg.links?.binance); setHref('#cta_algos', st.cfg.links?.algos);
-  setHref('#bnbLink', st.cfg.links?.binance); setHref('#algosLink', st.cfg.links?.algos);
-  setHref('#ctaB', st.cfg.links?.binance); setHref('#ctaA', st.cfg.links?.algos);
+  $('#year').textContent=new Date().getFullYear(); $('#ens').textContent=st.cfg.ens||'lightunfold.eth';
+  const setHref=(id,url)=>{const el=$(id); if(el&&url) el.href=url;};
+  setHref('#cta_binance',st.cfg.links?.binance); setHref('#cta_algos',st.cfg.links?.algos);
+  setHref('#bnbLink',st.cfg.links?.binance); setHref('#algosLink',st.cfg.links?.algos);
+  setHref('#ctaB',st.cfg.links?.binance); setHref('#ctaA',st.cfg.links?.algos);
+  $('#goTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+  function beat(){ $('#hb').textContent=new Date().toLocaleTimeString(); const kUpd=$('#kUpd'); if(kUpd) kUpd.textContent=new Date().toLocaleString(); }
+  setInterval(beat,1000); beat();
+  $('#kRev').textContent=st.rev.toLocaleString();
 
-  $('#goTop').onclick = () => window.scrollTo({top:0, behavior:'smooth'});
-  function beat(){ $('#hb').textContent = new Date().toLocaleTimeString(); const kUpd=$('#kUpd'); if(kUpd) kUpd.textContent = new Date().toLocaleString(); }
-  setInterval(beat, 1000); beat();
-  $('#kRev').textContent = st.rev.toLocaleString();
-
-  // ===== (giữ nguyên) demo nội dung tokens/edu/opps/plans/payments/share/chat... như bản của bạn =====
-  // ... (nguyên vẹn như bạn gửi, không cắt bỏ — giữ logic y hệt)
-  // Tokens (demo)
-  const top3 = [
-    {symbol:'BTC', name:'Bitcoin', pct24h:0.8, cap:900000000000, link:'https://www.coingecko.com/en/coins/bitcoin'},
-    {symbol:'ETH', name:'Ethereum', pct24h:1.2, cap:450000000000, link:'https://www.coingecko.com/en/coins/ethereum'},
-    {symbol:'BNB', name:'BNB', pct24h:-0.4, cap:80000000000, link:'https://www.coingecko.com/en/coins/bnb'}
-  ];
-  const freeT = [
-    {symbol:'ARB', name:'Arbitrum', pct24h:2.1, cap:3000000000, link:'https://www.coingecko.com/en/coins/arbitrum'},
-    {symbol:'OP', name:'Optimism', pct24h:-1.3, cap:2800000000, link:'https://www.coingecko.com/en/coins/optimism'}
-  ];
-  function addBubble(txt,who='ai'){ const b=document.createElement('div'); b.className='bubble '+(who==='me'?'me':'ai'); b.textContent=txt; $('#chatBody').appendChild(b); $('#chatBody').scrollTop=$('#chatBody').scrollHeight; }
-  function cardToken(x){
-    const el=document.createElement('div'); el.className='card';
+  // ===== giữ nguyên demo nội dung / payments / unlock / share / chat như trước =====
+  const top3=[{symbol:'BTC',name:'Bitcoin',pct24h:0.8,cap:900000000000,link:'https://www.coingecko.com/en/coins/bitcoin'},
+              {symbol:'ETH',name:'Ethereum',pct24h:1.2,cap:450000000000,link:'https://www.coingecko.com/en/coins/ethereum'},
+              {symbol:'BNB',name:'BNB',pct24h:-0.4,cap:80000000000,link:'https://www.coingecko.com/en/coins/bnb'}];
+  const freeT=[{symbol:'ARB',name:'Arbitrum',pct24h:2.1,cap:3000000000,link:'https://www.coingecko.com/en/coins/arbitrum'},
+               {symbol:'OP',name:'Optimism',pct24h:-1.3,cap:2800000000,link:'https://www.coingecko.com/en/coins/optimism'}];
+  function addBubble(txt,who='ai'){const b=document.createElement('div');b.className='bubble '+(who==='me'?'me':'ai');b.textContent=txt;$('#chatBody').appendChild(b);$('#chatBody').scrollTop=$('#chatBody').scrollHeight;}
+  function cardToken(x){const el=document.createElement('div');el.className='card';
     el.innerHTML=`<b>${x.symbol} • ${x.name}</b>
-    <div class="muted">24h: ${x.pct24h>0?'+':''}${x.pct24h}% • Cap: $${Intl.NumberFormat().format(x.cap)}</div>
-    <div class="row" style="margin-top:8px"><a class="btn out" href="${x.link}" target="_blank" rel="noopener">Xem biểu đồ</a>
-    <button class="btn" data-sym="${x.symbol}">AI phân tích</button></div>`;
-    el.querySelector('button').onclick=()=>addBubble(`Xin phân tích nhanh ${x.symbol} khung 1D/4H, mức vô hiệu hóa và vùng quan sát.`,'me');
-    return el;
-  }
-  top3.forEach(t=>$('#tokenPro').appendChild(cardToken(t)));
-  freeT.forEach(t=>$('#tokenFree').appendChild(cardToken(t)));
+      <div class="muted">24h: ${x.pct24h>0?'+':''}${x.pct24h}% • Cap: $${Intl.NumberFormat().format(x.cap)}</div>
+      <div class="row" style="margin-top:8px"><a class="btn out" href="${x.link}" target="_blank" rel="noopener">Xem biểu đồ</a>
+      <button class="btn" data-sym="${x.symbol}">AI phân tích</button></div>`;
+    el.querySelector('button').onclick=()=>addBubble(`Xin phân tích nhanh ${x.symbol} khung 1D/4H, mức vô hiệu hóa và vùng quan sát.`,'me'); return el;}
+  top3.forEach(t=>$('#tokenPro').appendChild(cardToken(t))); freeT.forEach(t=>$('#tokenFree').appendChild(cardToken(t)));
 
-  // Edu
-  const ebooks=[
-    {title:"Crypto 101 (Miễn phí)", price:0, desc:"Ví • bảo mật • chu kỳ • quản trị vốn • checklist."},
-    {title:"DeFi Mastery ($10)", price:10, desc:"Yield • Lending • Perp — vận hành & tối ưu."},
-    {title:"Risk & Psychology ($19)", price:19, desc:"Kỷ luật • nhật ký lệnh • khung R:R."}
-  ];
-  ebooks.forEach(b=>{ const d=document.createElement('div'); d.className='card';
+  const ebooks=[{title:"Crypto 101 (Miễn phí)",price:0,desc:"Ví • bảo mật • chu kỳ • quản trị vốn • checklist."},
+                {title:"DeFi Mastery ($10)",price:10,desc:"Yield • Lending • Perp — vận hành & tối ưu."},
+                {title:"Risk & Psychology ($19)",price:19,desc:"Kỷ luật • nhật ký lệnh • khung R:R."}];
+  ebooks.forEach(b=>{const d=document.createElement('div');d.className='card';
     d.innerHTML=`<b>${b.title}</b><div class="muted">${b.desc}</div>
-    <div class="row" style="margin-top:8px"><span class="tag">$${b.price}</span><button class="btn out">Đọc thử</button></div>`;
-    $('#ebooks').appendChild(d); });
+    <div class="row" style="margin-top:8px"><span class="tag">$${b.price}</span><button class="btn out">Đọc thử</button></div>`;$('#ebooks').appendChild(d);});
 
-  // Opportunities (demo)
   $('#ticker').textContent='Chu kỳ • funding/oi • smart money flows…';
-  ['L2 bridge spike','DEX volume surge','Stablecoin netflow'].forEach(k=>{
-    const c=document.createElement('div'); c.className='card';
-    c.innerHTML=`<b>${k}</b><div class="muted">Theo dõi điều kiện kích hoạt • chỉ là gợi ý – không phải khuyến nghị.</div>`;
-    $('#opps').appendChild(c);
-  });
+  ['L2 bridge spike','DEX volume surge','Stablecoin netflow'].forEach(k=>{const c=document.createElement('div');c.className='card';
+    c.innerHTML=`<b>${k}</b><div class="muted">Theo dõi điều kiện kích hoạt • chỉ là gợi ý – không phải khuyến nghị.</div>`;$('#opps').appendChild(c);});
   $('#refreshNow').onclick=()=>{ $('#kOpps').textContent=(+$('#kOpps').textContent||0)+Math.ceil(Math.random()*3); beat(); };
 
-  // Plans
-  const plans = st.cfg.premium?.plans||[];
-  plans.forEach(p=>{
-    const el=document.createElement('div'); el.className='card';
+  const plans=st.cfg.premium?.plans||[]; const bundleSel=$('#bundleSel');
+  plans.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=`${p.title} – $${p.price}`;bundleSel.appendChild(o); const el=document.createElement('div');el.className='card';
     el.innerHTML=`<b>${p.title}</b><div class="muted" style="min-height:42px">${p.desc}</div>
     <div class="row" style="margin-top:8px"><span class="tag">$${p.price}</span><button class="btn" data-plan="${p.id}">Chọn</button></div>`;
-    el.querySelector('button').onclick=()=>{ $('#bundleSel').value=p.id; location.hash='#supergate'; };
-    $('#plans').appendChild(el);
-  });
+    el.querySelector('button').onclick=()=>{ $('#bundleSel').value=p.id; location.hash='#supergate'; }; $('#plans').appendChild(el); });
 
-  // Payments
   const pay=st.cfg.payments||{}; const payList=$('#payList'); const qr=$('#qr'), payAddr=$('#payAddr');
-  const bundleSel=$('#bundleSel'); plans.forEach(p=>{ const o=document.createElement('option'); o.value=p.id; o.textContent=`${p.title} – $${p.price}`; bundleSel.appendChild(o); });
-  function setQR(text){ qr.src=`https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(text)}`; }
-  function paintPays(){ payList.innerHTML=''; Object.entries(pay).forEach(([k,v])=>{
-    const row=document.createElement('div'); row.className='paybtn'; row.role='button'; row.tabIndex=0;
+  function setQR(text){qr.src=`https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(text)}`;}
+  function paintPays(){payList.innerHTML='';Object.entries(pay).forEach(([k,v])=>{const row=document.createElement('div');row.className='paybtn';row.role='button';row.tabIndex=0;
     row.innerHTML=`<div><b>${v.label}</b><div class="muted mono">${v.id}</div></div><button class="copy" data-id="${v.id}">Copy</button>`;
-    row.onclick=()=>selectPay(k);
-    row.querySelector('.copy').onclick=(e)=>{ e.stopPropagation(); navigator.clipboard.writeText(v.id); toast('Đã copy'); };
-    payList.appendChild(row);
-  });}
-  function selectPay(key){ $$('.paybtn').forEach(x=>x.classList.remove('active'));
-    const v=pay[key]; const idx=Array.from(payList.children).findIndex(n=>n.querySelector('.mono')?.textContent===v.id);
-    if(idx>-1) payList.children[idx].classList.add('active'); payAddr.textContent=v.id; setQR(v.qr||v.id); }
-  function toast(msg){ const t=document.createElement('div'); t.className='pill'; t.textContent=msg; Object.assign(t.style,{position:'fixed',left:'50%',top:'16px',transform:'translateX(-50%)',zIndex:9999}); document.body.appendChild(t); setTimeout(()=>t.remove(),1500); }
+    row.onclick=()=>selectPay(k); row.querySelector('.copy').onclick=(e)=>{e.stopPropagation();navigator.clipboard.writeText(v.id);}; payList.appendChild(row);});}
+  function selectPay(key){$$('.paybtn').forEach(x=>x.classList.remove('active'));const v=pay[key];
+    const idx=Array.from(payList.children).findIndex(n=>n.querySelector('.mono')?.textContent===v.id);
+    if(idx>-1) payList.children[idx].classList.add('active'); payAddr.textContent=v.id; setQR(v.qr||v.id);}
   paintPays(); const firstKey=Object.keys(pay)[0]; if(firstKey) selectPay(firstKey);
 
-  // Unlock
   const SECRET=String(st.cfg.premium?.unlock_code||'');
-  function addRevenue(x){ st.rev=Math.max(0, st.rev+Number(x||0)); localStorage.setItem('rev', st.rev); $('#kRev').textContent=st.rev.toLocaleString(); }
-  $('#doUnlock').onclick=()=>{ const ok=(String($('#unlockCode').value||'').trim()===SECRET);
-    $('#uMsg').textContent= ok ? (st.lang==='vi'?'Mở khóa thành công!':'Unlocked!') : (st.lang==='vi'?'Sai mã.':'Wrong code.');
-    if(ok){ $('#opened').classList.remove('hidden'); localStorage.setItem('premium_unlocked','1'); addRevenue(plans.find(p=>p.id===$('#bundleSel').value)?.price||0); paintPremium(); } };
-  $('#remember').onclick=()=>{ localStorage.setItem('remember_code',$('#unlockCode').value||''); toast(st.lang==='vi'?'Đã nhớ mã':'Saved'); };
-  $('#relock').onclick=()=>{ $('#opened').classList.add('hidden'); localStorage.removeItem('premium_unlocked'); };
+  function addRevenue(x){st.rev=Math.max(0,st.rev+Number(x||0));localStorage.setItem('rev',st.rev);$('#kRev').textContent=st.rev.toLocaleString();}
+  $('#doUnlock').onclick=()=>{const ok=(String($('#unlockCode').value||'').trim()===SECRET);
+    $('#uMsg').textContent=ok?(st.lang==='vi'?'Mở khóa thành công!':'Unlocked!'):(st.lang==='vi'?'Sai mã.':'Wrong code.');
+    if(ok){$('#opened').classList.remove('hidden');localStorage.setItem('premium_unlocked','1');addRevenue(plans.find(p=>p.id===$('#bundleSel').value)?.price||0);paintPremium();}};
+  $('#remember').onclick=()=>{localStorage.setItem('remember_code',$('#unlockCode').value||'');};
+  $('#relock').onclick=()=>{$('#opened').classList.add('hidden');localStorage.removeItem('premium_unlocked');};
   if(localStorage.getItem('premium_unlocked')==='1') $('#opened').classList.remove('hidden');
-  function paintPremium(){ const box=$('#premium'); box.innerHTML=''; ['Playbook đa khung','Checklist rủi ro','Bảng tâm lý & dòng tiền','Q&A theo lịch'].forEach(x=>{ const c=document.createElement('div'); c.className='card'; c.innerHTML=`<b>${x}</b><div class="muted">Nội dung hiển thị sau mở khóa.</div>`; box.appendChild(c); }); }
+  function paintPremium(){const box=$('#premium');box.innerHTML='';['Playbook đa khung','Checklist rủi ro','Bảng tâm lý & dòng tiền','Q&A theo lịch'].forEach(x=>{const c=document.createElement('div');c.className='card';c.innerHTML=`<b>${x}</b><div class="muted">Nội dung hiển thị sau mở khóa.</div>`;box.appendChild(c);});}
 
-  // Share
-  const peer=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2); localStorage.setItem('peer_id',peer);
-  const base=location.origin+location.pathname; const myRef=`${base}?ref=${peer}&utm_source=share&utm_medium=viral&utm_campaign=ultramaster`;
-  const t_enc=encodeURIComponent(document.title), u_enc=encodeURIComponent(myRef);
-  const map={sh_tg:`https://t.me/share/url?url=${u_enc}&text=${t_enc}`, sh_x:`https://twitter.com/intent/tweet?text=${t_enc}&url=${u_enc}`, sh_fb:`https://www.facebook.com/sharer/sharer.php?u=${u_enc}`, sh_in:`https://www.linkedin.com/sharing/share-offsite/?url=${u_enc}`};
-  for(const id in map){ const el=document.getElementById(id); if(el) el.href=map[id]; }
-  document.getElementById('shareMine')?.addEventListener('click', async()=>{ try{ if(navigator.share){ await navigator.share({title:document.title,text:'Khám Phá UltraMaster',url:myRef}); } else { await navigator.clipboard.writeText(myRef); alert(st.lang==='vi'?'Đã sao chép liên kết!':'Link copied!'); } }catch(_){} });
-
-  // Chat (offline helper)
+  const peer=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2);localStorage.setItem('peer_id',peer);
+  const base=location.origin+location.pathname;const myRef=`${base}?ref=${peer}&utm_source=share&utm_medium=viral&utm_campaign=ultramaster`;
+  const te=encodeURIComponent(document.title),ue=encodeURIComponent(myRef);
+  const map={sh_tg:`https://t.me/share/url?url=${ue}&text=${te}`,sh_x:`https://twitter.com/intent/tweet?text=${te}&url=${ue}`,sh_fb:`https://www.facebook.com/sharer/sharer.php?u=${ue}`,sh_in:`https://www.linkedin.com/sharing/share-offsite/?url=${ue}`};
+  for(const id in map){const el=document.getElementById(id);if(el)el.href=map[id];}
+  document.getElementById('shareMine')?.addEventListener('click',async()=>{try{if(navigator.share){await navigator.share({title:document.title,text:'Khám Phá UltraMaster',url:myRef});}else{await navigator.clipboard.writeText(myRef);alert(st.lang==='vi'?'Đã sao chép liên kết!':'Link copied!');}}catch(_){}});
   $('#openChat').onclick=()=>{ $('#chat').style.display='flex'; if(!$('#chatBody').dataset.hi){ addBubble(st.lang==='vi'?'Chào! Tôi là AI hỗ trợ phân tích.':'Hi! I\'m your analysis assistant.'); $('#chatBody').dataset.hi=1; } };
   $('#closeChat').onclick=()=> $('#chat').style.display='none';
-  $('#chatSend').onclick=()=>{ const v=$('#chatIn').value.trim(); if(!v) return; addBubble(v,'me'); $('#chatIn').value=''; setTimeout(()=>addBubble(st.lang==='vi'?'Mẹo: R:R ≥ 2:1, rủi ro ≤1%.':'Tip: Risk ≤1%, target R:R ≥ 2:1.','ai'),400); };
+  $('#chatSend').onclick=()=>{const v=$('#chatIn').value.trim();if(!v)return;addBubble(v,'me');$('#chatIn').value='';setTimeout(()=>addBubble(st.lang==='vi'?'Mẹo: R:R ≥ 2:1, rủi ro ≤1%.':'Tip: Risk ≤1%, target R:R ≥ 2:1.','ai'),400);};
 
-  // ===== 3D EARTH (xanh dịu) + ÁNH TRĂNG mờ bay ngang =====
+  // ===== 3D Earth + Moon (giữ nguyên) =====
   try{
-    const canvas = document.getElementById('globe3d');
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
-    const DPR = Math.min(window.devicePixelRatio||1, 2);
-    const W = canvas.clientWidth || 300, H = canvas.clientHeight || 300;
-    renderer.setPixelRatio(DPR); renderer.setSize(W, H, false);
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, W/H, 0.1, 100); camera.position.z = 6;
-
-    // Ánh sáng dịu
-    const ambient = new THREE.AmbientLight(0xffffff, 0.55);
-    const sun = new THREE.DirectionalLight(0xffffff, 0.95); sun.position.set(6,3,4);
-    scene.add(ambient, sun);
-
-    // Textures
-    const loader   = new THREE.TextureLoader();
-    const earthTex = loader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
-    const normalTx = loader.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg');
-    const specTx   = loader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
-    const cloudTx  = loader.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png');
-    const moonTex  = loader.load('https://threejs.org/examples/textures/planets/moon_1024.jpg');
-
-    // Trái Đất (xanh dịu)
-    const earth = new THREE.Mesh(
-      new THREE.SphereGeometry(2.4, 64, 64),
-      new THREE.MeshPhongMaterial({
-        map: earthTex, bumpMap: normalTx, bumpScale:0.04,
-        specularMap: specTx, specular: new THREE.Color('rgb(70,80,90)')
-      })
-    );
+    const canvas=document.getElementById('globe3d');
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+    const DPR=Math.min(window.devicePixelRatio||1,2);
+    const W=canvas.clientWidth||300,H=canvas.clientHeight||300;
+    renderer.setPixelRatio(DPR);renderer.setSize(W,H,false);
+    const scene=new THREE.Scene();
+    const camera=new THREE.PerspectiveCamera(50,W/H,0.1,100);camera.position.z=6;
+    const ambient=new THREE.AmbientLight(0xffffff,0.55);
+    const sun=new THREE.DirectionalLight(0xffffff,0.95);sun.position.set(6,3,4);
+    scene.add(ambient,sun);
+    const loader=new THREE.TextureLoader();
+    const earthTex=loader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
+    const normalTx=loader.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg');
+    const specTx=loader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
+    const cloudTx=loader.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png');
+    const moonTex=loader.load('https://threejs.org/examples/textures/planets/moon_1024.jpg');
+    const earth=new THREE.Mesh(new THREE.SphereGeometry(2.4,64,64),new THREE.MeshPhongMaterial({map:earthTex,bumpMap:normalTx,bumpScale:0.04,specularMap:specTx,specular:new THREE.Color('rgb(70,80,90)')}));
     scene.add(earth);
-
-    // Mây mờ
-    const clouds = new THREE.Mesh(
-      new THREE.SphereGeometry(2.46, 64, 64),
-      new THREE.MeshLambertMaterial({ map: cloudTx, transparent:true, opacity:0.40 })
-    );
+    const clouds=new THREE.Mesh(new THREE.SphereGeometry(2.46,64,64),new THREE.MeshLambertMaterial({map:cloudTx,transparent:true,opacity:0.40}));
     scene.add(clouds);
-
-    // Mặt trăng + ánh trăng mờ (xanh lạnh) bay ngang
-    const moon = new THREE.Mesh(
-      new THREE.SphereGeometry(0.65, 32, 32),
-      new THREE.MeshStandardMaterial({ map: moonTex, roughness:1, metalness:0 })
-    );
-    const moonLight = new THREE.PointLight(0xbfd4ff, 1.15, 18); // ánh trăng mờ dịu
-    const moonGroup = new THREE.Group(); moonGroup.add(moon); moonGroup.add(moonLight);
-    scene.add(moonGroup);
-
-    // Resize
-    function resize(){ const w = canvas.clientWidth||300, h = canvas.clientHeight||300; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
-    window.addEventListener('resize', resize);
-
-    // Animate
-    let t = 0;
-    (function animate(){
-      requestAnimationFrame(animate);
-      earth.rotation.y  += 0.0026;
-      clouds.rotation.y += 0.0032;
-      // Quỹ đạo trăng bay ngang mềm
-      t += 0.0022; const r = 5.2;
-      moonGroup.position.set(Math.cos(t)*r, Math.sin(t*1.1)*0.8, Math.sin(t)*r*0.4);
-      moonLight.position.set(0,0,0);
-      renderer.render(scene, camera);
-    })();
-  }catch(e){
-    console.warn('WebGL not available, fallback static.', e);
-  }
-
-  // Self-heal (nguyên bản)
-  window.addEventListener('error', ()=>{ try{ $('#plans')?.children.length || plans.forEach(p=>{ const e=document.createElement('div'); e.className='card'; e.textContent=p.title; $('#plans').appendChild(e); }); }catch(_){ } });
+    const moon=new THREE.Mesh(new THREE.SphereGeometry(0.65,32,32),new THREE.MeshStandardMaterial({map:moonTex,roughness:1,metalness:0}));
+    const moonLight=new THREE.PointLight(0xbfd4ff,1.15,18);
+    const moonGroup=new THREE.Group();moonGroup.add(moon);moonGroup.add(moonLight);scene.add(moonGroup);
+    function resize(){const w=canvas.clientWidth||300,h=canvas.clientHeight||300;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+    window.addEventListener('resize',resize);
+    let t=0;(function animate(){requestAnimationFrame(animate);earth.rotation.y+=0.0026;clouds.rotation.y+=0.0032;t+=0.0022;const r=5.2;moonGroup.position.set(Math.cos(t)*r,Math.sin(t*1.1)*0.8,Math.sin(t)*r*0.4);moonLight.position.set(0,0,0);renderer.render(scene,camera);})();
+  }catch(e){console.warn('WebGL not available, fallback static.',e);}
 })();
 </script>
 
-<!-- Floating share (kept last to avoid overlap) -->
 <div class="row" style="position:fixed;right:16px;bottom:16px;gap:8px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px">
   <a id="sh_tg" target="_blank" title="Share Telegram">📣</a>
   <a id="sh_x" target="_blank" title="Share X">𝕏</a>
@@ -645,7 +512,6 @@ small.muted{color:var(--mut)}
   <a id="sh_in" target="_blank" title="Share LinkedIn">in</a>
 </div>
 
-<!-- Chat mini -->
 <button class="btn chatfab" id="openChat">🧠 Chat AI 24/7</button>
 <div class="chatwin" id="chat">
   <div class="chathead"><b id="chatH">AI Tài chính</b><button class="btn out" id="closeChat">Đóng</button></div>
@@ -656,7 +522,6 @@ small.muted{color:var(--mut)}
   </div>
 </div>
 
-<!-- Modal data -->
 <div id="dataModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.55);place-items:center;z-index:99">
   <div class="card" style="width:min(95vw,960px);height:min(85vh,760px);display:flex;flex-direction:column">
     <div class="row" style="justify-content:space-between"><b id="mTitle">Dữ liệu Premium On‑Chain</b><button class="btn out" id="closeData">Đóng</button></div>
