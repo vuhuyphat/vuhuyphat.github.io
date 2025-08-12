@@ -1,4 +1,4 @@
-name: UCAN Upload → Auto‑IPNS (One‑Paste)
+name: UCAN Upload → Auto‑IPNS
 
 on:
   workflow_dispatch:
@@ -6,9 +6,9 @@ on:
     branches: [ main, master ]
     paths:
       - "site/**"
-      - ".github/workflows/auto-ipns-w3.yml"
+      - ".github/workflows/auto-ipns.yml"
   schedule:
-    - cron: "0 */6 * * *"   # chạy mỗi 6 giờ
+    - cron: "0 */6 * * *"   # chạy mỗi 6 giờ (tuỳ chỉnh được)
 
 permissions:
   contents: read
@@ -30,13 +30,13 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install minimal deps
+      - name: Install deps (w3up + w3name)
         run: |
           mkdir -p .onepaste && cd .onepaste
           npm init -y >/dev/null
           npm i @web3-storage/w3up-client @ucanto/principal @web3-storage/w3name mime dotenv >/dev/null
 
-      - name: Create uploader (UCAN → IPFS → IPNS)
+      - name: Create uploader script (UCAN → IPFS → IPNS)
         run: |
           cat > .onepaste/upload_ipns.mjs <<'EOF'
           import 'dotenv/config'
@@ -75,10 +75,10 @@ jobs:
           }
 
           async function uploadWithUCAN(src){
-            // nhận secrets (ưu tiên biến 1, fallback biến 2)
-            const UCAN     = process.env.WEB3_STORAGE_UCAN || process.env.WEB3_STORAGE_KEY
-            const SPACE_DID= process.env.WEB3_SPACE_DID    || process.env.WEB3_SPACE_KEY
-            if(!UCAN||!SPACE_DID) throw new Error('Thiếu UCAN hoặc SPACE_DID. Hãy thiết lập secrets WEB3_STORAGE_UCAN/WEB3_STORAGE_KEY và WEB3_SPACE_DID/WEB3_SPACE_KEY.')
+            // Lấy secrets (chấp nhận 2 tên khác nhau để tương thích)
+            const UCAN      = process.env.WEB3_STORAGE_UCAN || process.env.WEB3_STORAGE_KEY
+            const SPACE_DID = process.env.WEB3_SPACE_DID    || process.env.WEB3_SPACE_KEY
+            if(!UCAN||!SPACE_DID) throw new Error('Thiếu UCAN hoặc SPACE_DID.')
 
             const principal = await Principal.generate()
             const client = await Client.create({ principal })
@@ -104,12 +104,12 @@ jobs:
           async function loadOrCreateName(){
             const envKey=(process.env.W3NAME_KEY||'').trim()
             if(envKey){ console.log('🔐 Dùng W3NAME_KEY từ secrets.'); return await Name.from(Buffer.from(envKey,'base64')) }
-            if(exists(KEY_PATH)){ console.log('🔐 Dùng khoá IPNS đã lưu từ run trước.'); return await Name.from(Buffer.from(fs.readFileSync(KEY_PATH,'utf8').trim(),'base64')) }
+            if(exists(KEY_PATH)){ console.log('🔐 Dùng khoá IPNS đã lưu.'); return await Name.from(Buffer.from(fs.readFileSync(KEY_PATH,'utf8').trim(),'base64')) }
             const name = await Name.create()
             const b64 = Buffer.from(name.key.bytes).toString('base64')
             fs.writeFileSync(KEY_PATH,b64)
             console.log('🆕 Tạo IPNS name:', name.toString())
-            console.log('⚠️ Hãy lưu W3NAME_KEY (base64) từ artifact .w3name.key sau run đầu.')
+            console.log('⚠️ Lần đầu: khoá được đính kèm artifact .w3name.key – nhớ lưu vào secret W3NAME_KEY cho lần sau.')
             return name
           }
 
@@ -123,8 +123,7 @@ jobs:
             const ipns = name.toString()
             console.log('\\n🔗 IPNS cập nhật!')
             console.log('IPNS:', ipns)
-            console.log('Gateway:', `https://w3s.link/ipns/${ipns}`)
-            // ghi file info cho steps sau
+            console.log('Gateway (IPNS):', `https://w3s.link/ipns/${ipns}`)
             fs.writeFileSync('ipns.txt', ipns)
             fs.writeFileSync('cid.txt', cid)
           }
@@ -143,11 +142,10 @@ jobs:
 
       - name: Run • Upload + IPNS
         env:
-          # nhận từ cả 2 cách đặt tên secrets của bạn
           WEB3_STORAGE_UCAN: ${{ secrets.WEB3_STORAGE_UCAN || secrets.WEB3_STORAGE_KEY }}
           WEB3_SPACE_DID:   ${{ secrets.WEB3_SPACE_DID    || secrets.WEB3_SPACE_KEY   }}
-          W3NAME_KEY:       ${{ secrets.W3NAME_KEY }}
-          UPLOAD_PATH:      site             # đổi thành dist/public nếu muốn
+          W3NAME_KEY:       ${{ secrets.W3NAME_KEY }}   # có thì dán; trống thì run đầu sẽ tạo
+          UPLOAD_PATH:      site                        # đổi sang dist/public nếu cần
         run: node .onepaste/upload_ipns.mjs
 
       - name: Upload artifacts • IPNS/CID (+ key nếu vừa tạo)
@@ -162,7 +160,7 @@ jobs:
 
       - name: Summary
         run: |
-          echo "### IPNS Publish Result" >> $GITHUB_STEP_SUMMARY
-          test -f cid.txt && echo "- **CID:** \`$(cat cid.txt)\`" >> $GITHUB_STEP_SUMMARY || true
+          echo "### Kết quả IPNS" >> $GITHUB_STEP_SUMMARY
+          test -f cid.txt  && echo "- **CID:** \`$(cat cid.txt)\`"   >> $GITHUB_STEP_SUMMARY || true
           test -f ipns.txt && echo "- **IPNS:** \`$(cat ipns.txt)\`" >> $GITHUB_STEP_SUMMARY || true
-          echo "- Gateway (IPNS): https://w3s.link/ipns/$(cat ipns.txt 2>/dev/null || echo '<chưa có>')" >> $GITHUB_STEP_SUMMARY
+          test -f ipns.txt && echo "- **Gateway:** https://w3s.link/ipns/$(cat ipns.txt)" >> $GITHUB_STEP_SUMMARY || true
