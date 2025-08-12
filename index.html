@@ -21,7 +21,7 @@
     .row { display: flex; gap: 5px; flex-wrap: wrap; }
     #ticker { font-size: 1em; color: var(--gold); text-align: center; animation: blink 1s infinite; }
     @keyframes blink { 50% { opacity: 0.5; } }
-    #imageUpload { display: none; }
+    #imageUpload { display: block; margin: 10px 0; }
     #suggestion { margin-top: 10px; color: var(--accent); }
   </style>
 </head>
@@ -297,9 +297,9 @@
           if (result.action) {
             suggestion.innerHTML = `<b>Gợi ý hành động:</b> ${result.action}`;
             if (result.action.includes('mint NFT')) {
-              autoNFT(); // Kích hoạt mint NFT nếu gợi ý liên quan
+              autoNFT();
             } else if (result.action.includes('viral')) {
-              autoViral(); // Kích hoạt viral nếu gợi ý liên quan
+              autoViral();
             }
           } else {
             suggestion.innerHTML = '<b>Không tìm thấy gợi ý từ ảnh.</b>';
@@ -324,8 +324,6 @@
       autoBank();
       autoAlgosOne();
       selfHealAdapt();
-      // Hiển thị nút upload ảnh khi trang tải
-      imageUpload.style.display = 'block';
     })();
   </script>
 </body>
