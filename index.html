@@ -3,15 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>LightUnfold — One‑Paste Ultra</title>
-
-  <!-- OG/SEO tối thiểu -->
-  <meta name="description" content="Một lần dán là chạy: thanh toán & giới thiệu thông minh, tự học & tự xoay theo thị trường." />
-  <meta property="og:title" content="LightUnfold — One‑Paste Ultra" />
-  <meta property="og:description" content="Thanh toán & affiliate gắn sẵn. Tự học CTR, tự xoay offer theo vùng. ENS/IPFS auto." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://lightunfold.eth.limo/" />
-
+  <title>LightUnfold — One‑Paste (Copy là chạy)</title>
+  <meta name="description" content="Một lần dán là chạy: thanh toán & affiliate thông minh, tự học CTR & tự xoay offer theo thị trường." />
   <style>
     :root{--bg:#0d0f14;--card:#141824;--muted:#9fb0c9;--text:#f7f8fa;--pri:#00ffa3;--sec:#1e90ff;--line:#212a3f}
     *{box-sizing:border-box}
@@ -22,221 +15,177 @@
     .grid{display:grid;grid-template-columns:1fr;gap:12px}
     @media(min-width:780px){.grid{grid-template-columns:1.1fr .9fr}}
     .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
-    .card h3{margin:0 0 8px;font-size:16px}
     .row{display:flex;flex-wrap:wrap;gap:10px}
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:10px;border:1px solid #2b3550;background:#1f2636;color:#eaf3ff;text-decoration:none;font-weight:600}
     .btn.pri{background:linear-gradient(90deg,var(--pri),var(--sec));color:#07141d;border:none}
     .tag{display:inline-block;padding:4px 8px;border-radius:999px;background:#1c2538;color:#cfe6ff;font-size:12px}
-    .note{color:var(--muted);font-size:13px}
+    .tiny{font-size:12px;color:#aab6d6}
+    img.qr{width:100%;border-radius:10px;border:1px solid #223}
     .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
     .kpi .box{background:#101526;border:1px solid #1a2236;border-radius:10px;padding:10px;text-align:center}
-    img.qr{width:100%;border-radius:10px;border:1px solid #223}
-    .sp{height:8px}
-    .tiny{font-size:12px;color:#aab6d6}
-    .muted{color:#9fb0c9}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>LightUnfold — One‑Paste Ultra</h1>
-    <div class="sub">Một lần dán là chạy • ENS/IPFS tự động • Tự học CTR • Tự xoay offer theo thị trường</div>
+    <h1>LightUnfold — One‑Paste</h1>
+    <div class="sub">Một lần dán là chạy • ENS/IPFS sẵn sàng • Tự học CTR • Tự xoay offer theo thị trường</div>
 
     <div class="grid">
-      <!-- Cột trái: CTA & Thanh toán -->
+      <!-- Cột trái: Thanh toán -->
       <div class="card">
         <h3>Thanh toán nhanh</h3>
         <div class="row">
           <a class="btn pri" id="btnETH" href="ethereum:lightunfold.eth">💸 Gửi ETH → lightunfold.eth</a>
-          <button class="btn" id="copyUSDT">🔗 Copy USDT (ERC20)</button>
-          <a class="btn" target="_blank" rel="noopener" id="btnPayPal" href="#">🪙 PayPal.me</a>
+          <button class="btn" id="copyUSDT">🔗 Copy USDT (ERC‑20)</button>
+          <a class="btn" id="btnPayPal" target="_blank" rel="noopener">🪙 PayPal.me</a>
         </div>
-        <div class="sp"></div>
-        <div class="row">
-          <div class="card" style="flex:1;min-width:220px">
-            <div><b>USDT (ERC20):</b> <span id="usdtAddr">0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0</span></div>
-            <div class="tiny sp">Dán địa chỉ trên trong ví của bạn, chọn mạng ERC‑20.</div>
+        <div class="row" style="margin-top:10px">
+          <div class="card" style="flex:1;min-width:240px">
+            <div><b>USDT (ERC‑20):</b> <span id="usdtAddr">0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0</span></div>
+            <div class="tiny">Dán địa chỉ trên trong ví, chọn mạng ERC‑20.</div>
           </div>
-          <div class="card" style="flex:1;min-width:220px">
+          <div class="card" style="flex:1;min-width:240px">
             <div><b>MoMo:</b> 0567892030</div>
-            <div class="tiny">Mở MoMo → chuyển tới số trên (ghi nội dung chuyển khoản nếu cần).</div>
+            <div class="tiny">Mở MoMo → chuyển tới số trên (ghi nội dung nếu cần).</div>
           </div>
         </div>
-        <div class="sp"></div>
-        <div class="row">
+        <div class="row" style="margin-top:10px">
           <div class="card" style="flex:1;min-width:260px">
             <div><b>Vietcombank:</b> 9567892030 — TRẦN VĂN VŨ</div>
             <img class="qr" id="vietqr" alt="VietQR" />
             <div class="tiny">Quét VietQR hoặc chuyển khoản thủ công. Nội dung: <b>LightUnfold</b></div>
           </div>
-          <div class="card" style="flex:1;min-width:220px">
+          <div class="card" style="flex:1;min-width:240px">
             <div><b>PayPal:</b> <span id="ppEmail">vumumabada@gmail.com</span></div>
-            <div class="sp"></div>
-            <a class="btn" target="_blank" rel="noopener" id="btnPayPal2">🔓 Mở PayPal</a>
+            <a class="btn" id="btnPayPal2" target="_blank" rel="noopener" style="margin-top:8px">🔓 Mở PayPal</a>
           </div>
         </div>
       </div>
 
-      <!-- Cột phải: Offer xoay + Trạng thái -->
-      <div class="card" id="offerCard">
+      <!-- Cột phải: Offer tự xoay + Vùng -->
+      <div class="card">
         <h3>Ưu đãi nổi bật (tự học & xoay)</h3>
-        <div class="row" id="offerBox">
-          <!-- sẽ được JS chèn -->
-        </div>
-        <div class="sp"></div>
-        <div class="row" style="gap:6px">
+        <div class="row" id="offerBox"></div>
+        <div class="row" style="gap:6px;margin-top:10px">
           <span class="tag" id="tagRegion">Region: …</span>
           <button class="btn" data-region="VN">VN</button>
           <button class="btn" data-region="GLOBAL">Global</button>
           <button class="btn" data-region="CRYPTO">Crypto</button>
         </div>
-        <div class="sp"></div>
-        <div class="kpi">
-          <div class="box"><div class="tiny muted">Lượt xem</div><div id="kpiViews" style="font-weight:700">0</div></div>
-          <div class="box"><div class="tiny muted">Lượt nhấp</div><div id="kpiClicks" style="font-weight:700">0</div></div>
-          <div class="box"><div class="tiny muted">CTR (local)</div><div id="kpiCTR" style="font-weight:700">0%</div></div>
+        <div class="kpi" style="margin-top:10px">
+          <div class="box"><div class="tiny">Lượt xem</div><div id="kpiViews" style="font-weight:700">0</div></div>
+          <div class="box"><div class="tiny">Lượt nhấp</div><div id="kpiClicks" style="font-weight:700">0</div></div>
+          <div class="box"><div class="tiny">CTR (local)</div><div id="kpiCTR" style="font-weight:700">0%</div></div>
         </div>
       </div>
     </div>
 
-    <div class="sp"></div>
-    <div class="card">
+    <div class="card" style="margin-top:12px">
       <div class="tiny">
         Lối vào: <a href="https://vuhuyphat.github.io/" target="_blank" rel="noopener">vuhuyphat.github.io</a> •
         <a href="https://lightunfold.eth.limo/" target="_blank" rel="noopener">lightunfold.eth.limo</a> •
-        Một lần dán là chạy — muốn nâng cấp AI sau này chỉ cần thêm <code>offers.json</code> (tuỳ chọn).
+        “Copy‑paste” một lần là chạy. Muốn nâng cấp tự xoay bằng JSON ngoài vẫn giữ nguyên HTML.
       </div>
     </div>
   </div>
 
   <script>
-  /* ====== AutoBrain — One‑Paste Ultra (an toàn) ======
-     - Tự học CTR, tự xoay offer (Binance/AlgosOne)
-     - Tự gợi ý theo vùng (VN/Global/Crypto)
-     - Không tự gửi giao dịch. Không cần backend. */
+    /* ===== One‑Paste AutoBrain (an toàn) =====
+       - Không dùng server, không gọi API nhạy cảm.
+       - Tự học CTR & tự xoay offer (localStorage).
+       - Gợi ý vùng VN/Global/Crypto, cho phép đổi vùng thủ công. */
 
-  // 1) Cấu hình cố định (đã xác nhận)
-  const PAYMENT = {
-    momo: { phone: "0567892030" },
-    bank: { bank: "Vietcombank", account: "9567892030", name: "TRẦN VĂN VŨ" },
-    paypal: { email: "vumumabada@gmail.com" },
-    usdt: { chain: "ERC20", addr: "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0" },
-    eth: { ens: "lightunfold.eth" }
-  };
-  const BASE_OFFERS = [
-    { id:"binance", title:"Nhận thưởng trên Binance", 
-      url:"https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N",
-      regions:["VN","GLOBAL"] },
-    { id:"algos", title:"AlgosOne — Cơ hội mở rộng thu nhập",
-      url:"https://algosone.page.link/MbtR",
-      regions:["GLOBAL","CRYPTO","VN"] }
-  ];
-
-  // 2) Utils
-  const LS="ab_ultra_v1";
-  const $ = (s,p=document)=>p.querySelector(s);
-  function load(){try{return JSON.parse(localStorage.getItem(LS)||"{}")}catch{return{}}}
-  function save(v){localStorage.setItem(LS,JSON.stringify(v))}
-  function today(){return new Date().toISOString().slice(0,10)}
-  function isVN(){ const lang=(navigator.language||"").toLowerCase(); const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||""; return lang.startsWith("vi")||tz.includes("Bangkok")||tz.includes("Ho_Chi_Minh"); }
-
-  // 3) Nạp offers.json (tuỳ chọn). Nếu không có, dùng BASE_OFFERS
-  async function loadOffers(){
-    try{
-      const r=await fetch(location.origin+'/offers.json?ts='+Date.now(),{cache:'no-store'});
-      if(!r.ok) return BASE_OFFERS;
-      const js=await r.json();
-      if(Array.isArray(js.offers)&&js.offers.length){
-        const mapped = js.offers.map((o,i)=>({
-          id: o.id || ('ext'+i),
-          title: o.title || 'Offer',
-          url: o.url,
-          regions: o.regions || ["GLOBAL","VN","CRYPTO"]
-        }));
-        return [...mapped, ...BASE_OFFERS]; // ưu tiên json + fallback
-      }
-      return BASE_OFFERS;
-    }catch{ return BASE_OFFERS; }
-  }
-
-  // 4) Bandit ε‑greedy + UCB (+ decay theo ngày)
-  function pickOffer(OFFERS, region){
-    const s=load(); s.stats=s.stats||{}; s.totalViews=s.totalViews||0;
-    if(s.lastDecay!==today()){
-      for(const k in s.stats){ s.stats[k].views=(s.stats[k].views||0)*0.95; s.stats[k].clicks=(s.stats[k].clicks||0)*0.95; }
-      s.lastDecay=today(); save(s);
-    }
-    const pool=OFFERS.filter(o=>o.regions.includes(region));
-    if(!pool.length) return OFFERS[0];
-    const eps=0.12;
-    if(Math.random()<eps) return pool[Math.floor(Math.random()*pool.length)];
-    let best=pool[0],score=-1;
-    for(const o of pool){
-      const st=s.stats[o.id]||{};
-      const ctr=(st.clicks||0)/Math.max(1,(st.views||0));
-      const ucb=ctr + Math.sqrt(2*Math.log(1+(s.totalViews||1))/Math.max(1,(st.views||0)));
-      if(ucb>score){score=ucb;best=o;}
-    }
-    return best;
-  }
-  function markView(id){ const s=load(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{views:0,clicks:0}; s.stats[id].views++; s.totalViews=(s.totalViews||0)+1; save(s); renderKPI(); }
-  function markClick(id){ const s=load(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{views:0,clicks:0}; s.stats[id].clicks++; save(s); renderKPI(); }
-  function renderKPI(){ const s=load(); const st=s.stats||{}; let v=0,c=0; Object.values(st).forEach(x=>{v+=x.views||0;c+=x.clicks||0}); $('#kpiViews').textContent=Math.round(v); $('#kpiClicks').textContent=Math.round(c); $('#kpiCTR').textContent= (v?((c/v)*100).toFixed(1):'0.0')+'%'; }
-
-  // 5) Gợi ý vùng & gắn nút chuyển vùng
-  function getRegion(){ return localStorage.getItem('ab_region') || (isVN() ? 'VN' : 'GLOBAL'); }
-  function bindRegionButtons(){
-    document.querySelectorAll('button[data-region]').forEach(b=>{
-      b.onclick=()=>{ localStorage.setItem('ab_region', b.dataset.region); location.reload(); }
-    });
-    $('#tagRegion').textContent = 'Region: ' + getRegion();
-  }
-
-  // 6) Render offer xoay
-  async function renderOfferBox(){
-    const region=getRegion();
-    const OFFERS=await loadOffers();
-    const pick=pickOffer(OFFERS,region);
-    const box=$('#offerBox');
-    box.innerHTML=`
-      <a class="btn" id="offerLink" href="${pick.url}" target="_blank" rel="noopener">🔥 ${pick.title}</a>
-      <a class="btn" target="_blank" rel="noopener" href="https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N">🚀 Binance</a>
-      <a class="btn" target="_blank" rel="noopener" href="https://algosone.page.link/MbtR">🌐 AlgosOne</a>
-    `;
-    $('#offerLink').addEventListener('click',()=>markClick(pick.id));
-    markView(pick.id);
-  }
-
-  // 7) Thanh toán: nút & QR
-  function setupPayments(){
-    // USDT copy
-    $('#copyUSDT').onclick = async () => {
-      await navigator.clipboard.writeText(PAYMENT.usdt.addr);
-      alert('Đã copy địa chỉ USDT (ERC20).');
+    // Cấu hình cố định
+    const PAYMENT = {
+      momo: { phone: "0567892030" },
+      bank: { bank: "Vietcombank", account: "9567892030", name: "TRẦN VĂN VŨ" },
+      paypal: { email: "vumumabada@gmail.com" },
+      usdt: { addr: "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0" },
+      eth: { ens: "lightunfold.eth" }
     };
-    // PayPal links
-    const id = PAYMENT.paypal.email.split('@')[0];
-    $('#btnPayPal').href = `https://www.paypal.com/paypalme/${encodeURIComponent(id)}`;
-    $('#btnPayPal2').href = `https://www.paypal.com/paypalme/${encodeURIComponent(id)}`;
-    // VietQR
-    const qr = `https://img.vietqr.io/image/VCB-${encodeURIComponent(PAYMENT.bank.account)}-compact.png?addInfo=LightUnfold&accountName=${encodeURIComponent(PAYMENT.bank.name)}`;
-    $('#vietqr').src = qr;
-  }
+    const BASE_OFFERS = [
+      { id:"binance", title:"Nhận thưởng trên Binance",
+        url:"https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N",
+        regions:["VN","GLOBAL"] },
+      { id:"algos", title:"AlgosOne — Cơ hội mở rộng thu nhập",
+        url:"https://algosone.page.link/MbtR",
+        regions:["GLOBAL","CRYPTO","VN"] }
+    ];
 
-  // 8) Status ENS (nhẹ)
-  (async ()=>{
-    try{
-      const r=await fetch('https://lightunfold.eth.limo/',{method:'HEAD',cache:'no-store'});
-      if(!r.ok) console.log('eth.limo chậm, fallback dùng github pages.');
-    }catch{ /* im lặng */ }
-  })();
+    // Tiện ích
+    const LS="ab_onepaste_v1"; const $=(s,p=document)=>p.querySelector(s);
+    function load(){try{return JSON.parse(localStorage.getItem(LS)||"{}")}catch{return{}}}
+    function save(v){localStorage.setItem(LS,JSON.stringify(v))}
+    function today(){return new Date().toISOString().slice(0,10)}
+    function isVN(){
+      const lang=(navigator.language||"").toLowerCase();
+      const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||"";
+      return lang.startsWith("vi")||tz.includes("Bangkok")||tz.includes("Ho_Chi_Minh");
+    }
 
-  // 9) Khởi động
-  (async function start(){
-    setupPayments();
-    bindRegionButtons();
-    renderKPI();
-    renderOfferBox();
-  })();
+    // Bandit ε-greedy + UCB (local)
+    function pickOffer(OFFERS, region){
+      const s=load(); s.stats=s.stats||{}; s.totalViews=s.totalViews||0;
+      if(s.lastDecay!==today()){
+        for(const k in s.stats){ s.stats[k].views=(s.stats[k].views||0)*0.95; s.stats[k].clicks=(s.stats[k].clicks||0)*0.95; }
+        s.lastDecay=today(); save(s);
+      }
+      const pool=OFFERS.filter(o=>o.regions.includes(region));
+      if(!pool.length) return OFFERS[0];
+      const eps=0.12;
+      if(Math.random()<eps) return pool[Math.floor(Math.random()*pool.length)];
+      let best=pool[0],score=-1;
+      for(const o of pool){
+        const st=s.stats[o.id]||{};
+        const ctr=(st.clicks||0)/Math.max(1,(st.views||0));
+        const ucb=ctr + Math.sqrt(2*Math.log(1+(s.totalViews||1))/Math.max(1,(st.views||0)));
+        if(ucb>score){score=ucb;best=o;}
+      }
+      return best;
+    }
+    function markView(id){ const s=load(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{views:0,clicks:0}; s.stats[id].views++; s.totalViews=(s.totalViews||0)+1; save(s); renderKPI(); }
+    function markClick(id){ const s=load(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{views:0,clicks:0}; s.stats[id].clicks++; save(s); renderKPI(); }
+    function renderKPI(){ const s=load(); const st=s.stats||{}; let v=0,c=0; Object.values(st).forEach(x=>{v+=x.views||0;c+=x.clicks||0}); $('#kpiViews').textContent=Math.round(v); $('#kpiClicks').textContent=Math.round(c); $('#kpiCTR').textContent=(v?((c/v)*100).toFixed(1):'0.0')+'%'; }
+
+    // Vùng
+    function getRegion(){ return localStorage.getItem('ab_region') || (isVN() ? 'VN' : 'GLOBAL'); }
+    function bindRegionButtons(){
+      document.querySelectorAll('button[data-region]').forEach(b=>{
+        b.onclick=()=>{ localStorage.setItem('ab_region', b.dataset.region); location.reload(); }
+      });
+      $('#tagRegion').textContent='Region: '+getRegion();
+    }
+
+    // Render Offer
+    function renderOffer(){
+      const region=getRegion();
+      const pick=pickOffer(BASE_OFFERS,region);
+      const box=$('#offerBox');
+      box.innerHTML=`
+        <a class="btn" id="offerLink" href="${pick.url}" target="_blank" rel="noopener">🔥 ${pick.title}</a>
+        <a class="btn" href="https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N" target="_blank" rel="noopener">🚀 Binance</a>
+        <a class="btn" href="https://algosone.page.link/MbtR" target="_blank" rel="noopener">🌐 AlgosOne</a>
+      `;
+      $('#offerLink').addEventListener('click',()=>markClick(pick.id));
+      markView(pick.id);
+    }
+
+    // Thanh toán: copy USDT, PayPal, VietQR
+    function setupPayments(){
+      $('#copyUSDT').onclick=async()=>{await navigator.clipboard.writeText(PAYMENT.usdt.addr); alert('Đã copy địa chỉ USDT (ERC‑20).')};
+      const id = PAYMENT.paypal.email.split('@')[0];
+      $('#btnPayPal').href = `https://www.paypal.com/paypalme/${encodeURIComponent(id)}`;
+      $('#btnPayPal2').href = `https://www.paypal.com/paypalme/${encodeURIComponent(id)}`;
+      $('#vietqr').src = `https://img.vietqr.io/image/VCB-${encodeURIComponent(PAYMENT.bank.account)}-compact.png?addInfo=LightUnfold&accountName=${encodeURIComponent(PAYMENT.bank.name)}`;
+    }
+
+    // Khởi động
+    (function start(){
+      setupPayments();
+      bindRegionButtons();
+      renderKPI();
+      renderOffer();
+    })();
   </script>
 </body>
 </html>
