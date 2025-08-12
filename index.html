@@ -57,15 +57,15 @@
       "momo_api": "https://developers.momo.vn/v3",
       "paypal_api": "https://api-m.paypal.com",
       "default_payment": {
-        "eth": { "id": "0x54E15A7b6d4213beE87800432A151d794638E3C2", "min": 0.01, "token": "ETH", "chain": "ethereum" },
-        "usdt": { "id": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0", "min": 10, "token": "USDT", "network": "ERC-20", "chain": "ethereum" }
+        "eth": { "id": "YOUR_ETH_ADDRESS", "min": 0.01, "token": "ETH", "chain": "ethereum" },
+        "usdt": { "id": "YOUR_USDT_ADDRESS", "min": 10, "token": "USDT", "network": "ERC-20", "chain": "ethereum" }
       },
       "payments": {
-        "eth": { "id": "0x54E15A7b6d4213beE87800432A151d794638E3C2", "min": 0.01, "token": "ETH", "chain": "ethereum" },
-        "usdt": { "id": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0", "min": 10, "token": "USDT", "network": "ERC-20", "chain": "ethereum" },
-        "bank": { "account_number": "9567892030", "bank_name": "Vietcombank", "swift": "BFTVVNVX", "iban": "", "region": "VN" },
-        "momo": { "phone": "0567892030", "merchant_id": "YOUR_MOMO_MERCHANT_ID", "region": "VN" },
-        "paypal": { "email": "vumumabada@gmail.com", "client_id": "YOUR_PAYPAL_CLIENT_ID", "region": "Global" },
+        "eth": { "id": "YOUR_ETH_ADDRESS", "min": 0.01, "token": "ETH", "chain": "ethereum" },
+        "usdt": { "id": "YOUR_USDT_ADDRESS", "min": 10, "token": "USDT", "network": "ERC-20", "chain": "ethereum" },
+        "bank": { "account_number": "YOUR_VIETCOMBANK_ACCOUNT", "bank_name": "Vietcombank", "swift": "BFTVVNVX", "iban": "", "region": "VN" },
+        "momo": { "phone": "YOUR_MOMO_PHONE", "merchant_id": "YOUR_MOMO_MERCHANT_ID", "region": "VN" },
+        "paypal": { "email": "YOUR_PAYPAL_EMAIL", "client_id": "YOUR_PAYPAL_CLIENT_ID", "region": "Global" },
         "algosone": { "id": "YOUR_ALGOSONE_WALLET_ID", "api_key": "YOUR_ALGOSONE_API_KEY", "region": "Global" }
       },
       "links": {
@@ -73,7 +73,7 @@
         "algos": "https://algosone.page.link/MbtR"
       },
       "keywords": ["fomo", "moon", "rocket", "crypto", "btc", "eth", "usdt", "bnb", "sol", "ada", "telegram", "aiwallet"],
-      "nft_contract": "0xYOUR_NFT_CONTRACT_ADDRESS"
+      "nft_contract": "YOUR_NFT_CONTRACT_ADDRESS"
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
@@ -82,6 +82,15 @@
   <script>
     const st = { rev: 0, cfg: JSON.parse(document.getElementById('SITE_CONFIG').textContent), chainIndex: 0 };
     let providers = {}, signers = {};
+
+    // Validate JSON on load
+    try {
+      JSON.parse(document.getElementById('SITE_CONFIG').textContent);
+    } catch (e) {
+      console.error('JSON Error:', e);
+      alert('Lỗi JSON trong SITE_CONFIG, vui lòng kiểm tra cú pháp.');
+      return;
+    }
 
     // 3D Globe
     const canvas = document.getElementById('globe3d');
@@ -160,7 +169,7 @@
 
     // Auto NFT
     async function autoNFT() {
-      if (!st.cfg.nft_contract || st.cfg.nft_contract === '0xYOUR_NFT_CONTRACT_ADDRESS') return;
+      if (!st.cfg.nft_contract || st.cfg.nft_contract === 'YOUR_NFT_CONTRACT_ADDRESS') return;
       const keyword = await selfEvolveAI();
       const block = await providers.ethereum.getBlock('latest');
       const seed = parseInt(block.hash.slice(-8), 16);
@@ -192,7 +201,7 @@
     // Auto viral
     async function autoViral() {
       const keyword = await selfEvolveAI();
-      const post = `🌌 ${keyword.toUpperCase()} x∞∞∞! Join: ${st.cfg.links.binance} or ${st.cfg.links.algos} or https://t.me/YourTelegramChannel`;
+      const post = `🌌 ${keyword.toUpperCase()} x∞∞∞! Join: ${st.cfg.links.binance} or ${st.cfg.links.algos} or https://t.me/YOUR_TELEGRAM_CHANNEL`;
       const platforms = [
         { url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(post)}` },
         { url: `https://lens.xyz/post?text=${encodeURIComponent(post)}` },
