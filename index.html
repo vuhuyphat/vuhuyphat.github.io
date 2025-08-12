@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>UltraMaster V∞ • Wealthverse Ultimate</title>
-<meta name="description" content="Siêu Web3 • AI Agents 24/7 • Premium on-chain insights • QR thanh toán 1 chạm • Viral share.">
+<meta name="description" content="Web3 tự vận hành • AI Agents 24/7 • Cơ hội on-chain • QR thanh toán 1 chạm • Viral share.">
 <meta name="theme-color" content="#0b0f13">
 <style>
 /* ===== Design tokens ===== */
@@ -39,15 +39,9 @@ color:var(--txt);font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto}
 @keyframes glow{0%{box-shadow:0 0 0 0 rgba(255,215,0,.7)}70%{box-shadow:0 0 0 14px rgba(255,215,0,0)}100%{box-shadow:0 0 0 0 rgba(255,215,0,0)}}
 .hero{position:relative;overflow:hidden}
 
-/* ===== Animated Globe (no libs) ===== */
-.globe{
-  width:300px;height:300px;border-radius:50%;
-  background-image:url('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/land_ocean_ice_cloud_2048.jpg');
-  background-size:auto 100%; background-repeat:repeat-x;
-  box-shadow:inset 12px 0 40px rgba(0,0,0,.35), inset -12px 0 40px rgba(0,0,0,.25), 0 10px 30px rgba(0,0,0,.35);
-  animation:spinGlobe 28s linear infinite;
-}
-@keyframes spinGlobe{from{background-position:0 50%}to{background-position:-2048px 50%}}
+/* ===== 3D Earth canvas ===== */
+.globe3d{width:300px;height:300px;border-radius:50%;display:block;margin:auto;box-shadow:
+  inset 12px 0 40px rgba(0,0,0,.35), inset -12px 0 40px rgba(0,0,0,.25), 0 10px 30px rgba(0,0,0,.35)}
 .globe-cap{color:var(--mut);text-align:center;margin-top:8px}
 
 /* KPI, tags */
@@ -106,7 +100,9 @@ small.muted{color:var(--mut)}
         <div class="muted" id="tagline">Web3 Siêu Tự Vận Hành – AI Agents 24/7 • Mở Khóa Top 3 On‑Chain • Token Chọn Lọc Realtime</div>
         <div class="card" style="margin-top:12px">
           <b id="moto">“Biết Sớm – Quyết Định Sớm – Tài Lộc Sớm.”</b><br>
-          <small class="muted" id="motoDesc">Hội tụ: <b>Khóa học tinh gọn</b>, <b>Phân tích crypto realtime</b>, <b>AI hỏi đáp</b>, <b>Cơ hội sớm nhất</b>.</small>
+          <small class="muted" id="motoDesc">
+            Hội tụ: <b>Khóa học tinh gọn</b>, <b>Phân tích crypto realtime</b>, <b>AI hỏi đáp</b>, <b>Cơ hội sớm nhất</b>.
+          </small>
         </div>
         <div class="row" style="margin-top:12px">
           <a class="btn out" id="cta_binance" href="#" target="_blank" rel="noopener">Mở Binance Miễn Phí ↗</a>
@@ -114,8 +110,9 @@ small.muted{color:var(--mut)}
         </div>
       </div>
       <div>
-        <div class="globe" aria-hidden="true"></div>
-        <div class="globe-cap" id="globeCap">Trái Đất On‑Chain · Radar 24/7</div>
+        <!-- REAL 3D EARTH -->
+        <canvas id="globe3d" class="globe3d"></canvas>
+        <div class="globe-cap" id="globeCap">Trái Đất On‑Chain · Mây & Ánh Sáng 3D</div>
       </div>
     </div>
   </section>
@@ -199,13 +196,15 @@ small.muted{color:var(--mut)}
     <div class="grid">
       <div class="card partner-card">
         <h4>AlgosOne – Chiến lược AI & cảnh báo realtime</h4>
-        <div class="muted">Copy‑trading/chiến lược tự động có rủi ro. Cân nhắc quy định & khẩu vị rủi ro trước khi dùng.</div>
+        <div class="muted">Copy‑trading/chiến lược tự động có rủi ro. Luôn hiểu rõ sản phẩm, quy định & khẩu vị rủi ro trước khi dùng.</div>
         <a class="btn" style="margin-top:8px" id="algosLink" href="#" target="_blank" rel="noopener">Mở miễn phí ↗</a>
       </div>
       <div class="card partner-card">
         <h4>BNB – Hệ sinh thái giao dịch</h4>
         <ul class="muted" style="margin:10px 0 0 18px">
-          <li>Thanh khoản sâu • phí cạnh tranh</li><li>Bảo mật nhiều lớp • 2FA</li><li>Hệ sinh thái Earn • Launchpool</li>
+          <li>Khớp lệnh nhanh • phí cạnh tranh</li>
+          <li>Bảo mật nhiều lớp • 2FA</li>
+          <li>Hệ sinh thái Earn • Launchpool</li>
         </ul>
         <a class="btn" style="margin-top:8px" id="bnbLink" href="#" target="_blank" rel="noopener">Mở miễn phí ↗</a>
       </div>
@@ -254,13 +253,16 @@ small.muted{color:var(--mut)}
     ]
   },
   "i18n":{
-    "vi":{"tagline":"Web3 Siêu Tự Vận Hành – AI Agents 24/7 • Mở Khóa Top 3 On‑Chain • Token Chọn Lọc Realtime","moto":"“Biết Sớm – Quyết Định Sớm – Tài Lộc Sớm.”","globeCap":"Trái Đất On‑Chain · Radar 24/7"},
-    "en":{"brand":"LightUnfold • UltraMaster V∞ Ultimate","tagline":"Autonomous Web3 – AI Agents 24/7 • Unlock Top 3 On‑Chain • Curated Tokens Realtime","moto":"“Know Early – Decide Early – Prosper Early.”","globeCap":"On‑Chain Earth · 24/7 Radar"}
+    "vi":{"tagline":"Web3 Siêu Tự Vận Hành – AI Agents 24/7 • Mở Khóa Top 3 On‑Chain • Token Chọn Lọc Realtime","moto":"“Biết Sớm – Quyết Định Sớm – Tài Lộc Sớm.”","globeCap":"Trái Đất On‑Chain · Mây & Ánh Sáng 3D"},
+    "en":{"brand":"LightUnfold • UltraMaster V∞ Ultimate","tagline":"Autonomous Web3 – AI Agents 24/7 • Unlock Top 3 On‑Chain • Curated Tokens Realtime","moto":"“Know Early – Decide Early – Prosper Early.”","globeCap":"On‑Chain Earth · 3D Clouds & Lighting"}
   }
 }
 </script>
 
-<!-- ===== Core JS (tự cấu hình + tự hàn gắn) ===== -->
+<!-- ===== Libraries: Three.js (only for globe) ===== -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
+
+<!-- ===== Core JS (tự cấu hình + tự hàn gắn + 3D Earth) ===== -->
 <script>
 (() => {
   const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
@@ -293,12 +295,12 @@ small.muted{color:var(--mut)}
   $('#kRev').textContent = st.rev.toLocaleString();
 
   // Tokens (demo)
-  const sampleTop = [
+  const top3 = [
     {symbol:'BTC', name:'Bitcoin', pct24h:0.8, cap:900000000000, link:'https://www.coingecko.com/en/coins/bitcoin'},
     {symbol:'ETH', name:'Ethereum', pct24h:1.2, cap:450000000000, link:'https://www.coingecko.com/en/coins/ethereum'},
     {symbol:'BNB', name:'BNB', pct24h:-0.4, cap:80000000000, link:'https://www.coingecko.com/en/coins/bnb'}
   ];
-  const sampleFree = [
+  const freeT = [
     {symbol:'ARB', name:'Arbitrum', pct24h:2.1, cap:3000000000, link:'https://www.coingecko.com/en/coins/arbitrum'},
     {symbol:'OP', name:'Optimism', pct24h:-1.3, cap:2800000000, link:'https://www.coingecko.com/en/coins/optimism'}
   ];
@@ -311,8 +313,8 @@ small.muted{color:var(--mut)}
     el.querySelector('button').onclick=()=>addBubble(`Xin phân tích nhanh ${x.symbol} khung 1D/4H, mức vô hiệu hóa và vùng quan sát.`,'me');
     return el;
   }
-  sampleTop.forEach(t=>$('#tokenPro').appendChild(cardToken(t)));
-  sampleFree.forEach(t=>$('#tokenFree').appendChild(cardToken(t)));
+  top3.forEach(t=>$('#tokenPro').appendChild(cardToken(t)));
+  freeT.forEach(t=>$('#tokenFree').appendChild(cardToken(t)));
 
   // Edu
   const ebooks=[
@@ -372,7 +374,7 @@ small.muted{color:var(--mut)}
   function paintPremium(){ const box=$('#premium'); box.innerHTML=''; ['Playbook đa khung','Checklist rủi ro','Bảng tâm lý & dòng tiền','Q&A theo lịch'].forEach(x=>{ const c=document.createElement('div'); c.className='card'; c.innerHTML=`<b>${x}</b><div class="muted">Nội dung hiển thị sau mở khóa.</div>`; box.appendChild(c); }); }
 
   // Share
-  const u=new URL(location.href); const peer=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2); localStorage.setItem('peer_id',peer);
+  const peer=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2); localStorage.setItem('peer_id',peer);
   const base=location.origin+location.pathname; const myRef=`${base}?ref=${peer}&utm_source=share&utm_medium=viral&utm_campaign=ultramaster`;
   const t_enc=encodeURIComponent(document.title), u_enc=encodeURIComponent(myRef);
   const map={sh_tg:`https://t.me/share/url?url=${u_enc}&text=${t_enc}`, sh_x:`https://twitter.com/intent/tweet?text=${t_enc}&url=${u_enc}`, sh_fb:`https://www.facebook.com/sharer/sharer.php?u=${u_enc}`, sh_in:`https://www.linkedin.com/sharing/share-offsite/?url=${u_enc}`};
@@ -385,8 +387,78 @@ small.muted{color:var(--mut)}
   $('#closeChat').onclick=()=> $('#chat').style.display='none';
   $('#chatSend').onclick=()=>{ const v=$('#chatIn').value.trim(); if(!v) return; addBubble(v,'me'); $('#chatIn').value=''; setTimeout(()=>addBubble('Mẹo: chọn vùng quan sát, mức vô hiệu hóa, R:R ≥ 2:1, rủi ro ≤1%.','ai'),400); };
 
+  // ===== 3D EARTH (Three.js) – clouds + lighting, auto‑resize, graceful fallback =====
+  try{
+    const canvas = document.getElementById('globe3d');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+    const DPR = Math.min(window.devicePixelRatio||1, 2);
+    const W = canvas.clientWidth, H = canvas.clientHeight;
+    renderer.setPixelRatio(DPR); renderer.setSize(W, H, false);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, W/H, 0.1, 100);
+    camera.position.z = 6;
+
+    const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+    const dir = new THREE.DirectionalLight(0xffffff, 1.0); dir.position.set(5,2,5);
+    scene.add(ambient, dir);
+
+    const loader = new THREE.TextureLoader();
+    const earthTex = loader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
+    const bumpTex  = loader.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg');
+    const specTex  = loader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
+    const cloudTex = loader.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png');
+
+    const geo = new THREE.SphereGeometry(2.4, 64, 64);
+    const earthMat = new THREE.MeshPhongMaterial({ map: earthTex, bumpMap: bumpTex, bumpScale:0.04, specularMap: specTex, specular: new THREE.Color('rgb(80,80,80)') });
+    const earth = new THREE.Mesh(geo, earthMat);
+    scene.add(earth);
+
+    const cloudGeo = new THREE.SphereGeometry(2.44, 64, 64);
+    const cloudMat = new THREE.MeshLambertMaterial({ map: cloudTex, transparent:true, opacity:0.4 });
+    const clouds = new THREE.Mesh(cloudGeo, cloudMat);
+    scene.add(clouds);
+
+    function resize(){ const w = canvas.clientWidth, h = canvas.clientHeight; renderer.setSize(w, h, false); camera.aspect = w/h; camera.updateProjectionMatrix(); }
+    window.addEventListener('resize', resize);
+
+    function animate(){ requestAnimationFrame(animate); earth.rotation.y += 0.0025; clouds.rotation.y += 0.0032; renderer.render(scene, camera); }
+    animate();
+  }catch(e){
+    // fallback: nothing to do; canvas will just keep shadow ring
+    console.warn('WebGL not available, fallback mode.');
+  }
+
+  // Self-heal
   window.addEventListener('error', ()=>{ try{ $('#plans')?.children.length || plans.forEach(p=>{ const e=document.createElement('div'); e.className='card'; e.textContent=p.title; $('#plans').appendChild(e); }); }catch(_){ } });
 })();
 </script>
+
+<!-- Floating share (kept last to avoid overlap) -->
+<div class="row" style="position:fixed;right:16px;bottom:16px;gap:8px;z-index:9;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px">
+  <a id="sh_tg" target="_blank" title="Share Telegram">📣</a>
+  <a id="sh_x" target="_blank" title="Share X">𝕏</a>
+  <a id="sh_fb" target="_blank" title="Share Facebook">f</a>
+  <a id="sh_in" target="_blank" title="Share LinkedIn">in</a>
+</div>
+
+<!-- Chat mini -->
+<button class="btn chatfab" id="openChat">🧠 Chat AI 24/7</button>
+<div class="chatwin" id="chat">
+  <div class="chathead"><b id="chatH">AI Tài chính</b><button class="btn out" id="closeChat">Đóng</button></div>
+  <div class="chatbody" id="chatBody"></div>
+  <div class="chatinput">
+    <input id="chatIn" placeholder="Hỏi về token, kế hoạch lệnh…">
+    <button class="btn" id="chatSend">Gửi</button>
+  </div>
+</div>
+
+<!-- Modal data -->
+<div id="dataModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.55);place-items:center;z-index:99">
+  <div class="card" style="width:min(95vw,960px);height:min(85vh,760px);display:flex;flex-direction:column">
+    <div class="row" style="justify-content:space-between"><b id="mTitle">Dữ liệu Premium On‑Chain</b><button class="btn out" id="closeData">Đóng</button></div>
+    <pre id="dataPre" style="flex:1;margin:0;padding:12px;overflow:auto;background:#0b0f13;color:#cfe0ef;border:1px solid var(--line);border-radius:12px"></pre>
+  </div>
+</div>
 </body>
 </html>
