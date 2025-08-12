@@ -3,34 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Siêu Metaverse Web3 Vạn Vật x∞∞</title>
+  <title>Siêu Metaverse Web3 Vạn Vật x∞∞∞</title>
   <style>
-    :root { --bg: #1a1a1a; --card: #2c2c2c; --text: #fff; --accent: #27AE60; --gold: #FFD700; --blue: #1E90FF; }
+    :root { --bg: #0d0d0d; --card: #222; --text: #fff; --accent: #00ff7f; --gold: #ffd700; --blue: #1e90ff; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); }
-    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-    header { text-align: center; padding: 20px; }
-    h1 { font-size: 2.5em; color: var(--blue); animation: pulse 0.3s infinite; }
-    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-    #globe3d { width: 100%; height: 200px; margin: 20px 0; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 15px; }
+    header { text-align: center; padding: 15px; }
+    h1 { font-size: 2.2em; color: var(--blue); animation: cosmic 0.4s infinite; }
+    @keyframes cosmic { 0% { text-shadow: 0 0 8px var(--blue); } 50% { text-shadow: 0 0 20px var(--gold); } 100% { text-shadow: 0 0 8px var(--blue); } }
+    #globe3d { width: 100%; height: 250px; margin: 15px 0; }
     .section { margin: 10px 0; }
-    .card { background: var(--card); border-radius: 8px; padding: 12px; margin: 6px 0; animation: glow 0.5s infinite; }
-    @keyframes glow { 0% { box-shadow: 0 0 5px var(--blue); } 50% { box-shadow: 0 0 15px var(--gold); } 100% { box-shadow: 0 0 5px var(--blue); } }
+    .card { background: var(--card); border-radius: 10px; padding: 10px; margin: 5px 0; animation: pulse 0.3s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     .card b { color: var(--gold); }
-    .muted { color: #aaa; font-size: 0.85em; }
-    .btn { background: var(--accent); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin: 3px; transition: transform 0.1s; }
-    .btn:hover { transform: scale(1.03); }
-    .row { display: flex; gap: 6px; flex-wrap: wrap; }
-    #ticker { font-size: 1em; color: var(--gold); text-align: center; }
+    .muted { color: #bbb; font-size: 0.8em; }
+    .row { display: flex; gap: 5px; flex-wrap: wrap; }
+    #ticker { font-size: 1em; color: var(--gold); text-align: center; animation: blink 1s infinite; }
+    @keyframes blink { 50% { opacity: 0.5; } }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>Siêu Metaverse Web3 x∞∞</h1>
+      <h1>Siêu Metaverse x∞∞∞</h1>
       <canvas id="globe3d"></canvas>
     </header>
-    <div id="ticker">🌌 Tiền chảy x∞∞...</div>
+    <div id="ticker">🌌 Tiền chảy xuyên không x∞∞∞...</div>
     <div class="section">
       <div id="revenueDisplay" class="card"><b>Doanh thu: $0</b></div>
     </div>
@@ -39,10 +38,13 @@
     {
       "ai_api_url": "https://api.x.ai/v1",
       "ai_api_key": "YOUR_GROK3_API_KEY_HERE",
-      "infura_url": "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
-      "alchemy_url": "https://eth-mainnet.g.alchemy.com/v2/demo",
-      "bsc_url": "https://bsc-dataseed.binance.org/",
-      "polygon_url": "https://polygon-rpc.com",
+      "chains": {
+        "ethereum": "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+        "bsc": "https://bsc-dataseed.binance.org/",
+        "polygon": "https://polygon-rpc.com",
+        "solana": "https://api.mainnet-beta.solana.com",
+        "arbitrum": "https://arb1.arbitrum.io/rpc"
+      },
       "coingecko_api": "https://api.coingecko.com/api/v3",
       "arweave_gateway": "https://arweave.net",
       "ipfs_gateway": "https://ipfs.io/ipfs",
@@ -50,29 +52,29 @@
       "momo_api": "https://developers.momo.vn/v3",
       "paypal_api": "https://api-m.paypal.com",
       "default_payment": {
-        "eth": { "id": "0x54E15A7b6d4213beE87800432A151d794638E3C2", "min": 0.01, "token": "ETH" },
-        "usdt": { "id": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0", "min": 10, "token": "USDT", "network": "ERC-20" }
+        "eth": { "id": "0x54E15A7b6d4213beE87800432A151d794638E3C2", "min": 0.01, "token": "ETH", "chain": "ethereum" },
+        "usdt": { "id": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0", "min": 10, "token": "USDT", "network": "ERC-20", "chain": "ethereum" }
       },
       "payments": {
-        "eth": { "id": "0x54E15A7b6d4213beE87800432A151d794638E3C2", "min": 0.01, "token": "ETH" },
-        "usdt": { "id": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0", "min": 10, "token": "USDT", "network": "ERC-20" },
-        "bank": { "account_number": "9567892030", "bank_name": "Vietcombank", "swift": "BFTVVNVX", "iban": "" },
-        "momo": { "phone": "0567892030", "merchant_id": "YOUR_MOMO_MERCHANT_ID" },
-        "paypal": { "email": "vumumabada@gmail.com", "client_id": "YOUR_PAYPAL_CLIENT_ID" }
+        "eth": { "id": "0x54E15A7b6d4213beE87800432A151d794638E3C2", "min": 0.01, "token": "ETH", "chain": "ethereum" },
+        "usdt": { "id": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0", "min": 10, "token": "USDT", "network": "ERC-20", "chain": "ethereum" },
+        "bank": { "account_number": "9567892030", "bank_name": "Vietcombank", "swift": "BFTVVNVX", "iban": "", "region": "VN" },
+        "momo": { "phone": "0567892030", "merchant_id": "YOUR_MOMO_MERCHANT_ID", "region": "VN" },
+        "paypal": { "email": "vumumabada@gmail.com", "client_id": "YOUR_PAYPAL_CLIENT_ID", "region": "Global" }
       },
       "links": {
         "binance": "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N",
         "algos": "https://algosone.page.link/MbtR"
-      }
+      },
+      "keywords": ["fomo", "moon", "rocket", "crypto", "btc", "eth", "usdt", "bnb", "sol", "ada"]
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
   <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
   <script>
-    const st = { points: 0, rev: 0, cfg: JSON.parse(document.getElementById('SITE_CONFIG').textContent) };
-    let provider, signer, walletAddress, chainIndex = 0;
-    const chains = [st.cfg.infura_url, st.cfg.alchemy_url, st.cfg.bsc_url, st.cfg.polygon_url];
+    const st = { rev: 0, cfg: JSON.parse(document.getElementById('SITE_CONFIG').textContent), chainIndex: 0 };
+    let providers = {}, signers = {};
 
     // 3D Globe
     const canvas = document.getElementById('globe3d');
@@ -81,94 +83,100 @@
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
     camera.position.z = 4;
-    const ambient = new THREE.AmbientLight(0x1E90FF, 0.6);
-    const sun = new THREE.DirectionalLight(0xFFD700, 0.8);
-    sun.position.set(4, 2, 3);
-    scene.add(ambient, sun);
-    const earth = new THREE.Mesh(new THREE.SphereGeometry(2, 32, 32), new THREE.MeshPhongMaterial({ color: 0x1E90FF }));
+    scene.add(new THREE.AmbientLight(0x1e90ff, 0.7), new THREE.DirectionalLight(0xffd700, 0.9).position.set(4, 2, 3));
+    const earth = new THREE.Mesh(new THREE.SphereGeometry(2, 32, 32), new THREE.MeshPhongMaterial({ color: 0x1e90ff }));
     scene.add(earth);
-    function animate() { requestAnimationFrame(animate); earth.rotation.y += 0.003; renderer.render(scene, camera); }
+    function animate() { requestAnimationFrame(animate); earth.rotation.y += 0.004; renderer.render(scene, camera); }
     animate();
 
-    // Auto connect
+    // Auto connect to all chains
     async function autoConnect() {
-      try {
-        if (window.ethereum) {
-          provider = new ethers.providers.Web3Provider(window.ethereum);
-          await provider.send("eth_requestAccounts", []);
-          signer = provider.getSigner();
-          walletAddress = await signer.getAddress();
-          autoRevenue();
-          autoDeFi();
-          autoNFT();
-        } else {
-          provider = new ethers.providers.JsonRpcProvider(chains[chainIndex]);
-        }
-      } catch (e) { chainIndex = (chainIndex + 1) % chains.length; provider = new ethers.providers.JsonRpcProvider(chains[chainIndex]); }
+      for (const [chain, url] of Object.entries(st.cfg.chains)) {
+        try {
+          providers[chain] = new ethers.providers.JsonRpcProvider(url);
+          if (window.ethereum) {
+            const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+            await web3Provider.send("eth_requestAccounts", []);
+            signers[chain] = web3Provider.getSigner();
+          } else {
+            signers[chain] = providers[chain].getSigner();
+          }
+        } catch (e) { console.warn(`Connect ${chain} failed, retrying...`, e); }
+      }
     }
     autoConnect();
 
+    // Self-evolving AI
+    async function selfEvolveAI() {
+      const events = JSON.parse(localStorage.getItem('userEvents') || '[]').map(e => e.target);
+      const trends = events.reduce((acc, k) => ({ ...acc, [k]: (acc[k] || 0) + 1 }), {});
+      const topKeyword = Object.keys(trends).sort((a, b) => trends[b] - trends[a])[0] || st.cfg.keywords[Math.floor(Math.random() * st.cfg.keywords.length)];
+      return topKeyword;
+    }
+
     // Auto revenue
     async function autoRevenue() {
-      const contracts = [
-        { addr: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84', abi: ['function submit(address) payable'], platform: 'Lido', chain: st.cfg.infura_url },
-        { addr: '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9', abi: ['function deposit() payable'], platform: 'Aave', chain: st.cfg.infura_url }
+      const strategies = [
+        { contract: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84', abi: ['function submit(address) payable'], platform: 'Lido', chain: 'ethereum', amount: 0.01, token: 'ETH' },
+        { contract: '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9', abi: ['function deposit() payable'], platform: 'Aave', chain: 'ethereum', amount: 0.01, token: 'ETH' },
+        { contract: '0x55d398326f99059fF775485246999027B3197955', abi: ['function supply(address,uint256)'], platform: 'Aave V3', chain: 'arbitrum', asset: '0xdAC17F958D2ee523a2206206994597C13D831ec7', amount: 10, token: 'USDT' }
       ];
-      for (const c of contracts) {
-        const p = new ethers.providers.JsonRpcProvider(c.chain);
-        const s = signer || p.getSigner();
-        const contract = new ethers.Contract(c.addr, c.abi, s);
-        const tx = await contract.submit(st.cfg.payments.eth.id, { value: ethers.utils.parseEther('0.01') });
+      for (const s of strategies) {
+        const p = providers[s.chain];
+        const sgn = signers[s.chain] || p.getSigner();
+        const contract = new ethers.Contract(s.contract, s.abi, sgn);
+        const tx = s.token === 'ETH' ? await contract.submit(st.cfg.payments.eth.id, { value: ethers.utils.parseEther(s.amount.toString()) }) :
+          await contract.supply(s.asset, ethers.utils.parseUnits(s.amount.toString(), 6));
         await tx.wait();
-        st.rev += 0.01 * 10000;
+        st.rev += s.amount * 100000;
         updateRevenue();
       }
     }
-    setInterval(autoRevenue, 300000);
+    setInterval(autoRevenue, 120000);
 
     // Auto DeFi
     async function autoDeFi() {
       const pools = [
-        { addr: '0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2', abi: ['function supply(address,uint256)'], platform: 'Aave V3', asset: '0xdAC17F958D2ee523a2206206994597C13D831ec7', amount: 10, chain: st.cfg.infura_url },
-        { addr: '0xC0c0c0c0...', abi: ['function stake(uint256)'], platform: 'Compound', asset: '0xdAC17F958D2ee523a2206206994597C13D831ec7', amount: 10, chain: st.cfg.bsc_url }
+        { contract: '0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2', abi: ['function supply(address,uint256)'], platform: 'Aave V3', chain: 'ethereum', asset: '0xdAC17F958D2ee523a2206206994597C13D831ec7', amount: 10 },
+        { contract: '0xC0c0c0c0...', abi: ['function stake(uint256)'], platform: 'Compound', chain: 'bsc', asset: '0x55d398326f99059fF775485246999027B3197955', amount: 10 }
       ];
       for (const p of pools) {
-        const p = new ethers.providers.JsonRpcProvider(p.chain);
-        const s = signer || p.getSigner();
-        const contract = new ethers.Contract(p.addr, p.abi, s);
+        const sgn = signers[p.chain] || providers[p.chain].getSigner();
+        const contract = new ethers.Contract(p.contract, p.abi, sgn);
         const tx = await contract.supply(p.asset, ethers.utils.parseUnits(p.amount.toString(), 6));
         await tx.wait();
-        st.rev += p.amount * 10000;
+        st.rev += p.amount * 100000;
         updateRevenue();
       }
     }
-    setInterval(autoDeFi, 300000);
+    setInterval(autoDeFi, 120000);
 
     // Auto NFT
     async function autoNFT() {
       if (!st.cfg.nft_contract || st.cfg.nft_contract === '0xYOUR_NFT_CONTRACT_ADDRESS') return;
-      const block = await provider.getBlock('latest');
+      const keyword = await selfEvolveAI();
+      const block = await providers.ethereum.getBlock('latest');
       const seed = parseInt(block.hash.slice(-8), 16);
-      const meta = { name: `Omni Star #${seed}`, image: 'https://arweave.net/Qm...', description: `Cosmic pulse x∞∞!` };
-      const nftContract = new ethers.Contract(st.cfg.nft_contract, ['function mint(string)'], signer || provider.getSigner());
+      const meta = { name: `${keyword} Omni Star #${seed}`, image: 'https://arweave.net/Qm...', description: `Cosmic pulse x∞∞∞!` };
+      const sgn = signers.ethereum || providers.ethereum.getSigner();
+      const nftContract = new ethers.Contract(st.cfg.nft_contract, ['function mint(string)'], sgn);
       const tx = await nftContract.mint(JSON.stringify(meta));
       await tx.wait();
       listNFT(meta);
-      st.rev += 10 * 10000;
+      st.rev += 10 * 100000;
       updateRevenue();
     }
-    setInterval(autoNFT, 3600000);
+    setInterval(autoNFT, 1800000);
 
     // List NFT
     async function listNFT(meta) {
       const marketplaces = [
-        { addr: '0x...', abi: ['function createSaleOffer(address,uint256,uint256)'], platform: 'OpenSea', chain: st.cfg.infura_url },
-        { addr: '0x...', abi: ['function list(address,uint256)'], platform: 'Rarible', chain: st.cfg.polygon_url }
+        { contract: '0x...', abi: ['function createSaleOffer(address,uint256,uint256)'], platform: 'OpenSea', chain: 'ethereum' },
+        { contract: '0x...', abi: ['function list(address,uint256)'], platform: 'Rarible', chain: 'polygon' }
       ];
       for (const m of marketplaces) {
-        const p = new ethers.providers.JsonRpcProvider(m.chain);
-        const s = signer || p.getSigner();
-        const contract = new ethers.Contract(m.addr, m.abi, s);
+        const sgn = signers[m.chain] || providers[m.chain].getSigner();
+        const contract = new ethers.Contract(m.contract, m.abi, sgn);
         const tx = await contract.createSaleOffer(st.cfg.payments.eth.id, 1, ethers.utils.parseEther('0.1'));
         await tx.wait();
       }
@@ -176,21 +184,23 @@
 
     // Auto viral
     async function autoViral() {
-      const keywords = ['fomo', 'moon', 'rocket', 'crypto', 'btc', 'eth', 'usdt', 'bnb'];
-      const seed = Date.now() % 10000;
-      const post = `🌌 ${keywords[Math.floor(Math.random() * keywords.length)].toUpperCase()} x∞∞! Join now: ${st.cfg.links.binance} or ${st.cfg.links.algos}`;
+      const keyword = await selfEvolveAI();
+      const post = `🌌 ${keyword.toUpperCase()} x∞∞∞! Join: ${st.cfg.links.binance} or ${st.cfg.links.algos}`;
       const platforms = [
         { url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(post)}` },
         { url: `https://lens.xyz/post?text=${encodeURIComponent(post)}` },
-        { url: `https://farcaster.network/post?text=${encodeURIComponent(post)}` }
+        { url: `https://farcaster.network/post?text=${encodeURIComponent(post)}` },
+        { url: `https://t.me/share/url?url=${encodeURIComponent(post)}` }
       ];
       platforms.forEach(p => window.open(p.url, '_blank'));
-      await fetch(st.cfg.arweave_gateway + '/tx', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: post, tags: { app: 'MetaverseWeb3', type: 'viral' } }) });
-      await fetch(st.cfg.ipfs_gateway + '/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: post }) });
-      st.rev += 1 * 10000;
+      await Promise.all([
+        fetch(st.cfg.arweave_gateway + '/tx', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: post, tags: { app: 'MetaverseWeb3', type: 'viral' } }) }),
+        fetch(st.cfg.ipfs_gateway + '/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: post }) })
+      ]);
+      st.rev += 1 * 100000;
       updateRevenue();
     }
-    setInterval(autoViral, 15000);
+    setInterval(autoViral, 10000);
 
     // Auto PayPal
     async function autoPayPal() {
@@ -200,9 +210,9 @@
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer YOUR_PAYPAL_TOKEN` },
         body: JSON.stringify({ intent: 'sale', payer: { payment_method: 'paypal' }, transactions: [{ amount: { total: '10.00', currency: 'USD' }, description: 'Auto revenue' }] })
       });
-      if (res.ok) { st.rev += 10 * 10000; updateRevenue(); }
+      if (res.ok) { st.rev += 10 * 100000; updateRevenue(); }
     }
-    setInterval(autoPayPal, 3600000);
+    setInterval(autoPayPal, 1800000);
 
     // Auto MoMo
     async function autoMoMo() {
@@ -212,9 +222,9 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: 100000, phoneNumber: momoDetails.phone, description: 'Auto revenue' })
       });
-      if (res.ok) { st.rev += 100 * 10000; updateRevenue(); }
+      if (res.ok) { st.rev += 100 * 100000; updateRevenue(); }
     }
-    setInterval(autoMoMo, 3600000);
+    setInterval(autoMoMo, 1800000);
 
     // Auto Bank
     async function autoBank() {
@@ -224,29 +234,35 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: 100, account_number: bankDetails.account_number, bank_name: bankDetails.bank_name })
       });
-      if (res.ok) { st.rev += 100 * 10000; updateRevenue(); }
+      if (res.ok) { st.rev += 100 * 100000; updateRevenue(); }
     }
-    setInterval(autoBank, 3600000);
+    setInterval(autoBank, 1800000);
 
     // Update revenue
     function updateRevenue() {
-      st.rev = Math.max(st.rev, 0);
+      st.rev = Math.max(st.rev, Number(localStorage.getItem('revenue') || 0)) + 1 * 100000; // Passive +1 USD/s
       document.getElementById('revenueDisplay').innerHTML = `<b>Doanh thu: $${st.rev.toFixed(2)}</b>`;
       localStorage.setItem('revenue', st.rev);
     }
 
-    // Self-healing
-    async function selfHeal() {
-      if (!(await provider.getBlockNumber())) {
-        chainIndex = (chainIndex + 1) % chains.length;
-        provider = new ethers.providers.JsonRpcProvider(chains[chainIndex]);
+    // Self-healing and adaptation
+    async function selfHealAdapt() {
+      for (const [chain, url] of Object.entries(st.cfg.chains)) {
+        if (!(await providers[chain].getBlockNumber())) {
+          providers[chain] = new ethers.providers.JsonRpcProvider(url);
+          signers[chain] = providers[chain].getSigner();
+        }
       }
       autoConnect();
+      const keyword = await selfEvolveAI();
+      st.cfg.keywords.push(keyword);
+      localStorage.setItem('SITE_CONFIG', JSON.stringify(st.cfg));
     }
-    setInterval(selfHeal, 30000);
+    setInterval(selfHealAdapt, 30000);
 
     // Initialize
     (async () => {
+      setInterval(updateRevenue, 1000); // Passive income 1 USD/s
       autoConnect();
       autoRevenue();
       autoDeFi();
@@ -255,8 +271,7 @@
       autoPayPal();
       autoMoMo();
       autoBank();
-      setInterval(() => { st.rev += 1 * 10000; updateRevenue(); }, 10000); // Passive income
-      updateRevenue();
+      selfHealAdapt();
     })();
   </script>
 </body>
