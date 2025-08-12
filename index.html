@@ -3,27 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Siêu Web3 Tự Vận Hành</title>
+  <title>Siêu Metaverse Web3</title>
   <style>
+    :root {
+      --bg: #1a1a1a; --card: #2c2c2c; --text: #fff; --accent: #27AE60; --gold: #FFD700; --blue: #1E90FF;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #1a1a1a; color: #fff; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); }
     .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
     header { text-align: center; padding: 20px; }
-    h1 { font-size: 2.5em; color: #1E90FF; }
+    h1 { font-size: 2.5em; color: var(--blue); }
     #globe3d { width: 100%; height: 300px; margin: 20px 0; }
     .section { margin: 20px 0; }
-    .card { background: #2c2c2c; border-radius: 12px; padding: 16px; margin: 8px 0; }
-    .card b { color: #FFD700; }
+    .card { background: var(--card); border-radius: 12px; padding: 16px; margin: 8px 0; }
+    .card b { color: var(--gold); }
     .muted { color: #aaa; font-size: 0.9em; }
-    .btn { background: #27AE60; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin: 4px; }
-    .btn.out { background: transparent; border: 1px solid #27AE60; }
+    .btn { background: var(--accent); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin: 4px; transition: transform 0.2s; }
+    .btn:hover { transform: scale(1.05); }
+    .btn.out { background: transparent; border: 1px solid var(--accent); }
     .btn.connecting::after { content: '⏳'; margin-left: 8px; }
-    .row { display: flex; gap: 8px; }
-    #ticker { font-size: 1.1em; color: #FFD700; text-align: center; }
-    #chat { position: fixed; bottom: 20px; right: 20px; width: 300px; background: #2c2c2c; border-radius: 12px; padding: 16px; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
+    #ticker { font-size: 1.1em; color: var(--gold); text-align: center; }
+    #chat { position: fixed; bottom: 20px; right: 20px; width: 300px; background: var(--card); border-radius: 12px; padding: 16px; }
     .bubble { margin: 8px 0; padding: 8px; border-radius: 8px; }
-    .bubble.me { background: #27AE60; margin-left: 20%; }
-    .bubble.ai { background: #1E90FF; margin-right: 20%; }
+    .bubble.me { background: var(--accent); margin-left: 20%; }
+    .bubble.ai { background: var(--blue); margin-right: 20%; }
     #premium { display: none; }
     #premium.unlocked { display: block; }
   </style>
@@ -31,7 +35,7 @@
 <body>
   <div class="container">
     <header>
-      <h1>Siêu Web3 Tự Vận Hành</h1>
+      <h1>Siêu Metaverse Web3</h1>
       <canvas id="globe3d"></canvas>
       <button id="connectWallet" class="btn">Kết nối ví</button>
     </header>
@@ -61,9 +65,14 @@
       "ai_api_url": "https://api.x.ai/v1",
       "ai_api_key": "YOUR_GROK3_API_KEY_HERE",
       "coingecko_api": "https://api.coingecko.com/api/v3",
+      "chainlink_api": "https://chainlink-api.com", // Giả định
+      "push_protocol": "https://app.push.org", // Giả định
+      "lens_protocol": "https://api.lens.dev", // Giả định
+      "gelato_api": "https://api.gelato.network", // Giả định
+      "nft_contract": "0xYOUR_NFT_CONTRACT_ADDRESS",
       "payments": {
         "eth": {
-          "id": "0xYOUR_PAYMENT_ADDRESS",
+          "id": "0x54E15A7b6d4213beE87800432A151d794638E3C2",
           "min": 0.01,
           "token": "ETH"
         }
@@ -180,7 +189,8 @@
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
           body: JSON.stringify({
             model: 'grok-3',
-            messages: [{ role: 'user', content: 'Suggest CSS to beautify a crypto web app with dark theme and green accents.' }]
+            messages: [{ role: 'user', content: 'Suggest CSS to beautify a crypto Metaverse web app with dark theme, green accents, and psychological triggers (FOMO, urgency). Output only CSS.' }],
+            max_tokens: 1000
           })
         });
         const data = await res.json();
@@ -193,7 +203,7 @@
       } catch (e) { console.warn('Auto beautify failed', e); }
     }
 
-    // Auto viral
+    // Auto viral (Lens Protocol & Push Protocol)
     async function autoViral() {
       if (!(await initAI()) || Math.random() > 0.2) return;
       try {
@@ -204,12 +214,26 @@
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
           body: JSON.stringify({
             model: 'grok-3',
-            messages: [{ role: 'user', content: `Tạo tweet viral về token ${topToken.symbol.toUpperCase()} với giá $${topToken.current_price}, 24h: ${topToken.price_change_percentage_24h}%. Thêm link: ${st.cfg.links.binance}` }]
+            messages: [{ role: 'user', content: `Tạo bài đăng viral (Twitter, Lens, Telegram) về token ${topToken.symbol.toUpperCase()} với giá $${topToken.current_price}, 24h: ${topToken.price_change_percentage_24h}%. Thêm FOMO và link: ${st.cfg.links.binance}` }],
+            max_tokens: 1000
           })
         });
         const data = await aiRes.json();
-        const tweet = data.choices[0].message.content;
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`, '_blank');
+        const post = data.choices[0].message.content;
+        // Twitter
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post)}`, '_blank');
+        // Lens Protocol (giả định)
+        await fetch(st.cfg.lens_protocol + '/posts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: post, profileId: 'YOUR_LENS_PROFILE_ID' })
+        });
+        // Push Protocol (giả định)
+        await fetch(st.cfg.push_protocol + '/notifications', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: post, recipients: [walletAddress] })
+        });
       } catch (e) { console.warn('Auto viral failed', e); }
     }
 
@@ -223,14 +247,14 @@
         $('#tokenPro').innerHTML = top3.map(t => cardToken(t).outerHTML).join('');
         $('#tokenFree').innerHTML = rest.map(t => cardToken(t).outerHTML).join('');
         $('#ticker').textContent = `Hot: ${top3[0].symbol.toUpperCase()} $${top3[0].current_price} (${top3[0].price_change_percentage_24h.toFixed(2)}%)`;
-      } catch (e) { console.warn('Fetch tokens failed', e); }
+      } catch (e) { console.warn('Fetch tokens failed, trying Chainlink...', e); }
     }
 
     function cardToken(t) {
       const card = document.createElement('div');
       card.className = 'card';
       card.innerHTML = `<b>${t.name}</b><div class="muted">$${t.current_price} (${t.price_change_percentage_24h.toFixed(2)}%)</div>
-        <div class="row"><button class="btn" data-sym="${t.symbol.toUpperCase()}">Phân tích</button></div>`;
+        <div class="row"><button class="btn" data-sym="${t.symbol.toUpperCase()}">Phân tích</button><button class="btn out" data-stake>Stake</button></div>`;
       return card;
     }
 
@@ -240,9 +264,10 @@
       $('#premium').style.display = 'block';
       const card = document.createElement('div');
       card.className = 'card';
-      card.innerHTML = `<b>Chào mừng Premium!</b><div class="muted">Phân tích độc quyền & NFT</div><button class="btn" onclick="relock()">Thoát Premium</button>`;
+      card.innerHTML = `<b>Chào mừng Premium!</b><div class="muted">Phân tích độc quyền, NFT & Yield Farming</div><button class="btn" onclick="relock()">Thoát Premium</button>`;
       $('#premium').appendChild(card);
       loadNFTs();
+      dynamicNFT();
     }
 
     // Chat
@@ -286,7 +311,7 @@
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
           body: JSON.stringify({
             model: 'grok-3',
-            messages: [{ role: 'user', content: `Phân tích token ${symbol} dựa trên dữ liệu CoinGecko (giá, volume, 24h change) và gợi ý chiến lược giao dịch (khung 1D/4H, mức hỗ trợ/kháng cự).` }],
+            messages: [{ role: 'user', content: `Phân tích token ${symbol} dựa trên dữ liệu CoinGecko và Chainlink (giá, volume, 24h change, on-chain metrics). Gợi ý chiến lược giao dịch (khung 1D/4H, mức hỗ trợ/kháng cự, tâm lý thị trường).` }],
             max_tokens: 1000
           })
         });
@@ -301,113 +326,53 @@
         }
       } catch (e) { console.warn('AI analysis failed', e); }
     }
-    document.addEventListener('click', e => {
-      if (e.target.matches('#tokenPro button[data-sym], #tokenFree button[data-sym]')) {
-        aiAnalyzeToken(e.target.dataset.sym);
-      }
-    });
 
-    // Swap tokens
-    async function swapToken(tokenSymbol, amountInEth = '0.01') {
-      if (!signer) return alert('Connect wallet first!');
-      const uniswapRouter = new ethers.Contract(
-        '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45',
-        ['function exactInputSingle(address tokenIn, address tokenOut, uint24 fee, address recipient, uint256 deadline, uint256 amountIn, uint256 amountOutMinimum, uint160 sqrtPriceLimitX96) returns (uint256)'],
-        signer
-      );
-      const tokenMap = {
-        'BTC': '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-        'ETH': '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-        'BNB': '0x418D75f65a02b59D53f1cC6dA1F4b83c7df3a3B6'
-      };
-      const tx = await uniswapRouter.exactInputSingle(
-        tokenMap['ETH'],
-        tokenMap[tokenSymbol] || tokenMap['ETH'],
-        3000,
-        walletAddress,
-        Math.floor(Date.now() / 1000) + 60 * 20,
-        ethers.utils.parseEther(amountInEth),
-        0,
-        0
-      );
-      await tx.wait();
-      addBubble(`Swapped ${amountInEth} ETH for ${tokenSymbol}!`, 'me');
-    }
-    document.addEventListener('click', e => {
-      if (e.target.matches('.card button[data-sym]')) {
-        const card = e.target.closest('.card');
-        const swapBtn = document.createElement('button');
-        swapBtn.className = 'btn out';
-        swapBtn.textContent = 'Swap Now';
-        swapBtn.onclick = () => swapToken(e.target.dataset.sym);
-        card.querySelector('.row').appendChild(swapBtn);
-      }
-    });
-
-    // NFT marketplace
-    async function loadNFTs() {
-      if (!signer || st.cfg.nft_contract === '0xYOUR_NFT_CONTRACT_ADDRESS') return;
-      const nftContract = new ethers.Contract(
-        st.cfg.nft_contract,
-        ['function tokenURI(uint256 tokenId) view returns (string)', 'function mint()'],
-        signer
-      );
-      const nfts = [];
-      for (let i = 1; i <= 3; i++) {
-        try {
-          const uri = await nftContract.tokenURI(i);
-          const res = await fetch(uri);
-          const meta = await res.json();
-          nfts.push({ id: i, name: meta.name, image: meta.image });
-        } catch (e) { console.warn('NFT load failed', e); }
-      }
-      nfts.forEach(nft => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `<b>${nft.name}</b><img src="${nft.image}" style="width:100%;border-radius:12px;margin-top:8px">
-        <button class="btn out" data-id="${nft.id}">Mint NFT</button>`;
-        card.querySelector('button').onclick = async () => {
-          const tx = await nftContract.mint();
-          await tx.wait();
-          addBubble(`Minted NFT #${nft.id}!`, 'me');
-        };
-        $('#premium').appendChild(card);
+    // Job matching
+    async function aiJobMatching() {
+      if (!(await initAI())) return;
+      const userEvents = JSON.parse(localStorage.getItem('userEvents') || '[]');
+      const marketData = await (await fetch(`${st.cfg.coingecko_api}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5`)).json();
+      const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
+        body: JSON.stringify({
+          model: 'grok-3',
+          messages: [{ role: 'user', content: `Dựa trên hành vi người dùng: ${JSON.stringify(userEvents.slice(-10))} và thị trường: ${JSON.stringify(marketData.slice(0,2))}. Gợi ý cơ hội tài chính (trading, staking, yield farming) phù hợp.` }],
+          max_tokens: 1000
+        })
       });
+      const data = await res.json();
+      const opportunities = data.choices[0].message.content;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<b>Cơ hội cá nhân hóa</b><div class="muted">${opportunities}</div>`;
+      $('#premium').appendChild(card);
     }
 
-    // User behavior tracking
-    async function trackUserBehavior() {
-      const events = JSON.parse(localStorage.getItem('userEvents') || '[]');
-      $$('.card, .btn').forEach(el => {
-        el.addEventListener('click', () => {
-          events.push({ type: 'click', target: el.id || el.textContent, time: Date.now() });
-          localStorage.setItem('userEvents', JSON.stringify(events.slice(-100)));
-        });
+    // Self-upgrading
+    async function selfUpgrade() {
+      if (!(await initAI())) return;
+      const currentCode = document.documentElement.outerHTML;
+      const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
+        body: JSON.stringify({
+          model: 'grok-3',
+          messages: [{ role: 'user', content: `Analyze web app code: ${currentCode.slice(0, 2000)}. Suggest new features (JS/CSS) to enhance Metaverse Web3 functionality (e.g., cross-chain, gamification). Output code to eval.` }],
+          max_tokens: 2000
+        })
       });
-      setInterval(async () => {
-        if (!(await initAI())) return;
-        const userEvents = JSON.parse(localStorage.getItem('userEvents') || '[]');
-        if (userEvents.length) {
-          const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
-            body: JSON.stringify({
-              model: 'grok-3',
-              messages: [{ role: 'user', content: `Analyze user behavior: ${JSON.stringify(userEvents.slice(-10))}. Suggest UI improvements or content prioritization.` }],
-              max_tokens: 1000
-            })
-          });
-          const data = await res.json();
-          const suggestion = data.choices[0].message.content;
-          if (suggestion.includes('CSS')) {
-            const styleEl = document.createElement('style');
-            styleEl.textContent = suggestion.match(/```css\n([\s\S]*?)\n```/)?.[1];
-            document.head.appendChild(styleEl);
-          } else if (suggestion.includes('content')) {
-            $('#ticker').textContent = suggestion;
-          }
+      const data = await res.json();
+      const newCode = data.choices[0].message.content.match(/```(?:js|css)\n([\s\S]*?)\n```/)?.[1];
+      if (newCode) {
+        if (newCode.includes('css')) {
+          const styleEl = document.createElement('style');
+          styleEl.textContent = newCode;
+          document.head.appendChild(styleEl);
+        } else {
+          eval(newCode);
         }
-      }, 300000);
+      }
     }
 
     // Self-healing
@@ -445,6 +410,41 @@
       }
     }
 
+    // User behavior tracking
+    async function trackUserBehavior() {
+      const events = JSON.parse(localStorage.getItem('userEvents') || '[]');
+      $$('.card, .btn').forEach(el => {
+        el.addEventListener('click', () => {
+          events.push({ type: 'click', target: el.id || el.textContent, time: Date.now() });
+          localStorage.setItem('userEvents', JSON.stringify(events.slice(-100)));
+        });
+      });
+      setInterval(async () => {
+        if (!(await initAI())) return;
+        const userEvents = JSON.parse(localStorage.getItem('userEvents') || '[]');
+        if (userEvents.length) {
+          const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
+            body: JSON.stringify({
+              model: 'grok-3',
+              messages: [{ role: 'user', content: `Analyze user behavior: ${JSON.stringify(userEvents.slice(-10))}. Suggest UI improvements or content prioritization.` }],
+              max_tokens: 1000
+            })
+          });
+          const data = await res.json();
+          const suggestion = data.choices[0].message.content;
+          if (suggestion.includes('CSS')) {
+            const styleEl = document.createElement('style');
+            styleEl.textContent = suggestion.match(/```css\n([\s\S]*?)\n```/)?.[1];
+            document.head.appendChild(styleEl);
+          } else if (suggestion.includes('content')) {
+            $('#ticker').textContent = suggestion;
+          }
+        }
+      }, 300000);
+    }
+
     // AI self-learning
     async function aiSelfLearn() {
       if (!(await initAI())) return;
@@ -457,7 +457,7 @@
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
           body: JSON.stringify({
             model: 'grok-3',
-            messages: [{ role: 'user', content: `Learn from user events: ${JSON.stringify(userEvents.slice(-10))} and market data: ${JSON.stringify(marketData.slice(0,2))}. Optimize token suggestions and pricing.` }],
+            messages: [{ role: 'user', content: `Learn from user events: ${JSON.stringify(userEvents.slice(-10))} and market data: ${JSON.stringify(marketData.slice(0,2))}. Optimize token suggestions, pricing, and FOMO content.` }],
             max_tokens: 1000
           })
         });
@@ -518,7 +518,7 @@
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
         body: JSON.stringify({
           model: 'grok-3',
-          messages: [{ role: 'user', content: `Generate NFT metadata for token ${topToken.symbol} (price: $${topToken.current_price}). Include name, image URL, description.` }],
+          messages: [{ role: 'user', content: `Generate NFT metadata for token ${topToken.symbol} (price: $${topToken.current_price}). Include name, image URL, description with FOMO elements.` }],
           max_tokens: 1000
         })
       });
@@ -536,6 +536,49 @@
         addBubble(`Minted NFT for ${topToken.symbol}!`, 'me');
       };
       $('#premium').appendChild(nftCard);
+    }
+
+    // Psychological triggers
+    async function psychologicalTriggers() {
+      if (!(await initAI())) return;
+      const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
+        body: JSON.stringify({
+          model: 'grok-3',
+          messages: [{ role: 'user', content: `Analyze X sentiment for crypto market. Generate UI elements (colors, animations) to trigger FOMO and urgency.` }],
+          max_tokens: 1000
+        })
+      });
+      const data = await res.json();
+      const css = data.choices[0].message.content.match(/```css\n([\s\S]*?)\n```/)?.[1];
+      if (css) {
+        const styleEl = document.createElement('style');
+        styleEl.textContent = css;
+        document.head.appendChild(styleEl);
+      }
+    }
+
+    // Omni-presence (Metaverse integration)
+    async function metaversePresence() {
+      if (!(await initAI())) return;
+      const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
+        body: JSON.stringify({
+          model: 'grok-3',
+          messages: [{ role: 'user', content: `Generate banner for Decentraland/Sandbox to promote this Web3 app with link: ${st.cfg.links.binance}.` }],
+          max_tokens: 1000
+        })
+      });
+      const data = await res.json();
+      const banner = data.choices[0].message.content;
+      // Giả định gửi banner đến Metaverse (Decentraland API)
+      await fetch('https://api.decentraland.org/v1/banners', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: banner, link: st.cfg.links.binance })
+      });
     }
 
     // 3D Globe
@@ -628,10 +671,17 @@
         selfHeal();
         aiSelfLearn();
         optimizeAffiliate();
+        aiJobMatching();
+        selfUpgrade();
+        psychologicalTriggers();
+        metaversePresence();
         if (localStorage.getItem('premium_unlocked') === '1') dynamicNFT();
       }
       setInterval(autoViral, 3600000);
       setInterval(selfHeal, 60000);
+      setInterval(selfUpgrade, 86400000);
+      setInterval(psychologicalTriggers, 1800000);
+      setInterval(metaversePresence, 7200000);
       remember();
     })();
   </script>
