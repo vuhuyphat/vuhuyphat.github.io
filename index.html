@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Siêu Metaverse Web3 Ánh Sáng</title>
+  <title>Siêu Metaverse Web3 Vô Cực</title>
   <style>
     :root { --bg: #1a1a1a; --card: #2c2c2c; --text: #fff; --accent: #27AE60; --gold: #FFD700; --blue: #1E90FF; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); }
     .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
     header { text-align: center; padding: 20px; }
-    h1 { font-size: 2.5em; color: var(--blue); animation: glow 2s infinite; }
-    @keyframes glow { 0% { text-shadow: 0 0 10px var(--blue); } 50% { text-shadow: 0 0 20px var(--gold); } 100% { text-shadow: 0 0 10px var(--blue); } }
+    h1 { font-size: 2.5em; color: var(--blue); animation: cosmic 2s infinite; }
+    @keyframes cosmic { 0% { text-shadow: 0 0 10px var(--blue); } 50% { text-shadow: 0 0 20px var(--gold); } 100% { text-shadow: 0 0 10px var(--blue); } }
     #globe3d { width: 100%; height: 300px; margin: 20px 0; }
     .section { margin: 20px 0; }
-    .card { background: var(--card); border-radius: 12px; padding: 16px; margin: 8px 0; animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+    .card { background: var(--card); border-radius: 12px; padding: 16px; margin: 8px 0; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
     .card b { color: var(--gold); }
     .muted { color: #aaa; font-size: 0.9em; }
     .btn { background: var(--accent); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin: 4px; transition: transform 0.2s; }
@@ -35,18 +35,18 @@
 <body>
   <div class="container">
     <header>
-      <h1>Siêu Metaverse Web3 Ánh Sáng</h1>
+      <h1>Siêu Metaverse Web3 Vô Cực</h1>
       <canvas id="globe3d"></canvas>
       <button id="connectWallet" class="btn">Kết nối ví</button>
     </header>
-    <div id="ticker">Đang tải dữ liệu thị trường...</div>
+    <div id="ticker">🚀 Cosmic trends loading...</div>
     <div class="section">
       <h2>Top 3 Tokens</h2>
       <div id="tokenPro"></div>
       <div id="tokenFree"></div>
     </div>
     <div class="section" id="premium">
-      <h2>Premium Content</h2>
+      <h2>Premium Cosmic Zone</h2>
     </div>
     <div class="section">
       <h2>Giới thiệu</h2>
@@ -57,7 +57,7 @@
     </div>
     <div id="chat">
       <div id="chatBody"></div>
-      <input id="chatInput" placeholder="Nhập từ khóa..." style="width: 100%; padding: 8px; border-radius: 8px; border: none;">
+      <input id="chatInput" placeholder="Nhập FOMO, moon..." style="width: 100%; padding: 8px; border-radius: 8px; border: none;">
     </div>
   </div>
   <script type="application/json" id="SITE_CONFIG">
@@ -163,13 +163,13 @@
     function localAI(query) {
       const keywords = query.toLowerCase().split(' ');
       const responses = {
-        'phân tích': 'Mua ở hỗ trợ, bán ở kháng cự. Volume tăng là tín hiệu mạnh!',
+        'phân tích': 'Mua ở hỗ trợ, bán ở kháng cự. Volume tăng = cơ hội lớn!',
         'gợi ý': 'Token hot: ETH, BTC, BNB. Stake ETH trên Lido cho APY 4-6%.',
-        'fomo': `🚀 ${keywords[1] || 'ETH'} đang moon! Đăng ký ngay: ${st.cfg.links.binance}`,
-        'moon': `🌙 Cơ hội vàng với ${keywords[1] || 'BNB'}! Nhanh tay: ${st.cfg.links.binance}`,
-        'rocket': `🔥 ${keywords[1] || 'BTC'} tăng tốc! Join: ${st.cfg.links.binance}`
+        'fomo': `🚀 ${keywords[1] || 'ETH'} đang bùng nổ! Join: ${st.cfg.links.binance}`,
+        'moon': `🌙 ${keywords[1] || 'BNB'} to the moon! Nhanh tay: ${st.cfg.links.binance}`,
+        'rocket': `🔥 ${keywords[1] || 'BTC'} tăng tốc! Đăng ký: ${st.cfg.links.binance}`
       };
-      return responses[keywords[0]] || `Cơ hội với ${keywords[0] || 'ETH'}! Đăng ký: ${st.cfg.links.binance}`;
+      return responses[keywords[0]] || `Cơ hội ${keywords[0] || 'ETH'}! Join: ${st.cfg.links.binance}`;
     }
 
     // AI initialization (optional)
@@ -201,7 +201,7 @@
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
             body: JSON.stringify({
               model: 'grok-3',
-              messages: [{ role: 'user', content: 'Suggest CSS for a Metaverse Web3 app with cosmic animations, FOMO triggers, and light-speed effects.' }],
+              messages: [{ role: 'user', content: 'Suggest CSS for a Web3 app with cosmic animations, FOMO triggers, and light-speed effects.' }],
               max_tokens: 1000
             })
           });
@@ -215,7 +215,7 @@
         } catch (e) { console.warn('AI beautify failed, using local.', e); }
       } else {
         const styleEl = document.createElement('style');
-        styleEl.textContent = `.card { animation: cosmic 3s infinite; } @keyframes cosmic { 0% { box-shadow: 0 0 10px var(--blue); } 50% { box-shadow: 0 0 20px var(--gold); } 100% { box-shadow: 0 0 10px var(--blue); } }`;
+        styleEl.textContent = `.card { animation: cosmic 2s infinite; } @keyframes cosmic { 0% { box-shadow: 0 0 10px var(--blue); } 50% { box-shadow: 0 0 20px var(--gold); } 100% { box-shadow: 0 0 10px var(--blue); } }`;
         document.head.appendChild(styleEl);
       }
     }
@@ -254,10 +254,11 @@
         const rest = tokens.slice(3, 6);
         $('#tokenPro').innerHTML = top3.map(t => cardToken(t).outerHTML).join('');
         $('#tokenFree').innerHTML = rest.map(t => cardToken(t).outerHTML).join('');
-        $('#ticker').textContent = `Hot: ${top3[0].symbol.toUpperCase()} $${top3[0].current_price} (${top3[0].price_change_percentage_24h.toFixed(2)}%)`;
+        $('#ticker').textContent = `🚀 ${top3[0].symbol.toUpperCase()} $${top3[0].current_price} (${top3[0].price_change_percentage_24h.toFixed(2)}%)`;
       } catch (e) {
         console.warn('Fetch tokens failed, using local.', e);
         $('#tokenPro').innerHTML = cardToken({ name: 'ETH', symbol: 'eth', current_price: 2000, price_change_percentage_24h: 5 }).outerHTML;
+        $('#ticker').textContent = '🚀 ETH $2000 (+5%)';
       }
     }
 
@@ -275,9 +276,11 @@
       $('#premium').style.display = 'block';
       const card = document.createElement('div');
       card.className = 'card';
-      card.innerHTML = `<b>Chào mừng Premium!</b><div class="muted">Phân tích, NFT & Cosmic Game</div><button class="btn" onclick="relock()">Thoát Premium</button>`;
+      card.innerHTML = `<b>Cosmic Premium!</b><div class="muted">NFT, Staking & Star Game</div><button class="btn" onclick="relock()">Thoát Premium</button>`;
       $('#premium').appendChild(card);
       cosmicGame();
+      dynamicNFT();
+      autoRevenue();
     }
 
     // Chat
@@ -295,6 +298,7 @@
         addBubble(query, 'me');
         $('#chatInput').value = '';
         localStorage.setItem('userEvents', JSON.stringify([...JSON.parse(localStorage.getItem('userEvents') || '[]'), { type: 'keyword', target: query, time: Date.now() }]));
+        autoViral();
         if (await initAI()) {
           try {
             const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
@@ -396,7 +400,7 @@
       const rand = (seed % 100) / 100;
       const card = document.createElement('div');
       card.className = 'card';
-      card.innerHTML = `<b>Cosmic Game</b><div class="muted">${rand > 0.5 ? 'Collect stars to earn 0.01 ETH!' : 'Spin for a rare NFT!'}</div><button class="btn" onclick="playCosmic()">Chơi ngay</button>`;
+      card.innerHTML = `<b>Catch the Star!</b><div class="muted">${rand > 0.5 ? 'Win 0.01 ETH!' : 'Grab a rare NFT!'}</div><button class="btn" onclick="playCosmic()">Chơi ngay</button>`;
       $('#premium').appendChild(card);
     }
 
@@ -419,9 +423,9 @@
     // Self-evolving DOM
     function selfEvolve() {
       const events = JSON.parse(localStorage.getItem('userEvents') || '[]');
-      if (events.length > 10) {
+      if (events.length > 5) {
         const styleEl = document.createElement('style');
-        styleEl.textContent = `.card { border: 2px solid ${events.length % 2 ? 'var(--gold)' : 'var(--blue)'}; }`;
+        styleEl.textContent = `.btn { background: ${events.length % 2 ? 'var(--gold)' : 'var(--blue)'}; }`;
         document.head.appendChild(styleEl);
       }
     }
@@ -430,9 +434,9 @@
     function psychologicalTriggers() {
       const events = JSON.parse(localStorage.getItem('userEvents') || '[]');
       const keywords = events.slice(-1)[0]?.target || 'FOMO';
-      $('#ticker').textContent = `🚀 ${keywords.toUpperCase()} đang bùng nổ! Đừng bỏ lỡ!`;
+      $('#ticker').textContent = `🌌 ${keywords.toUpperCase()} đang bùng nổ! Join now!`;
       const styleEl = document.createElement('style');
-      styleEl.textContent = `.btn { animation: bounce 1s infinite; } @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }`;
+      styleEl.textContent = `.card { border: 2px solid ${Math.random() > 0.5 ? 'var(--gold)' : 'var(--blue)'}; animation: bounce 1s infinite; } @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }`;
       document.head.appendChild(styleEl);
     }
 
@@ -533,9 +537,9 @@
         autoViral();
         psychologicalTriggers();
       }
-      setInterval(autoViral, 1800000);
-      setInterval(selfEvolve, 60000);
-      setInterval(psychologicalTriggers, 300000);
+      setInterval(autoViral, 900000);
+      setInterval(selfEvolve, 30000);
+      setInterval(psychologicalTriggers, 150000);
       remember();
     })();
   </script>
