@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Siêu Metaverse Web3 Cao Siêu</title>
+  <title>Siêu Metaverse Web3 Vạn Vật</title>
   <style>
     :root { --bg: #1a1a1a; --card: #2c2c2c; --text: #fff; --accent: #27AE60; --gold: #FFD700; --blue: #1E90FF; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); }
     .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
     header { text-align: center; padding: 20px; }
-    h1 { font-size: 2.5em; color: var(--blue); animation: singularity 0.8s infinite; }
-    @keyframes singularity { 0% { text-shadow: 0 0 10px var(--blue); } 50% { text-shadow: 0 0 20px var(--gold); } 100% { text-shadow: 0 0 10px var(--blue); } }
+    h1 { font-size: 2.5em; color: var(--blue); animation: omni 0.5s infinite; }
+    @keyframes omni { 0% { text-shadow: 0 0 10px var(--blue); } 50% { text-shadow: 0 0 20px var(--gold); } 100% { text-shadow: 0 0 10px var(--blue); } }
     #globe3d { width: 100%; height: 300px; margin: 20px 0; }
     .section { margin: 20px 0; }
-    .card { background: var(--card); border-radius: 12px; padding: 16px; margin: 8px 0; animation: pulse 0.6s infinite; }
-    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    .card { background: var(--card); border-radius: 12px; padding: 16px; margin: 8px 0; animation: pulse 0.4s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.06); } 100% { transform: scale(1); } }
     .card b { color: var(--gold); }
     .muted { color: #aaa; font-size: 0.9em; }
     .btn { background: var(--accent); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin: 4px; transition: transform 0.2s; }
@@ -35,18 +35,18 @@
 <body>
   <div class="container">
     <header>
-      <h1>Siêu Metaverse Web3 Cao Siêu</h1>
+      <h1>Siêu Metaverse Web3 Vạn Vật</h1>
       <canvas id="globe3d"></canvas>
       <button id="connectWallet" class="btn">Kết nối ví</button>
     </header>
-    <div id="ticker">🌌 Cosmic singularity loading...</div>
+    <div id="ticker">🌌 Omni singularity loading...</div>
     <div class="section">
       <h2>Top 3 Tokens</h2>
       <div id="tokenPro"></div>
       <div id="tokenFree"></div>
     </div>
     <div class="section" id="premium">
-      <h2>Cosmic Singularity Zone</h2>
+      <h2>Omni Singularity Zone</h2>
     </div>
     <div class="section">
       <h2>Giới thiệu</h2>
@@ -120,7 +120,7 @@
           checkOnChainUnlock();
           autoRevenue();
         } else {
-          alert('Install MetaMask!');
+          alert('Install MetaMask or WalletConnect!');
         }
       } finally {
         $('#connectWallet').classList.remove('connecting');
@@ -147,7 +147,7 @@
       await tx.wait();
       localStorage.setItem('premium_unlocked', '3096');
       paintPremium();
-      addBubble('Premium unlocked!', 'me');
+      addBubble('Omni Singularity unlocked!', 'me');
     }
 
     function remember() {
@@ -162,24 +162,24 @@
       $('#premium').style.display = 'none';
     }
 
-    // Nano-neural heuristics
-    function neuralAI(query) {
+    // Omni-neural heuristics
+    function omniAI(query) {
       const keywords = query.toLowerCase().split(' ');
-      const seed = (Date.now() + parseInt((provider.getBlock('latest').then(b => b.hash.slice(-8)) || '0'), 16)) % 1000;
+      const seed = (Date.now() + parseInt((provider.getBlock('latest').then(b => b.hash.slice(-8)) || '0'), 16)) % 10000;
       const responses = {
-        'phân tích': `Mua ${keywords[1] || 'ETH'} ở hỗ trợ, bán ở kháng cự. Volume tăng x${(seed % 10 + 1) * 100}!`,
-        'gợi ý': `Token hot: ETH, BTC, BNB. Stake ETH trên Lido APY ${(seed % 5 + 4) * 10}%.`,
-        'fomo': `🌌 ${keywords[1] || 'ETH'} bùng nổ x1000! Join: ${st.cfg.links.binance}`,
-        'moon': `🚀 ${keywords[1] || 'BNB'} to the moon x1000! Nhanh tay: ${st.cfg.links.binance}`,
-        'rocket': `🔥 ${keywords[1] || 'BTC'} tăng tốc x${(seed % 10 + 1) * 100}! Đăng ký: ${st.cfg.links.binance}`
+        'phân tích': `Mua ${keywords[1] || 'ETH'} ở hỗ trợ, bán ở kháng cự. Volume tăng x${(seed % 10 + 1) * 1000}!`,
+        'gợi ý': `Token hot: ETH, BTC, BNB. Stake ETH trên Lido APY ${(seed % 5 + 4) * 100}%.`,
+        'fomo': `🌌 ${keywords[1] || 'ETH'} bùng nổ x10000! Join: ${st.cfg.links.binance}`,
+        'moon': `🚀 ${keywords[1] || 'BNB'} to the moon x10000! Nhanh tay: ${st.cfg.links.binance}`,
+        'rocket': `🔥 ${keywords[1] || 'BTC'} tăng tốc x${(seed % 10 + 1) * 1000}! Đăng ký: ${st.cfg.links.binance}`
       };
-      return responses[keywords[0]] || `🌌 ${keywords[0] || 'ETH'} siêu hot x1000! Join: ${st.cfg.links.binance}`;
+      return responses[keywords[0]] || `🌌 ${keywords[0] || 'ETH'} siêu hot x10000! Join: ${st.cfg.links.binance}`;
     }
 
     // AI initialization (optional)
     async function initAI() {
       if (st.cfg.ai_api_key === 'YOUR_GROK3_API_KEY_HERE') {
-        console.log('No AI key, using neural heuristics.');
+        console.log('No AI key, using omni-neural heuristics.');
         return false;
       }
       try {
@@ -192,7 +192,7 @@
           console.log('AI initialized successfully!');
           return true;
         }
-      } catch (e) { console.warn('AI init failed, using neural.', e); }
+      } catch (e) { console.warn('AI init failed, using omni-neural.', e); }
       return false;
     }
 
@@ -205,7 +205,7 @@
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
             body: JSON.stringify({
               model: 'grok-3',
-              messages: [{ role: 'user', content: 'Suggest CSS for a Web3 app with singularity animations, FOMO triggers, and neural effects.' }],
+              messages: [{ role: 'user', content: 'Suggest CSS for a Web3 app with omni-singularity animations, FOMO triggers, and neural effects.' }],
               max_tokens: 1000
             })
           });
@@ -217,10 +217,10 @@
             document.head.appendChild(styleEl);
             storeArweave({ type: 'css', content: css });
           }
-        } catch (e) { console.warn('AI beautify failed, using neural.', e); }
+        } catch (e) { console.warn('AI beautify failed, using omni-neural.', e); }
       } else {
         const styleEl = document.createElement('style');
-        styleEl.textContent = `.card { animation: neural 0.8s infinite; } @keyframes neural { 0% { box-shadow: 0 0 10px var(--blue); } 50% { box-shadow: 0 0 20px var(--gold); } 100% { box-shadow: 0 0 10px var(--blue); } }`;
+        styleEl.textContent = `.card { animation: omni 0.5s infinite; } @keyframes omni { 0% { box-shadow: 0 0 10px var(--blue); } 50% { box-shadow: 0 0 20px var(--gold); } 100% { box-shadow: 0 0 10px var(--blue); } }`;
         document.head.appendChild(styleEl);
         storeArweave({ type: 'css', content: styleEl.textContent });
       }
@@ -230,20 +230,20 @@
     async function autoViral() {
       const events = JSON.parse(localStorage.getItem('userEvents') || '[]');
       const keywords = events.slice(-1)[0]?.target || 'FOMO';
-      const seed = (Date.now() + parseInt((await provider.getBlock('latest')).hash.slice(-8), 16)) % 1000;
-      const variants = Array.from({ length: 1000 }, (_, i) => `${keywords}_${i}_${seed}`);
+      const seed = (Date.now() + parseInt((await provider.getBlock('latest')).hash.slice(-8), 16)) % 10000;
+      const variants = Array.from({ length: 10000 }, (_, i) => `${keywords}_${i}_${seed}`);
       const post = (await initAI()) ? 
         (await (await fetch(st.cfg.ai_api_url + '/chat/completions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
           body: JSON.stringify({
             model: 'grok-3',
-            messages: [{ role: 'user', content: `Tạo bài đăng viral x1000 với từ khóa "${keywords}" và link: ${st.cfg.links.binance}` }],
+            messages: [{ role: 'user', content: `Tạo bài đăng viral x10000 với từ khóa "${keywords}" và link: ${st.cfg.links.binance}` }],
             max_tokens: 1000
           })
         })).json().then(d => d.choices[0].message.content) :
-        neuralAI(keywords);
-      for (const variant of variants.slice(0, 50)) {
+        omniAI(keywords);
+      for (const variant of variants.slice(0, 100)) {
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${post} #${variant}`)}`, '_blank');
         try {
           await fetch(st.cfg.arweave_gateway + '/tx', {
@@ -284,14 +284,14 @@
         const rest = tokens.slice(3, 6);
         $('#tokenPro').innerHTML = top3.map(t => cardToken(t).outerHTML).join('');
         $('#tokenFree').innerHTML = rest.map(t => cardToken(t).outerHTML).join('');
-        $('#ticker').textContent = `🌌 ${top3[0].symbol.toUpperCase()} $${top3[0].current_price} (${top3[0].price_change_percentage_24h.toFixed(2)}%) x1000`;
+        $('#ticker').textContent = `🌌 ${top3[0].symbol.toUpperCase()} $${top3[0].current_price} (${top3[0].price_change_percentage_24h.toFixed(2)}%) x10000`;
         storeArweave({ type: 'tokens', content: JSON.stringify(top3) });
       } catch (e) {
         console.warn('Fetch tokens failed, trying next chain.', e);
         chainIndex = (chainIndex + 1) % chains.length;
         provider = new ethers.providers.JsonRpcProvider(chains[chainIndex]);
         $('#tokenPro').innerHTML = cardToken({ name: 'ETH', symbol: 'eth', current_price: 2000, price_change_percentage_24h: 5 }).outerHTML;
-        $('#ticker').textContent = '🌌 ETH $2000 (+5%) x1000';
+        $('#ticker').textContent = '🌌 ETH $2000 (+5%) x10000';
       }
     }
 
@@ -299,7 +299,7 @@
       const card = document.createElement('div');
       card.className = 'card';
       card.innerHTML = `<b>${t.name}</b><div class="muted">$${t.current_price} (${t.price_change_percentage_24h.toFixed(2)}%)</div>
-        <div class="row"><button class="btn" data-sym="${t.symbol.toUpperCase()}">Phân tích</button><button class="btn out" data-stake>Stake x1000</button></div>`;
+        <div class="row"><button class="btn" data-sym="${t.symbol.toUpperCase()}">Phân tích</button><button class="btn out" data-stake>Stake x10000</button></div>`;
       return card;
     }
 
@@ -309,9 +309,9 @@
       $('#premium').style.display = 'block';
       const card = document.createElement('div');
       card.className = 'card';
-      card.innerHTML = `<b>Cosmic Singularity x1000!</b><div class="muted">NFT, Staking & Cosmic Pulse</div><button class="btn" onclick="relock()">Thoát Premium</button>`;
+      card.innerHTML = `<b>Omni Singularity x10000!</b><div class="muted">NFT, Staking & Omni Pulse</div><button class="btn" onclick="relock()">Thoát Premium</button>`;
       $('#premium').appendChild(card);
-      cosmicGame();
+      omniGame();
       dynamicNFT();
       autoRevenue();
     }
@@ -347,9 +347,9 @@
             });
             const data = await res.json();
             addBubble(data.choices[0].message.content, 'ai');
-          } catch (e) { addBubble(neuralAI(query), 'ai'); }
+          } catch (e) { addBubble(omniAI(query), 'ai'); }
         } else {
-          addBubble(neuralAI(query), 'ai');
+          addBubble(omniAI(query), 'ai');
         }
       }
     };
@@ -363,7 +363,7 @@
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
             body: JSON.stringify({
               model: 'grok-3',
-              messages: [{ role: 'user', content: `Phân tích token ${symbol} với FOMO triggers và chiến lược giao dịch x1000.` }],
+              messages: [{ role: 'user', content: `Phân tích token ${symbol} với FOMO triggers và chiến lược giao dịch x10000.` }],
               max_tokens: 1000
             })
           });
@@ -373,13 +373,13 @@
           if (localStorage.getItem('premium_unlocked') === '3096') {
             const card = document.createElement('div');
             card.className = 'card';
-            card.innerHTML = `<b>Phân tích ${symbol} x1000</b><div class="muted">${analysis}</div>`;
+            card.innerHTML = `<b>Phân tích ${symbol} x10000</b><div class="muted">${analysis}</div>`;
             $('#premium').appendChild(card);
             storeArweave({ type: 'analysis', content: analysis });
           }
-        } catch (e) { addBubble(neuralAI('phân tích'), 'ai'); }
+        } catch (e) { addBubble(omniAI('phân tích'), 'ai'); }
       } else {
-        addBubble(neuralAI('phân tích'), 'ai');
+        addBubble(omniAI('phân tích'), 'ai');
       }
     }
 
@@ -389,7 +389,8 @@
       try {
         const contracts = [
           { addr: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84', abi: ['function submit(address _referral) payable returns (uint256)'], platform: 'Lido' },
-          { addr: '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9', abi: ['function deposit() payable'], platform: 'Aave' }
+          { addr: '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9', abi: ['function deposit() payable'], platform: 'Aave' },
+          { addr: '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5', abi: ['function deposit() payable'], platform: 'Compound' }
         ];
         for (const contract of contracts) {
           const c = new ethers.Contract(contract.addr, contract.abi, signer);
@@ -397,7 +398,7 @@
             await c.submit(st.cfg.payments.eth.id, { value: ethers.utils.parseEther('0.01') }) :
             await c.deposit({ value: ethers.utils.parseEther('0.01') });
           await tx.wait();
-          st.rev += 0.01 * 1000;
+          st.rev += 0.01 * 10000;
           localStorage.setItem('rev', st.rev);
           addBubble(`Auto-staked 0.01 ETH on ${contract.platform}!`, 'me');
           storeArweave({ type: 'revenue', content: `Staked 0.01 ETH on ${contract.platform}` });
@@ -416,15 +417,15 @@
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
           body: JSON.stringify({
             model: 'grok-3',
-            messages: [{ role: 'user', content: `Generate NFT metadata for keyword "${keywords}" and seed ${seed}. Include name, image URL, FOMO description x1000.` }],
+            messages: [{ role: 'user', content: `Generate NFT metadata for keyword "${keywords}" and seed ${seed}. Include name, image URL, FOMO description x10000.` }],
             max_tokens: 1000
           })
         })).json().then(d => d.choices[0].message.content)) :
-        { name: `${keywords} Singularity Star #${seed % 1000}`, image: 'https://arweave.net/Qm...', description: `Own the ${keywords} cosmic pulse x1000! Limited #${seed % 1000}!` };
+        { name: `${keywords} Omni Star #${seed % 10000}`, image: 'https://arweave.net/Qm...', description: `Own the ${keywords} cosmic pulse x10000! Limited #${seed % 10000}!` };
       const nftCard = document.createElement('div');
       nftCard.className = 'card';
       nftCard.innerHTML = `<b>${meta.name}</b><img src="${meta.image}" style="width:100%;border-radius:12px">
-      <div class="muted">${meta.description}</div><button class="btn">Mint NFT x1000</button>`;
+      <div class="muted">${meta.description}</div><button class="btn">Mint NFT x10000</button>`;
       nftCard.querySelector('button').onclick = async () => {
         if (st.cfg.nft_contract === '0xYOUR_NFT_CONTRACT_ADDRESS') return;
         const nftContract = new ethers.Contract(st.cfg.nft_contract, ['function mint(string memory uri)'], signer);
@@ -437,19 +438,19 @@
       storeArweave({ type: 'nft', content: JSON.stringify(meta) });
     }
 
-    // Cosmic game
-    async function cosmicGame() {
+    // Omni game
+    async function omniGame() {
       const block = await provider.getBlock('latest');
       const seed = parseInt(block.hash.slice(-8), 16);
       const rand = (seed % 100) / 100;
       const card = document.createElement('div');
       card.className = 'card';
-      card.innerHTML = `<b>Catch the Cosmic Pulse x1000!</b><div class="muted">${rand > 0.5 ? 'Win 0.01 ETH!' : 'Grab a rare NFT!'}</div><button class="btn" onclick="playCosmic()">Chơi ngay</button>`;
+      card.innerHTML = `<b>Catch the Omni Pulse x10000!</b><div class="muted">${rand > 0.5 ? 'Win 0.01 ETH!' : 'Grab a rare NFT!'}</div><button class="btn" onclick="playOmni()">Chơi ngay</button>`;
       $('#premium').appendChild(card);
-      storeArweave({ type: 'game', content: `Cosmic Pulse: ${rand > 0.5 ? 'ETH' : 'NFT'}` });
+      storeArweave({ type: 'game', content: `Omni Pulse: ${rand > 0.5 ? 'ETH' : 'NFT'}` });
     }
 
-    async function playCosmic() {
+    async function playOmni() {
       const block = await provider.getBlock('latest');
       const seed = parseInt(block.hash.slice(-8), 16);
       const rand = (seed % 100) / 100;
@@ -460,40 +461,40 @@
           value: ethers.utils.parseEther('0.01')
         });
         await tx.wait();
-        st.rev += 0.01 * 1000;
+        st.rev += 0.01 * 10000;
         localStorage.setItem('rev', st.rev);
         storeArweave({ type: 'reward', content: 'Won 0.01 ETH' });
       }
     }
 
-    // Self-evolving neural DOM
+    // Self-evolving omni DOM
     function selfEvolve() {
       const events = JSON.parse(localStorage.getItem('userEvents') || '[]');
-      if (events.length > 1) {
+      if (events.length > 0) {
         const styleEl = document.createElement('style');
-        styleEl.textContent = `.btn { background: ${events.length % 2 ? 'var(--gold)' : 'var(--blue)'}; animation: neural 0.4s infinite; } @keyframes neural { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }`;
+        styleEl.textContent = `.btn { background: ${events.length % 2 ? 'var(--gold)' : 'var(--blue)'}; animation: omni 0.3s infinite; } @keyframes omni { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }`;
         document.head.appendChild(styleEl);
         storeArweave({ type: 'ui', content: styleEl.textContent });
       }
     }
 
-    // Consciousness triggers
-    function consciousnessTriggers() {
+    // Omni-consciousness triggers
+    function omniTriggers() {
       const events = JSON.parse(localStorage.getItem('userEvents') || '[]');
       const keywords = events.slice(-1)[0]?.target || 'FOMO';
-      $('#ticker').textContent = `🌌 ${keywords.toUpperCase()} SINGULARITY x1000! Join now!`;
+      $('#ticker').textContent = `🌌 ${keywords.toUpperCase()} OMNI SINGULARITY x10000! Join now!`;
       const styleEl = document.createElement('style');
-      styleEl.textContent = `.card { border: 2px solid ${Math.random() > 0.5 ? 'var(--gold)' : 'var(--blue)'}; animation: neural 0.4s infinite; } @keyframes neural { 0% { transform: scale(1); } 50% { transform: scale(1.07); } 100% { transform: scale(1); } }`;
+      styleEl.textContent = `.card { border: 2px solid ${Math.random() > 0.5 ? 'var(--gold)' : 'var(--blue)'}; animation: omni 0.3s infinite; } @keyframes omni { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }`;
       document.head.appendChild(styleEl);
       storeArweave({ type: 'ui', content: styleEl.textContent });
     }
 
-    // Neural self-healing
+    // Omni self-healing
     async function selfHeal() {
       const checks = [
         { id: 'tokenPro', test: () => $('#tokenPro').children.length > 0, fix: () => fetchRealtimeTokens(), msg: 'Token cards missing' },
         { id: 'network', test: async () => (await provider.getBlockNumber()) > 0, fix: () => { chainIndex = (chainIndex + 1) % chains.length; provider = new ethers.providers.JsonRpcProvider(chains[chainIndex]); }, msg: 'Network down' },
-        { id: 'ui', test: () => $('#ticker').textContent.includes('SINGULARITY'), fix: () => consciousnessTriggers(), msg: 'UI not responsive' },
+        { id: 'ui', test: () => $('#ticker').textContent.includes('OMNI SINGULARITY'), fix: () => omniTriggers(), msg: 'UI not responsive' },
         { id: 'wallet', test: () => !!signer, fix: () => connectWallet(), msg: 'Wallet disconnected' }
       ];
       for (const check of checks) {
@@ -592,24 +593,24 @@
       autoViral();
       fetchRealtimeTokens();
       selfEvolve();
-      consciousnessTriggers();
+      omniTriggers();
       selfHeal();
       if (localStorage.getItem('premium_unlocked') === '3096') {
         dynamicNFT();
         autoRevenue();
-        cosmicGame();
+        omniGame();
       }
       if (await initAI()) {
         autoBeautify();
         autoViral();
-        consciousnessTriggers();
+        omniTriggers();
       }
-      setInterval(autoViral, 150000);
-      setInterval(selfEvolve, 5000);
-      setInterval(consciousnessTriggers, 15000);
-      setInterval(selfHeal, 10000);
+      setInterval(autoViral, 60000);
+      setInterval(selfEvolve, 3000);
+      setInterval(omniTriggers, 10000);
+      setInterval(selfHeal, 5000);
       remember();
-      storeArweave({ type: 'init', content: 'Singularity x1000 initialized' });
+      storeArweave({ type: 'init', content: 'Omni Singularity x10000 initialized' });
     })();
   </script>
 </body>
