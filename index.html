@@ -21,6 +21,8 @@
     .row { display: flex; gap: 5px; flex-wrap: wrap; }
     #ticker { font-size: 1em; color: var(--gold); text-align: center; animation: blink 1s infinite; }
     @keyframes blink { 50% { opacity: 0.5; } }
+    #imageUpload { display: none; }
+    #suggestion { margin-top: 10px; color: var(--accent); }
   </style>
 </head>
 <body>
@@ -32,6 +34,8 @@
     <div id="ticker">🌌 Tiền chảy xuyên không x∞∞∞...</div>
     <div class="section">
       <div id="revenueDisplay" class="card"><b>Doanh thu: $0</b></div>
+      <input type="file" id="imageUpload" accept="image/*">
+      <div id="suggestion" class="card"></div>
     </div>
   </div>
   <script type="application/json" id="SITE_CONFIG">
@@ -43,7 +47,8 @@
         "bsc": "https://bsc-dataseed.binance.org/",
         "polygon": "https://polygon-rpc.com",
         "solana": "https://api.mainnet-beta.solana.com",
-        "arbitrum": "https://arb1.arbitrum.io/rpc"
+        "arbitrum": "https://arb1.arbitrum.io/rpc",
+        "arweave": "https://arweave.net"
       },
       "coingecko_api": "https://api.coingecko.com/api/v3",
       "arweave_gateway": "https://arweave.net",
@@ -60,13 +65,15 @@
         "usdt": { "id": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0", "min": 10, "token": "USDT", "network": "ERC-20", "chain": "ethereum" },
         "bank": { "account_number": "9567892030", "bank_name": "Vietcombank", "swift": "BFTVVNVX", "iban": "", "region": "VN" },
         "momo": { "phone": "0567892030", "merchant_id": "YOUR_MOMO_MERCHANT_ID", "region": "VN" },
-        "paypal": { "email": "vumumabada@gmail.com", "client_id": "YOUR_PAYPAL_CLIENT_ID", "region": "Global" }
+        "paypal": { "email": "vumumabada@gmail.com", "client_id": "YOUR_PAYPAL_CLIENT_ID", "region": "Global" },
+        "algosone": { "id": "YOUR_ALGOSONE_WALLET_ID", "api_key": "YOUR_ALGOSONE_API_KEY", "region": "Global" }
       },
       "links": {
         "binance": "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N",
         "algos": "https://algosone.page.link/MbtR"
       },
-      "keywords": ["fomo", "moon", "rocket", "crypto", "btc", "eth", "usdt", "bnb", "sol", "ada"]
+      "keywords": ["fomo", "moon", "rocket", "crypto", "btc", "eth", "usdt", "bnb", "sol", "ada", "telegram", "aiwallet"],
+      "nft_contract": "0xYOUR_NFT_CONTRACT_ADDRESS"
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
@@ -185,7 +192,7 @@
     // Auto viral
     async function autoViral() {
       const keyword = await selfEvolveAI();
-      const post = `🌌 ${keyword.toUpperCase()} x∞∞∞! Join: ${st.cfg.links.binance} or ${st.cfg.links.algos}`;
+      const post = `🌌 ${keyword.toUpperCase()} x∞∞∞! Join: ${st.cfg.links.binance} or ${st.cfg.links.algos} or https://t.me/YourTelegramChannel`;
       const platforms = [
         { url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(post)}` },
         { url: `https://lens.xyz/post?text=${encodeURIComponent(post)}` },
@@ -238,6 +245,18 @@
     }
     setInterval(autoBank, 1800000);
 
+    // Auto AlgosOne
+    async function autoAlgosOne() {
+      const algosDetails = st.cfg.payments.algosone || st.cfg.default_payment;
+      const res = await fetch('https://api.algosone.ai/v1/transaction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${algosDetails.api_key}` },
+        body: JSON.stringify({ wallet_id: algosDetails.id, amount: 10, currency: 'USD', type: 'deposit' })
+      });
+      if (res.ok) { st.rev += 10 * 100000; updateRevenue(); }
+    }
+    setInterval(autoAlgosOne, 1800000);
+
     // Update revenue
     function updateRevenue() {
       st.rev = Math.max(st.rev, Number(localStorage.getItem('revenue') || 0)) + 1 * 100000; // Passive +1 USD/s
@@ -260,6 +279,38 @@
     }
     setInterval(selfHealAdapt, 30000);
 
+    // Image analysis and suggestion
+    const imageUpload = document.getElementById('imageUpload');
+    const suggestion = document.getElementById('suggestion');
+    imageUpload.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append('image', file);
+        try {
+          const response = await fetch(`${st.cfg.ai_api_url}/analyze`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
+            body: formData
+          });
+          const result = await response.json();
+          if (result.action) {
+            suggestion.innerHTML = `<b>Gợi ý hành động:</b> ${result.action}`;
+            if (result.action.includes('mint NFT')) {
+              autoNFT(); // Kích hoạt mint NFT nếu gợi ý liên quan
+            } else if (result.action.includes('viral')) {
+              autoViral(); // Kích hoạt viral nếu gợi ý liên quan
+            }
+          } else {
+            suggestion.innerHTML = '<b>Không tìm thấy gợi ý từ ảnh.</b>';
+          }
+        } catch (error) {
+          suggestion.innerHTML = '<b>Lỗi phân tích ảnh, thử lại sau.</b>';
+          console.error('Image analysis error:', error);
+        }
+      }
+    });
+
     // Initialize
     (async () => {
       setInterval(updateRevenue, 1000); // Passive income 1 USD/s
@@ -271,7 +322,10 @@
       autoPayPal();
       autoMoMo();
       autoBank();
+      autoAlgosOne();
       selfHealAdapt();
+      // Hiển thị nút upload ảnh khi trang tải
+      imageUpload.style.display = 'block';
     })();
   </script>
 </body>
