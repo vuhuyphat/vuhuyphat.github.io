@@ -1,0 +1,166 @@
+name: Tải lên + Cập nhật IPFS ENS
+
+on:
+  workflow_dispatch:           # Cho phép chạy tay
+  push:
+    branches: [ main ]
+    paths:
+      - "index.html"           # Tự động chạy khi index.html đổi
+
+jobs:
+  upload_and_update:
+    runs-on: ubuntu-latest
+
+    env:
+      ENS_NAME: lightunfold.eth
+      # Nạp các secret vào env (có cả “fallback” cho trường hợp bạn đặt nhầm tên)
+      PINATA_JWT: ${{ secrets.PINATA_JWT }}
+      PINATA_SECRET: ${{ secrets.PINATA_SECRET }}
+      PINATA_SECR: ${{ secrets.PINATA_SECR }}
+      RPC_URL: ${{ secrets.RPC_URL }}
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Hiển thị thông tin ngắn để debug
+        run: |
+          echo "===> File có sẵn:"
+          ls -l index.html || true
+          echo "===> ENS đích: $ENS_NAME"
+
+      - name: Cài jq (đọc JSON) + Node
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jq
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Lấy token Pinata (ưu tiên PINATA_JWT)
+        id: pick_token
+        shell: bash
+        run: |
+          TOKEN="${PINATA_JWT:-$PINATA_SECRET}"
+          TOKEN="${TOKEN:-$PINATA_SECR}"
+          if [ -z "$TOKEN" ]; then
+            echo "❌ Không tìm thấy token Pinata (PINATA_JWT / PINATA_SECRET)."
+            exit 1
+          fi
+          echo "Đã lấy token Pinata."
+          echo "TOKEN_SET=1" >> $GITHUB_OUTPUT
+          # Không in token ra log để bảo mật
+          echo "::add-mask::$TOKEN"
+          echo "PINATA_TOKEN=$TOKEN" >> $GITHUB_ENV
+
+      - name: Upload index.html lên Pinata
+        id: pin
+        run: |
+          if [ ! -f index.html ]; then
+            echo "❌ Không có file index.html ở root repo."
+            exit 1
+          fi
+
+          echo "Đang upload lên Pinata..."
+          RESP=$(curl -s -X POST "https://api.pinata.cloud/pinning/pinFileToIPFS" \
+                  -H "Authorization: Bearer $PINATA_TOKEN" \
+                  -F "file=@index.html")
+
+          echo "Phản hồi Pinata: $RESP"
+
+          CID=$(echo "$RESP" | jq -r '.IpfsHash // .cid // empty')
+          if [ -z "$CID" ] || [ "$CID" = "null" ]; then
+            echo "❌ Không lấy được CID từ phản hồi Pinata."
+            exit 1
+          fi
+
+          echo "CID mới: $CID"
+          echo "cid=$CID" >> $GITHUB_OUTPUT
+
+      - name: Cài thư viện Node cho ENS
+        run: |
+          npm i --no-save ethers@5 content-hash eth-ens-namehash
+
+      - name: Cập nhật ENS contenthash
+        env:
+          CID: ${{ steps.pin.outputs.cid }}
+        run: |
+          node <<'NODE'
+          const { ethers } = require('ethers');
+          const namehash = require('eth-ens-namehash');
+          const contentHash = require('content-hash');
+
+          const ensName = process.env.ENS_NAME;
+          const cid = process.env.CID;
+          const rpcUrl = process.env.RPC_URL;
+          let pk = process.env.PRIVATE_KEY || '';
+
+          if (!ensName || !cid || !rpcUrl || !pk) {
+            console.error('❌ Thiếu biến môi trường ENS_NAME / CID / RPC_URL / PRIVATE_KEY');
+            process.exit(1);
+          }
+
+          // Chuẩn hoá private key
+          pk = pk.trim();
+          if (pk.startsWith('0x')) pk = pk.slice(2);
+
+          (async () => {
+            try {
+              console.log('Kết nối RPC:', rpcUrl.replace(/(https?:\/\/)[^/]+/, '$1***'));
+              const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+              const wallet = new ethers.Wallet(pk, provider);
+
+              // Lấy địa chỉ resolver hiện tại của ENS
+              const resolverAddress = await provider.resolveName(ensName)
+                .then(() => provider.getResolver ? provider.getResolver(ensName).then(r => r ? r.address : null) : null)
+                .catch(() => null);
+
+              // Fallback: dùng ENS Registry để tìm resolver
+              let finalResolver = resolverAddress;
+              if (!finalResolver) {
+                const REG_ADDR = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'; // ENS Registry mainnet
+                const REG_ABI = ['function resolver(bytes32 node) view returns (address)'];
+                const reg = new ethers.Contract(REG_ADDR, REG_ABI, provider);
+                finalResolver = await reg.resolver(namehash.hash(ensName));
+              }
+
+              if (!finalResolver || finalResolver === ethers.constants.AddressZero) {
+                console.error('❌ ENS chưa có Resolver. Hãy đặt Public Resolver cho tên miền trước.');
+                process.exit(1);
+              }
+
+              console.log('Resolver:', finalResolver);
+
+              // Chuẩn bị contract Resolver với hàm setContenthash
+              const RESOLVER_ABI = [
+                'function setContenthash(bytes32 node, bytes hash) external'
+              ];
+              const resolver = new ethers.Contract(finalResolver, RESOLVER_ABI, wallet);
+
+              // Mã hoá IPFS CID → bytes contenthash
+              const encoded = '0x' + contentHash.encode('ipfs-ns', cid);
+              const node = namehash.hash(ensName);
+
+              console.log('CID:', cid);
+              console.log('Encoded contenthash:', encoded);
+
+              const tx = await resolver.setContenthash(node, encoded);
+              console.log('Gửi tx cập nhật ENS, hash:', tx.hash);
+              await tx.wait();
+              console.log('✅ Đã cập nhật contenthash cho', ensName);
+            } catch (e) {
+              console.error('❌ Lỗi cập nhật ENS:', e);
+              process.exit(1);
+            }
+          })();
+          NODE
+
+      - name: In link truy cập
+        env:
+          CID: ${{ steps.pin.outputs.cid }}
+        run: |
+          echo "===> Truy cập IPFS qua cổng ENS:"
+          echo "     https://${{ env.ENS_NAME }}.limo"
+          echo "===> Hoặc IPFS gateway:"
+          echo "     https://ipfs.io/ipfs/${CID}"
