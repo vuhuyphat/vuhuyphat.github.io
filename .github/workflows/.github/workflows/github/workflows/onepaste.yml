@@ -1,182 +1,168 @@
-name: One‑Paste • Feed + IPNS + Patch HTML (24/7)
+name: UCAN Upload → Auto‑IPNS (One‑Paste)
 
 on:
-  schedule:
-    - cron: "0 */6 * * *"   # mỗi 6 giờ (UTC)
-  push:
-    paths:
-      - "index.html"
-      - ".github/workflows/onepaste.yml"
   workflow_dispatch:
-
-concurrency:
-  group: onepaste-all
-  cancel-in-progress: true
+  push:
+    branches: [ main, master ]
+    paths:
+      - "site/**"
+      - ".github/workflows/auto-ipns-w3.yml"
+  schedule:
+    - cron: "0 */6 * * *"   # chạy mỗi 6 giờ
 
 permissions:
-  contents: write
+  contents: read
 
-env:
-  INDEX_HTML_PATH: index.html
-  FEED_VI: feed.vi.json
-  FEED_EN: feed.en.json
-  IPNS_FILE: .ipns        # file lưu IPNS_ID trong repo để dùng lại
-  RAW_BASE: https://raw.githubusercontent.com/${{ github.repository }}/main
+concurrency:
+  group: ipns-publish
+  cancel-in-progress: true
 
 jobs:
-  build-and-ipns:
+  publish:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node 20
         uses: actions/setup-node@v4
-        with: { node-version: '20' }
+        with:
+          node-version: "20"
 
-      - name: Generate VI & EN feed (AI-lite, no secrets)
+      - name: Install minimal deps
         run: |
-          node - <<'NODE'
-          const fs = require('fs');
-          const now = new Date().toISOString();
-          const BINANCE = "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N";
-          const ALGOS   = "https://algosone.page.link/MbtR";
+          mkdir -p .onepaste && cd .onepaste
+          npm init -y >/dev/null
+          npm i @web3-storage/w3up-client @ucanto/principal @web3-storage/w3name mime dotenv >/dev/null
 
-          const slotsVI = [
-            ["Sáng","Layer2","Theo dõi cầu nối & volume tăng để bắt nhịp sớm."],
-            ["Trưa","Funding/Long-Short","Quan sát funding & độ lệch để tối ưu vị thế."],
-            ["Tối","Dòng tiền Stablecoin","Dòng vốn vào/ra CEX/DEX cho tín hiệu động lượng."]
-          ];
-          const slotsEN = [
-            ["Morning","Layer2","Bridge flow & rising volume help early entries."],
-            ["Midday","Funding/Long-Short","Use funding skew to optimize position sizing."],
-            ["Evening","Stablecoin Flows","CEX/DEX netflow signals momentum."]
-          ];
-          const offers = {
-            vi: [
-              ["Mở Binance nhận thưởng", BINANCE, ["onboarding","cex"]],
-              ["AlgosOne – Chiến lược AI", ALGOS, ["ai","signals"]]
-            ],
-            en: [
-              ["Open Binance for rewards", BINANCE, ["onboarding","cex"]],
-              ["AlgosOne – AI strategies", ALGOS, ["ai","signals"]]
-            ]
-          };
-          const pick = a => a[Math.floor(Math.random()*a.length)];
-          const idFrom = s => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,60)+'-'+Date.now();
+      - name: Create uploader (UCAN → IPFS → IPNS)
+        run: |
+          cat > .onepaste/upload_ipns.mjs <<'EOF'
+          import 'dotenv/config'
+          import fs from 'fs'
+          import path from 'path'
+          import mime from 'mime'
+          import * as Client from '@web3-storage/w3up-client'
+          import * as Principal from '@ucanto/principal/ed25519'
+          import * as Name from '@web3-storage/w3name'
 
-          function make(lang, slots){
-            const off = offers[lang];
-            const items = slots.map(([dp, topic, note])=>{
-              const [ttl, url, tags] = pick(off);
-              const title = `${dp} • ${topic} • ${ttl}`;
-              return { id:idFrom(title), title, body_html:`<p>${note}</p>`, cta:{label:ttl, url}, tags:[topic.toLowerCase(), ...tags], lang };
-            }).slice(0,6);
-            return { updated_at: now, items };
+          const KEY_PATH = '.w3name.key'
+          const exists = p => { try { fs.accessSync(p); return true } catch { return false } }
+
+          async function collectFiles(inputPath){
+            const stat = fs.statSync(inputPath)
+            if (stat.isDirectory()){
+              const files=[], root=inputPath
+              ;(function walk(dir){
+                for (const n of fs.readdirSync(dir)){
+                  const p=path.join(dir,n), s=fs.statSync(p)
+                  if (s.isDirectory()) walk(p)
+                  else{
+                    const rel=path.relative(root,p).split(path.sep).join('/')
+                    const type=mime.getType(p)||'application/octet-stream'
+                    files.push(new File([fs.readFileSync(p)], rel, { type }))
+                  }
+                }
+              })(inputPath)
+              if(!files.length) throw new Error('Thư mục trống.')
+              return {kind:'dir', files}
+            } else {
+              const name=path.basename(inputPath)
+              const type=mime.getType(inputPath)||'application/octet-stream'
+              return {kind:'file', files:[new File([fs.readFileSync(inputPath)], name, {type})]}
+            }
           }
 
-          fs.writeFileSync(process.env.FEED_VI, JSON.stringify(make('vi', slotsVI)));
-          fs.writeFileSync(process.env.FEED_EN, JSON.stringify(make('en', slotsEN)));
-          console.log('WROTE', process.env.FEED_VI, 'and', process.env.FEED_EN, 'at', now);
-          NODE
+          async function uploadWithUCAN(src){
+            // nhận secrets (ưu tiên biến 1, fallback biến 2)
+            const UCAN     = process.env.WEB3_STORAGE_UCAN || process.env.WEB3_STORAGE_KEY
+            const SPACE_DID= process.env.WEB3_SPACE_DID    || process.env.WEB3_SPACE_KEY
+            if(!UCAN||!SPACE_DID) throw new Error('Thiếu UCAN hoặc SPACE_DID. Hãy thiết lập secrets WEB3_STORAGE_UCAN/WEB3_STORAGE_KEY và WEB3_SPACE_DID/WEB3_SPACE_KEY.')
 
-      - name: Commit feeds if changed
-        run: |
-          if [ -n "$(git status --porcelain "${FEED_VI}" "${FEED_EN}")" ]; then
-            git config user.name  "github-actions"
-            git config user.email "actions@users.noreply.github.com"
-            git add "${FEED_VI}" "${FEED_EN}"
-            git commit -m "chore(feed): auto-update $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-            git push
-          else
-            echo "No feed changes."
-          fi
+            const principal = await Principal.generate()
+            const client = await Client.create({ principal })
+            const space = await client.addSpace(SPACE_DID)
+            await client.setCurrentSpace(space.did())
 
-      # ---------- IPNS BLOCK (tự chạy nếu có W3_TOKEN) ----------
-      - name: Check W3 token
-        id: w3ok
-        run: |
-          if [ -n "${{ secrets.W3_TOKEN }}" ]; then
-            echo "ok=true" >> $GITHUB_OUTPUT
-          else
-            echo "ok=false" >> $GITHUB_OUTPUT
-          fi
+            const proof = await Client.importDelegation(UCAN)
+            await client.addProof(proof)
 
-      - name: Setup w3 CLI
-        if: steps.w3ok.outputs.ok == 'true'
-        run: |
-          npm i -g @web3-storage/w3cli@latest
-          w3 --version
+            const {kind, files}=await collectFiles(src)
+            let cid
+            if(kind==='dir'){
+              cid = await client.uploadDirectory(files, { onShardStored: ({cid}) => console.log('• stored shard:', cid.toString()) })
+            } else {
+              cid = await client.uploadFile(files[0], { onShardStored: ({cid}) => console.log('• stored shard:', cid.toString()) })
+            }
+            const c=cid.toString()
+            console.log('\\n✅ Upload xong  → CID:', c)
+            console.log('Gateway:', `https://w3s.link/ipfs/${c}`)
+            return c
+          }
 
-      - name: Ensure IPNS name (create once if missing)
-        if: steps.w3ok.outputs.ok == 'true'
+          async function loadOrCreateName(){
+            const envKey=(process.env.W3NAME_KEY||'').trim()
+            if(envKey){ console.log('🔐 Dùng W3NAME_KEY từ secrets.'); return await Name.from(Buffer.from(envKey,'base64')) }
+            if(exists(KEY_PATH)){ console.log('🔐 Dùng khoá IPNS đã lưu từ run trước.'); return await Name.from(Buffer.from(fs.readFileSync(KEY_PATH,'utf8').trim(),'base64')) }
+            const name = await Name.create()
+            const b64 = Buffer.from(name.key.bytes).toString('base64')
+            fs.writeFileSync(KEY_PATH,b64)
+            console.log('🆕 Tạo IPNS name:', name.toString())
+            console.log('⚠️ Hãy lưu W3NAME_KEY (base64) từ artifact .w3name.key sau run đầu.')
+            return name
+          }
+
+          async function publishIPNS(cid){
+            const name = await loadOrCreateName()
+            const value = `/ipfs/${cid}`
+            let rev
+            try { rev = await Name.increment(await Name.resolve(name), value) }
+            catch { rev = await Name.v0(name, value) }
+            await Name.publish(rev, name.key)
+            const ipns = name.toString()
+            console.log('\\n🔗 IPNS cập nhật!')
+            console.log('IPNS:', ipns)
+            console.log('Gateway:', `https://w3s.link/ipns/${ipns}`)
+            // ghi file info cho steps sau
+            fs.writeFileSync('ipns.txt', ipns)
+            fs.writeFileSync('cid.txt', cid)
+          }
+
+          async function main(){
+            const SRC = process.env.UPLOAD_PATH || 'site'
+            if(!exists(SRC)){
+              fs.mkdirSync('site', {recursive:true})
+              fs.writeFileSync('site/index.html','<h1>Hello IPNS</h1><p>Auto publish from GitHub Actions.</p>')
+            }
+            const cid = await uploadWithUCAN(SRC)
+            await publishIPNS(cid)
+          }
+          main().catch(e=>{ console.error('\\n❌ Lỗi:', e?.message||e); process.exit(1) })
+          EOF
+
+      - name: Run • Upload + IPNS
         env:
-          WEB3_STORAGE_TOKEN: ${{ secrets.W3_TOKEN }}
-        run: |
-          if [ -s "${IPNS_FILE}" ]; then
-            IPNS_ID=$(cat "${IPNS_FILE}")
-            echo "Using existing IPNS_ID: $IPNS_ID"
-          else
-            echo "Creating new IPNS name…"
-            IPNS_ID=$(w3 name create "lightunfold-feed" --json | jq -r '.name // .value // .ipns')
-            if [ -z "$IPNS_ID" ] || [ "$IPNS_ID" = "null" ]; then
-              echo "Failed to create IPNS name"; exit 1
-            fi
-            echo "$IPNS_ID" > "${IPNS_FILE}"
-            git config user.name  "github-actions"
-            git config user.email "actions@users.noreply.github.com"
-            git add "${IPNS_FILE}"
-            git commit -m "chore(ipns): store IPNS_ID $IPNS_ID"
-            git push || true
-          fi
-          echo "IPNS_ID=$IPNS_ID" >> $GITHUB_ENV
+          # nhận từ cả 2 cách đặt tên secrets của bạn
+          WEB3_STORAGE_UCAN: ${{ secrets.WEB3_STORAGE_UCAN || secrets.WEB3_STORAGE_KEY }}
+          WEB3_SPACE_DID:   ${{ secrets.WEB3_SPACE_DID    || secrets.WEB3_SPACE_KEY   }}
+          W3NAME_KEY:       ${{ secrets.W3NAME_KEY }}
+          UPLOAD_PATH:      site             # đổi thành dist/public nếu muốn
+        run: node .onepaste/upload_ipns.mjs
 
-      - name: Put feeds to IPFS (CID)
-        if: steps.w3ok.outputs.ok == 'true'
-        env:
-          WEB3_STORAGE_TOKEN: ${{ secrets.W3_TOKEN }}
-        run: |
-          mkdir -p ipns && cp "${FEED_VI}" "${FEED_EN}" ipns/
-          CID=$(w3 put -r ipns --json | jq -r '.cid // .root.cid // .[0].cid')
-          if [ -z "$CID" ] || [ "$CID" = "null" ]; then echo "Cannot obtain CID"; exit 1; fi
-          echo "CID=$CID" >> $GITHUB_ENV
-          echo "Uploaded CID: $CID"
-
-      - name: Publish IPNS -> /ipfs/$CID
-        if: steps.w3ok.outputs.ok == 'true'
-        env:
-          WEB3_STORAGE_TOKEN: ${{ secrets.W3_TOKEN }}
-        run: |
-          w3 name publish "${IPNS_ID}" "/ipfs/${CID}" --json | tee publish.json
-          PUB=$(jq -r '.name // .value // .ipns' publish.json)
-          echo "PUB=$PUB" >> $GITHUB_ENV
-          echo "✅ IPNS VI: https://ipfs.io/ipns/$PUB/${FEED_VI}"       | tee -a $GITHUB_STEP_SUMMARY
-          echo "✅ IPNS EN: https://cloudflare-ipfs.com/ipns/$PUB/${FEED_EN}" | tee -a $GITHUB_STEP_SUMMARY
-
-      - name: Patch index.html (inject IPNS_ID & correct RAW repo)
-        if: steps.w3ok.outputs.ok == 'true'
-        run: |
-          if [ -f "${INDEX_HTML_PATH}" ]; then
-            # chèn ipns_id:'…'
-            sed -i "s/ipns_id:''/ipns_id:'${IPNS_ID}'/g" "${INDEX_HTML_PATH}" || true
-            sed -i "s|repo_raw:'https://raw.githubusercontent.com/[^']*'|repo_raw:'${RAW_BASE}'|g" "${INDEX_HTML_PATH}" || true
-            if [ -n "$(git status --porcelain "${INDEX_HTML_PATH}")" ]; then
-              git config user.name  "github-actions"
-              git config user.email "actions@users.noreply.github.com"
-              git add "${INDEX_HTML_PATH}"
-              git commit -m "chore(html): inject IPNS_ID ${IPNS_ID} & RAW base"
-              git push
-            else
-              echo "index.html already patched."
-            fi
-          else
-            echo "index.html not found, skip patch."
-          fi
+      - name: Upload artifacts • IPNS/CID (+ key nếu vừa tạo)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ipns-publish-output
+          path: |
+            ipns.txt
+            cid.txt
+            .w3name.key
+          if-no-files-found: ignore
 
       - name: Summary
         run: |
-          echo "✔ Feeds: ${FEED_VI}, ${FEED_EN}"       | tee -a $GITHUB_STEP_SUMMARY
-          echo "✔ RAW   : ${RAW_BASE}/feed.vi.json"     | tee -a $GITHUB_STEP_SUMMARY
-          if [ -n "${PUB}" ]; then
-            echo "✔ IPNS : https://ipfs.io/ipns/${PUB}/feed.vi.json" | tee -a $GITHUB_STEP_SUMMARY
-          fi
+          echo "### IPNS Publish Result" >> $GITHUB_STEP_SUMMARY
+          test -f cid.txt && echo "- **CID:** \`$(cat cid.txt)\`" >> $GITHUB_STEP_SUMMARY || true
+          test -f ipns.txt && echo "- **IPNS:** \`$(cat ipns.txt)\`" >> $GITHUB_STEP_SUMMARY || true
+          echo "- Gateway (IPNS): https://w3s.link/ipns/$(cat ipns.txt 2>/dev/null || echo '<chưa có>')" >> $GITHUB_STEP_SUMMARY
