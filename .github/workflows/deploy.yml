@@ -1,0 +1,68 @@
+name: Deploy to IPFS & Update ENS
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "index.html"      # chỉ chạy khi index.html đổi
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          npm i content-hash ethers@5
+
+      # 1) Upload index.html lên Pinata để lấy CID
+      - name: Pin index.html to IPFS (Pinata)
+        id: pin
+        env:
+          # ⛳️ Nếu secret của bạn tên PINATA_SECRET (ảnh của bạn đang hiện "PINATA_SECR…")
+          # thì dùng dòng dưới:
+          PINATA_JWT: ${{ secrets.PINATA_SECRET }}
+          # Nếu bạn đặt là PINATA_JWT thì đổi lại thành:
+          # PINATA_JWT: ${{ secrets.PINATA_JWT }}
+        run: |
+          CID=$(curl -s -X POST "https://api.pinata.cloud/pinning/pinFileToIPFS" \
+            -H "Authorization: Bearer $PINATA_JWT" \
+            -F file=@index.html | jq -r '.IpfsHash')
+          echo "cid=$CID" >> $GITHUB_OUTPUT
+          echo "Pinned CID: $CID"
+
+      # 2) Cập nhật ENS contenthash -> ipfs://CID
+      - name: Update ENS contenthash
+        env:
+          RPC_URL: ${{ secrets.RPC_URL }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          ENS_NAME: lightunfold.eth
+          CID: ${{ steps.pin.outputs.cid }}
+        run: |
+          node - <<'NODE'
+          const contentHash = require('content-hash');
+          const { ethers } = require('ethers');
+          const name = process.env.ENS_NAME;
+          const cid  = process.env.CID;
+
+          if (!cid) { console.error('CID trống! Bước Pinata thất bại?'); process.exit(1); }
+
+          const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+          const wallet   = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+
+          (async () => {
+            const resolver = await provider.getResolver(name);
+            if (!resolver) throw new Error('Không tìm thấy resolver cho ' + name);
+
+            const encoded = '0x' + contentHash.fromIpfs(cid);
+            const tx = await resolver.connect(wallet).setContenthash(encoded);
+            console.log('Tx gửi:', tx.hash);
+            await tx.wait();
+            console.log('✅ Đã cập nhật', name, '→ ipfs://' + cid);
+          })().catch(e => { console.error(e); process.exit(1); });
+          NODE
