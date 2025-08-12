@@ -1,0 +1,182 @@
+name: One‑Paste • Feed + IPNS + Patch HTML (24/7)
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"   # mỗi 6 giờ (UTC)
+  push:
+    paths:
+      - "index.html"
+      - ".github/workflows/onepaste.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: onepaste-all
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+env:
+  INDEX_HTML_PATH: index.html
+  FEED_VI: feed.vi.json
+  FEED_EN: feed.en.json
+  IPNS_FILE: .ipns        # file lưu IPNS_ID trong repo để dùng lại
+  RAW_BASE: https://raw.githubusercontent.com/${{ github.repository }}/main
+
+jobs:
+  build-and-ipns:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with: { node-version: '20' }
+
+      - name: Generate VI & EN feed (AI-lite, no secrets)
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const now = new Date().toISOString();
+          const BINANCE = "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N";
+          const ALGOS   = "https://algosone.page.link/MbtR";
+
+          const slotsVI = [
+            ["Sáng","Layer2","Theo dõi cầu nối & volume tăng để bắt nhịp sớm."],
+            ["Trưa","Funding/Long-Short","Quan sát funding & độ lệch để tối ưu vị thế."],
+            ["Tối","Dòng tiền Stablecoin","Dòng vốn vào/ra CEX/DEX cho tín hiệu động lượng."]
+          ];
+          const slotsEN = [
+            ["Morning","Layer2","Bridge flow & rising volume help early entries."],
+            ["Midday","Funding/Long-Short","Use funding skew to optimize position sizing."],
+            ["Evening","Stablecoin Flows","CEX/DEX netflow signals momentum."]
+          ];
+          const offers = {
+            vi: [
+              ["Mở Binance nhận thưởng", BINANCE, ["onboarding","cex"]],
+              ["AlgosOne – Chiến lược AI", ALGOS, ["ai","signals"]]
+            ],
+            en: [
+              ["Open Binance for rewards", BINANCE, ["onboarding","cex"]],
+              ["AlgosOne – AI strategies", ALGOS, ["ai","signals"]]
+            ]
+          };
+          const pick = a => a[Math.floor(Math.random()*a.length)];
+          const idFrom = s => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,60)+'-'+Date.now();
+
+          function make(lang, slots){
+            const off = offers[lang];
+            const items = slots.map(([dp, topic, note])=>{
+              const [ttl, url, tags] = pick(off);
+              const title = `${dp} • ${topic} • ${ttl}`;
+              return { id:idFrom(title), title, body_html:`<p>${note}</p>`, cta:{label:ttl, url}, tags:[topic.toLowerCase(), ...tags], lang };
+            }).slice(0,6);
+            return { updated_at: now, items };
+          }
+
+          fs.writeFileSync(process.env.FEED_VI, JSON.stringify(make('vi', slotsVI)));
+          fs.writeFileSync(process.env.FEED_EN, JSON.stringify(make('en', slotsEN)));
+          console.log('WROTE', process.env.FEED_VI, 'and', process.env.FEED_EN, 'at', now);
+          NODE
+
+      - name: Commit feeds if changed
+        run: |
+          if [ -n "$(git status --porcelain "${FEED_VI}" "${FEED_EN}")" ]; then
+            git config user.name  "github-actions"
+            git config user.email "actions@users.noreply.github.com"
+            git add "${FEED_VI}" "${FEED_EN}"
+            git commit -m "chore(feed): auto-update $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            git push
+          else
+            echo "No feed changes."
+          fi
+
+      # ---------- IPNS BLOCK (tự chạy nếu có W3_TOKEN) ----------
+      - name: Check W3 token
+        id: w3ok
+        run: |
+          if [ -n "${{ secrets.W3_TOKEN }}" ]; then
+            echo "ok=true" >> $GITHUB_OUTPUT
+          else
+            echo "ok=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup w3 CLI
+        if: steps.w3ok.outputs.ok == 'true'
+        run: |
+          npm i -g @web3-storage/w3cli@latest
+          w3 --version
+
+      - name: Ensure IPNS name (create once if missing)
+        if: steps.w3ok.outputs.ok == 'true'
+        env:
+          WEB3_STORAGE_TOKEN: ${{ secrets.W3_TOKEN }}
+        run: |
+          if [ -s "${IPNS_FILE}" ]; then
+            IPNS_ID=$(cat "${IPNS_FILE}")
+            echo "Using existing IPNS_ID: $IPNS_ID"
+          else
+            echo "Creating new IPNS name…"
+            IPNS_ID=$(w3 name create "lightunfold-feed" --json | jq -r '.name // .value // .ipns')
+            if [ -z "$IPNS_ID" ] || [ "$IPNS_ID" = "null" ]; then
+              echo "Failed to create IPNS name"; exit 1
+            fi
+            echo "$IPNS_ID" > "${IPNS_FILE}"
+            git config user.name  "github-actions"
+            git config user.email "actions@users.noreply.github.com"
+            git add "${IPNS_FILE}"
+            git commit -m "chore(ipns): store IPNS_ID $IPNS_ID"
+            git push || true
+          fi
+          echo "IPNS_ID=$IPNS_ID" >> $GITHUB_ENV
+
+      - name: Put feeds to IPFS (CID)
+        if: steps.w3ok.outputs.ok == 'true'
+        env:
+          WEB3_STORAGE_TOKEN: ${{ secrets.W3_TOKEN }}
+        run: |
+          mkdir -p ipns && cp "${FEED_VI}" "${FEED_EN}" ipns/
+          CID=$(w3 put -r ipns --json | jq -r '.cid // .root.cid // .[0].cid')
+          if [ -z "$CID" ] || [ "$CID" = "null" ]; then echo "Cannot obtain CID"; exit 1; fi
+          echo "CID=$CID" >> $GITHUB_ENV
+          echo "Uploaded CID: $CID"
+
+      - name: Publish IPNS -> /ipfs/$CID
+        if: steps.w3ok.outputs.ok == 'true'
+        env:
+          WEB3_STORAGE_TOKEN: ${{ secrets.W3_TOKEN }}
+        run: |
+          w3 name publish "${IPNS_ID}" "/ipfs/${CID}" --json | tee publish.json
+          PUB=$(jq -r '.name // .value // .ipns' publish.json)
+          echo "PUB=$PUB" >> $GITHUB_ENV
+          echo "✅ IPNS VI: https://ipfs.io/ipns/$PUB/${FEED_VI}"       | tee -a $GITHUB_STEP_SUMMARY
+          echo "✅ IPNS EN: https://cloudflare-ipfs.com/ipns/$PUB/${FEED_EN}" | tee -a $GITHUB_STEP_SUMMARY
+
+      - name: Patch index.html (inject IPNS_ID & correct RAW repo)
+        if: steps.w3ok.outputs.ok == 'true'
+        run: |
+          if [ -f "${INDEX_HTML_PATH}" ]; then
+            # chèn ipns_id:'…'
+            sed -i "s/ipns_id:''/ipns_id:'${IPNS_ID}'/g" "${INDEX_HTML_PATH}" || true
+            sed -i "s|repo_raw:'https://raw.githubusercontent.com/[^']*'|repo_raw:'${RAW_BASE}'|g" "${INDEX_HTML_PATH}" || true
+            if [ -n "$(git status --porcelain "${INDEX_HTML_PATH}")" ]; then
+              git config user.name  "github-actions"
+              git config user.email "actions@users.noreply.github.com"
+              git add "${INDEX_HTML_PATH}"
+              git commit -m "chore(html): inject IPNS_ID ${IPNS_ID} & RAW base"
+              git push
+            else
+              echo "index.html already patched."
+            fi
+          else
+            echo "index.html not found, skip patch."
+          fi
+
+      - name: Summary
+        run: |
+          echo "✔ Feeds: ${FEED_VI}, ${FEED_EN}"       | tee -a $GITHUB_STEP_SUMMARY
+          echo "✔ RAW   : ${RAW_BASE}/feed.vi.json"     | tee -a $GITHUB_STEP_SUMMARY
+          if [ -n "${PUB}" ]; then
+            echo "✔ IPNS : https://ipfs.io/ipns/${PUB}/feed.vi.json" | tee -a $GITHUB_STEP_SUMMARY
+          fi
