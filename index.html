@@ -1,191 +1,330 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>LightUnfold — One‑Paste (Copy là chạy)</title>
-  <meta name="description" content="Một lần dán là chạy: thanh toán & affiliate thông minh, tự học CTR & tự xoay offer theo thị trường." />
-  <style>
-    :root{--bg:#0d0f14;--card:#141824;--muted:#9fb0c9;--text:#f7f8fa;--pri:#00ffa3;--sec:#1e90ff;--line:#212a3f}
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-    .wrap{max-width:960px;margin:0 auto;padding:20px}
-    h1{margin:4px 0 2px;font-size:28px;color:var(--sec)}
-    .sub{color:var(--muted);font-size:14px;margin-bottom:14px}
-    .grid{display:grid;grid-template-columns:1fr;gap:12px}
-    @media(min-width:780px){.grid{grid-template-columns:1.1fr .9fr}}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
-    .row{display:flex;flex-wrap:wrap;gap:10px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:10px;border:1px solid #2b3550;background:#1f2636;color:#eaf3ff;text-decoration:none;font-weight:600}
-    .btn.pri{background:linear-gradient(90deg,var(--pri),var(--sec));color:#07141d;border:none}
-    .tag{display:inline-block;padding:4px 8px;border-radius:999px;background:#1c2538;color:#cfe6ff;font-size:12px}
-    .tiny{font-size:12px;color:#aab6d6}
-    img.qr{width:100%;border-radius:10px;border:1px solid #223}
-    .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-    .kpi .box{background:#101526;border:1px solid #1a2236;border-radius:10px;padding:10px;text-align:center}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LightUnfold • One‑Paste UltraMaster</title>
+<meta name="description" content="Một lần dán là chạy: thanh toán + affiliate tối ưu CTR, tự học hành vi, tự xoay offer theo vùng.">
+<meta name="theme-color" content="#0b0f13">
+<style>
+:root{--bg:#0b0f13;--card:#0f141a;--line:#233041;--txt:#e9eef4;--mut:#a9b8c8;--gold:#ffd700;--btn:#ffd700;--btnTxt:#0b0f13;--ring:rgba(255,215,0,.25)}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:radial-gradient(60% 140% at 50% -10%, rgba(109,40,217,.18),transparent 60%),linear-gradient(180deg, rgba(22,163,74,.10),transparent 40%),var(--bg);color:var(--txt);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
+.wrap{max-width:1200px;margin:0 auto;padding:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:#101827}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 14px;border:0;border-radius:12px;font-weight:800;background:var(--btn);color:var(--btnTxt);cursor:pointer;box-shadow:0 0 0 0 var(--ring);transition:.2s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 0 0 6px var(--ring)}
+.btn.out{background:transparent;color:var(--txt);border:1px solid var(--line)}
+.muted{color:var(--mut)}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+.globe3d{width:300px;height:300px;border-radius:50%;display:block;margin:auto}
+.qr{width:180px;height:180px;border-radius:12px;background:#fff}
+.paybtn{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:transparent;cursor:pointer}
+.paybtn.active{outline:2px solid var(--gold);box-shadow:0 0 0 6px rgba(255,215,0,.18)}
+.copy{font-size:13px;border:1px dashed var(--line);border-radius:8px;padding:4px 10px;background:transparent;color:var(--txt);cursor:pointer}
+.float-share{position:fixed;right:16px;bottom:16px;display:flex;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;z-index:9}
+small.note{color:#a7b4c9}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>LightUnfold — One‑Paste</h1>
-    <div class="sub">Một lần dán là chạy • ENS/IPFS sẵn sàng • Tự học CTR • Tự xoay offer theo thị trường</div>
-
-    <div class="grid">
-      <!-- Cột trái: Thanh toán -->
-      <div class="card">
-        <h3>Thanh toán nhanh</h3>
-        <div class="row">
-          <a class="btn pri" id="btnETH" href="ethereum:lightunfold.eth">💸 Gửi ETH → lightunfold.eth</a>
-          <button class="btn" id="copyUSDT">🔗 Copy USDT (ERC‑20)</button>
-          <a class="btn" id="btnPayPal" target="_blank" rel="noopener">🪙 PayPal.me</a>
-        </div>
-        <div class="row" style="margin-top:10px">
-          <div class="card" style="flex:1;min-width:240px">
-            <div><b>USDT (ERC‑20):</b> <span id="usdtAddr">0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0</span></div>
-            <div class="tiny">Dán địa chỉ trên trong ví, chọn mạng ERC‑20.</div>
-          </div>
-          <div class="card" style="flex:1;min-width:240px">
-            <div><b>MoMo:</b> 0567892030</div>
-            <div class="tiny">Mở MoMo → chuyển tới số trên (ghi nội dung nếu cần).</div>
-          </div>
-        </div>
-        <div class="row" style="margin-top:10px">
-          <div class="card" style="flex:1;min-width:260px">
-            <div><b>Vietcombank:</b> 9567892030 — TRẦN VĂN VŨ</div>
-            <img class="qr" id="vietqr" alt="VietQR" />
-            <div class="tiny">Quét VietQR hoặc chuyển khoản thủ công. Nội dung: <b>LightUnfold</b></div>
-          </div>
-          <div class="card" style="flex:1;min-width:240px">
-            <div><b>PayPal:</b> <span id="ppEmail">vumumabada@gmail.com</span></div>
-            <a class="btn" id="btnPayPal2" target="_blank" rel="noopener" style="margin-top:8px">🔓 Mở PayPal</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Cột phải: Offer tự xoay + Vùng -->
-      <div class="card">
-        <h3>Ưu đãi nổi bật (tự học & xoay)</h3>
-        <div class="row" id="offerBox"></div>
-        <div class="row" style="gap:6px;margin-top:10px">
-          <span class="tag" id="tagRegion">Region: …</span>
-          <button class="btn" data-region="VN">VN</button>
-          <button class="btn" data-region="GLOBAL">Global</button>
-          <button class="btn" data-region="CRYPTO">Crypto</button>
-        </div>
-        <div class="kpi" style="margin-top:10px">
-          <div class="box"><div class="tiny">Lượt xem</div><div id="kpiViews" style="font-weight:700">0</div></div>
-          <div class="box"><div class="tiny">Lượt nhấp</div><div id="kpiClicks" style="font-weight:700">0</div></div>
-          <div class="box"><div class="tiny">CTR (local)</div><div id="kpiCTR" style="font-weight:700">0%</div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:12px">
-      <div class="tiny">
-        Lối vào: <a href="https://vuhuyphat.github.io/" target="_blank" rel="noopener">vuhuyphat.github.io</a> •
-        <a href="https://lightunfold.eth.limo/" target="_blank" rel="noopener">lightunfold.eth.limo</a> •
-        “Copy‑paste” một lần là chạy. Muốn nâng cấp tự xoay bằng JSON ngoài vẫn giữ nguyên HTML.
-      </div>
-    </div>
+<div class="wrap">
+  <div class="row">
+    <span class="pill"><b>LightUnfold • UltraMaster</b></span>
+    <span class="pill">ENS: <b id="ens">lightunfold.eth</b></span>
+    <span class="pill">Heartbeat: <b id="hb">—</b></span>
+    <button class="pill" id="lang">VI/EN</button>
   </div>
 
-  <script>
-    /* ===== One‑Paste AutoBrain (an toàn) =====
-       - Không dùng server, không gọi API nhạy cảm.
-       - Tự học CTR & tự xoay offer (localStorage).
-       - Gợi ý vùng VN/Global/Crypto, cho phép đổi vùng thủ công. */
+  <!-- HERO -->
+  <section class="card">
+    <div class="row" style="justify-content:space-between">
+      <div style="min-width:320px;flex:1">
+        <h1 style="margin:6px 0 8px">Một lần dán là chạy</h1>
+        <div class="muted" id="tagline">Thanh toán đa kênh • Affiliate tối ưu CTR • Tự học hành vi • Tự xoay theo vùng</div>
+        <div class="row" style="margin-top:12px">
+          <a class="btn out" id="ctaB" href="#" target="_blank" rel="noopener">Mở Binance Miễn Phí ↗</a>
+          <a class="btn out" id="ctaA" href="#" target="_blank" rel="noopener">Mở AlgosOne Miễn Phí ↗</a>
+        </div>
+      </div>
+      <div>
+        <canvas id="globe3d" class="globe3d"></canvas>
+        <div class="muted" style="text-align:center;margin-top:6px" id="globeCap">On‑Chain Earth · 3D</div>
+      </div>
+    </div>
+  </section>
 
-    // Cấu hình cố định
-    const PAYMENT = {
-      momo: { phone: "0567892030" },
-      bank: { bank: "Vietcombank", account: "9567892030", name: "TRẦN VĂN VŨ" },
-      paypal: { email: "vumumabada@gmail.com" },
-      usdt: { addr: "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0" },
-      eth: { ens: "lightunfold.eth" }
-    };
-    const BASE_OFFERS = [
-      { id:"binance", title:"Nhận thưởng trên Binance",
-        url:"https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N",
-        regions:["VN","GLOBAL"] },
-      { id:"algos", title:"AlgosOne — Cơ hội mở rộng thu nhập",
-        url:"https://algosone.page.link/MbtR",
-        regions:["GLOBAL","CRYPTO","VN"] }
-    ];
+  <!-- PAY & AFFILIATE -->
+  <section class="grid">
+    <div class="card">
+      <h3>Thanh toán nhanh</h3>
+      <div id="payList" class="grid" style="grid-template-columns:1fr"></div>
+      <div class="row" style="margin-top:10px">
+        <div><b>ID/Địa chỉ:</b> <span id="payAddr" class="mono">—</span></div>
+        <button class="btn out" id="btnCopy">Copy</button>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <div class="qr-wrap" style="border:1px dashed var(--line);border-radius:14px;padding:10px"><img id="qr" class="qr" alt="QR"></div>
+        <small class="note">Quét VietQR / ví crypto / PayPal.me. Nội dung chuyển: <b>LightUnfold</b>.</small>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Ưu đãi nổi bật (tự học & xoay)</h3>
+      <div class="row" id="offerBox"></div>
+      <div class="row" style="gap:8px;margin-top:10px">
+        <span class="pill" id="tagRegion">Region: …</span>
+        <button class="btn out" data-region="VN">VN</button>
+        <button class="btn out" data-region="GLOBAL">Global</button>
+        <button class="btn out" data-region="CRYPTO">Crypto</button>
+      </div>
+      <small class="note">Thuật toán ε‑greedy + UCB tối ưu CTR cục bộ (lưu trên thiết bị).</small>
+    </div>
+  </section>
 
-    // Tiện ích
-    const LS="ab_onepaste_v1"; const $=(s,p=document)=>p.querySelector(s);
-    function load(){try{return JSON.parse(localStorage.getItem(LS)||"{}")}catch{return{}}}
-    function save(v){localStorage.setItem(LS,JSON.stringify(v))}
-    function today(){return new Date().toISOString().slice(0,10)}
-    function isVN(){
-      const lang=(navigator.language||"").toLowerCase();
-      const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||"";
-      return lang.startsWith("vi")||tz.includes("Bangkok")||tz.includes("Ho_Chi_Minh");
+  <!-- PREMIUM GATE (tuỳ chọn) -->
+  <section class="card">
+    <h3>SuperGate (mở khoá nội dung)</h3>
+    <div class="row">
+      <label>Mã mở khoá: <input id="unlockCode" placeholder="Nhập mã…"></label>
+      <button class="btn" id="doUnlock">Mở khoá</button>
+      <button class="btn out" id="remember">Nhớ mã</button>
+      <span id="uMsg" class="muted"></span>
+    </div>
+    <div id="opened" class="muted" style="display:none;margin-top:8px">✔ Đã mở khoá – nội dung Premium hiển thị.</div>
+  </section>
+
+  <div class="card">
+    Lối vào: <a href="https://vuhuyphat.github.io/" target="_blank" rel="noopener">Web2</a> •
+    <a href="https://lightunfold.eth.limo/" target="_blank" rel="noopener">ENS</a> — Trang tự cập nhật khi JSON thay đổi (không cần đổi CID HTML).
+  </div>
+</div>
+
+<!-- Floating share -->
+<div class="float-share">
+  <a id="sh_tg" target="_blank" title="Share Telegram">📣</a>
+  <a id="sh_x"  target="_blank" title="Share X">𝕏</a>
+  <a id="sh_fb" target="_blank" title="Share Facebook">f</a>
+  <a id="sh_in" target="_blank" title="Share LinkedIn">in</a>
+</div>
+
+<!-- Three.js (nhẹ) -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
+<script>
+/* ================= ONE-PASTE ENGINE =================
+   ✅ Chỉ sửa 2 chỗ: REMOTE_CONFIG_URL & defaults dưới.
+   – Trang sẽ nạp JSON động (GitHub Raw / IPNS) -> tự đổi ví, QR, links.
+   – Nếu JSON lỗi/mạng kém: dùng defaults + cache localStorage.
+===================================================== */
+
+// 1) —— CHỈNH CHỖ NÀY —— (chọn 1 trong 2)
+const REMOTE_CONFIG_URL =
+  // 'https://raw.githubusercontent.com/<user>/<repo>/main/payments.json';
+  'https://raw.githubusercontent.com/vuhuyphat/vuhuyphat.github.io/main/payments.json';
+// Hoặc IPNS: 'https://ipfs.io/ipns/<your-ipns-id>'
+
+// 2) Defaults hiển thị ngay lần đầu (đổi theo bạn)
+const defaults = {
+  ens: 'lightunfold.eth',
+  links: {
+    binance: 'https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N',
+    algos: 'https://algosone.page.link/MbtR'
+  },
+  payments: {
+    eth:   { label:'ETH (ENS)',     id:'lightunfold.eth', scheme:'ethereum:' },
+    usdt:  { label:'USDT (ERC‑20)', id:'0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0' },
+    momo:  { label:'MoMo',          id:'0567892030' },
+    bank:  { label:'Vietcombank',   id:'9567892030|TRẦN VĂN VŨ' },
+    paypal:{ label:'PayPal',        id:'vumumabada@gmail.com' }
+  },
+  premium: { unlock_code: '23061988' }
+};
+
+// ====== Helpers
+const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
+const LS = 'onepaste_cfg_v1';
+
+function isVN() {
+  const lang=(navigator.language||'').toLowerCase();
+  const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
+  return lang.startsWith('vi') || tz.includes('Bangkok') || tz.includes('Ho_Chi_Minh');
+}
+function setQR(text){ $('#qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=340x340&data=${encodeURIComponent(text)}`; }
+function copy(txt){ return navigator.clipboard.writeText(txt).then(()=>alert('Đã sao chép.')).catch(()=>alert('Thiết bị chặn clipboard, vui lòng giữ & chọn.')); }
+
+// ====== Remote config loader (with cache + fallback)
+async function loadConfig(){
+  let cfg = defaults;
+  try{
+    const res = await fetch(REMOTE_CONFIG_URL + '?t=' + Date.now(), {cache:'no-store'});
+    if(res.ok){
+      const remote = await res.json();
+      cfg = {...defaults, ...remote, payments:{...defaults.payments, ...(remote.payments||{})}};
+      localStorage.setItem(LS, JSON.stringify(cfg));
+    }else{
+      const c = localStorage.getItem(LS); if(c) cfg = JSON.parse(c);
     }
+  }catch(_){
+    const c = localStorage.getItem(LS); if(c) cfg = JSON.parse(c);
+  }
+  return cfg;
+}
 
-    // Bandit ε-greedy + UCB (local)
-    function pickOffer(OFFERS, region){
-      const s=load(); s.stats=s.stats||{}; s.totalViews=s.totalViews||0;
-      if(s.lastDecay!==today()){
-        for(const k in s.stats){ s.stats[k].views=(s.stats[k].views||0)*0.95; s.stats[k].clicks=(s.stats[k].clicks||0)*0.95; }
-        s.lastDecay=today(); save(s);
-      }
-      const pool=OFFERS.filter(o=>o.regions.includes(region));
-      if(!pool.length) return OFFERS[0];
-      const eps=0.12;
-      if(Math.random()<eps) return pool[Math.floor(Math.random()*pool.length)];
-      let best=pool[0],score=-1;
-      for(const o of pool){
-        const st=s.stats[o.id]||{};
-        const ctr=(st.clicks||0)/Math.max(1,(st.views||0));
-        const ucb=ctr + Math.sqrt(2*Math.log(1+(s.totalViews||1))/Math.max(1,(st.views||0)));
-        if(ucb>score){score=ucb;best=o;}
-      }
-      return best;
-    }
-    function markView(id){ const s=load(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{views:0,clicks:0}; s.stats[id].views++; s.totalViews=(s.totalViews||0)+1; save(s); renderKPI(); }
-    function markClick(id){ const s=load(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{views:0,clicks:0}; s.stats[id].clicks++; save(s); renderKPI(); }
-    function renderKPI(){ const s=load(); const st=s.stats||{}; let v=0,c=0; Object.values(st).forEach(x=>{v+=x.views||0;c+=x.clicks||0}); $('#kpiViews').textContent=Math.round(v); $('#kpiClicks').textContent=Math.round(c); $('#kpiCTR').textContent=(v?((c/v)*100).toFixed(1):'0.0')+'%'; }
+// ====== Offers bandit (ε-greedy + UCB)
+const STATS = 'onepaste_stats_v1';
+function stats(){ try{return JSON.parse(localStorage.getItem(STATS)||'{}')}catch{return{}} }
+function saveStats(s){ localStorage.setItem(STATS, JSON.stringify(s)); }
+function region(){ return localStorage.getItem('ab_region') || (isVN()?'VN':'GLOBAL'); }
+function pickOffer(pool){
+  const s = stats(); s.stats = s.stats||{}; s.total = s.total||0;
+  const eps = 0.12;
+  if(Math.random()<eps) return pool[Math.floor(Math.random()*pool.length)];
 
-    // Vùng
-    function getRegion(){ return localStorage.getItem('ab_region') || (isVN() ? 'VN' : 'GLOBAL'); }
-    function bindRegionButtons(){
-      document.querySelectorAll('button[data-region]').forEach(b=>{
-        b.onclick=()=>{ localStorage.setItem('ab_region', b.dataset.region); location.reload(); }
-      });
-      $('#tagRegion').textContent='Region: '+getRegion();
-    }
+  let best=pool[0], score=-1;
+  for(const o of pool){
+    const st=s.stats[o.id]||{};
+    const ctr=(st.c||0)/Math.max(1,(st.v||0));
+    const ucb=ctr + Math.sqrt(2*Math.log(1+(s.total||1))/Math.max(1,(st.v||0)));
+    if(ucb>score){score=ucb; best=o;}
+  }
+  return best;
+}
+function markView(id){ const s=stats(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{v:0,c:0}; s.stats[id].v++; s.total=(s.total||0)+1; saveStats(s); }
+function markClick(id){ const s=stats(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{v:0,c:0}; s.stats[id].c++; saveStats(s); }
 
-    // Render Offer
-    function renderOffer(){
-      const region=getRegion();
-      const pick=pickOffer(BASE_OFFERS,region);
-      const box=$('#offerBox');
-      box.innerHTML=`
-        <a class="btn" id="offerLink" href="${pick.url}" target="_blank" rel="noopener">🔥 ${pick.title}</a>
-        <a class="btn" href="https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N" target="_blank" rel="noopener">🚀 Binance</a>
-        <a class="btn" href="https://algosone.page.link/MbtR" target="_blank" rel="noopener">🌐 AlgosOne</a>
-      `;
-      $('#offerLink').addEventListener('click',()=>markClick(pick.id));
-      markView(pick.id);
-    }
+// ====== Paint UI
+function paintPayments(cfg){
+  const pays = cfg.payments||{};
+  const list = $('#payList'); list.innerHTML='';
+  const rows = [];
 
-    // Thanh toán: copy USDT, PayPal, VietQR
-    function setupPayments(){
-      $('#copyUSDT').onclick=async()=>{await navigator.clipboard.writeText(PAYMENT.usdt.addr); alert('Đã copy địa chỉ USDT (ERC‑20).')};
-      const id = PAYMENT.paypal.email.split('@')[0];
-      $('#btnPayPal').href = `https://www.paypal.com/paypalme/${encodeURIComponent(id)}`;
-      $('#btnPayPal2').href = `https://www.paypal.com/paypalme/${encodeURIComponent(id)}`;
-      $('#vietqr').src = `https://img.vietqr.io/image/VCB-${encodeURIComponent(PAYMENT.bank.account)}-compact.png?addInfo=LightUnfold&accountName=${encodeURIComponent(PAYMENT.bank.name)}`;
-    }
+  // Chuẩn hóa hiển thị + QR text
+  const payMap = {
+    eth:   v => ({title:'ETH (ENS/Address)', id: v.id, qr: (v.scheme||'ethereum:') + (v.id||'') }),
+    usdt:  v => ({title:'USDT (ERC‑20)',     id: v.id, qr: v.id }),
+    momo:  v => ({title:'MoMo',             id: v.id, qr: v.id }),
+    bank:  v => { const [acc,name]=(v.id||'').split('|'); return {title:'Vietcombank', id:`${acc} • ${name||''}`, qr:`VCB:${acc}?memo=LightUnfold&name=${encodeURIComponent(name||'')}`} },
+    paypal:v => ({title:'PayPal',           id: v.id, qr: `paypal.me/${encodeURIComponent((v.id||'').split('@')[0])}` })
+  };
 
-    // Khởi động
-    (function start(){
-      setupPayments();
-      bindRegionButtons();
-      renderKPI();
-      renderOffer();
-    })();
-  </script>
+  Object.entries(payMap).forEach(([k,fn])=>{
+    if(!pays[k]) return;
+    const norm = fn(pays[k]);
+    const row = document.createElement('div');
+    row.className='paybtn'; row.innerHTML = `<div><b>${norm.title}</b><div class="muted mono">${norm.id}</div></div><button class="copy">Copy</button>`;
+    row.onclick = ()=>{ $('#payAddr').textContent = norm.id; setQR(norm.qr); $$('.paybtn').forEach(x=>x.classList.remove('active')); row.classList.add('active'); };
+    row.querySelector('.copy').onclick = (e)=>{ e.stopPropagation(); copy(norm.id); };
+    list.appendChild(row); rows.push(row);
+  });
+
+  if(rows[0]) rows[0].click();
+  $('#btnCopy').onclick = ()=> copy($('#payAddr').textContent||'');
+}
+
+function paintOffers(cfg){
+  const regionNow = region();
+  $('#tagRegion').textContent = 'Region: ' + regionNow;
+  const OFFERS = [
+    {id:'binance', title:'Mở Binance Miễn Phí', url: cfg.links?.binance, regions:['VN','GLOBAL']},
+    {id:'algos',   title:'Mở AlgosOne Miễn Phí', url: cfg.links?.algos, regions:['GLOBAL','CRYPTO','VN']}
+  ].filter(o=>o.url);
+
+  const pool = OFFERS.filter(o=>o.regions.includes(regionNow));
+  const pick = pickOffer(pool.length?pool:OFFERS);
+  const box = $('#offerBox');
+  box.innerHTML = `
+    <a class="btn out" id="offer" href="${pick.url}" target="_blank" rel="noopener">🔥 ${pick.title}</a>
+    ${cfg.links?.binance?`<a class="btn out" href="${cfg.links.binance}" target="_blank" rel="noopener">🚀 Binance</a>`:''}
+    ${cfg.links?.algos?`<a class="btn out" href="${cfg.links.algos}" target="_blank" rel="noopener">🌐 AlgosOne</a>`:''}
+  `;
+  $('#offer').addEventListener('click', ()=>markClick(pick.id));
+  markView(pick.id);
+
+  // set CTA buttons
+  if(cfg.links?.binance) { ['#ctaB'].forEach(id=>{ const el=$(id); if(el) el.href=cfg.links.binance; }); }
+  if(cfg.links?.algos)   { ['#ctaA'].forEach(id=>{ const el=$(id); if(el) el.href=cfg.links.algos; }); }
+}
+
+function bindRegionButtons(){ 
+  $$('button[data-region]').forEach(b=> b.onclick=()=>{ localStorage.setItem('ab_region', b.dataset.region); location.reload(); });
+}
+
+// ====== Premium Gate (mã mở khoá lưu local)
+function bindGate(cfg){
+  const SECRET = String(cfg.premium?.unlock_code||'');
+  $('#doUnlock').onclick=()=>{
+    const ok = (String($('#unlockCode').value||'').trim() === SECRET);
+    $('#uMsg').textContent = ok ? '✅ Đã mở khoá' : '❌ Sai mã';
+    $('#opened').style.display = ok ? 'block' : 'none';
+    if(ok) localStorage.setItem('premium_unlocked','1');
+  };
+  $('#remember').onclick=()=> localStorage.setItem('remember_code',$('#unlockCode').value||'');
+  if(localStorage.getItem('premium_unlocked')==='1') $('#opened').style.display='block';
+}
+
+// ====== 3D Earth (tự tắt nếu thiết bị yếu)
+(function earth(){
+  try{
+    const canvas=document.getElementById('globe3d');
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+    const DPR=Math.min(window.devicePixelRatio||1,2);
+    const W=canvas.clientWidth||300,H=canvas.clientHeight||300;
+    renderer.setPixelRatio(DPR); renderer.setSize(W,H,false);
+    const scene=new THREE.Scene();
+    const camera=new THREE.PerspectiveCamera(50,W/H,0.1,100); camera.position.z=6;
+    scene.add(new THREE.AmbientLight(0x9fc9ff,0.55), new THREE.DirectionalLight(0xffffff,0.95));
+    const loader=new THREE.TextureLoader();
+    const earth=new THREE.Mesh(new THREE.SphereGeometry(2.4,64,64),
+      new THREE.MeshPhongMaterial({map:loader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg')}));
+    scene.add(earth);
+    (function anim(){ requestAnimationFrame(anim); earth.rotation.y+=0.0024; renderer.render(scene,camera); })();
+  }catch(e){ document.getElementById('globeCap').textContent='—'; }
+})();
+
+// ====== Share links
+(function share(){
+  const base=location.origin+location.pathname;
+  const peer=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2);
+  localStorage.setItem('peer_id',peer);
+  const myRef=`${base}?ref=${peer}`;
+  const t=encodeURIComponent(document.title), u=encodeURIComponent(myRef);
+  const map={sh_tg:`https://t.me/share/url?url=${u}&text=${t}`,sh_x:`https://twitter.com/intent/tweet?text=${t}&url=${u}`,sh_fb:`https://www.facebook.com/sharer/sharer.php?u=${u}`,sh_in:`https://www.linkedin.com/sharing/share-offsite/?url=${u}`};
+  for(const id in map){ const el=document.getElementById(id); if(el) el.href=map[id]; }
+})();
+
+// ====== Lang & heartbeat
+let LANG = (localStorage.getItem('lang')||(navigator.language||'vi')).toLowerCase().startsWith('vi')?'vi':'en';
+function applyLang(){
+  if(LANG==='vi'){ $('#tagline').textContent='Thanh toán đa kênh • Affiliate tối ưu CTR • Tự học hành vi • Tự xoay theo vùng'; $('#globeCap').textContent='Trái Đất On‑Chain · 3D'; }
+  else           { $('#tagline').textContent='Multi‑channel payments • CTR‑optimized affiliate • On‑device learn & region adapt'; $('#globeCap').textContent='On‑Chain Earth · 3D'; }
+}
+applyLang();
+document.getElementById('lang').onclick=()=>{ LANG = (LANG==='vi'?'en':'vi'); localStorage.setItem('lang',LANG); applyLang(); };
+setInterval(()=>{ document.getElementById('hb').textContent=new Date().toLocaleTimeString(); },1000);
+document.getElementById('ens').textContent = defaults.ens;
+
+// ====== Boot
+(async function start(){
+  try{
+    const cfg = await loadConfig();
+    paintPayments(cfg);
+    paintOffers(cfg);
+    bindRegionButtons();
+    bindGate(cfg);
+  }catch(e){ console.warn('Boot failed', e); }
+})();
+</script>
+
+<!-- Service Worker (cache nhẹ) -->
+<script>
+if('serviceWorker' in navigator){
+  const sw = `
+    self.addEventListener('install',e=>{e.waitUntil(caches.open('onepaste-v1').then(c=>c.addAll(['./'])))}); 
+    self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const copy=res.clone(); caches.open('onepaste-v1').then(c=>c.put(e.request,copy)); return res;})).catch(()=>r))});
+  `;
+  const blob = new Blob([sw],{type:'text/javascript'}); const url = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url).catch(()=>{});
+}
+</script>
 </body>
 </html>
