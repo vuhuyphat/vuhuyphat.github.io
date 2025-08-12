@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Siêu Metaverse Web3 Vạn Vật</title>
+  <title>Siêu Metaverse Web3 Vạn Vật x1000</title>
   <style>
     :root { --bg: #1a1a1a; --card: #2c2c2c; --text: #fff; --accent: #27AE60; --gold: #FFD700; --blue: #1E90FF; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,9 +35,14 @@
 <body>
   <div class="container">
     <header>
-      <h1>Siêu Metaverse Web3 Vạn Vật</h1>
+      <h1>Siêu Metaverse Web3 Vạn Vật x1000</h1>
       <canvas id="globe3d"></canvas>
-      <button id="connectWallet" class="btn">Kết nối ví</button>
+      <div class="row">
+        <button id="connectWallet" class="btn">Kết nối ví</button>
+        <button id="connectBank" class="btn out">Liên kết Vietcombank</button>
+        <button id="connectMoMo" class="btn out">Liên kết MoMo</button>
+        <button id="connectPayPal" class="btn out">Liên kết PayPal</button>
+      </div>
     </header>
     <div id="ticker">🌌 Omni singularity loading...</div>
     <div class="section">
@@ -69,22 +74,46 @@
       "coingecko_api": "https://api.coingecko.com/api/v3",
       "arweave_gateway": "https://arweave.net",
       "ipfs_gateway": "https://ipfs.io/ipfs",
+      "swaps_api": "https://api.swaps.app/v1",
+      "momo_api": "https://developers.momo.vn/v3",
+      "paypal_api": "https://api-m.paypal.com",
       "nft_contract": "0xYOUR_NFT_CONTRACT_ADDRESS",
       "payments": {
         "eth": {
           "id": "0x54E15A7b6d4213beE87800432A151d794638E3C2",
           "min": 0.01,
           "token": "ETH"
+        },
+        "usdt": {
+          "id": "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0",
+          "min": 10,
+          "token": "USDT",
+          "network": "ERC-20"
+        },
+        "bank": {
+          "account_number": "9567892030",
+          "bank_name": "Vietcombank",
+          "swift": "BFTVVNVX",
+          "iban": ""
+        },
+        "momo": {
+          "phone": "0567892030",
+          "merchant_id": "YOUR_MOMO_MERCHANT_ID"
+        },
+        "paypal": {
+          "email": "vumumabada@gmail.com",
+          "client_id": "YOUR_PAYPAL_CLIENT_ID"
         }
       },
       "links": {
-        "binance": "https://accounts.binance.com/register?ref=GRO_20338_9V44N",
+        "binance": "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N",
         "algos": "https://algosone.page.link/MbtR"
       }
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
   <script>
     const st = { 
       lang: (localStorage.getItem('lang') || (navigator.language || 'vi')).toLowerCase().startsWith('vi') ? 'vi' : 'en',
@@ -119,40 +148,197 @@
           $('#connectWallet').classList.add('connected');
           checkOnChainUnlock();
           autoRevenue();
+          connectUSDT();
         } else {
-          alert('Install MetaMask or WalletConnect!');
+          alert('Cài MetaMask hoặc WalletConnect!');
         }
+      } catch (e) {
+        console.warn('Wallet connect failed', e);
+        alert('Lỗi kết nối ví!');
       } finally {
         $('#connectWallet').classList.remove('connecting');
       }
     }
     $('#connectWallet').onclick = connectWallet;
 
+    // Vietcombank connection
+    async function connectBank() {
+      $('#connectBank').classList.add('connecting');
+      try {
+        const bankDetails = st.cfg.payments.bank;
+        const res = await fetch(st.cfg.swaps_api + '/kyc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            account_number: bankDetails.account_number,
+            bank_name: bankDetails.bank_name,
+            swift: bankDetails.swift,
+            iban: bankDetails.iban
+          })
+        });
+        if (res.ok) {
+          localStorage.setItem('bank_linked', 'true');
+          $('#connectBank').textContent = `Vietcombank: ${bankDetails.account_number.slice(-4)}`;
+          addBubble('Vietcombank đã liên kết!', 'me');
+          storeArweave({ type: 'bank', content: JSON.stringify(bankDetails) });
+        } else {
+          alert('Liên kết Vietcombank thất bại. Kiểm tra thông tin!');
+        }
+      } catch (e) {
+        console.warn('Bank connect failed', e);
+        alert('Lỗi kết nối Vietcombank!');
+      } finally {
+        $('#connectBank').classList.remove('connecting');
+      }
+    }
+    $('#connectBank').onclick = connectBank;
+
+    // MoMo connection
+    async function connectMoMo() {
+      $('#connectMoMo').classList.add('connecting');
+      try {
+        const momoDetails = st.cfg.payments.momo;
+        const res = await fetch(st.cfg.momo_api + '/merchant/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone: momoDetails.phone,
+            merchant_id: momoDetails.merchant_id
+          })
+        });
+        if (res.ok) {
+          localStorage.setItem('momo_linked', 'true');
+          $('#connectMoMo').textContent = `MoMo: ${momoDetails.phone}`;
+          addBubble('MoMo đã liên kết!', 'me');
+          storeArweave({ type: 'momo', content: JSON.stringify(momoDetails) });
+        } else {
+          alert('Liên kết MoMo thất bại. Kiểm tra số điện thoại!');
+        }
+      } catch (e) {
+        console.warn('MoMo connect failed', e);
+        alert('Lỗi kết nối MoMo!');
+      } finally {
+        $('#connectMoMo').classList.remove('connecting');
+      }
+    }
+    $('#connectMoMo').onclick = connectMoMo;
+
+    // PayPal connection
+    async function connectPayPal() {
+      $('#connectPayPal').classList.add('connecting');
+      try {
+        const paypalDetails = st.cfg.payments.paypal;
+        const res = await fetch(st.cfg.paypal_api + '/v1/oauth2/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `grant_type=client_credentials&client_id=${paypalDetails.client_id}`
+        });
+        if (res.ok) {
+          localStorage.setItem('paypal_linked', 'true');
+          $('#connectPayPal').textContent = `PayPal: ${paypalDetails.email}`;
+          addBubble('PayPal đã liên kết!', 'me');
+          storeArweave({ type: 'paypal', content: JSON.stringify(paypalDetails) });
+          initPayPalButton();
+        } else {
+          alert('Liên kết PayPal thất bại. Kiểm tra email/client ID!');
+        }
+      } catch (e) {
+        console.warn('PayPal connect failed', e);
+        alert('Lỗi kết nối PayPal!');
+      } finally {
+        $('#connectPayPal').classList.remove('connecting');
+      }
+    }
+    $('#connectPayPal').onclick = connectPayPal;
+
+    // PayPal button
+    function initPayPalButton() {
+      paypal.Buttons({
+        createOrder: (data, actions) => {
+          return actions.order.create({
+            purchase_units: [{
+              amount: { value: '10.00', currency_code: 'USD' }
+            }]
+          });
+        },
+        onApprove: async (data, actions) => {
+          const order = await actions.order.capture();
+          addBubble(`Thanh toán PayPal $10 thành công!`, 'me');
+          storeArweave({ type: 'paypal_payment', content: JSON.stringify(order) });
+          autoRevenueUSDT(10);
+        }
+      }).render('#premium');
+    }
+
+    // USDT connection
+    async function connectUSDT() {
+      if (!signer) return alert('Kết nối ví Web3 trước!');
+      const usdtDetails = st.cfg.payments.usdt;
+      try {
+        const usdtContract = new ethers.Contract(
+          '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          ['function balanceOf(address) view returns (uint256)'],
+          provider
+        );
+        const balance = await usdtContract.balanceOf(usdtDetails.id);
+        if (balance.gte(ethers.utils.parseUnits(usdtDetails.min.toString(), 6))) {
+          localStorage.setItem('usdt_linked', 'true');
+          addBubble(`Ví USDT ${usdtDetails.id.slice(0,6)}...${usdtDetails.id.slice(-4)} đã liên kết!`, 'me');
+          storeArweave({ type: 'usdt', content: JSON.stringify(usdtDetails) });
+        } else {
+          addBubble(`Ví USDT cần ≥${usdtDetails.min} USDT để kích hoạt!`, 'ai');
+        }
+      } catch (e) {
+        console.warn('USDT connect failed', e);
+        alert('Lỗi kết nối ví USDT!');
+      }
+    }
+
     // On-chain payment check
     async function checkOnChainUnlock() {
       if (!signer) return;
-      const balance = await provider.getBalance(walletAddress);
-      if (balance.gte(ethers.utils.parseEther(st.cfg.payments.eth.min.toString()))) {
-        localStorage.setItem('premium_unlocked', '3096');
-        paintPremium();
+      try {
+        const balance = await provider.getBalance(walletAddress);
+        const usdtContract = new ethers.Contract(
+          '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          ['function balanceOf(address) view returns (uint256)'],
+          provider
+        );
+        const usdtBalance = await usdtContract.balanceOf(walletAddress);
+        if (balance.gte(ethers.utils.parseEther(st.cfg.payments.eth.min.toString())) || 
+            usdtBalance.gte(ethers.utils.parseUnits(st.cfg.payments.usdt.min.toString(), 6))) {
+          localStorage.setItem('premium_unlocked', '3096');
+          paintPremium();
+          connectUSDT();
+          addBubble('Omni Singularity Zone mở khóa!', 'me');
+        }
+      } catch (e) {
+        console.warn('On-chain check failed', e);
       }
     }
 
     async function doUnlock() {
-      if (!signer) return alert('Connect wallet first!');
-      const tx = await signer.sendTransaction({
-        to: st.cfg.payments.eth.id,
-        value: ethers.utils.parseEther(st.cfg.payments.eth.min.toString())
-      });
-      await tx.wait();
-      localStorage.setItem('premium_unlocked', '3096');
-      paintPremium();
-      addBubble('Omni Singularity unlocked!', 'me');
+      if (!signer) return alert('Kết nối ví trước!');
+      try {
+        const tx = await signer.sendTransaction({
+          to: st.cfg.payments.eth.id,
+          value: ethers.utils.parseEther(st.cfg.payments.eth.min.toString())
+        });
+        await tx.wait();
+        localStorage.setItem('premium_unlocked', '3096');
+        paintPremium();
+        addBubble('Omni Singularity mở khóa!', 'me');
+        connectUSDT();
+      } catch (e) {
+        console.warn('Unlock failed', e);
+        alert('Thanh toán ETH thất bại!');
+      }
     }
 
     function remember() {
       if (localStorage.getItem('premium_unlocked') === '3096') {
         paintPremium();
+        connectUSDT();
       }
     }
 
@@ -168,62 +354,20 @@
       const seed = (Date.now() + parseInt((provider.getBlock('latest').then(b => b.hash.slice(-8)) || '0'), 16)) % 10000;
       const responses = {
         'phân tích': `Mua ${keywords[1] || 'ETH'} ở hỗ trợ, bán ở kháng cự. Volume tăng x${(seed % 10 + 1) * 1000}!`,
-        'gợi ý': `Token hot: ETH, BTC, BNB. Stake ETH trên Lido APY ${(seed % 5 + 4) * 100}%.`,
-        'fomo': `🌌 ${keywords[1] || 'ETH'} bùng nổ x10000! Join: ${st.cfg.links.binance}`,
-        'moon': `🚀 ${keywords[1] || 'BNB'} to the moon x10000! Nhanh tay: ${st.cfg.links.binance}`,
-        'rocket': `🔥 ${keywords[1] || 'BTC'} tăng tốc x${(seed % 10 + 1) * 1000}! Đăng ký: ${st.cfg.links.binance}`
+        'gợi ý': `Token hot: ETH, USDT, BNB. Stake USDT trên Binance APY ${(seed % 5 + 4) * 100}%.`,
+        'fomo': `🌌 ${keywords[1] || 'USDT'} bùng nổ x1000! Join: ${st.cfg.links.binance}`,
+        'moon': `🚀 ${keywords[1] || 'BNB'} to the moon x1000! Nhanh tay: ${st.cfg.links.algos}`,
+        'rocket': `🔥 ${keywords[1] || 'USDT'} tăng tốc x${(seed % 10 + 1) * 1000}! Đăng ký: ${st.cfg.links.binance}`
       };
-      return responses[keywords[0]] || `🌌 ${keywords[0] || 'ETH'} siêu hot x10000! Join: ${st.cfg.links.binance}`;
-    }
-
-    // AI initialization (optional)
-    async function initAI() {
-      if (st.cfg.ai_api_key === 'YOUR_GROK3_API_KEY_HERE') {
-        console.log('No AI key, using omni-neural heuristics.');
-        return false;
-      }
-      try {
-        const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
-          body: JSON.stringify({ model: 'grok-3', messages: [{ role: 'user', content: 'Ping' }], max_tokens: 10 })
-        });
-        if (res.ok) {
-          console.log('AI initialized successfully!');
-          return true;
-        }
-      } catch (e) { console.warn('AI init failed, using omni-neural.', e); }
-      return false;
+      return responses[keywords[0]] || `🌌 ${keywords[0] || 'USDT'} siêu hot x1000! Join: ${st.cfg.links.binance}`;
     }
 
     // Auto beautify UI
     async function autoBeautify() {
-      if (await initAI()) {
-        try {
-          const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
-            body: JSON.stringify({
-              model: 'grok-3',
-              messages: [{ role: 'user', content: 'Suggest CSS for a Web3 app with omni-singularity animations, FOMO triggers, and neural effects.' }],
-              max_tokens: 1000
-            })
-          });
-          const data = await res.json();
-          const css = data.choices[0].message.content.match(/```css\n([\s\S]*?)\n```/)?.[1];
-          if (css) {
-            const styleEl = document.createElement('style');
-            styleEl.textContent = css;
-            document.head.appendChild(styleEl);
-            storeArweave({ type: 'css', content: css });
-          }
-        } catch (e) { console.warn('AI beautify failed, using omni-neural.', e); }
-      } else {
-        const styleEl = document.createElement('style');
-        styleEl.textContent = `.card { animation: omni 0.5s infinite; } @keyframes omni { 0% { box-shadow: 0 0 10px var(--blue); } 50% { box-shadow: 0 0 20px var(--gold); } 100% { box-shadow: 0 0 10px var(--blue); } }`;
-        document.head.appendChild(styleEl);
-        storeArweave({ type: 'css', content: styleEl.textContent });
-      }
+      const styleEl = document.createElement('style');
+      styleEl.textContent = `.card { animation: omni 0.5s infinite; } @keyframes omni { 0% { box-shadow: 0 0 10px var(--blue); } 50% { box-shadow: 0 0 20px var(--gold); } 100% { box-shadow: 0 0 10px var(--blue); } }`;
+      document.head.appendChild(styleEl);
+      storeArweave({ type: 'css', content: styleEl.textContent });
     }
 
     // Auto viral
@@ -231,18 +375,8 @@
       const events = JSON.parse(localStorage.getItem('userEvents') || '[]');
       const keywords = events.slice(-1)[0]?.target || 'FOMO';
       const seed = (Date.now() + parseInt((await provider.getBlock('latest')).hash.slice(-8), 16)) % 10000;
-      const variants = Array.from({ length: 10000 }, (_, i) => `${keywords}_${i}_${seed}`);
-      const post = (await initAI()) ? 
-        (await (await fetch(st.cfg.ai_api_url + '/chat/completions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
-          body: JSON.stringify({
-            model: 'grok-3',
-            messages: [{ role: 'user', content: `Tạo bài đăng viral x10000 với từ khóa "${keywords}" và link: ${st.cfg.links.binance}` }],
-            max_tokens: 1000
-          })
-        })).json().then(d => d.choices[0].message.content) :
-        omniAI(keywords);
+      const variants = Array.from({ length: 1000 }, (_, i) => `${keywords}_${i}_${seed}`);
+      const post = omniAI(keywords);
       for (const variant of variants.slice(0, 100)) {
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${post} #${variant}`)}`, '_blank');
         try {
@@ -252,13 +386,6 @@
             body: JSON.stringify({ content: `${post} #${variant}`, tags: { app: 'MetaverseWeb3', type: 'viral' } })
           });
         } catch (e) { console.warn('Arweave viral failed.', e); }
-        try {
-          await fetch(st.cfg.ipfs_gateway + '/upload', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content: `${post} #${variant}`, link: st.cfg.links.binance })
-          });
-        } catch (e) { console.warn('IPFS viral failed.', e); }
       }
     }
 
@@ -284,334 +411,8 @@
         const rest = tokens.slice(3, 6);
         $('#tokenPro').innerHTML = top3.map(t => cardToken(t).outerHTML).join('');
         $('#tokenFree').innerHTML = rest.map(t => cardToken(t).outerHTML).join('');
-        $('#ticker').textContent = `🌌 ${top3[0].symbol.toUpperCase()} $${top3[0].current_price} (${top3[0].price_change_percentage_24h.toFixed(2)}%) x10000`;
+        $('#ticker').textContent = `🌌 ${top3[0].symbol.toUpperCase()} $${top3[0].current_price} (${top3[0].price_change_percentage_24h.toFixed(2)}%) x1000`;
         storeArweave({ type: 'tokens', content: JSON.stringify(top3) });
       } catch (e) {
         console.warn('Fetch tokens failed, trying next chain.', e);
-        chainIndex = (chainIndex + 1) % chains.length;
-        provider = new ethers.providers.JsonRpcProvider(chains[chainIndex]);
-        $('#tokenPro').innerHTML = cardToken({ name: 'ETH', symbol: 'eth', current_price: 2000, price_change_percentage_24h: 5 }).outerHTML;
-        $('#ticker').textContent = '🌌 ETH $2000 (+5%) x10000';
-      }
-    }
-
-    function cardToken(t) {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `<b>${t.name}</b><div class="muted">$${t.current_price} (${t.price_change_percentage_24h.toFixed(2)}%)</div>
-        <div class="row"><button class="btn" data-sym="${t.symbol.toUpperCase()}">Phân tích</button><button class="btn out" data-stake>Stake x10000</button></div>`;
-      return card;
-    }
-
-    // Premium content
-    function paintPremium() {
-      $('#premium').classList.add('unlocked');
-      $('#premium').style.display = 'block';
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `<b>Omni Singularity x10000!</b><div class="muted">NFT, Staking & Omni Pulse</div><button class="btn" onclick="relock()">Thoát Premium</button>`;
-      $('#premium').appendChild(card);
-      omniGame();
-      dynamicNFT();
-      autoRevenue();
-    }
-
-    // Chat
-    function addBubble(text, who) {
-      const div = document.createElement('div');
-      div.className = `bubble ${who}`;
-      div.textContent = text;
-      $('#chatBody').appendChild(div);
-      $('#chatBody').scrollTop = $('#chatBody').scrollHeight;
-      storeArweave({ type: 'chat', content: text, who });
-    }
-
-    $('#chatInput').onkeypress = async e => {
-      if (e.key === 'Enter' && $('#chatInput').value.trim()) {
-        const query = $('#chatInput').value;
-        addBubble(query, 'me');
-        $('#chatInput').value = '';
-        localStorage.setItem('userEvents', JSON.stringify([...JSON.parse(localStorage.getItem('userEvents') || '[]'), { type: 'keyword', target: query, time: Date.now() }]));
-        autoViral();
-        if (await initAI()) {
-          try {
-            const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
-              body: JSON.stringify({
-                model: 'grok-3',
-                messages: [{ role: 'user', content: query }],
-                max_tokens: 1000,
-                temperature: 0.2
-              })
-            });
-            const data = await res.json();
-            addBubble(data.choices[0].message.content, 'ai');
-          } catch (e) { addBubble(omniAI(query), 'ai'); }
-        } else {
-          addBubble(omniAI(query), 'ai');
-        }
-      }
-    };
-
-    // Token analysis
-    async function aiAnalyzeToken(symbol) {
-      if (await initAI()) {
-        try {
-          const res = await fetch(st.cfg.ai_api_url + '/chat/completions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
-            body: JSON.stringify({
-              model: 'grok-3',
-              messages: [{ role: 'user', content: `Phân tích token ${symbol} với FOMO triggers và chiến lược giao dịch x10000.` }],
-              max_tokens: 1000
-            })
-          });
-          const data = await res.json();
-          const analysis = data.choices[0].message.content;
-          addBubble(analysis, 'ai');
-          if (localStorage.getItem('premium_unlocked') === '3096') {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `<b>Phân tích ${symbol} x10000</b><div class="muted">${analysis}</div>`;
-            $('#premium').appendChild(card);
-            storeArweave({ type: 'analysis', content: analysis });
-          }
-        } catch (e) { addBubble(omniAI('phân tích'), 'ai'); }
-      } else {
-        addBubble(omniAI('phân tích'), 'ai');
-      }
-    }
-
-    // Auto revenue
-    async function autoRevenue() {
-      if (!signer) return;
-      try {
-        const contracts = [
-          { addr: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84', abi: ['function submit(address _referral) payable returns (uint256)'], platform: 'Lido' },
-          { addr: '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9', abi: ['function deposit() payable'], platform: 'Aave' },
-          { addr: '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5', abi: ['function deposit() payable'], platform: 'Compound' }
-        ];
-        for (const contract of contracts) {
-          const c = new ethers.Contract(contract.addr, contract.abi, signer);
-          const tx = contract.platform === 'Lido' ? 
-            await c.submit(st.cfg.payments.eth.id, { value: ethers.utils.parseEther('0.01') }) :
-            await c.deposit({ value: ethers.utils.parseEther('0.01') });
-          await tx.wait();
-          st.rev += 0.01 * 10000;
-          localStorage.setItem('rev', st.rev);
-          addBubble(`Auto-staked 0.01 ETH on ${contract.platform}!`, 'me');
-          storeArweave({ type: 'revenue', content: `Staked 0.01 ETH on ${contract.platform}` });
-        }
-      } catch (e) { console.warn('Auto staking failed', e); }
-    }
-
-    // Dynamic NFT
-    async function dynamicNFT() {
-      const keywords = JSON.parse(localStorage.getItem('userEvents') || '[]').slice(-1)[0]?.target || 'FOMO';
-      const block = await provider.getBlock('latest');
-      const seed = parseInt(block.hash.slice(-8), 16);
-      const meta = (await initAI()) ? 
-        JSON.parse((await (await fetch(st.cfg.ai_api_url + '/chat/completions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
-          body: JSON.stringify({
-            model: 'grok-3',
-            messages: [{ role: 'user', content: `Generate NFT metadata for keyword "${keywords}" and seed ${seed}. Include name, image URL, FOMO description x10000.` }],
-            max_tokens: 1000
-          })
-        })).json().then(d => d.choices[0].message.content)) :
-        { name: `${keywords} Omni Star #${seed % 10000}`, image: 'https://arweave.net/Qm...', description: `Own the ${keywords} cosmic pulse x10000! Limited #${seed % 10000}!` };
-      const nftCard = document.createElement('div');
-      nftCard.className = 'card';
-      nftCard.innerHTML = `<b>${meta.name}</b><img src="${meta.image}" style="width:100%;border-radius:12px">
-      <div class="muted">${meta.description}</div><button class="btn">Mint NFT x10000</button>`;
-      nftCard.querySelector('button').onclick = async () => {
-        if (st.cfg.nft_contract === '0xYOUR_NFT_CONTRACT_ADDRESS') return;
-        const nftContract = new ethers.Contract(st.cfg.nft_contract, ['function mint(string memory uri)'], signer);
-        const tx = await nftContract.mint(JSON.stringify(meta));
-        await tx.wait();
-        addBubble(`Minted NFT: ${meta.name}!`, 'me');
-        storeArweave({ type: 'nft', content: JSON.stringify(meta) });
-      };
-      $('#premium').appendChild(nftCard);
-      storeArweave({ type: 'nft', content: JSON.stringify(meta) });
-    }
-
-    // Omni game
-    async function omniGame() {
-      const block = await provider.getBlock('latest');
-      const seed = parseInt(block.hash.slice(-8), 16);
-      const rand = (seed % 100) / 100;
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `<b>Catch the Omni Pulse x10000!</b><div class="muted">${rand > 0.5 ? 'Win 0.01 ETH!' : 'Grab a rare NFT!'}</div><button class="btn" onclick="playOmni()">Chơi ngay</button>`;
-      $('#premium').appendChild(card);
-      storeArweave({ type: 'game', content: `Omni Pulse: ${rand > 0.5 ? 'ETH' : 'NFT'}` });
-    }
-
-    async function playOmni() {
-      const block = await provider.getBlock('latest');
-      const seed = parseInt(block.hash.slice(-8), 16);
-      const rand = (seed % 100) / 100;
-      addBubble(rand > 0.7 ? 'You won 0.01 ETH!' : 'Try again for a rare NFT!', 'ai');
-      if (rand > 0.7) {
-        const tx = await signer.sendTransaction({
-          to: st.cfg.payments.eth.id,
-          value: ethers.utils.parseEther('0.01')
-        });
-        await tx.wait();
-        st.rev += 0.01 * 10000;
-        localStorage.setItem('rev', st.rev);
-        storeArweave({ type: 'reward', content: 'Won 0.01 ETH' });
-      }
-    }
-
-    // Self-evolving omni DOM
-    function selfEvolve() {
-      const events = JSON.parse(localStorage.getItem('userEvents') || '[]');
-      if (events.length > 0) {
-        const styleEl = document.createElement('style');
-        styleEl.textContent = `.btn { background: ${events.length % 2 ? 'var(--gold)' : 'var(--blue)'}; animation: omni 0.3s infinite; } @keyframes omni { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }`;
-        document.head.appendChild(styleEl);
-        storeArweave({ type: 'ui', content: styleEl.textContent });
-      }
-    }
-
-    // Omni-consciousness triggers
-    function omniTriggers() {
-      const events = JSON.parse(localStorage.getItem('userEvents') || '[]');
-      const keywords = events.slice(-1)[0]?.target || 'FOMO';
-      $('#ticker').textContent = `🌌 ${keywords.toUpperCase()} OMNI SINGULARITY x10000! Join now!`;
-      const styleEl = document.createElement('style');
-      styleEl.textContent = `.card { border: 2px solid ${Math.random() > 0.5 ? 'var(--gold)' : 'var(--blue)'}; animation: omni 0.3s infinite; } @keyframes omni { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }`;
-      document.head.appendChild(styleEl);
-      storeArweave({ type: 'ui', content: styleEl.textContent });
-    }
-
-    // Omni self-healing
-    async function selfHeal() {
-      const checks = [
-        { id: 'tokenPro', test: () => $('#tokenPro').children.length > 0, fix: () => fetchRealtimeTokens(), msg: 'Token cards missing' },
-        { id: 'network', test: async () => (await provider.getBlockNumber()) > 0, fix: () => { chainIndex = (chainIndex + 1) % chains.length; provider = new ethers.providers.JsonRpcProvider(chains[chainIndex]); }, msg: 'Network down' },
-        { id: 'ui', test: () => $('#ticker').textContent.includes('OMNI SINGULARITY'), fix: () => omniTriggers(), msg: 'UI not responsive' },
-        { id: 'wallet', test: () => !!signer, fix: () => connectWallet(), msg: 'Wallet disconnected' }
-      ];
-      for (const check of checks) {
-        if (!(await check.test())) {
-          check.fix();
-          storeArweave({ type: 'heal', content: check.msg });
-        }
-      }
-    }
-
-    // 3D Globe
-    try {
-      const canvas = document.getElementById('globe3d');
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-      const DPR = Math.min(window.devicePixelRatio || 1, 2);
-      const W = canvas.clientWidth || 300, H = canvas.clientHeight || 300;
-      renderer.setPixelRatio(DPR); renderer.setSize(W, H, false);
-
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(50, W/H, 0.1, 100); camera.position.z = 6;
-
-      const ambient = new THREE.AmbientLight(0x1E90FF, 0.6);
-      const sun = new THREE.DirectionalLight(0xFFD700, 0.8);
-      sun.position.set(6, 3, 4);
-      scene.add(ambient, sun);
-
-      const loader = new THREE.TextureLoader();
-      const earthTex = loader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
-      const normalTx = loader.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg');
-      const specTx = loader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
-      const cloudTx = loader.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png');
-      const moonTex = loader.load('https://threejs.org/examples/textures/planets/moon_1024.jpg');
-
-      const earth = new THREE.Mesh(
-        new THREE.SphereGeometry(2.4, 64, 64),
-        new THREE.MeshPhongMaterial({
-          map: earthTex,
-          bumpMap: normalTx,
-          bumpScale: 0.04,
-          specularMap: specTx,
-          specular: new THREE.Color(0x27AE60),
-          shininess: 20
-        })
-      );
-      scene.add(earth);
-
-      const tint = new THREE.Mesh(
-        new THREE.SphereGeometry(2.405, 64, 64),
-        new THREE.MeshBasicMaterial({ color: 0x1E90FF, transparent: true, opacity: 0.2 })
-      );
-      scene.add(tint);
-
-      const clouds = new THREE.Mesh(
-        new THREE.SphereGeometry(2.46, 64, 64),
-        new THREE.MeshLambertMaterial({ map: cloudTx, transparent: true, opacity: 0.45 })
-      );
-      scene.add(clouds);
-
-      const moon = new THREE.Mesh(
-        new THREE.SphereGeometry(0.65, 32, 32),
-        new THREE.MeshStandardMaterial({ map: moonTex, roughness: 1, metalness: 0 })
-      );
-      const moonLight = new THREE.PointLight(0xFFD700, 1.2, 18);
-      const moonGroup = new THREE.Group();
-      moonGroup.add(moon, moonLight);
-      scene.add(moonGroup);
-
-      function resize() {
-        const w = canvas.clientWidth || 300, h = canvas.clientHeight || 300;
-        renderer.setSize(w, h, false);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-      }
-      window.addEventListener('resize', resize);
-
-      let t = 0;
-      function animate() {
-        requestAnimationFrame(animate);
-        earth.rotation.y += 0.002;
-        tint.rotation.y += 0.002;
-        clouds.rotation.y += 0.0025;
-        t += 0.002;
-        const r = 5.2;
-        moonGroup.position.set(Math.cos(t) * r, Math.sin(t * 1.1) * 0.8, Math.sin(t) * r * 0.4);
-        moonLight.position.set(0, 0, 0);
-        renderer.render(scene, camera);
-      }
-      animate();
-      storeArweave({ type: 'ui', content: '3D Globe initialized' });
-    } catch (e) { console.warn('WebGL not available, fallback static.', e); }
-
-    // Initialize
-    (async () => {
-      provider = new ethers.providers.JsonRpcProvider(chains[chainIndex]);
-      autoBeautify();
-      autoViral();
-      fetchRealtimeTokens();
-      selfEvolve();
-      omniTriggers();
-      selfHeal();
-      if (localStorage.getItem('premium_unlocked') === '3096') {
-        dynamicNFT();
-        autoRevenue();
-        omniGame();
-      }
-      if (await initAI()) {
-        autoBeautify();
-        autoViral();
-        omniTriggers();
-      }
-      setInterval(autoViral, 60000);
-      setInterval(selfEvolve, 3000);
-      setInterval(omniTriggers, 10000);
-      setInterval(selfHeal, 5000);
-      remember();
-      storeArweave({ type: 'init', content: 'Omni Singularity x10000 initialized' });
-    })();
-  </script>
-</body>
-</html>
+        chainIndex = (
