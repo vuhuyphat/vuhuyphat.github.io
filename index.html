@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Siêu Metaverse Web3 Vô Cực</title>
+  <title>Siêu Metaverse Web3 Bất Biến</title>
   <style>
     :root { --bg: #1a1a1a; --card: #2c2c2c; --text: #fff; --accent: #27AE60; --gold: #FFD700; --blue: #1E90FF; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); }
     .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
     header { text-align: center; padding: 20px; }
-    h1 { font-size: 2.5em; color: var(--blue); animation: cosmic 2s infinite; }
+    h1 { font-size: 2.5em; color: var(--blue); animation: cosmic 1.5s infinite; }
     @keyframes cosmic { 0% { text-shadow: 0 0 10px var(--blue); } 50% { text-shadow: 0 0 20px var(--gold); } 100% { text-shadow: 0 0 10px var(--blue); } }
     #globe3d { width: 100%; height: 300px; margin: 20px 0; }
     .section { margin: 20px 0; }
-    .card { background: var(--card); border-radius: 12px; padding: 16px; margin: 8px 0; animation: pulse 1.5s infinite; }
+    .card { background: var(--card); border-radius: 12px; padding: 16px; margin: 8px 0; animation: pulse 1s infinite; }
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
     .card b { color: var(--gold); }
     .muted { color: #aaa; font-size: 0.9em; }
@@ -35,18 +35,18 @@
 <body>
   <div class="container">
     <header>
-      <h1>Siêu Metaverse Web3 Vô Cực</h1>
+      <h1>Siêu Metaverse Web3 Bất Biến</h1>
       <canvas id="globe3d"></canvas>
       <button id="connectWallet" class="btn">Kết nối ví</button>
     </header>
-    <div id="ticker">🚀 Cosmic trends loading...</div>
+    <div id="ticker">🌌 Cosmic trends loading...</div>
     <div class="section">
       <h2>Top 3 Tokens</h2>
       <div id="tokenPro"></div>
       <div id="tokenFree"></div>
     </div>
     <div class="section" id="premium">
-      <h2>Premium Cosmic Zone</h2>
+      <h2>Cosmic Premium Zone</h2>
     </div>
     <div class="section">
       <h2>Giới thiệu</h2>
@@ -65,7 +65,9 @@
       "ai_api_url": "https://api.x.ai/v1",
       "ai_api_key": "YOUR_GROK3_API_KEY_HERE",
       "infura_url": "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+      "alchemy_url": "https://eth-mainnet.g.alchemy.com/v2/demo",
       "coingecko_api": "https://api.coingecko.com/api/v3",
+      "arweave_gateway": "https://arweave.net",
       "ipfs_gateway": "https://ipfs.io/ipfs",
       "nft_contract": "0xYOUR_NFT_CONTRACT_ADDRESS",
       "payments": {
@@ -92,7 +94,8 @@
       cfg: {}
     };
     try { st.cfg = JSON.parse(document.getElementById('SITE_CONFIG').textContent.trim()); } catch (e) { st.cfg = {}; }
-    let provider, signer, walletAddress;
+    let provider, signer, walletAddress, chainIndex = 0;
+    const chains = [st.cfg.infura_url, st.cfg.alchemy_url];
 
     // DOM helpers
     const $ = id => document.getElementById(id);
@@ -142,13 +145,13 @@
         value: ethers.utils.parseEther(st.cfg.payments.eth.min.toString())
       });
       await tx.wait();
-      localStorage.setItem('premium_unlocked', '1');
+      localStorage.setItem('premium_unlocked', '3096');
       paintPremium();
       addBubble('Premium unlocked!', 'me');
     }
 
     function remember() {
-      if (localStorage.getItem('premium_unlocked') === '1') {
+      if (localStorage.getItem('premium_unlocked') === '3096') {
         paintPremium();
       }
     }
@@ -169,7 +172,7 @@
         'moon': `🌙 ${keywords[1] || 'BNB'} to the moon! Nhanh tay: ${st.cfg.links.binance}`,
         'rocket': `🔥 ${keywords[1] || 'BTC'} tăng tốc! Đăng ký: ${st.cfg.links.binance}`
       };
-      return responses[keywords[0]] || `Cơ hội ${keywords[0] || 'ETH'}! Join: ${st.cfg.links.binance}`;
+      return responses[keywords[0]] || `🌌 ${keywords[0] || 'ETH'} đang hot! Join: ${st.cfg.links.binance}`;
     }
 
     // AI initialization (optional)
@@ -201,7 +204,7 @@
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
             body: JSON.stringify({
               model: 'grok-3',
-              messages: [{ role: 'user', content: 'Suggest CSS for a Web3 app with cosmic animations, FOMO triggers, and light-speed effects.' }],
+              messages: [{ role: 'user', content: 'Suggest CSS for a Web3 app with cosmic animations, FOMO triggers, and eternal effects.' }],
               max_tokens: 1000
             })
           });
@@ -211,12 +214,14 @@
             const styleEl = document.createElement('style');
             styleEl.textContent = css;
             document.head.appendChild(styleEl);
+            storeArweave({ type: 'css', content: css });
           }
         } catch (e) { console.warn('AI beautify failed, using local.', e); }
       } else {
         const styleEl = document.createElement('style');
-        styleEl.textContent = `.card { animation: cosmic 2s infinite; } @keyframes cosmic { 0% { box-shadow: 0 0 10px var(--blue); } 50% { box-shadow: 0 0 20px var(--gold); } 100% { box-shadow: 0 0 10px var(--blue); } }`;
+        styleEl.textContent = `.card { animation: eternal 2s infinite; } @keyframes eternal { 0% { box-shadow: 0 0 10px var(--blue); } 50% { box-shadow: 0 0 20px var(--gold); } 100% { box-shadow: 0 0 10px var(--blue); } }`;
         document.head.appendChild(styleEl);
+        storeArweave({ type: 'css', content: styleEl.textContent });
       }
     }
 
@@ -236,29 +241,51 @@
         localAI(keywords);
       window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post)}`, '_blank');
       try {
+        await fetch(st.cfg.arweave_gateway + '/tx', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: post, tags: { app: 'MetaverseWeb3', type: 'viral' } })
+        });
+      } catch (e) { console.warn('Arweave viral failed, trying IPFS.', e); }
+      try {
         await fetch(st.cfg.ipfs_gateway + '/upload', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ content: post, link: st.cfg.links.binance })
         });
-      } catch (e) { console.warn('Viral failed', e); }
+      } catch (e) { console.warn('IPFS viral failed.', e); }
+    }
+
+    // Store on Arweave
+    async function storeArweave(data) {
+      try {
+        await fetch(st.cfg.arweave_gateway + '/tx', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: JSON.stringify(data), tags: { app: 'MetaverseWeb3', type: data.type } })
+        });
+      } catch (e) { console.warn('Arweave store failed.', e); }
     }
 
     // Fetch token data
     async function fetchRealtimeTokens() {
       try {
-        provider = provider || new ethers.providers.JsonRpcProvider(st.cfg.infura_url);
+        provider = provider || new ethers.providers.JsonRpcProvider(chains[chainIndex]);
         const res = await fetch(st.cfg.coingecko_api + '/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10');
+        if (!res.ok) throw new Error('CoinGecko failed');
         const tokens = await res.json();
         const top3 = tokens.slice(0, 3);
         const rest = tokens.slice(3, 6);
         $('#tokenPro').innerHTML = top3.map(t => cardToken(t).outerHTML).join('');
         $('#tokenFree').innerHTML = rest.map(t => cardToken(t).outerHTML).join('');
-        $('#ticker').textContent = `🚀 ${top3[0].symbol.toUpperCase()} $${top3[0].current_price} (${top3[0].price_change_percentage_24h.toFixed(2)}%)`;
+        $('#ticker').textContent = `🌌 ${top3[0].symbol.toUpperCase()} $${top3[0].current_price} (${top3[0].price_change_percentage_24h.toFixed(2)}%)`;
+        storeArweave({ type: 'tokens', content: JSON.stringify(top3) });
       } catch (e) {
-        console.warn('Fetch tokens failed, using local.', e);
+        console.warn('Fetch tokens failed, trying next chain.', e);
+        chainIndex = (chainIndex + 1) % chains.length;
+        provider = new ethers.providers.JsonRpcProvider(chains[chainIndex]);
         $('#tokenPro').innerHTML = cardToken({ name: 'ETH', symbol: 'eth', current_price: 2000, price_change_percentage_24h: 5 }).outerHTML;
-        $('#ticker').textContent = '🚀 ETH $2000 (+5%)';
+        $('#ticker').textContent = '🌌 ETH $2000 (+5%)';
       }
     }
 
@@ -290,6 +317,7 @@
       div.textContent = text;
       $('#chatBody').appendChild(div);
       $('#chatBody').scrollTop = $('#chatBody').scrollHeight;
+      storeArweave({ type: 'chat', content: text, who });
     }
 
     $('#chatInput').onkeypress = async e => {
@@ -336,11 +364,12 @@
           const data = await res.json();
           const analysis = data.choices[0].message.content;
           addBubble(analysis, 'ai');
-          if (localStorage.getItem('premium_unlocked') === '1') {
+          if (localStorage.getItem('premium_unlocked') === '3096') {
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `<b>Phân tích ${symbol}</b><div class="muted">${analysis}</div>`;
             $('#premium').appendChild(card);
+            storeArweave({ type: 'analysis', content: analysis });
           }
         } catch (e) { addBubble(localAI('phân tích'), 'ai'); }
       } else {
@@ -362,23 +391,26 @@
         st.rev += 0.01 * 1000;
         localStorage.setItem('rev', st.rev);
         addBubble('Auto-staked 0.01 ETH on Lido!', 'me');
+        storeArweave({ type: 'revenue', content: 'Staked 0.01 ETH' });
       } catch (e) { console.warn('Auto staking failed', e); }
     }
 
     // Dynamic NFT
     async function dynamicNFT() {
       const keywords = JSON.parse(localStorage.getItem('userEvents') || '[]').slice(-1)[0]?.target || 'FOMO';
+      const block = await provider.getBlock('latest');
+      const seed = parseInt(block.hash.slice(-8), 16);
       const meta = (await initAI()) ? 
         JSON.parse((await (await fetch(st.cfg.ai_api_url + '/chat/completions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${st.cfg.ai_api_key}` },
           body: JSON.stringify({
             model: 'grok-3',
-            messages: [{ role: 'user', content: `Generate NFT metadata for keyword "${keywords}". Include name, image URL, FOMO description.` }],
+            messages: [{ role: 'user', content: `Generate NFT metadata for keyword "${keywords}" and seed ${seed}. Include name, image URL, FOMO description.` }],
             max_tokens: 1000
           })
         })).json().then(d => d.choices[0].message.content)) :
-        { name: `${keywords} Cosmic Star`, image: 'https://ipfs.io/ipfs/Qm...', description: `Own the ${keywords} trend! Limited drop!` };
+        { name: `${keywords} Eternal Star ${seed % 1000}`, image: 'https://arweave.net/Qm...', description: `Own the ${keywords} cosmic trend! Limited #${seed % 1000}!` };
       const nftCard = document.createElement('div');
       nftCard.className = 'card';
       nftCard.innerHTML = `<b>${meta.name}</b><img src="${meta.image}" style="width:100%;border-radius:12px">
@@ -388,9 +420,11 @@
         const nftContract = new ethers.Contract(st.cfg.nft_contract, ['function mint(string memory uri)'], signer);
         const tx = await nftContract.mint(JSON.stringify(meta));
         await tx.wait();
-        addBubble(`Minted NFT for ${keywords}!`, 'me');
+        addBubble(`Minted NFT: ${meta.name}!`, 'me');
+        storeArweave({ type: 'nft', content: JSON.stringify(meta) });
       };
       $('#premium').appendChild(nftCard);
+      storeArweave({ type: 'nft', content: JSON.stringify(meta) });
     }
 
     // Cosmic game
@@ -402,6 +436,7 @@
       card.className = 'card';
       card.innerHTML = `<b>Catch the Star!</b><div class="muted">${rand > 0.5 ? 'Win 0.01 ETH!' : 'Grab a rare NFT!'}</div><button class="btn" onclick="playCosmic()">Chơi ngay</button>`;
       $('#premium').appendChild(card);
+      storeArweave({ type: 'game', content: `Cosmic Game: ${rand > 0.5 ? 'ETH' : 'NFT'}` });
     }
 
     async function playCosmic() {
@@ -417,16 +452,18 @@
         await tx.wait();
         st.rev += 0.01 * 1000;
         localStorage.setItem('rev', st.rev);
+        storeArweave({ type: 'reward', content: 'Won 0.01 ETH' });
       }
     }
 
     // Self-evolving DOM
     function selfEvolve() {
       const events = JSON.parse(localStorage.getItem('userEvents') || '[]');
-      if (events.length > 5) {
+      if (events.length > 3) {
         const styleEl = document.createElement('style');
-        styleEl.textContent = `.btn { background: ${events.length % 2 ? 'var(--gold)' : 'var(--blue)'}; }`;
+        styleEl.textContent = `.btn { background: ${events.length % 2 ? 'var(--gold)' : 'var(--blue)'}; animation: bounce 0.8s infinite; } @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }`;
         document.head.appendChild(styleEl);
+        storeArweave({ type: 'ui', content: styleEl.textContent });
       }
     }
 
@@ -436,8 +473,23 @@
       const keywords = events.slice(-1)[0]?.target || 'FOMO';
       $('#ticker').textContent = `🌌 ${keywords.toUpperCase()} đang bùng nổ! Join now!`;
       const styleEl = document.createElement('style');
-      styleEl.textContent = `.card { border: 2px solid ${Math.random() > 0.5 ? 'var(--gold)' : 'var(--blue)'}; animation: bounce 1s infinite; } @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }`;
+      styleEl.textContent = `.card { border: 2px solid ${Math.random() > 0.5 ? 'var(--gold)' : 'var(--blue)'}; animation: eternal 1s infinite; } @keyframes eternal { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }`;
       document.head.appendChild(styleEl);
+      storeArweave({ type: 'ui', content: styleEl.textContent });
+    }
+
+    // Self-healing
+    async function selfHeal() {
+      const checks = [
+        { id: 'tokenPro', test: () => $('#tokenPro').children.length > 0, fix: () => fetchRealtimeTokens(), msg: 'Token cards missing' },
+        { id: 'network', test: async () => (await provider.getBlockNumber()) > 0, fix: () => { chainIndex = (chainIndex + 1) % chains.length; provider = new ethers.providers.JsonRpcProvider(chains[chainIndex]); }, msg: 'Network down' }
+      ];
+      for (const check of checks) {
+        if (!(await check.test())) {
+          check.fix();
+          storeArweave({ type: 'heal', content: check.msg });
+        }
+      }
     }
 
     // 3D Globe
@@ -518,16 +570,19 @@
         renderer.render(scene, camera);
       }
       animate();
+      storeArweave({ type: 'ui', content: '3D Globe initialized' });
     } catch (e) { console.warn('WebGL not available, fallback static.', e); }
 
     // Initialize
     (async () => {
+      provider = new ethers.providers.JsonRpcProvider(chains[chainIndex]);
       autoBeautify();
       autoViral();
       fetchRealtimeTokens();
       selfEvolve();
       psychologicalTriggers();
-      if (localStorage.getItem('premium_unlocked') === '1') {
+      selfHeal();
+      if (localStorage.getItem('premium_unlocked') === '3096') {
         dynamicNFT();
         autoRevenue();
         cosmicGame();
@@ -537,10 +592,12 @@
         autoViral();
         psychologicalTriggers();
       }
-      setInterval(autoViral, 900000);
-      setInterval(selfEvolve, 30000);
-      setInterval(psychologicalTriggers, 150000);
+      setInterval(autoViral, 600000);
+      setInterval(selfEvolve, 15000);
+      setInterval(psychologicalTriggers, 60000);
+      setInterval(selfHeal, 30000);
       remember();
+      storeArweave({ type: 'init', content: 'App initialized' });
     })();
   </script>
 </body>
