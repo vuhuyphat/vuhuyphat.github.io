@@ -4,27 +4,35 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>LightUnfold • One‑Paste UltraMaster</title>
-<meta name="description" content="Một lần dán là chạy: thanh toán + affiliate tối ưu CTR, tự học hành vi, tự xoay offer theo vùng.">
+<meta name="description" content="Một lần dán là chạy: đa kênh thanh toán, affiliate tối ưu CTR, feed cơ hội tự cập nhật (GitHub/IPNS), bền bỉ & an toàn.">
 <meta name="theme-color" content="#0b0f13">
+<!-- Gợi ý CSP ở mức thận trọng (trình duyệt có thể bỏ qua khi ở GitHub Pages) -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; img-src * data: blob:; script-src 'self' https://cdn.jsdelivr.net https://threejs.org 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src *;">
+
 <style>
-:root{--bg:#0b0f13;--card:#0f141a;--line:#233041;--txt:#e9eef4;--mut:#a9b8c8;--gold:#ffd700;--btn:#ffd700;--btnTxt:#0b0f13;--ring:rgba(255,215,0,.25)}
-*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:radial-gradient(60% 140% at 50% -10%, rgba(109,40,217,.18),transparent 60%),linear-gradient(180deg, rgba(22,163,74,.10),transparent 40%),var(--bg);color:var(--txt);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
+:root{--bg:#0b0f13;--card:#0f141a;--line:#233041;--txt:#e9eef4;--mut:#a9b8c8;--gold:#ffd700;--btn:#ffd700;--btnTxt:#0b0f13;--ring:rgba(255,215,0,.25);--ok:#16a34a;--warn:#f59e0b;--err:#ef4444}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;background:radial-gradient(60% 140% at 50% -10%, rgba(109,40,217,.18),transparent 60%),linear-gradient(180deg, rgba(22,163,74,.10),transparent 40%),var(--bg);color:var(--txt);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto}
 .wrap{max-width:1200px;margin:0 auto;padding:18px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 10px 30px rgba(0,0,0,.28)}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
 .pill{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:#101827}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:999px}
+.badge.ok{background:rgba(22,163,74,.15);border-color:#1f3e2b}
+.badge.warn{background:rgba(245,158,11,.12);border-color:#3d2e12}
+.badge.err{background:rgba(239,68,68,.12);border-color:#3a1212}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 14px;border:0;border-radius:12px;font-weight:800;background:var(--btn);color:var(--btnTxt);cursor:pointer;box-shadow:0 0 0 0 var(--ring);transition:.2s}
 .btn:hover{transform:translateY(-1px);box-shadow:0 0 0 6px var(--ring)}
 .btn.out{background:transparent;color:var(--txt);border:1px solid var(--line)}
-.muted{color:var(--mut)}
-.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+.muted{color:var(--mut)} .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
 .globe3d{width:300px;height:300px;border-radius:50%;display:block;margin:auto}
 .qr{width:180px;height:180px;border-radius:12px;background:#fff}
 .paybtn{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:transparent;cursor:pointer}
 .paybtn.active{outline:2px solid var(--gold);box-shadow:0 0 0 6px rgba(255,215,0,.18)}
 .copy{font-size:13px;border:1px dashed var(--line);border-radius:8px;padding:4px 10px;background:transparent;color:var(--txt);cursor:pointer}
 .float-share{position:fixed;right:16px;bottom:16px;display:flex;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;z-index:9}
+.tag{display:inline-block;border:1px solid var(--line);border-radius:10px;padding:3px 8px;margin:2px 6px 0 0;color:var(--txt);opacity:.85;font-size:12px}
 small.note{color:#a7b4c9}
 </style>
 </head>
@@ -34,6 +42,8 @@ small.note{color:#a7b4c9}
     <span class="pill"><b>LightUnfold • UltraMaster</b></span>
     <span class="pill">ENS: <b id="ens">lightunfold.eth</b></span>
     <span class="pill">Heartbeat: <b id="hb">—</b></span>
+    <span class="badge ok" id="statusNet">Online</span>
+    <span class="badge warn" id="statusFeed">Feed: mặc định</span>
     <button class="pill" id="lang">VI/EN</button>
   </div>
 
@@ -42,7 +52,7 @@ small.note{color:#a7b4c9}
     <div class="row" style="justify-content:space-between">
       <div style="min-width:320px;flex:1">
         <h1 style="margin:6px 0 8px">Một lần dán là chạy</h1>
-        <div class="muted" id="tagline">Thanh toán đa kênh • Affiliate tối ưu CTR • Tự học hành vi • Tự xoay theo vùng</div>
+        <div class="muted" id="tagline">Thanh toán đa kênh • Affiliate tối ưu CTR • Feed cơ hội tự cập nhật • Bền bỉ IPFS/IPNS</div>
         <div class="row" style="margin-top:12px">
           <a class="btn out" id="ctaB" href="#" target="_blank" rel="noopener">Mở Binance Miễn Phí ↗</a>
           <a class="btn out" id="ctaA" href="#" target="_blank" rel="noopener">Mở AlgosOne Miễn Phí ↗</a>
@@ -82,6 +92,13 @@ small.note{color:#a7b4c9}
     </div>
   </section>
 
+  <!-- FEED: Cơ hội nổi bật -->
+  <section class="card" id="secFeed">
+    <h3 style="margin:0 0 10px">🔥 Cơ hội / Tin nhanh</h3>
+    <div class="muted" id="feedInfo" style="margin-bottom:8px">Hiển thị tức thì từ feed mặc định. Nếu có feed JSON ngoài, trang sẽ tự cập nhật.</div>
+    <div id="feedList" class="grid"></div>
+  </section>
+
   <!-- PREMIUM GATE (tuỳ chọn) -->
   <section class="card">
     <h3>SuperGate (mở khoá nội dung)</h3>
@@ -102,28 +119,43 @@ small.note{color:#a7b4c9}
 
 <!-- Floating share -->
 <div class="float-share">
-  <a id="sh_tg" target="_blank" title="Share Telegram">📣</a>
-  <a id="sh_x"  target="_blank" title="Share X">𝕏</a>
-  <a id="sh_fb" target="_blank" title="Share Facebook">f</a>
-  <a id="sh_in" target="_blank" title="Share LinkedIn">in</a>
+  <a id="sh_tg" target="_blank" title="Share Telegram" rel="noopener noreferrer">📣</a>
+  <a id="sh_x"  target="_blank" title="Share X" rel="noopener noreferrer">𝕏</a>
+  <a id="sh_fb" target="_blank" title="Share Facebook" rel="noopener noreferrer">f</a>
+  <a id="sh_in" target="_blank" title="Share LinkedIn" rel="noopener noreferrer">in</a>
 </div>
 
 <!-- Three.js (nhẹ) -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
 <script>
-/* ================= ONE-PASTE ENGINE =================
-   ✅ Chỉ sửa 2 chỗ: REMOTE_CONFIG_URL & defaults dưới.
-   – Trang sẽ nạp JSON động (GitHub Raw / IPNS) -> tự đổi ví, QR, links.
-   – Nếu JSON lỗi/mạng kém: dùng defaults + cache localStorage.
-===================================================== */
+/* ================= ONE-PASTE ENGINE (Hardened) =================
+   – Nạp CONFIG & FEED đa nguồn (GitHub/IPNS) + fallback cache.
+   – Sanitize body_html để tránh XSS khi đọc feed ngoài.
+   – Tối ưu CTR affiliate (ε-greedy + UCB), đa kênh thanh toán.
+   – 3D Earth tự tắt khi thiết bị yếu; share viral; service worker cache nhẹ.
+================================================================= */
 
-// 1) —— CHỈNH CHỖ NÀY —— (chọn 1 trong 2)
-const REMOTE_CONFIG_URL =
-  // 'https://raw.githubusercontent.com/<user>/<repo>/main/payments.json';
-  'https://raw.githubusercontent.com/vuhuyphat/vuhuyphat.github.io/main/payments.json';
-// Hoặc IPNS: 'https://ipfs.io/ipns/<your-ipns-id>'
+/*** 1) —— CẤU HÌNH NGUỒN ĐỘNG (có thể để nguyên, HTML vẫn chạy với defaults) ***/
+// Thêm IPNS của bạn nếu có: thay YOUR_IPNS_ID
+const IPNS_ID = 'YOUR_IPNS_ID';
 
-// 2) Defaults hiển thị ngay lần đầu (đổi theo bạn)
+// Nhiều nguồn cho CONFIG (thứ tự ưu tiên)
+const CONFIG_URLS = [
+  'https://raw.githubusercontent.com/vuhuyphat/vuhuyphat.github.io/main/payments.json',
+  IPNS_ID ? `https://ipfs.io/ipns/${IPNS_ID}/payments.json` : null,
+  IPNS_ID ? `https://cloudflare-ipfs.com/ipns/${IPNS_ID}/payments.json` : null,
+  IPNS_ID ? `https://gateway.pinata.cloud/ipns/${IPNS_ID}/payments.json` : null
+].filter(Boolean);
+
+// Nhiều nguồn cho FEED (thứ tự ưu tiên)
+const FEED_URLS = [
+  'https://raw.githubusercontent.com/vuhuyphat/vuhuyphat.github.io/main/feed.json',
+  IPNS_ID ? `https://ipfs.io/ipns/${IPNS_ID}/feed.json` : null,
+  IPNS_ID ? `https://cloudflare-ipfs.com/ipns/${IPNS_ID}/feed.json` : null,
+  IPNS_ID ? `https://gateway.pinata.cloud/ipns/${IPNS_ID}/feed.json` : null
+].filter(Boolean);
+
+/*** 2) —— DEFAULTS AN TOÀN (hiển thị ngay, không cần nguồn ngoài) ***/
 const defaults = {
   ens: 'lightunfold.eth',
   links: {
@@ -140,187 +172,223 @@ const defaults = {
   premium: { unlock_code: '23061988' }
 };
 
-// ====== Helpers
-const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
-const LS = 'onepaste_cfg_v1';
+const FEED_DEFAULT = {
+  updated_at: new Date().toISOString(),
+  items: [
+    { id:"seed-1", title:"Mở Binance nhận thưởng – bắt nhịp thị trường",
+      body_html:"<p>Mở tài khoản miễn phí, theo dõi thị trường, nhận ưu đãi người mới.</p>",
+      cta:{label:"Mở Binance", url:defaults.links.binance}, tags:["onboarding","cex"], lang:"vi" },
+    { id:"seed-2", title:"AlgosOne – tín hiệu & chiến lược AI",
+      body_html:"<p>Khởi động tài khoản để nhận cảnh báo thời gian thực và chiến lược gợi ý.</p>",
+      cta:{label:"Mở AlgosOne", url:defaults.links.algos}, tags:["ai","signals"], lang:"vi" }
+  ]
+};
 
-function isVN() {
+/*** 3) —— TIỆN ÍCH BỀN BỈ ***/
+const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
+const LS_CFG = 'onepaste_cfg_v1';
+const LS_FEED = 'onepaste_feed_v1';
+const LS_STATS = 'onepaste_stats_v1';
+
+function isVN(){
   const lang=(navigator.language||'').toLowerCase();
   const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
   return lang.startsWith('vi') || tz.includes('Bangkok') || tz.includes('Ho_Chi_Minh');
 }
+function region(){ return localStorage.getItem('ab_region') || (isVN()?'VN':'GLOBAL'); }
 function setQR(text){ $('#qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=340x340&data=${encodeURIComponent(text)}`; }
 function copy(txt){ return navigator.clipboard.writeText(txt).then(()=>alert('Đã sao chép.')).catch(()=>alert('Thiết bị chặn clipboard, vui lòng giữ & chọn.')); }
+function netBadge(ok){ const el=$('#statusNet'); if(!el) return; el.textContent = ok?'Online':'Offline'; el.className = 'badge ' + (ok?'ok':'err'); }
+window.addEventListener('online', ()=>netBadge(true)); window.addEventListener('offline', ()=>netBadge(false)); netBadge(navigator.onLine);
 
-// ====== Remote config loader (with cache + fallback)
-async function loadConfig(){
-  let cfg = defaults;
-  try{
-    const res = await fetch(REMOTE_CONFIG_URL + '?t=' + Date.now(), {cache:'no-store'});
-    if(res.ok){
-      const remote = await res.json();
-      cfg = {...defaults, ...remote, payments:{...defaults.payments, ...(remote.payments||{})}};
-      localStorage.setItem(LS, JSON.stringify(cfg));
-    }else{
-      const c = localStorage.getItem(LS); if(c) cfg = JSON.parse(c);
-    }
-  }catch(_){
-    const c = localStorage.getItem(LS); if(c) cfg = JSON.parse(c);
+function timeout(ms){ return new Promise((_,rej)=>setTimeout(()=>rej(new Error('TIMEOUT')),ms)); }
+async function fetchJSON(url, ms=6000){ return Promise.race([fetch(url,{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject(new Error(r.status))), timeout(ms)]); }
+async function trySources(urls, cacheKey, fallback){
+  for(const u of urls){
+    try{ const data = await fetchJSON(u); localStorage.setItem(cacheKey, JSON.stringify(data)); return {data, source:u}; }
+    catch(e){ /* thử nguồn kế */ }
   }
-  return cfg;
+  try{ const c = localStorage.getItem(cacheKey); if(c){ return {data:JSON.parse(c), source:'cache'}; } }catch(e){}
+  return {data:fallback, source:'default'};
 }
 
-// ====== Offers bandit (ε-greedy + UCB)
-const STATS = 'onepaste_stats_v1';
-function stats(){ try{return JSON.parse(localStorage.getItem(STATS)||'{}')}catch{return{}} }
-function saveStats(s){ localStorage.setItem(STATS, JSON.stringify(s)); }
-function region(){ return localStorage.getItem('ab_region') || (isVN()?'VN':'GLOBAL'); }
-function pickOffer(pool){
-  const s = stats(); s.stats = s.stats||{}; s.total = s.total||0;
-  const eps = 0.12;
-  if(Math.random()<eps) return pool[Math.floor(Math.random()*pool.length)];
+/*** 4) —— SANITIZE FEED (chặn XSS) ***/
+function sanitize(html){
+  try{
+    const tmp = document.createElement('div'); tmp.innerHTML = html || '';
+    const ALLOWED_TAGS = new Set(['B','I','EM','STRONG','P','BR','UL','OL','LI','A','CODE','PRE','SPAN','SMALL']);
+    const ALLOWED_ATTR = { 'A':['href','target','rel'], 'SPAN':['class'], 'DIV':['class'], 'CODE':['class'], 'PRE':['class'] };
+    (function walk(node){
+      [...node.children].forEach(ch=>{
+        if(!ALLOWED_TAGS.has(ch.tagName)){ const repl=document.createTextNode(ch.textContent||''); ch.replaceWith(repl); return; }
+        [...ch.attributes].forEach(a=>{
+          const ok = (ALLOWED_ATTR[ch.tagName]||[]).includes(a.name.toLowerCase());
+          if(!ok) ch.removeAttribute(a.name);
+          if(ch.tagName==='A' && a.name.toLowerCase()==='href'){
+            try{ const url = new URL(ch.getAttribute('href'), location.href); if(!/^https?:/i.test(url.protocol)) ch.removeAttribute('href'); }catch(_){ ch.removeAttribute('href'); }
+            ch.setAttribute('rel','noopener noreferrer'); ch.setAttribute('target','_blank');
+          }
+        });
+        walk(ch);
+      });
+    })(tmp);
+    return tmp.innerHTML;
+  }catch(_){ return ''; }
+}
 
-  let best=pool[0], score=-1;
+/*** 5) —— LEARNING (ε-greedy + UCB) ***/
+function stats(){ try{return JSON.parse(localStorage.getItem(LS_STATS)||'{}')}catch{return{}} }
+function saveStats(s){ localStorage.setItem(LS_STATS, JSON.stringify(s)); }
+function pickOffer(pool){
+  const s = stats(); s.stats=s.stats||{}; s.total=s.total||0; const eps=0.12;
+  if(Math.random()<eps) return pool[Math.floor(Math.random()*pool.length)];
+  let best=pool[0],score=-1;
   for(const o of pool){
-    const st=s.stats[o.id]||{};
-    const ctr=(st.c||0)/Math.max(1,(st.v||0));
+    const st=s.stats[o.id]||{}; const ctr=(st.c||0)/Math.max(1,(st.v||0));
     const ucb=ctr + Math.sqrt(2*Math.log(1+(s.total||1))/Math.max(1,(st.v||0)));
-    if(ucb>score){score=ucb; best=o;}
-  }
-  return best;
+    if(ucb>score){score=ucb;best=o;}
+  } return best;
 }
 function markView(id){ const s=stats(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{v:0,c:0}; s.stats[id].v++; s.total=(s.total||0)+1; saveStats(s); }
 function markClick(id){ const s=stats(); s.stats=s.stats||{}; s.stats[id]=s.stats[id]||{v:0,c:0}; s.stats[id].c++; saveStats(s); }
 
-// ====== Paint UI
+/*** 6) —— UI: PAYMENTS, OFFERS, FEED ***/
 function paintPayments(cfg){
-  const pays = cfg.payments||{};
-  const list = $('#payList'); list.innerHTML='';
-  const rows = [];
-
-  // Chuẩn hóa hiển thị + QR text
-  const payMap = {
-    eth:   v => ({title:'ETH (ENS/Address)', id: v.id, qr: (v.scheme||'ethereum:') + (v.id||'') }),
-    usdt:  v => ({title:'USDT (ERC‑20)',     id: v.id, qr: v.id }),
-    momo:  v => ({title:'MoMo',             id: v.id, qr: v.id }),
-    bank:  v => { const [acc,name]=(v.id||'').split('|'); return {title:'Vietcombank', id:`${acc} • ${name||''}`, qr:`VCB:${acc}?memo=LightUnfold&name=${encodeURIComponent(name||'')}`} },
-    paypal:v => ({title:'PayPal',           id: v.id, qr: `paypal.me/${encodeURIComponent((v.id||'').split('@')[0])}` })
+  const pays = cfg.payments||{}; const list=$('#payList'); list.innerHTML=''; const rows=[];
+  const map = {
+    eth:   v => ({title:'ETH (ENS/Address)', id:v.id, qr:(v.scheme||'ethereum:')+(v.id||'')}),
+    usdt:  v => ({title:'USDT (ERC‑20)',     id:v.id, qr:v.id}),
+    momo:  v => ({title:'MoMo',              id:v.id, qr:v.id}),
+    bank:  v => { const [acc,name]=(v.id||'').split('|'); return {title:'Vietcombank', id:`${acc} • ${name||''}`, qr:`VCB:${acc}?memo=LightUnfold&name=${encodeURIComponent(name||'')}`}},
+    paypal:v => ({title:'PayPal',            id:v.id, qr:`paypal.me/${encodeURIComponent((v.id||'').split('@')[0])}`})
   };
-
-  Object.entries(payMap).forEach(([k,fn])=>{
-    if(!pays[k]) return;
-    const norm = fn(pays[k]);
-    const row = document.createElement('div');
-    row.className='paybtn'; row.innerHTML = `<div><b>${norm.title}</b><div class="muted mono">${norm.id}</div></div><button class="copy">Copy</button>`;
-    row.onclick = ()=>{ $('#payAddr').textContent = norm.id; setQR(norm.qr); $$('.paybtn').forEach(x=>x.classList.remove('active')); row.classList.add('active'); };
-    row.querySelector('.copy').onclick = (e)=>{ e.stopPropagation(); copy(norm.id); };
+  Object.entries(map).forEach(([k,fn])=>{
+    if(!pays[k]) return; const norm=fn(pays[k]);
+    const row=document.createElement('div'); row.className='paybtn';
+    row.innerHTML=`<div><b>${norm.title}</b><div class="muted mono">${norm.id}</div></div><button class="copy">Copy</button>`;
+    row.onclick=()=>{ $('#payAddr').textContent=norm.id; setQR(norm.qr); $$('.paybtn').forEach(x=>x.classList.remove('active')); row.classList.add('active'); };
+    row.querySelector('.copy').onclick=(e)=>{ e.stopPropagation(); copy(norm.id); };
     list.appendChild(row); rows.push(row);
   });
-
   if(rows[0]) rows[0].click();
-  $('#btnCopy').onclick = ()=> copy($('#payAddr').textContent||'');
+  $('#btnCopy').onclick=()=>copy($('#payAddr').textContent||'');
 }
-
 function paintOffers(cfg){
-  const regionNow = region();
-  $('#tagRegion').textContent = 'Region: ' + regionNow;
-  const OFFERS = [
-    {id:'binance', title:'Mở Binance Miễn Phí', url: cfg.links?.binance, regions:['VN','GLOBAL']},
-    {id:'algos',   title:'Mở AlgosOne Miễn Phí', url: cfg.links?.algos, regions:['GLOBAL','CRYPTO','VN']}
+  const regionNow=region(); $('#tagRegion').textContent='Region: '+regionNow;
+  const OFFERS=[
+    {id:'binance',title:'Mở Binance Miễn Phí',url:cfg.links?.binance,regions:['VN','GLOBAL']},
+    {id:'algos',title:'Mở AlgosOne Miễn Phí',url:cfg.links?.algos,regions:['GLOBAL','CRYPTO','VN']}
   ].filter(o=>o.url);
-
-  const pool = OFFERS.filter(o=>o.regions.includes(regionNow));
-  const pick = pickOffer(pool.length?pool:OFFERS);
-  const box = $('#offerBox');
-  box.innerHTML = `
+  const pool=OFFERS.filter(o=>o.regions.includes(regionNow)); const pick=pickOffer(pool.length?pool:OFFERS);
+  const box=$('#offerBox');
+  box.innerHTML=`
     <a class="btn out" id="offer" href="${pick.url}" target="_blank" rel="noopener">🔥 ${pick.title}</a>
     ${cfg.links?.binance?`<a class="btn out" href="${cfg.links.binance}" target="_blank" rel="noopener">🚀 Binance</a>`:''}
-    ${cfg.links?.algos?`<a class="btn out" href="${cfg.links.algos}" target="_blank" rel="noopener">🌐 AlgosOne</a>`:''}
-  `;
-  $('#offer').addEventListener('click', ()=>markClick(pick.id));
+    ${cfg.links?.algos?`<a class="btn out" href="${cfg.links.algos}" target="_blank" rel="noopener">🌐 AlgosOne</a>`:''}`;
+  $('#offer').addEventListener('click',()=>markClick(pick.id));
   markView(pick.id);
-
-  // set CTA buttons
-  if(cfg.links?.binance) { ['#ctaB'].forEach(id=>{ const el=$(id); if(el) el.href=cfg.links.binance; }); }
-  if(cfg.links?.algos)   { ['#ctaA'].forEach(id=>{ const el=$(id); if(el) el.href=cfg.links.algos; }); }
+  if(cfg.links?.binance){ const el=$('#ctaB'); if(el) el.href=cfg.links.binance; }
+  if(cfg.links?.algos){ const el=$('#ctaA'); if(el) el.href=cfg.links.algos; }
+}
+function renderFeed(feed, source){
+  const box=$('#feedList'), info=$('#feedInfo'); if(!box) return;
+  $('#statusFeed').textContent = 'Feed: ' + (source==='default'?'mặc định': source==='cache'?'cache': 'remote');
+  $('#statusFeed').className = 'badge ' + (source==='default'?'warn': 'ok');
+  info.textContent = `Cập nhật: ${new Date(feed.updated_at||Date.now()).toLocaleString()} • nguồn: ${source}`;
+  box.innerHTML='';
+  (feed.items||[]).forEach(it=>{
+    const card=document.createElement('div'); card.className='card';
+    const body = sanitize(it.body_html||'');
+    const tags = (it.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join(' ');
+    card.innerHTML = `
+      <b>${it.title||''}</b>
+      <div class="muted" style="margin:6px 0">${tags}</div>
+      <div>${body}</div>
+      ${it.cta?.url?`<div class="row" style="margin-top:8px"><a class="btn out" href="${it.cta.url}" target="_blank" rel="noopener">${it.cta.label||'Xem'}</a></div>`:''}
+    `;
+    box.appendChild(card);
+  });
 }
 
-function bindRegionButtons(){ 
-  $$('button[data-region]').forEach(b=> b.onclick=()=>{ localStorage.setItem('ab_region', b.dataset.region); location.reload(); });
-}
+/*** 7) —— FEED & CONFIG LOADER ***/
+async function loadConfig(){ const {data,source}=await trySources(CONFIG_URLS, LS_CFG, defaults); return {cfg:{...defaults,...data, payments:{...defaults.payments, ...(data.payments||{})}}, source}; }
+async function loadFeed(){ const {data,source}=await trySources(FEED_URLS, LS_FEED, FEED_DEFAULT); return {feed:{updated_at:data.updated_at||new Date().toISOString(), items:Array.isArray(data.items)&&data.items.length?data.items:FEED_DEFAULT.items}, source}; }
 
-// ====== Premium Gate (mã mở khoá lưu local)
+/*** 8) —— REGION & GATE & SHARE ***/
+function bindRegionButtons(){ $$('button[data-region]').forEach(b=>b.onclick=()=>{ localStorage.setItem('ab_region', b.dataset.region); location.reload(); }); }
 function bindGate(cfg){
-  const SECRET = String(cfg.premium?.unlock_code||'');
-  $('#doUnlock').onclick=()=>{
-    const ok = (String($('#unlockCode').value||'').trim() === SECRET);
+  const SECRET=String(cfg.premium?.unlock_code||'');
+  $('#doUnlock').onclick=()=>{ const ok=(String($('#unlockCode').value||'').trim()===SECRET);
     $('#uMsg').textContent = ok ? '✅ Đã mở khoá' : '❌ Sai mã';
     $('#opened').style.display = ok ? 'block' : 'none';
-    if(ok) localStorage.setItem('premium_unlocked','1');
-  };
+    if(ok) localStorage.setItem('premium_unlocked','1'); };
   $('#remember').onclick=()=> localStorage.setItem('remember_code',$('#unlockCode').value||'');
   if(localStorage.getItem('premium_unlocked')==='1') $('#opened').style.display='block';
 }
-
-// ====== 3D Earth (tự tắt nếu thiết bị yếu)
-(function earth(){
-  try{
-    const canvas=document.getElementById('globe3d');
-    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
-    const DPR=Math.min(window.devicePixelRatio||1,2);
-    const W=canvas.clientWidth||300,H=canvas.clientHeight||300;
-    renderer.setPixelRatio(DPR); renderer.setSize(W,H,false);
-    const scene=new THREE.Scene();
-    const camera=new THREE.PerspectiveCamera(50,W/H,0.1,100); camera.position.z=6;
-    scene.add(new THREE.AmbientLight(0x9fc9ff,0.55), new THREE.DirectionalLight(0xffffff,0.95));
-    const loader=new THREE.TextureLoader();
-    const earth=new THREE.Mesh(new THREE.SphereGeometry(2.4,64,64),
-      new THREE.MeshPhongMaterial({map:loader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg')}));
-    scene.add(earth);
-    (function anim(){ requestAnimationFrame(anim); earth.rotation.y+=0.0024; renderer.render(scene,camera); })();
-  }catch(e){ document.getElementById('globeCap').textContent='—'; }
-})();
-
-// ====== Share links
 (function share(){
-  const base=location.origin+location.pathname;
-  const peer=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2);
-  localStorage.setItem('peer_id',peer);
-  const myRef=`${base}?ref=${peer}`;
+  const base=location.origin+location.pathname; const peer=localStorage.getItem('peer_id')||Math.random().toString(36).slice(2);
+  localStorage.setItem('peer_id',peer); const myRef=`${base}?ref=${peer}`;
   const t=encodeURIComponent(document.title), u=encodeURIComponent(myRef);
   const map={sh_tg:`https://t.me/share/url?url=${u}&text=${t}`,sh_x:`https://twitter.com/intent/tweet?text=${t}&url=${u}`,sh_fb:`https://www.facebook.com/sharer/sharer.php?u=${u}`,sh_in:`https://www.linkedin.com/sharing/share-offsite/?url=${u}`};
   for(const id in map){ const el=document.getElementById(id); if(el) el.href=map[id]; }
 })();
 
-// ====== Lang & heartbeat
-let LANG = (localStorage.getItem('lang')||(navigator.language||'vi')).toLowerCase().startsWith('vi')?'vi':'en';
+/*** 9) —— Lang & Heartbeat & 3D ***/
+let LANG=(localStorage.getItem('lang')||(navigator.language||'vi')).toLowerCase().startsWith('vi')?'vi':'en';
 function applyLang(){
-  if(LANG==='vi'){ $('#tagline').textContent='Thanh toán đa kênh • Affiliate tối ưu CTR • Tự học hành vi • Tự xoay theo vùng'; $('#globeCap').textContent='Trái Đất On‑Chain · 3D'; }
-  else           { $('#tagline').textContent='Multi‑channel payments • CTR‑optimized affiliate • On‑device learn & region adapt'; $('#globeCap').textContent='On‑Chain Earth · 3D'; }
+  if(LANG==='vi'){ $('#tagline').textContent='Thanh toán đa kênh • Affiliate tối ưu CTR • Feed cơ hội tự cập nhật • Bền bỉ IPFS/IPNS'; $('#globeCap').textContent='Trái Đất On‑Chain · 3D'; }
+  else { $('#tagline').textContent='Multi-channel payments • CTR-optimized affiliate • Auto-updating opportunity feed • IPFS/IPNS resilience'; $('#globeCap').textContent='On‑Chain Earth · 3D'; }
 }
 applyLang();
-document.getElementById('lang').onclick=()=>{ LANG = (LANG==='vi'?'en':'vi'); localStorage.setItem('lang',LANG); applyLang(); };
-setInterval(()=>{ document.getElementById('hb').textContent=new Date().toLocaleTimeString(); },1000);
-document.getElementById('ens').textContent = defaults.ens;
+$('#lang').onclick=()=>{ LANG=(LANG==='vi'?'en':'vi'); localStorage.setItem('lang',LANG); applyLang(); };
+setInterval(()=>{ $('#hb').textContent=new Date().toLocaleTimeString(); },1000);
 
-// ====== Boot
+(function earth(){
+  try{
+    const canvas=document.getElementById('globe3d'); const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+    const DPR=Math.min(window.devicePixelRatio||1,2); const W=canvas.clientWidth||300,H=canvas.clientHeight||300;
+    renderer.setPixelRatio(DPR); renderer.setSize(W,H,false);
+    const scene=new THREE.Scene(); const camera=new THREE.PerspectiveCamera(50,W/H,0.1,100); camera.position.z=6;
+    scene.add(new THREE.AmbientLight(0x9fc9ff,0.55), new THREE.DirectionalLight(0xffffff,0.95));
+    const loader=new THREE.TextureLoader();
+    const earth=new THREE.Mesh(new THREE.SphereGeometry(2.4,64,64),
+      new THREE.MeshPhongMaterial({map:loader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg')}));
+    scene.add(earth);
+    function anim(){ if(!prefersReduced) earth.rotation.y+=0.0024; renderer.render(scene,camera); requestAnimationFrame(anim); }
+    anim();
+  }catch(e){ $('#globeCap').textContent='—'; }
+})();
+
+/*** 10) —— BOOT ***/
+document.getElementById('ens').textContent = defaults.ens;
 (async function start(){
   try{
-    const cfg = await loadConfig();
+    const {cfg} = await loadConfig();
     paintPayments(cfg);
     paintOffers(cfg);
     bindRegionButtons();
     bindGate(cfg);
-  }catch(e){ console.warn('Boot failed', e); }
+
+    const {feed, source} = await loadFeed();
+    renderFeed(feed, source);
+  }catch(e){ console.warn('Boot failed', e); $('#statusFeed').textContent='Feed: lỗi'; $('#statusFeed').className='badge err'; }
 })();
 </script>
 
-<!-- Service Worker (cache nhẹ) -->
+<!-- Service Worker (cache nhẹ – offline khả dụng) -->
 <script>
 if('serviceWorker' in navigator){
   const sw = `
-    self.addEventListener('install',e=>{e.waitUntil(caches.open('onepaste-v1').then(c=>c.addAll(['./'])))}); 
-    self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const copy=res.clone(); caches.open('onepaste-v1').then(c=>c.put(e.request,copy)); return res;})).catch(()=>r))});
+    const CACHE='onepaste-v1';
+    self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./'])) )});
+    self.addEventListener('fetch',e=>{
+      e.respondWith(
+        caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{
+          const copy=res.clone(); caches.open(CACHE).then(c=>c.put(e.request,copy)); return res;
+        }).catch(()=>r))
+      );
+    });
   `;
   const blob = new Blob([sw],{type:'text/javascript'}); const url = URL.createObjectURL(blob);
   navigator.serviceWorker.register(url).catch(()=>{});
