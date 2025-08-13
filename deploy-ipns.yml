@@ -1,4 +1,4 @@
-name: UCAN Upload → Auto-IPNS
+name: UCAN Upload → Auto-IPNS (One-Paste)
 
 on:
   workflow_dispatch:
@@ -6,9 +6,10 @@ on:
     branches: [ main, master ]
     paths:
       - "site/**"
+      - "index.html"
       - ".github/workflows/auto-ipns.yml"
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "0 */6 * * *"   # chạy mỗi 6 giờ
 
 permissions:
   contents: read
@@ -20,6 +21,7 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
@@ -87,13 +89,21 @@ jobs:
             const proof = await Client.importDelegation(UCAN)
             await client.addProof(proof)
 
+            const target = exists('site') ? 'site' : (process.env.UPLOAD_PATH || 'site')
+            const src = exists(target) ? target : (exists('index.html') ? 'index.html' : target)
             const {kind, files}=await collectFiles(src)
-            console.log('📦 Sẽ upload các tệp:', files.map(f => f.name))
+
+            console.log('📦 Sẽ upload:', kind==='dir' ? `${files.length} file trong ${src}` : src)
+
             let cid
             if(kind==='dir'){
-              cid = await client.uploadDirectory(files, { onShardStored: ({cid}) => console.log('• stored shard:', cid.toString()) })
+              cid = await client.uploadDirectory(files, {
+                onShardStored: ({cid}) => console.log('• stored shard:', cid.toString())
+              })
             } else {
-              cid = await client.uploadFile(files[0], { onShardStored: ({cid}) => console.log('• stored shard:', cid.toString()) })
+              cid = await client.uploadFile(files[0], {
+                onShardStored: ({cid}) => console.log('• stored shard:', cid.toString())
+              })
             }
             const c=cid.toString()
             console.log('\\n✅ Upload xong  → CID:', c)
@@ -123,18 +133,13 @@ jobs:
             const ipns = name.toString()
             console.log('\\n🔗 IPNS cập nhật!')
             console.log('IPNS:', ipns)
-            console.log('Gateway (IPNS):', `https://w3s.link/ipns/${ipns}?t=${Date.now()}`)
+            console.log('Gateway (IPNS):', `https://w3s.link/ipns/${ipns}`)
             fs.writeFileSync('ipns.txt', ipns)
             fs.writeFileSync('cid.txt', cid)
           }
 
           async function main(){
-            const SRC = process.env.UPLOAD_PATH || 'site'
-            if(!exists(SRC)){
-              fs.mkdirSync('site', {recursive:true})
-              fs.writeFileSync('site/index.html','<h1>Hello IPNS</h1><p>Auto publish from GitHub Actions.</p>')
-            }
-            const cid = await uploadWithUCAN(SRC)
+            const cid = await uploadWithUCAN(process.env.UPLOAD_PATH || 'site')
             await publishIPNS(cid)
           }
           main().catch(e=>{ console.error('\\n❌ Lỗi:', e?.message||e); process.exit(1) })
@@ -144,8 +149,8 @@ jobs:
         env:
           WEB3_STORAGE_UCAN: ${{ secrets.WEB3_STORAGE_UCAN || secrets.WEB3_STORAGE_KEY }}
           WEB3_SPACE_DID:   ${{ secrets.WEB3_SPACE_DID    || secrets.WEB3_SPACE_KEY   }}
-          W3NAME_KEY:       ${{ secrets.W3NAME_KEY }}   # tuỳ chọn; nếu trống run đầu sẽ tạo
-          UPLOAD_PATH:      site                        # đổi sang dist/public nếu bạn build ra thư mục khác
+          W3NAME_KEY:       ${{ secrets.W3NAME_KEY }}   # có thì dán; trống thì run đầu sẽ tạo
+          UPLOAD_PATH:      site                        # đổi sang dist/public nếu cần
         run: node .onepaste/upload_ipns.mjs
 
       - name: Upload artifacts • IPNS/CID (+ key nếu vừa tạo)
@@ -158,9 +163,36 @@ jobs:
             .w3name.key
           if-no-files-found: ignore
 
+      - name: Pin CID to Pinata (optional)
+        if: always()
+        env:
+          PINATA_JWT: ${{ secrets.PINATA_JWT }}
+        run: |
+          if [ -f cid.txt ] && [ -n "$PINATA_JWT" ]; then
+            CID="$(cat cid.txt)"
+            echo "Pinning CID to Pinata: $CID"
+            curl -s -X POST "https://api.pinata.cloud/pinning/pinByHash" \
+              -H "Authorization: Bearer $PINATA_JWT" \
+              -H "Content-Type: application/json" \
+              --data "{\"hashToPin\":\"$CID\",\"pinataMetadata\":{\"name\":\"onepaste-auto-ipns\"}}"
+            echo " → Done"
+          else
+            echo "Skip Pinata pin (missing cid.txt or PINATA_JWT)"
+          fi
+
+      - name: Quick verify gateways
+        run: |
+          CID=$(cat cid.txt 2>/dev/null || true)
+          IPNS=$(cat ipns.txt 2>/dev/null || true)
+          echo "CID=$CID"
+          echo "IPNS=$IPNS"
+          echo "Try: https://w3s.link/ipfs/${CID}/"
+          echo "Try: https://ipfs.io/ipns/${IPNS}?t=$(date +%s)"
+          echo "Try: https://cloudflare-ipfs.com/ipns/${IPNS}?t=$(date +%s)"
+
       - name: Summary
         run: |
           echo "### Kết quả IPNS" >> $GITHUB_STEP_SUMMARY
           test -f cid.txt  && echo "- **CID:** \`$(cat cid.txt)\`"   >> $GITHUB_STEP_SUMMARY || true
           test -f ipns.txt && echo "- **IPNS:** \`$(cat ipns.txt)\`" >> $GITHUB_STEP_SUMMARY || true
-          test -f ipns.txt && echo "- **Gateway (IPNS):** https://w3s.link/ipns/$(cat ipns.txt)?t=${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY || true
+          test -f ipns.txt && echo "- **Gateway:** https://w3s.link/ipns/$(cat ipns.txt)" >> $GITHUB_STEP_SUMMARY || true
