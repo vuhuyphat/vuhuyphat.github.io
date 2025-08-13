@@ -1,4 +1,4 @@
-name: UCAN Upload → Auto-IPNS (One-Paste)
+name: Pages + Web3 (Auto-IPNS, One-Source)
 
 on:
   workflow_dispatch:
@@ -7,19 +7,22 @@ on:
     paths:
       - "site/**"
       - "index.html"
-      - ".github/workflows/auto-ipns.yml"
-  schedule:
-    - cron: "0 */6 * * *"   # chạy mỗi 6 giờ
+      - ".github/workflows/pages+ipns.yml"
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: ipns-publish
+  group: pages-ipns-sync
   cancel-in-progress: true
 
+env:
+  SOURCE_DIR: site   # đổi nếu bạn muốn
+
 jobs:
-  publish:
+  build_and_deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -27,6 +30,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Chuẩn hoá thư mục nguồn để Pages & IPNS dùng cùng 1 chỗ
+      - name: Prepare source folder
+        run: |
+          if [ -d "$SOURCE_DIR" ]; then
+            echo "Using folder: $SOURCE_DIR"
+          elif [ -f "index.html" ]; then
+            echo "No $SOURCE_DIR; using root index.html"
+            mkdir -p "$SOURCE_DIR"
+            cp -a index.html "$SOURCE_DIR/"
+          else
+            echo "No site/ or index.html found → create minimal page"
+            mkdir -p "$SOURCE_DIR"
+            echo '<!doctype html><meta charset=utf-8><title>One-Paste</title><h1>Hello Pages + IPNS</h1>' > "$SOURCE_DIR/index.html"
+          fi
+          ls -la "$SOURCE_DIR"
+
+      # ====== Triển khai Web2 (GitHub Pages) từ cùng thư mục ======
+      - name: Upload artifact for Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ env.SOURCE_DIR }}
+
+      - name: Deploy to GitHub Pages
+        id: pages
+        uses: actions/deploy-pages@v4
+
+      # ====== Web3: Upload UCAN + cập nhật IPNS từ cùng thư mục ======
       - name: Setup Node 20
         uses: actions/setup-node@v4
         with:
@@ -38,7 +68,7 @@ jobs:
           npm init -y >/dev/null
           npm i @web3-storage/w3up-client @ucanto/principal @web3-storage/w3name mime dotenv >/dev/null
 
-      - name: Create uploader script (UCAN → IPFS → IPNS)
+      - name: Create uploader script
         run: |
           cat > .onepaste/upload_ipns.mjs <<'EOF'
           import 'dotenv/config'
@@ -48,118 +78,95 @@ jobs:
           import * as Client from '@web3-storage/w3up-client'
           import * as Principal from '@ucanto/principal/ed25519'
           import * as Name from '@web3-storage/w3name'
+          const exists=p=>{try{fs.accessSync(p);return true}catch{return false}}
+          const KEY_PATH='.w3name.key'
 
-          const KEY_PATH = '.w3name.key'
-          const exists = p => { try { fs.accessSync(p); return true } catch { return false } }
-
-          async function collectFiles(inputPath){
-            const stat = fs.statSync(inputPath)
-            if (stat.isDirectory()){
-              const files=[], root=inputPath
-              ;(function walk(dir){
-                for (const n of fs.readdirSync(dir)){
-                  const p=path.join(dir,n), s=fs.statSync(p)
-                  if (s.isDirectory()) walk(p)
+          async function collect(dir){
+            const st=fs.statSync(dir)
+            if(st.isDirectory()){
+              const files=[], root=dir
+              ;(function walk(d){
+                for(const n of fs.readdirSync(d)){
+                  const p=path.join(d,n), s=fs.statSync(p)
+                  if(s.isDirectory()) walk(p)
                   else{
                     const rel=path.relative(root,p).split(path.sep).join('/')
                     const type=mime.getType(p)||'application/octet-stream'
-                    files.push(new File([fs.readFileSync(p)], rel, { type }))
+                    files.push(new File([fs.readFileSync(p)], rel, {type}))
                   }
                 }
-              })(inputPath)
-              if(!files.length) throw new Error('Thư mục trống.')
+              })(dir)
+              if(!files.length) throw new Error('Empty folder')
               return {kind:'dir', files}
-            } else {
-              const name=path.basename(inputPath)
-              const type=mime.getType(inputPath)||'application/octet-stream'
-              return {kind:'file', files:[new File([fs.readFileSync(inputPath)], name, {type})]}
+            }else{
+              const name=path.basename(dir)
+              const type=mime.getType(dir)||'application/octet-stream'
+              return {kind:'file', files:[new File([fs.readFileSync(dir)], name, {type})]}
             }
           }
 
-          async function uploadWithUCAN(src){
-            const UCAN      = process.env.WEB3_STORAGE_UCAN || process.env.WEB3_STORAGE_KEY
-            const SPACE_DID = process.env.WEB3_SPACE_DID    || process.env.WEB3_SPACE_KEY
-            if(!UCAN||!SPACE_DID) throw new Error('Thiếu UCAN hoặc SPACE_DID.')
+          async function upload(src){
+            const UCAN=process.env.WEB3_STORAGE_UCAN||process.env.WEB3_STORAGE_KEY
+            const SPACE=process.env.WEB3_SPACE_DID||process.env.WEB3_SPACE_KEY
+            if(!UCAN||!SPACE) throw new Error('Missing UCAN or SPACE_DID')
 
-            const principal = await Principal.generate()
-            const client = await Client.create({ principal })
-            const space = await client.addSpace(SPACE_DID)
-            await client.setCurrentSpace(space.did())
+            const principal=await Principal.generate()
+            const client=await Client.create({principal})
+            const space=await client.addSpace(SPACE); await client.setCurrentSpace(space.did())
+            const proof=await Client.importDelegation(UCAN); await client.addProof(proof)
 
-            const proof = await Client.importDelegation(UCAN)
-            await client.addProof(proof)
-
-            const target = exists('site') ? 'site' : (process.env.UPLOAD_PATH || 'site')
-            const src = exists(target) ? target : (exists('index.html') ? 'index.html' : target)
-            const {kind, files}=await collectFiles(src)
-
-            console.log('📦 Sẽ upload:', kind==='dir' ? `${files.length} file trong ${src}` : src)
-
+            const {kind,files}=await collect(src)
             let cid
-            if(kind==='dir'){
-              cid = await client.uploadDirectory(files, {
-                onShardStored: ({cid}) => console.log('• stored shard:', cid.toString())
-              })
-            } else {
-              cid = await client.uploadFile(files[0], {
-                onShardStored: ({cid}) => console.log('• stored shard:', cid.toString())
-              })
-            }
+            if(kind==='dir') cid=await client.uploadDirectory(files,{onShardStored:({cid})=>console.log('• shard',cid.toString())})
+            else cid=await client.uploadFile(files[0],{onShardStored:({cid})=>console.log('• shard',cid.toString())})
             const c=cid.toString()
-            console.log('\\n✅ Upload xong  → CID:', c)
-            console.log('Gateway:', `https://w3s.link/ipfs/${c}/`)
+            console.log('CID:',c,'\nGateway: https://w3s.link/ipfs/'+c+'/')
             return c
           }
 
-          async function loadOrCreateName(){
-            const envKey=(process.env.W3NAME_KEY||'').trim()
-            if(envKey){ console.log('🔐 Dùng W3NAME_KEY từ secrets.'); return await Name.from(Buffer.from(envKey,'base64')) }
-            if(exists(KEY_PATH)){ console.log('🔐 Dùng khoá IPNS đã lưu.'); return await Name.from(Buffer.from(fs.readFileSync(KEY_PATH,'utf8').trim(),'base64')) }
-            const name = await Name.create()
-            const b64 = Buffer.from(name.key.bytes).toString('base64')
-            fs.writeFileSync(KEY_PATH,b64)
-            console.log('🆕 Tạo IPNS name:', name.toString())
-            console.log('⚠️ Lần đầu: khoá được đính kèm artifact .w3name.key – nhớ lưu vào secret W3NAME_KEY cho lần sau.')
+          async function getName(){
+            const env=(process.env.W3NAME_KEY||'').trim()
+            if(env) return await Name.from(Buffer.from(env,'base64'))
+            if(exists(KEY_PATH)) return await Name.from(Buffer.from(fs.readFileSync(KEY_PATH,'utf8').trim(),'base64'))
+            const name=await Name.create()
+            fs.writeFileSync(KEY_PATH,Buffer.from(name.key.bytes).toString('base64'))
+            console.log('Created IPNS name:', name.toString())
             return name
           }
 
-          async function publishIPNS(cid){
-            const name = await loadOrCreateName()
-            const value = `/ipfs/${cid}`
+          async function publish(cid){
+            const name=await getName()
+            const val='/ipfs/'+cid
             let rev
-            try { rev = await Name.increment(await Name.resolve(name), value) }
-            catch { rev = await Name.v0(name, value) }
+            try{ rev=await Name.increment(await Name.resolve(name), val) }
+            catch{ rev=await Name.v0(name, val) }
             await Name.publish(rev, name.key)
-            const ipns = name.toString()
-            console.log('\\n🔗 IPNS cập nhật!')
-            console.log('IPNS:', ipns)
-            console.log('Gateway (IPNS):', `https://w3s.link/ipns/${ipns}`)
-            fs.writeFileSync('ipns.txt', ipns)
-            fs.writeFileSync('cid.txt', cid)
+            const ipns=name.toString()
+            fs.writeFileSync('cid.txt',cid)
+            fs.writeFileSync('ipns.txt',ipns)
+            console.log('IPNS:',ipns,'\nIPNS gw: https://w3s.link/ipns/'+ipns)
           }
 
-          async function main(){
-            const cid = await uploadWithUCAN(process.env.UPLOAD_PATH || 'site')
-            await publishIPNS(cid)
-          }
-          main().catch(e=>{ console.error('\\n❌ Lỗi:', e?.message||e); process.exit(1) })
+          const SRC=process.env.SRC||'site'
+          const real = exists(SRC)?SRC:(exists('index.html')?'index.html':SRC)
+          upload(real).then(publish).catch(e=>{console.error('ERR',e?.message||e);process.exit(1)})
           EOF
 
-      - name: Run • Upload + IPNS
+      - name: Upload + IPNS (same folder used for Pages)
         env:
           WEB3_STORAGE_UCAN: ${{ secrets.WEB3_STORAGE_UCAN || secrets.WEB3_STORAGE_KEY }}
           WEB3_SPACE_DID:   ${{ secrets.WEB3_SPACE_DID    || secrets.WEB3_SPACE_KEY   }}
-          W3NAME_KEY:       ${{ secrets.W3NAME_KEY }}   # có thì dán; trống thì run đầu sẽ tạo
-          UPLOAD_PATH:      site                        # đổi sang dist/public nếu cần
+          W3NAME_KEY:       ${{ secrets.W3NAME_KEY }}
+          SRC:              ${{ env.SOURCE_DIR }}
         run: node .onepaste/upload_ipns.mjs
 
-      - name: Upload artifacts • IPNS/CID (+ key nếu vừa tạo)
+      - name: Artifacts (cid/ipns + key nếu vừa tạo)
         uses: actions/upload-artifact@v4
         with:
-          name: ipns-publish-output
+          name: web3-ipns-output
           path: |
-            ipns.txt
             cid.txt
+            ipns.txt
             .w3name.key
           if-no-files-found: ignore
 
@@ -170,29 +177,28 @@ jobs:
         run: |
           if [ -f cid.txt ] && [ -n "$PINATA_JWT" ]; then
             CID="$(cat cid.txt)"
-            echo "Pinning CID to Pinata: $CID"
+            echo "Pin CID to Pinata: $CID"
             curl -s -X POST "https://api.pinata.cloud/pinning/pinByHash" \
               -H "Authorization: Bearer $PINATA_JWT" \
               -H "Content-Type: application/json" \
-              --data "{\"hashToPin\":\"$CID\",\"pinataMetadata\":{\"name\":\"onepaste-auto-ipns\"}}"
-            echo " → Done"
+              --data "{\"hashToPin\":\"$CID\",\"pinataMetadata\":{\"name\":\"pages+ipns\"}}"
           else
-            echo "Skip Pinata pin (missing cid.txt or PINATA_JWT)"
+            echo "Skip Pinata (no token or cid)"
           fi
 
-      - name: Quick verify gateways
+      - name: Quick verify (3 gateways)
         run: |
-          CID=$(cat cid.txt 2>/dev/null || true)
-          IPNS=$(cat ipns.txt 2>/dev/null || true)
-          echo "CID=$CID"
-          echo "IPNS=$IPNS"
-          echo "Try: https://w3s.link/ipfs/${CID}/"
-          echo "Try: https://ipfs.io/ipns/${IPNS}?t=$(date +%s)"
-          echo "Try: https://cloudflare-ipfs.com/ipns/${IPNS}?t=$(date +%s)"
+          CID=$(cat cid.txt); IPNS=$(cat ipns.txt)
+          echo "CID:  $CID"
+          echo "IPNS: $IPNS"
+          echo "IPFS  → https://w3s.link/ipfs/${CID}/"
+          echo "IPNS  → https://w3s.link/ipns/${IPNS}?t=$(date +%s)"
+          echo "      → https://ipfs.io/ipns/${IPNS}?t=$(date +%s)"
+          echo "      → https://cloudflare-ipfs.com/ipns/${IPNS}?t=$(date +%s)"
 
       - name: Summary
         run: |
-          echo "### Kết quả IPNS" >> $GITHUB_STEP_SUMMARY
-          test -f cid.txt  && echo "- **CID:** \`$(cat cid.txt)\`"   >> $GITHUB_STEP_SUMMARY || true
-          test -f ipns.txt && echo "- **IPNS:** \`$(cat ipns.txt)\`" >> $GITHUB_STEP_SUMMARY || true
-          test -f ipns.txt && echo "- **Gateway:** https://w3s.link/ipns/$(cat ipns.txt)" >> $GITHUB_STEP_SUMMARY || true
+          echo "### Đồng bộ Web2 ↔ Web3 (1 nguồn)" >> $GITHUB_STEP_SUMMARY
+          test -f cid.txt  && echo "- **CID:** \`$(cat cid.txt)\`" >> $GITHUB_STEP_SUMMARY
+          test -f ipns.txt && echo "- **IPNS:** \`$(cat ipns.txt)\`" >> $GITHUB_STEP_SUMMARY
+          test -f ipns.txt && echo "- **Open:** https://w3s.link/ipns/$(cat ipns.txt)" >> $GITHUB_STEP_SUMMARY
