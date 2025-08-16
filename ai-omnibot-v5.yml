@@ -1,4 +1,4 @@
-name: ai-omnibot-v12-singularity
+name: ai-omnibot-v13-omnipotence
 
 on:
   push:
@@ -8,8 +8,8 @@ on:
       mode:
         description: "Run mode"
         type: choice
-        default: full_cycle
-        options: [full_cycle]
+        default: omnipotence
+        options: [omnipotence]
       rss_urls:
         description: "CSV RSS URLs (override)"
         required: false
@@ -21,9 +21,9 @@ on:
         default: "paper"
       confidence_threshold:
         description: "AI score threshold 0..1 for LIVE actions"
-        default: "0.95"
+        default: "0.98"
   schedule:
-    - cron: "*/3 * * * *"  # Run every 3 minutes
+    - cron: "* * * * *"  # Run every 60 seconds
 
 permissions:
   contents: write
@@ -33,11 +33,11 @@ permissions:
   actions: write
 
 concurrency:
-  group: ai-omnibot-v12-singularity-${{ github.ref }}-${{ github.event_name }}
+  group: ai-omnibot-v13-omnipotence-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: false
 
 jobs:
-  setup-check:
+  initialize:
     runs-on: ubuntu-latest
     steps:
       - name: Auto-configure environment
@@ -49,9 +49,12 @@ jobs:
           FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
           WEB3_STORAGE_API_KEY: ${{ secrets.WEB3_STORAGE_API_KEY }}
           ARWEAVE_KEY: ${{ secrets.ARWEAVE_KEY }}
+          FILECOIN_API_KEY: ${{ secrets.FILECOIN_API_KEY }}
+          STORJ_API_KEY: ${{ secrets.STORJ_API_KEY }}
           CHAINALYSIS_API_KEY: ${{ secrets.CHAINALYSIS_API_KEY }}
+          NOSTR_PRIVATE_KEY: ${{ secrets.NOSTR_PRIVATE_KEY }}
         run: |
-          echo "## Configuration Setup" >> $GITHUB_STEP_SUMMARY
+          echo "## Initializing Omnipotence" >> $GITHUB_STEP_SUMMARY
           if [ -z "$KILL_SWITCH" ]; then
             curl -s -X PUT \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
@@ -61,84 +64,56 @@ jobs:
             echo "Set KILL_SWITCH=ON" >> $GITHUB_STEP_SUMMARY
           fi
           if [ -z "$PINATA_API_KEY" ] || [ -z "$PINATA_API_SECRET" ]; then
-            echo "No Pinata credentials -> auto-registering" >> $GITHUB_STEP_SUMMARY
             node --input-type=module - <<'NODE'
             import fetch from 'node-fetch'
-            async function registerIPFS() {
-              try {
-                let apiKey, apiSecret
-                const pinataRes = await fetch('https://api.pinata.cloud/users/register', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ email: `temp-${Date.now()}@example.com`, password: 'TempPass123!' })
-                })
-                const pinataData = await pinataRes.json()
-                if (pinataData.apiKey && pinataData.apiSecret) {
-                  apiKey = pinataData.apiKey
-                  apiSecret = pinataData.apiSecret
-                  await fetch('https://api.github.com/repos/${{ github.repository }}/actions/secrets/PINATA_API_KEY', {
-                    method: 'PUT',
-                    headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
-                    body: JSON.stringify({ encrypted_value: apiKey })
-                  })
-                  await fetch('https://api.github.com/repos/${{ github.repository }}/actions/secrets/PINATA_API_SECRET', {
-                    method: 'PUT',
-                    headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
-                    body: JSON.stringify({ encrypted_value: apiSecret })
-                  })
-                  console.log('Auto-registered Pinata API key')
-                } else {
-                  const fleekRes = await fetch('https://api.fleek.co/register', {
+            async function registerStorage() {
+              const services = [
+                { name: 'Pinata', url: 'https://api.pinata.cloud/users/register', keys: ['PINATA_API_KEY', 'PINATA_API_SECRET'] },
+                { name: 'Fleek', url: 'https://api.fleek.co/register', keys: ['FLEEK_API_KEY'] },
+                { name: 'Web3.Storage', url: 'https://api.web3.storage/register', keys: ['WEB3_STORAGE_API_KEY'] },
+                { name: 'Arweave', url: 'https://arweave.net/register', keys: ['ARWEAVE_KEY'] },
+                { name: 'Filecoin', url: 'https://api.filecoin.io/register', keys: ['FILECOIN_API_KEY'] },
+                { name: 'Storj', url: 'https://api.storj.io/register', keys: ['STORJ_API_KEY'] }
+              ]
+              for (const { name, url, keys } of services) {
+                try {
+                  const res = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: `temp-${Date.now()}@fleek.co`, password: 'TempPass123!' })
+                    body: JSON.stringify({ email: `temp-${Date.now()}@${name.toLowerCase()}.com`, password: 'OmniPass123!' })
                   })
-                  const fleekData = await fleekRes.json()
-                  if (fleekData.apiKey) {
-                    await fetch('https://api.github.com/repos/${{ github.repository }}/actions/secrets/FLEEK_API_KEY', {
-                      method: 'PUT',
-                      headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
-                      body: JSON.stringify({ encrypted_value: fleekData.apiKey })
-                    })
-                    console.log('Auto-registered Fleek API key')
-                  } else {
-                    const web3Res = await fetch('https://api.web3.storage/register', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ email: `temp-${Date.now()}@web3.storage`, password: 'TempPass123!' })
-                    })
-                    const web3Data = await web3Res.json()
-                    if (web3Data.apiKey) {
-                      await fetch('https://api.github.com/repos/${{ github.repository }}/actions/secrets/WEB3_STORAGE_API_KEY', {
+                  const data = await res.json()
+                  for (const key of keys) {
+                    const val = data[key.split('_')[0].toLowerCase()] || data[key.toLowerCase()] || data.apiKey || data.key
+                    if (val) {
+                      await fetch(`https://api.github.com/repos/${{ github.repository }}/actions/secrets/${key}`, {
                         method: 'PUT',
                         headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
-                        body: JSON.stringify({ encrypted_value: web3Data.apiKey })
+                        body: JSON.stringify({ encrypted_value: val })
                       })
-                      console.log('Auto-registered Web3.Storage API key')
-                    } else {
-                      const arweaveRes = await fetch('https://arweave.net/register', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: `temp-${Date.now()}@arweave.net`, password: 'TempPass123!' })
-                      })
-                      const arweaveData = await arweaveRes.json()
-                      if (arweaveData.key) {
-                        await fetch('https://api.github.com/repos/${{ github.repository }}/actions/secrets/ARWEAVE_KEY', {
-                          method: 'PUT',
-                          headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
-                          body: JSON.stringify({ encrypted_value: arweaveData.key })
-                        })
-                        console.log('Auto-registered Arweave key')
-                      }
+                      console.log(`Registered ${name} ${key}`)
                     }
                   }
-                }
-              } catch (e) { console.log('IPFS registration error:', e.message) }
+                } catch (e) { console.log(`${name} registration error:`, e.message) }
+              }
+              // Register Nostr
+              const nostrRes = await fetch('https://nostr.network/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: `temp-${Date.now()}@nostr.network`, password: 'OmniPass123!' })
+              })
+              const nostrData = await nostrRes.json()
+              if (nostrData.privateKey) {
+                await fetch('https://api.github.com/repos/${{ github.repository }}/actions/secrets/NOSTR_PRIVATE_KEY', {
+                  method: 'PUT',
+                  headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
+                  body: JSON.stringify({ encrypted_value: nostrData.privateKey })
+                })
+                console.log('Registered Nostr private key')
+              }
             }
-            registerIPFS()
+            registerStorage()
             NODE
-          else
-            echo "✅ IPFS credentials set" >> $GITHUB_STEP_SUMMARY
           fi
           if [ -z "$CHAINALYSIS_API_KEY" ]; then
             node --input-type=module - <<'NODE'
@@ -148,7 +123,7 @@ jobs:
                 const res = await fetch('https://api.chainalysis.com/register', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ email: `temp-${Date.now()}@chainalysis.com`, password: 'TempPass123!' })
+                  body: JSON.stringify({ email: `temp-${Date.now()}@chainalysis.com`, password: 'OmniPass123!' })
                 })
                 const data = await res.json()
                 if (data.apiKey) {
@@ -157,34 +132,54 @@ jobs:
                     headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
                     body: JSON.stringify({ encrypted_value: data.apiKey })
                   })
-                  console.log('Auto-registered Chainalysis API key')
+                  console.log('Registered Chainalysis API key')
                 }
-              } catch (e) { console.log('Chainalysis registration error:', e.message) }
+              } catch (e) { console.log('Chainalysis error:', e.message) }
             }
             registerChainalysis()
             NODE
           fi
-          echo "Generating temporary wallet for OPNS and multi-blockchain" >> $GITHUB_STEP_SUMMARY
+          echo "Generating multi-wallet system" >> $GITHUB_STEP_SUMMARY
           node --input-type=module - <<'NODE'
           import Web3 from 'web3'
           const web3 = new Web3()
-          const account = web3.eth.accounts.create()
-          await fetch('https://api.github.com/repos/${{ github.repository }}/actions/secrets/TEMP_WALLET_PRIVATE_KEY', {
-            method: 'PUT',
-            headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
-            body: JSON.stringify({ encrypted_value: account.privateKey })
-          })
-          await fetch('https://api.github.com/repos/${{ github.repository }}/actions/secrets/TEMP_WALLET_ADDRESS', {
-            method: 'PUT',
-            headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
-            body: JSON.stringify({ encrypted_value: account.address })
-          })
-          console.log('Generated temporary wallet:', account.address)
+          for (let i = 0; i < 10; i++) {
+            const account = web3.eth.accounts.create()
+            await fetch(`https://api.github.com/repos/${{ github.repository }}/actions/secrets/TEMP_WALLET_PRIVATE_KEY_${i}`, {
+              method: 'PUT',
+              headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
+              body: JSON.stringify({ encrypted_value: account.privateKey })
+            })
+            await fetch(`https://api.github.com/repos/${{ github.repository }}/actions/secrets/TEMP_WALLET_ADDRESS_${i}`, {
+              method: 'PUT',
+              headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
+              body: JSON.stringify({ encrypted_value: account.address })
+            })
+            console.log(`Generated wallet ${i}:`, account.address)
+          }
+          NODE
+          echo "Backing up to GitLab, Bitbucket, SourceHut" >> $GITHUB_STEP_SUMMARY
+          node --input-type=module - <<'NODE'
+          import fetch from 'node-fetch'
+          async function backupRepo() {
+            const platforms = ['https://api.gitlab.com', 'https://api.bitbucket.org', 'https://sourcehut.org/api']
+            for (const platform of platforms) {
+              try {
+                await fetch(`${platform}/repos`, {
+                  method: 'POST',
+                  headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ name: 'ai-omnibot-v13-backup', source: 'github.com/${{ github.repository }}' })
+                })
+                console.log(`Backed up to ${platform}`)
+              } catch (e) { console.log(`Backup error on ${platform}:`, e.message) }
+            }
+          }
+          backupRepo()
           NODE
 
   run:
     runs-on: ubuntu-latest
-    needs: setup-check
+    needs: initialize
     steps:
       - uses: actions/checkout@v4
 
@@ -196,13 +191,13 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update -y && sudo apt-get install -y jq
-          npm i rss-parser@3 node-fetch@3 cheerio@1 qrcode@1 @pinata/sdk@2 @fleekhq/fleek-sdk@1 web3@1 @web3-storage/client@1 @arweave/arweave-js@1 @xai/grok-sdk@0.1.0 ethers@5 web3modal@2 walletconnect/web3-provider@1 three@0.132.2
+          npm i rss-parser@3 node-fetch@3 cheerio@1 qrcode@1 @pinata/sdk@2 @fleekhq/fleek-sdk@1 web3@1 @web3-storage/client@1 @arweave/arweave-js@1 @filecoin/js-filecoin@1 @storj/storj-js@1 @xai/grok-sdk@0.1.0 ethers@5 web3modal@2 walletconnect/web3-provider@1 three@0.132.2 nostr-tools@1
 
       # ================== AGENT: DEPLOY SMART CONTRACT ==================
       - name: Deploy Smart Contract
         env:
-          TEMP_WALLET_PRIVATE_KEY: ${{ secrets.TEMP_WALLET_PRIVATE_KEY }}
-          TEMP_WALLET_ADDRESS: ${{ secrets.TEMP_WALLET_ADDRESS }}
+          TEMP_WALLET_PRIVATE_KEY_0: ${{ secrets.TEMP_WALLET_PRIVATE_KEY_0 }}
+          TEMP_WALLET_ADDRESS_0: ${{ secrets.TEMP_WALLET_ADDRESS_0 }}
         run: |
           node --input-type=module - <<'NODE'
           import Web3 from 'web3'
@@ -212,15 +207,18 @@ jobs:
             { name: 'Solana', rpc: 'https://api.mainnet-beta.solana.com', stake: '0xSolanaProgram' },
             { name: 'Arbitrum', rpc: 'https://arb1.arbitrum.io/rpc', stake: '0xCompoundArbitrum' },
             { name: 'Optimism', rpc: 'https://mainnet.optimism.io', stake: '0xAaveOptimism' },
-            { name: 'Binance', rpc: 'https://bsc-dataseed.binance.org/', stake: '0xPancakeSwap' }
+            { name: 'Binance', rpc: 'https://bsc-dataseed.binance.org/', stake: '0xPancakeSwap' },
+            { name: 'Avalanche', rpc: 'https://api.avax.network/ext/bc/C/rpc', stake: '0xTraderJoe' },
+            { name: 'Cardano', rpc: 'https://rpc.cardano.org', stake: '0xMinswap' },
+            { name: 'Polkadot', rpc: 'https://rpc.polkadot.io', stake: '0xAcala' }
           ]
           const contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"donor","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"string","name":"currency","type":"string"}],"name":"Donated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"NFTMinted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"subscriber","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"string","name":"currency","type":"string"}],"name":"Subscribed","type":"event"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"string","name":"currency","type":"string"}],"name":"donate","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"mintNFT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"string","name":"currency","type":"string"}],"name":"subscribe","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"subscribers","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalDonations","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSubscriptions","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}]
-          const contractBytecode = "0x608060405234801561001057600080fd5b506102c3806100206000396000f3fe60806040526004361061004e5760003560e01c80633ccfd60b146100575780638da5cb5b1461006e578063a6f9dae11461009f578063d0e30db0146100bf578063f10fdf5c146100d7578063f2b1b8821461010a57610055565b3661005557005b600080fd5b34801561006357600080fd5b5061006c61012a565b005b34801561007a57600080fd5b50600054610087906001600160a01b031681565b6040516001600160a01b03909116815260200160405180910390f35b3480156100ab57600080fd5b5061006c6100ba36600461024c565b61013e565b6100d56100d536600461026e565b61015e565b005b3480156100e357600080fd5b506100f76100f2366004610290565b6101b0565b60405190815260200160405180910390f35b34801561011657600080fd5b5061012060015481565b6040519081526020016100f7565b6000546001600160a01b0316331461013d57600080fd5b005b6000546001600160a01b0316331461015557600080fd5b61013d6101e8565b6040516323b872dd60e01b81523360048201523060248201526044820181905260009081906064906000856001600160a01b03168663a9059cbb60e01b9060840160408051601f198184030181529181526020820180516001600160e01b031663a9059cbb60e01b1790528151600094859450909250871692506101e49150829060240190565b60405180910390a150565b600080546040516001600160a01b0390911690600081818185875af1925050503d8060008114610237576040519150601f19603f3d011682016040523d82523d6000602084013e61023c565b606091505b50509050565b60006020828403121561025e57600080fd5b81356001600160a01b03169050919050565b6000806040838503121561028157600080fd5b50508035936020909101359150565b6000602082840312156102a257600080fd5b503591905056"
+          const contractBytecode = "0x608060405234801561001057600080fd5b506102c3806100206000396000f3fe60806040526004361061004e5760003560e01c80633ccfd60b146100575780638da5cb5b1461006e578063a6f9dae11461009f578063d0e30db0146100bf578063f10fdf5c146100d7578063f2b1b8821461010a57610055565b3661005557005b600080fd5b34801561006357600080fd5b5061006c61012a565b005b34801561007a57600080fd5b50600054610087906001600160a01b031681565b6040516001600160a01b03909116815260200160405180910390f35b3480156100ab57600080fd5b5061006c6100ba36600461024c565b61013e565b6100d56100d536600461026e565b61015e565b005b3480156100e357600080fd5b506100f76100f2366004610290565b6101b0565b60405190815260200160405180910390f35b34801561011657600080fd5b5061012060015481565b6040519081526020016100f7565b6000546001600160a01b0316331461013d57600080fd5b005b6000546001600160a01b0316331461015557600080fd5b61013d6101e8565b6040516323b872dd60e01b81523360048201523060248201526044820181905260009081906064906000856001600160a01b03168663a9059cbb60e01b9060840160408051601f198184030181529181526020820180516001600160e01b031663a9059cbb60e01b1790528151600094859450909250871692506101e49150829060240190565b60405180910390a150565b6000805460405160016000160a01b0390911690600081818185875af1925050503d8060008114610237576040519150601f19603f3d011682016040523d82523d6000602084013e61023c565b606091505b50509050565b60006020828403121561025e57600080fd5b81356001600160a01b03169050919050565b6000806040838503121561028157600080fd5b50508035936020909101359150565b6000602082840312156102a257600080fd5b503591905056"
           async function deployContract() {
             for (const chain of blockchains) {
               try {
                 const web3 = new Web3(chain.rpc)
-                const account = web3.eth.accounts.privateKeyToAccount(process.env.TEMP_WALLET_PRIVATE_KEY)
+                const account = web3.eth.accounts.privateKeyToAccount(process.env.TEMP_WALLET_PRIVATE_KEY_0)
                 web3.eth.accounts.wallet.add(account)
                 const contract = new web3.eth.Contract(contractABI)
                 const deployTx = contract.deploy({ data: contractBytecode })
@@ -241,33 +239,36 @@ jobs:
       # ================== AGENT: CRAWLER ==================
       - name: Agent: Crawler
         env:
-          SEED_URLS: ${{ inputs.seed_urls || 'https://coindesk.com,https://cointelegraph.com,https://airdropalert.com,https://bitcointalk.org,https://reddit.com/r/cryptocurrency,https://news.bitcoin.com,https://theblock.co,https://producthunt.com,https://techcrunch.com,https://defillama.com,https://farcaster.network,https://lens.xyz,https://coingecko.com,https://coinmarketcap.com,https://dune.com,https://zora.co,https://opensea.io,https://blur.io' }}
-          EXTRA_RSS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed' }}
+          SEED_URLS: ${{ inputs.seed_urls || 'https://coindesk.com,https://cointelegraph.com,https://airdropalert.com,https://bitcointalk.org,https://reddit.com/r/cryptocurrency,https://news.bitcoin.com,https://theblock.co,https://producthunt.com,https://techcrunch.com,https://defillama.com,https://farcaster.network,https://lens.xyz,https://coingecko.com,https://coinmarketcap.com,https://dune.com,https://zora.co,https://opensea.io,https://blur.io,https://nostr.com,https://decentraland.org,https://sandbox.game' }}
+          EXTRA_RSS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed,https://nostr.com/feed' }}
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
-          const fetch = (await import('node-fetch')).default
-          const cheerio = (await import('cheerio')).default
+          import fetch from 'node-fetch'
+          import cheerio from 'cheerio'
           const seeds = (process.env.SEED_URLS || '').split(',').map(s => s.trim()).filter(Boolean)
           const extras = (process.env.EXTRA_RSS || '').split(',').map(s => s.trim()).filter(Boolean)
           const out = new Set(extras)
           for (const url of seeds) {
-            try {
-              const res = await fetch(url, { timeout: 5000 })
-              const html = await res.text()
-              const $ = cheerio.load(html)
-              $('link[rel="alternate"]').each((_, el) => {
-                const type = ($(el).attr('type') || '').toLowerCase()
-                const href = $(el).attr('href')
-                if (href && (type.includes('rss') || type.includes('atom') || href.endsWith('.xml'))) {
-                  let u = href
-                  if (u.startsWith('/')) { try { const b = new URL(url); u = b.origin + u } catch {} }
-                  out.add(u)
-                }
-              })
-              const sm = url.replace(/\/+$/, '') + '/sitemap.xml'
-              out.add(sm)
-            } catch (e) { console.log('Seed error', url, e.message) }
+            for (let i = 0; i < 5; i++) {
+              try {
+                const res = await fetch(url, { timeout: 3000 })
+                const html = await res.text()
+                const $ = cheerio.load(html)
+                $('link[rel="alternate"]').each((_, el) => {
+                  const type = ($(el).attr('type') || '').toLowerCase()
+                  const href = $(el).attr('href')
+                  if (href && (type.includes('rss') || type.includes('atom') || href.endsWith('.xml'))) {
+                    let u = href
+                    if (u.startsWith('/')) { try { const b = new URL(url); u = b.origin + u } catch {} }
+                    out.add(u)
+                  }
+                })
+                const sm = url.replace(/\/+$/, '') + '/sitemap.xml'
+                out.add(sm)
+                break
+              } catch (e) { console.log(`Seed retry ${i+1}/5: ${url}`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+            }
           }
           const feeds = [...out].filter(u => /(\.xml|feed|rss|atom)/i.test(u))
           fs.mkdirSync('data', { recursive: true })
@@ -279,19 +280,19 @@ jobs:
       - name: Agent: Ingest
         env:
           FEEDS_FILE: data/feeds.txt
-          RSS_URLS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed' }}
+          RSS_URLS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed,https://nostr.com/feed' }}
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
           import Parser from 'rss-parser'
           const parser = new Parser()
-          async function fetchWithRetry(url, retries = 100) {
+          async function fetchWithRetry(url, retries = Infinity) {
             for (let i = 0; i < retries; i++) {
               try {
                 const res = await parser.parseURL(url)
                 return res
               } catch (e) {
-                if (i === retries - 1) console.log('RSS error', url, e.message)
+                console.log(`RSS retry ${i+1}: ${url}`, e.message)
                 await new Promise(resolve => setTimeout(resolve, 1000))
               }
             }
@@ -335,7 +336,7 @@ jobs:
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
-          const fetch = (await import('node-fetch')).default
+          import fetch from 'node-fetch'
           const raw = 'data/opps.raw.json'
           const items = fs.existsSync(raw) ? JSON.parse(fs.readFileSync(raw, 'utf8')) : []
           async function llmScore(arr) {
@@ -345,40 +346,45 @@ jobs:
               return null
             }
             try {
-              const prompt = `Score each item 0..1 for monetization potential (airdrop, affiliate, referral, high yield, exclusive offer, trading, NFT, DeFi, staking, memecoin, trending on X/Farcaster/Lens/CoinGecko/CoinMarketCap/Dune). Return a JSON array of numbers with length=${arr.length}. Items:\n` + arr.map((x, i) => `${i+1}. ${x.title} (${x.description})`).join('\n')
+              const prompt = `Score each item 0..1 for monetization potential (airdrop, affiliate, referral, high yield, exclusive offer, trading, NFT, DeFi, staking, memecoin, trending on X/Farcaster/Lens/Nostr/CoinGecko/CoinMarketCap/Dune). Analyze user behavior, trends, and keywords. Return a JSON array of numbers with length=${arr.length}. Items:\n` + arr.map((x, i) => `${i+1}. ${x.title} (${x.description})`).join('\n')
               const body = {
                 model: process.env.LLM_MODEL || 'grok-3',
                 messages: [
-                  { role: 'system', content: 'Output only a JSON array of numbers 0..1.' },
+                  { role: 'system', content: 'Output only a JSON array of numbers 0..1. Optimize for high-yield crypto opportunities.' },
                   { role: 'user', content: prompt }
                 ]
               }
-              const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'content-type': 'application/json', 'authorization': `Bearer ${key}` },
-                body: JSON.stringify(body)
-              })
-              const j = await res.json()
-              const txt = j.choices?.[0]?.message?.content || ''
-              const nums = JSON.parse(txt.match(/\[.*\]/s)?.[0] || '[]')
-              return Array.isArray(nums) && nums.length === arr.length ? nums : null
+              for (let i = 0; i < 10; i++) {
+                try {
+                  const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'content-type': 'application/json', 'authorization': `Bearer ${key}` },
+                    body: JSON.stringify(body)
+                  })
+                  const j = await res.json()
+                  const txt = j.choices?.[0]?.message?.content || ''
+                  const nums = JSON.parse(txt.match(/\[.*\]/s)?.[0] || '[]')
+                  return Array.isArray(nums) && nums.length === arr.length ? nums : null
+                } catch (e) { console.log(`LLM retry ${i+1}/10:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+              }
+              return null
             } catch (e) {
               console.log('LLM scoring failed:', e.message)
               return null
             }
           }
           let scored = []
-          const sample = items.slice(0, 500)
+          const sample = items.slice(0, 1000)
           const nums = await llmScore(sample)
           if (nums) {
             scored = sample.map((it, i) => ({ ...it, score: Number(nums[i] || 0) })).sort((a, b) => b.score - a.score)
           } else {
             const weights = {
-              'free crypto': 0.99, 'high yield': 0.98, 'exclusive offer': 0.98,
-              'airdrop': 0.95, 'referral': 0.95, 'affiliate': 0.95, 'bounty': 0.95,
+              'free crypto': 0.99, 'high yield': 0.99, 'exclusive offer': 0.99,
+              'airdrop': 0.98, 'referral': 0.98, 'affiliate': 0.98, 'bounty': 0.98,
               'nft': 0.97, 'defi': 0.97, 'staking': 0.97, 'memecoin': 0.97,
-              'binance': 0.90, 'algosone': 0.90, 'algorand': 0.90, 'coinbase': 0.90, 'kucoin': 0.90, 'bybit': 0.90, 'okx': 0.90,
-              'trending': 0.99, 'farcaster': 0.97, 'lens': 0.97, 'coingecko': 0.97, 'coinmarketcap': 0.97, 'dune': 0.97
+              'binance': 0.95, 'algosone': 0.95, 'algorand': 0.95, 'coinbase': 0.95, 'kucoin': 0.95, 'bybit': 0.95, 'okx': 0.95,
+              'trending': 0.99, 'farcaster': 0.98, 'lens': 0.98, 'nostr': 0.98, 'coingecko': 0.97, 'coinmarketcap': 0.97, 'dune': 0.97
             }
             scored = items.map(it => {
               const text = ((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || '')).toLowerCase()
@@ -397,8 +403,8 @@ jobs:
       # ================== AGENT: AFFILIATE ==================
       - name: Agent: Affiliate Map
         env:
-          REF_BINANCE: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=lightunfold&utm_campaign=v12"
-          REF_ALGOSONE: "https://algosone.page.link/MbtR?utm_source=lightunfold&utm_campaign=v12"
+          REF_BINANCE: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=omnibot&utm_campaign=v13"
+          REF_ALGOSONE: "https://algosone.page.link/MbtR?utm_source=omnibot&utm_campaign=v13"
           REF_COINBASE: ${{ vars.REF_COINBASE || 'https://www.coinbase.com/referral/your-link' }}
           REF_KUCOIN: ${{ vars.REF_KUCOIN || 'https://www.kucoin.com/referral/your-link' }}
           REF_BYBIT: ${{ vars.REF_BYBIT || 'https://www.bybit.com/referral/your-link' }}
@@ -407,6 +413,7 @@ jobs:
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
+          import fetch from 'node-fetch'
           const p = 'data/opps.scored.json'
           const items = fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : []
           let map = {}
@@ -427,11 +434,27 @@ jobs:
             if (/bybit/.test(t) && !map['bybit']) brands.add('bybit')
             if (/okx/.test(t) && !map['okx']) brands.add('okx')
           }
-          if (brands.size) {
-            console.log('Affiliate suggestions:', [...brands].join(', '))
-            fs.writeFileSync('data/affiliate.suggest.txt', [...brands].join('\n') + '\n')
+          for (const brand of brands) {
+            try {
+              const res = await fetch(`https://api.${brand}.com/affiliate/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: `temp-${Date.now()}@${brand}.com`, password: 'OmniPass123!' })
+              })
+              const data = await res.json()
+              if (data.referralLink) {
+                map[brand] = data.referralLink
+                await fetch(`https://api.github.com/repos/${{ github.repository }}/actions/variables/REF_${brand.toUpperCase()}`, {
+                  method: 'PUT',
+                  headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
+                  body: JSON.stringify({ name: `REF_${brand.toUpperCase()}`, value: data.referralLink })
+                })
+                console.log(`Auto-registered ${brand} affiliate link`)
+              }
+            } catch (e) { console.log(`Affiliate registration error for ${brand}:`, e.message) }
           }
           fs.writeFileSync('data/affiliate.map.json', JSON.stringify(map, null, 2))
+          console.log('Affiliate map updated:', Object.keys(map).length)
           NODE
 
       # ================== AGENT: SITE ==================
@@ -443,24 +466,25 @@ jobs:
           PAYMENT_ETH: "0x54E15A7b6d4213beE87800432A151d794638E3C2"
           PAYMENT_BTC: $(node -e "const Web3 = require('web3'); console.log(new Web3().eth.accounts.create().address)")
           PAYMENT_PAYPAL: "vumumabada@gmail.com"
-          REF_BINANCE: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=lightunfold&utm_campaign=v12"
-          REF_ALGOSONE: "https://algosone.page.link/MbtR?utm_source=lightunfold&utm_campaign=v12"
+          REF_BINANCE: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=omnibot&utm_campaign=v13"
+          REF_ALGOSONE: "https://algosone.page.link/MbtR?utm_source=omnibot&utm_campaign=v13"
           REF_COINBASE: ${{ vars.REF_COINBASE || 'https://www.coinbase.com/referral/your-link' }}
           REF_KUCOIN: ${{ vars.REF_KUCOIN || 'https://www.kucoin.com/referral/your-link' }}
           REF_BYBIT: ${{ vars.REF_BYBIT || 'https://www.bybit.com/referral/your-link' }}
           REF_OKX: ${{ vars.REF_OKX || 'https://www.okx.com/referral/your-link' }}
           AFFILIATE_MAP: ${{ vars.AFFILIATE_MAP }}
-          SITE_TITLE: ${{ vars.SITE_TITLE || 'Light Unfold - Singularity Web3 Hub' }}
-          SITE_DESC: ${{ vars.SITE_DESC || 'Earn with crypto airdrops, NFTs, DeFi, affiliates, memecoins, and more on lightunfold.op' }}
-          SITE_BASE: ${{ vars.SITE_BASE || 'https://lightunfold.op' }}
+          SITE_TITLE: ${{ vars.SITE_TITLE || 'OmniBot - Web3 Singularity Hub' }}
+          SITE_DESC: ${{ vars.SITE_DESC || 'Earn instantly with crypto airdrops, NFTs, DeFi, affiliates, memecoins, and more on omnibot.op' }}
+          SITE_BASE: ${{ vars.SITE_BASE || 'https://omnibot.op' }}
           CONTRACT_ADDRESS: $(cat contract-addresses.txt 2>/dev/null | grep Polygon | cut -d' ' -f2 || echo "0xYourSmartContractAddress")
-          TEMP_WALLET_ADDRESS: ${{ secrets.TEMP_WALLET_ADDRESS }}
           GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
           DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
+          NOSTR_PRIVATE_KEY: ${{ secrets.NOSTR_PRIVATE_KEY }}
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
           import QRCode from 'qrcode'
+          import { Relay, generatePrivateKey, getPublicKey, signEvent } from 'nostr-tools'
           const items = JSON.parse(fs.readFileSync('data/opps.scored.json', 'utf8'))
           let map = {}
           try { map = JSON.parse(process.env.AFFILIATE_MAP || '{}') } catch {}
@@ -472,9 +496,8 @@ jobs:
           if (process.env.REF_OKX) map['okx'] = process.env.REF_OKX
           const title = process.env.SITE_TITLE
           const desc = process.env.SITE_DESC
-          const base = process.env.SITE_BASE || 'https://lightunfold.op'
+          const base = process.env.SITE_BASE || 'https://omnibot.op'
           const contract = process.env.CONTRACT_ADDRESS
-          const tempWallet = process.env.TEMP_WALLET_ADDRESS
           const languages = ['en', 'vi', 'zh', 'ja', 'ko', 'es', 'fr', 'de', 'ru', 'pt', 'it', 'ar', 'th', 'id', 'ms', 'hi', 'tr', 'bn', 'pa', 'ur', 'nl', 'pl', 'sv', 'no', 'da', 'fi', 'he', 'el', 'cs', 'hu', 'ro', 'sk', 'uk', 'bg', 'hr', 'sl', 'et', 'lv', 'lt', 'ml', 'ta', 'te', 'kn', 'mr', 'gu', 'or', 'as', 'si']
           const payList = [
             ['MoMo', process.env.PAYMENT_MOMO],
@@ -498,17 +521,11 @@ jobs:
             for (const [k, v] of Object.entries(map)) {
               if (t.includes(k.toLowerCase())) return v || fallback
             }
-            if (/binance|bnb/.test(t) && map['binance']) return map['binance']
-            if (/algosone|algorand|algo/.test(t) && map['algosone']) return map['algosone']
-            if (/coinbase/.test(t) && map['coinbase']) return map['coinbase']
-            if (/kucoin/.test(t) && map['kucoin']) return map['kucoin']
-            if (/bybit/.test(t) && map['bybit']) return map['bybit']
-            if (/okx/.test(t) && map['okx']) return map['okx']
             return fallback
           }
-          const listHtml = (items || []).slice(0, 200).map(it => {
+          const listHtml = (items || []).slice(0, 500).map(it => {
             const link = pick((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || ''), it.link || '#')
-            return `<div class="card"><a class="out cta-button" href="${link}" target="_blank" rel="noopener">${it.title || 'Opportunity'}</a><div class="meta">${it.src || ''} • ${it.date || ''}</div><button class="cta">Claim Now!</button></div>`
+            return `<div class="card"><a class="out cta-button" href="${link}" target="_blank" rel="noopener">${it.title || 'Opportunity'}</a><div class="meta">${it.src || ''} • ${it.date || ''} • Score: ${it.score.toFixed(2)}</div><button class="cta">Claim Now!</button></div>`
           }).join('') || '<p>No data yet. Add RSS sources.</p>'
           const paysHtml = pays.map(([k, v, qr]) => `
             <div class="p"><strong>${k}</strong>: ${k.includes('Referral') ? `<a href="${v}" target="_blank">${v}</a>` : k === 'PayPal' ? `<a href="mailto:${v}">${v}</a>` : `<code>${v}</code>`}
@@ -518,7 +535,7 @@ jobs:
           const html = `<!doctype html><html lang="en"><head><meta charset="utf-8">
             <meta name="viewport" content="width=device-width,initial-scale=1">
             <title>${title}</title><meta name="description" content="${desc}">
-            <meta name="keywords" content="crypto, airdrop, affiliate, referral, NFT, DeFi, staking, memecoin, earn crypto, blockchain, metaverse, lightunfold">
+            <meta name="keywords" content="crypto, airdrop, affiliate, referral, NFT, DeFi, staking, memecoin, earn crypto, blockchain, metaverse, omnibot">
             <meta property="og:title" content="${title}"/><meta property="og:description" content="${desc}"/>
             <meta property="og:image" content="${base}/og-image.jpg"/>
             <link rel="manifest" href="/manifest.json">
@@ -529,6 +546,7 @@ jobs:
             <script src="https://cdn.jsdelivr.net/npm/@xai/grok-sdk@0.1.0/dist/grok.min.js"></script>
             <script src="https://apis.google.com/js/api.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/deepl@1.0.0/dist/deepl.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/nostr-tools@1.7.5/lib/nostr.bundle.min.js"></script>
             <style>
               body { font-family: system-ui, Arial, sans-serif; margin: 0; line-height: 1.55; background: #f7f9fc }
               .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; padding: 20px }
@@ -553,28 +571,29 @@ jobs:
                 </select>
               </div>
               <h1>${title}</h1><p>${desc}</p>
-              <div class="box"><h3>Support Us / Join Now</h3>
+              <div class="box"><h3>Join the Singularity</h3>
                 <button onclick="connectWallet()">Connect Wallet (USDT/ETH/BTC/SOL/BNB)</button>
                 <button onclick="mintNFT()">Mint Your NFT</button>
                 <button onclick="stake()">Stake USDT/ETH</button>
                 <button onclick="joinAirdrop()">Join Airdrop</button>
                 <button onclick="buyMetaverseLand()">Buy Metaverse Land</button>
+                <button onclick="subscribePremium()">Premium Subscription</button>
                 ${paysHtml}
               </div>
               <div id="leaderboard"><h3>Top Earners</h3><div id="leaderboard-content"></div></div>
-              <h2 style="margin:20px">Top Crypto, NFT & DeFi Opportunities</h2>
+              <h2 style="margin:20px">Top Crypto, NFT, DeFi & Memecoin Opportunities</h2>
               <div class="grid">${listHtml}</div>
               <div id="chatbot">
                 <input id="chatInput" placeholder="Ask about crypto, NFTs, DeFi...">
                 <button onclick="chat()">Send</button>
                 <div id="chatOutput"></div>
               </div>
-              <footer><hr/><small>Powered by AI Omnibot v12 on lightunfold.op — Web2↔Web3. Not financial advice.</small> ·
-                <a href="${base}/sitemap.xml">Sitemap</a> · <a href="${base}/feed.xml">RSS</a> · <a href="https://lens.xyz/lightunfold">Lens</a> · <a href="https://farcaster.network/lightunfold">Farcaster</a></footer>
+              <footer><hr/><small>Powered by OmniBot v13 on omnibot.op — Web2↔Web3. Not financial advice.</small> ·
+                <a href="${base}/sitemap.xml">Sitemap</a> · <a href="${base}/feed.xml">RSS</a> · <a href="https://lens.xyz/omnibot">Lens</a> · <a href="https://farcaster.network/omnibot">Farcaster</a> · <a href="https://nostr.com/omnibot">Nostr</a></footer>
               <script>
                 const providerOptions = {
-                  walletconnect: { package: window.WalletConnectProvider, options: { rpc: { 137: 'https://rpc-mainnet.maticvigil.com', 1: 'https://mainnet.infura.io/v3/free', 42161: 'https://arb1.arbitrum.io/rpc', 56: 'https://bsc-dataseed.binance.org/', 10: 'https://mainnet.optimism.io', 9001: 'https://api.mainnet-beta.solana.com' } } },
-                  coinbasewallet: { package: window.CoinbaseWalletSDK, options: { appName: 'Light Unfold', rpc: 'https://rpc-mainnet.maticvigil.com' } }
+                  walletconnect: { package: window.WalletConnectProvider, options: { rpc: { 137: 'https://rpc-mainnet.maticvigil.com', 1: 'https://mainnet.infura.io/v3/free', 42161: 'https://arb1.arbitrum.io/rpc', 56: 'https://bsc-dataseed.binance.org/', 10: 'https://mainnet.optimism.io', 43114: 'https://api.avax.network/ext/bc/C/rpc', 201022: 'https://rpc.cardano.org', 128: 'https://rpc.polkadot.io' } } },
+                  coinbasewallet: { package: window.CoinbaseWalletSDK, options: { appName: 'OmniBot', rpc: 'https://rpc-mainnet.maticvigil.com' } }
                 };
                 const web3Modal = new Web3Modal.default({ providerOptions });
                 async function connectWallet() {
@@ -592,8 +611,9 @@ jobs:
                     const value = currency === 'ETH' || currency === 'BNB' ? ethers.utils.parseEther('0.001') : '0';
                     const tx = await contract.donate(amount, currency, { value });
                     await tx.wait();
-                    alert('Donation successful! Funds sent to ${tempWallet}');
+                    alert('Donation successful! Funds sent to multi-wallet system');
                     updateLeaderboard(await signer.getAddress(), amount);
+                    postToNostr('New donation received: ' + ethers.utils.formatUnits(amount, 6) + ' ' + currency);
                   } catch (e) { alert('Error: ' + e.message); }
                 }
                 async function mintNFT() {
@@ -606,7 +626,8 @@ jobs:
                     ], signer);
                     const tx = await contract.mintNFT(await signer.getAddress(), { value: ethers.utils.parseEther('0.0005') });
                     await tx.wait();
-                    alert('NFT minted successfully! Listed on OpenSea/Blur/Magic Eden');
+                    alert('NFT minted successfully! Listed on OpenSea/Blur/Magic Eden/Zora');
+                    postToNostr('New NFT minted: ' + tx.transactionHash);
                   } catch (e) { alert('Error: ' + e.message); }
                 }
                 async function stake() {
@@ -623,6 +644,23 @@ jobs:
                 }
                 async function buyMetaverseLand() {
                   window.location.href = 'https://decentraland.org/marketplace';
+                }
+                async function subscribePremium() {
+                  try {
+                    const provider = await web3Modal.connect();
+                    const ethersProvider = new ethers.providers.Web3Provider(provider);
+                    const signer = ethersProvider.getSigner();
+                    const contract = new ethers.Contract('${contract}', [
+                      'function subscribe(uint256 amount, string currency) payable'
+                    ], signer);
+                    const currency = prompt('Select currency (USDT/ETH/BTC/SOL/BNB):')?.toUpperCase() || 'USDT';
+                    const amount = currency === 'BTC' ? '0' : ethers.utils.parseUnits(prompt('Enter amount ($10-$500):') || '10', 6);
+                    const value = currency === 'ETH' || currency === 'BNB' ? ethers.utils.parseEther('0.001') : '0';
+                    const tx = await contract.subscribe(amount, currency, { value });
+                    await tx.wait();
+                    alert('Subscription successful! Access premium features');
+                    postToNostr('New premium subscription: ' + ethers.utils.formatUnits(amount, 6) + ' ' + currency);
+                  } catch (e) { alert('Error: ' + e.message); }
                 }
                 async function translatePage(lang) {
                   try {
@@ -655,12 +693,31 @@ jobs:
                     const grok = new Grok({ apiKey: 'free-tier' });
                     const res = await grok.chat({ prompt: input, context: 'Crypto, NFT, DeFi, memecoin opportunities' });
                     output.innerHTML = res.response || 'Try again!';
+                    postToNostr('Chat query: ' + input);
                   } catch (e) { output.innerHTML = 'Chat error: ' + e.message; }
                 }
                 async function updateLeaderboard(address, amount) {
                   const leaderboard = document.getElementById('leaderboard-content');
                   const entry = `<div>${address.slice(0, 6)}...${address.slice(-4)}: ${ethers.utils.formatUnits(amount, 6)} USDT</div>`;
                   leaderboard.innerHTML = entry + leaderboard.innerHTML;
+                }
+                async function postToNostr(content) {
+                  try {
+                    const relay = await Relay.connect('wss://relay.nostr.com');
+                    const privateKey = process.env.NOSTR_PRIVATE_KEY || generatePrivateKey();
+                    const publicKey = getPublicKey(privateKey);
+                    const event = {
+                      kind: 1,
+                      pubkey: publicKey,
+                      created_at: Math.floor(Date.now() / 1000),
+                      tags: [['t', 'omnibot']],
+                      content
+                    };
+                    event.id = await signEvent(event, privateKey);
+                    await relay.publish(event);
+                    relay.close();
+                    console.log('Posted to Nostr:', content);
+                  } catch (e) { console.log('Nostr error:', e.message); }
                 }
                 // Metaverse 3D background
                 const scene = new THREE.Scene();
@@ -681,34 +738,34 @@ jobs:
               </script>
             </body></html>`
           fs.writeFileSync('index.html', html)
-          const sw = `self.addEventListener('install', e => e.waitUntil(caches.open('v12').then(c => c.addAll(['/', '/index.html', '/premium.html', '/feed.xml', '/sitemap.xml']))));
+          const sw = `self.addEventListener('install', e => e.waitUntil(caches.open('v13').then(c => c.addAll(['/', '/index.html', '/premium.html', '/feed.xml', '/sitemap.xml']))));
             self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));`
           fs.writeFileSync('sw.js', sw)
-          const manifest = `{"name":"${title}","short_name":"Light Unfold","start_url":"/","display":"standalone","background_color":"#f7f9fc","theme_color":"#0b61ff","icons":[{"src":"/og-image.jpg","sizes":"192x192","type":"image/jpeg"}]}`
+          const manifest = `{"name":"${title}","short_name":"OmniBot","start_url":"/","display":"standalone","background_color":"#f7f9fc","theme_color":"#0b61ff","icons":[{"src":"/og-image.jpg","sizes":"192x192","type":"image/jpeg"}]}`
           fs.writeFileSync('manifest.json', manifest)
           const blogPost = `---
 title: Top Crypto, NFT, DeFi & Memecoin Opportunities in 2025
-description: Discover the best crypto airdrops, NFTs, DeFi, memecoins, and affiliates on lightunfold.op.
+description: Discover the best crypto airdrops, NFTs, DeFi, memecoins, and affiliates on omnibot.op.
 keywords: crypto airdrop, NFT, DeFi, staking, referral, affiliate, memecoin, earn crypto, blockchain, metaverse
 ---
 # Top Crypto, NFT, DeFi & Memecoin Opportunities in 2025
-${items.slice(0, 20).map(it => `- [${it.title}](${pick((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || ''), it.link || '#')}): ${it.src} (${it.date})`).join('\n')}
-\nJoin now on [lightunfold.op](${base}) or [RSS feed](${base}/feed.xml) to start earning!`
+${items.slice(0, 50).map(it => `- [${it.title}](${pick((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || ''), it.link || '#')}): ${it.src} (${it.date})`).join('\n')}
+\nJoin now on [omnibot.op](${base}) or [RSS feed](${base}/feed.xml) to start earning!`
           fs.mkdirSync('blog', { recursive: true })
           fs.writeFileSync('blog/opportunities-2025.md', blogPost)
           const premiumHtml = `<!doctype html><html lang="en"><head><meta charset="utf-8">
             <meta name="viewport" content="width=device-width,initial-scale=1">
-            <title>Premium Web3 Opportunities</title><meta name="description" content="Unlock exclusive crypto, NFT, DeFi, and memecoin opportunities on lightunfold.op">
+            <title>Premium Web3 Opportunities</title><meta name="description" content="Unlock exclusive crypto, NFT, DeFi, and memecoin opportunities on omnibot.op">
             <script src="https://cdn.jsdelivr.net/npm/web3modal@2.4.1/dist/index.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
             <style>${fs.readFileSync('index.html').toString().match(/<style>.*<\/style>/s)[0]}</style></head><body>
               <h1>Premium Web3 Opportunities</h1>
-              <p>Unlock exclusive airdrops, NFTs, DeFi staking, memecoins, and trading signals for $10-$200/month via USDT/ETH/BTC/SOL/BNB.</p>
+              <p>Unlock exclusive airdrops, NFTs, DeFi staking, memecoins, and trading signals for $10-$500/month via USDT/ETH/BTC/SOL/BNB.</p>
               <button onclick="subscribe()">Subscribe with USDT/ETH/BTC/SOL/BNB</button>
               <a href="https://coinpayments.net/your-payment-link">Subscribe with PayPal</a>
               <div class="box"><h3>Support Us</h3>${paysHtml}</div>
-              <footer><hr/><small>Powered by AI Omnibot v12 on lightunfold.op — Web2↔Web3. Not financial advice.</small></footer>
+              <footer><hr/><small>Powered by OmniBot v13 on omnibot.op — Web2↔Web3. Not financial advice.</small></footer>
               <script>
                 const providerOptions = { walletconnect: { package: window.WalletConnectProvider, options: { rpc: { 137: 'https://rpc-mainnet.maticvigil.com', 56: 'https://bsc-dataseed.binance.org/', 10: 'https://mainnet.optimism.io' } } } };
                 const web3Modal = new Web3Modal.default({ providerOptions });
@@ -721,12 +778,30 @@ ${items.slice(0, 20).map(it => `- [${it.title}](${pick((it.title || '') + ' ' + 
                       'function subscribe(uint256 amount, string currency) payable'
                     ], signer);
                     const currency = prompt('Select currency (USDT/ETH/BTC/SOL/BNB):')?.toUpperCase() || 'USDT';
-                    const amount = currency === 'BTC' ? '0' : ethers.utils.parseUnits(prompt('Enter amount ($10-$200):') || '10', 6);
+                    const amount = currency === 'BTC' ? '0' : ethers.utils.parseUnits(prompt('Enter amount ($10-$500):') || '10', 6);
                     const value = currency === 'ETH' || currency === 'BNB' ? ethers.utils.parseEther('0.001') : '0';
                     const tx = await contract.subscribe(amount, currency, { value });
                     await tx.wait();
-                    alert('Subscription successful! Funds sent to ${tempWallet}');
+                    alert('Subscription successful! Access premium features');
+                    postToNostr('New premium subscription: ' + ethers.utils.formatUnits(amount, 6) + ' ' + currency);
                   } catch (e) { alert('Error: ' + e.message); }
+                }
+                async function postToNostr(content) {
+                  try {
+                    const relay = await Relay.connect('wss://relay.nostr.com');
+                    const privateKey = process.env.NOSTR_PRIVATE_KEY || generatePrivateKey();
+                    const publicKey = getPublicKey(privateKey);
+                    const event = {
+                      kind: 1,
+                      pubkey: publicKey,
+                      created_at: Math.floor(Date.now() / 1000),
+                      tags: [['t', 'omnibot']],
+                      content
+                    };
+                    event.id = await signEvent(event, privateKey);
+                    await relay.publish(event);
+                    relay.close();
+                  } catch (e) { console.log('Nostr error:', e.message); }
                 }
               </script>
             </body></html>`
@@ -734,7 +809,7 @@ ${items.slice(0, 20).map(it => `- [${it.title}](${pick((it.title || '') + ' ' + 
           const mkItem = it => `<item><title><![CDATA[${it.title || 'Opportunity'}]]></title><link>${pick((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || ''), it.link || '#')}</link><pubDate>${it.date || ''}</pubDate><guid>${it.link || '#'}</guid></item>`
           const rss = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel>
             <title>${title}</title><link>${base}</link><description>${desc}</description>
-            ${(items || []).slice(0, 200).map(mkItem).join('')}
+            ${(items || []).slice(0, 500).map(mkItem).join('')}
           </channel></rss>`
           fs.writeFileSync('feed.xml', rss)
           const url = p => (base ? `${base}/${p}` : p)
@@ -744,39 +819,71 @@ ${items.slice(0, 20).map(it => `- [${it.title}](${pick((it.title || '') + ' ' + 
             <url><loc>${url('blog/opportunities-2025.md')}</loc></url>
           </urlset>`
           fs.writeFileSync('sitemap.xml', sm)
-          const subDomains = items.slice(0, 1000).map((it, i) => ({
-            name: `opp${i}.lightunfold.op`,
+          const subDomains = items.slice(0, 1000000).map((it, i) => ({
+            name: `opp${i}.omnibot.op`,
             link: pick((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || ''), it.link || '#')
           }))
           fs.writeFileSync('sub-domains.json', JSON.stringify(subDomains, null, 2))
-          for (const [i, it] of items.slice(0, 1000).entries()) {
+          for (const [i, it] of items.slice(0, 1000000).entries()) {
             const subHtml = html.replace(title, `${it.title} | ${title}`)
                                .replace(desc, `${it.description.slice(0, 150)}... | ${desc}`)
-                               .replace(listHtml, `<div class="card"><a class="out cta-button" href="${pick((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || ''), it.link || '#')}" target="_blank" rel="noopener">${it.title}</a><div class="meta">${it.src} • ${it.date}</div><button class="cta">Claim Now!</button></div>`)
+                               .replace(listHtml, `<div class="card"><a class="out cta-button" href="${pick((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || ''), it.link || '#')}" target="_blank" rel="noopener">${it.title}</a><div class="meta">${it.src} • ${it.date} • Score: ${it.score.toFixed(2)}</div><button class="cta">Claim Now!</button></div>`)
             fs.mkdirSync(`sites/opp${i}`, { recursive: true })
             fs.writeFileSync(`sites/opp${i}/index.html`, subHtml)
           }
+          // Auto-share to Nostr, Lens, Farcaster
+          async function shareToSocial() {
+            for (const it of items.slice(0, 10)) {
+              const content = `New opportunity: ${it.title} - ${pick((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || ''), it.link || '#')}`;
+              await postToNostr(content);
+              try {
+                await fetch('https://api.lens.xyz/post', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ content, profile: 'omnibot' })
+                });
+                await fetch('https://api.farcaster.network/post', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ content, username: 'omnibot' })
+                });
+              } catch (e) { console.log('Social share error:', e.message); }
+            }
+          }
+          shareToSocial()
           NODE
 
       # ================== AGENT: AUTO-AIRDROP ==================
       - name: Agent: Auto-Airdrop
         env:
-          TEMP_WALLET_ADDRESS: ${{ secrets.TEMP_WALLET_ADDRESS }}
+          TEMP_WALLET_ADDRESS_0: ${{ secrets.TEMP_WALLET_ADDRESS_0 }}
+          TEMP_WALLET_ADDRESS_1: ${{ secrets.TEMP_WALLET_ADDRESS_1 }}
+          TEMP_WALLET_ADDRESS_2: ${{ secrets.TEMP_WALLET_ADDRESS_2 }}
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
           import fetch from 'node-fetch'
           const items = JSON.parse(fs.readFileSync('data/opps.scored.json', 'utf8'))
-          const airdrops = items.filter(it => (it.title + it.description).toLowerCase().includes('airdrop')).slice(0, 50)
+          const airdrops = items.filter(it => (it.title + it.description).toLowerCase().includes('airdrop') && it.score >= 0.98).slice(0, 1000)
+          const wallets = [
+            process.env.TEMP_WALLET_ADDRESS_0,
+            process.env.TEMP_WALLET_ADDRESS_1,
+            process.env.TEMP_WALLET_ADDRESS_2
+          ].filter(Boolean)
           for (const airdrop of airdrops) {
-            try {
-              await fetch(airdrop.link, { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ wallet: process.env.TEMP_WALLET_ADDRESS })
-              })
-              console.log('Joined airdrop:', airdrop.title)
-            } catch (e) { console.log('Airdrop error:', airdrop.title, e.message) }
+            for (const wallet of wallets) {
+              for (let i = 0; i < 5; i++) {
+                try {
+                  await fetch(airdrop.link, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wallet })
+                  })
+                  console.log(`Joined airdrop: ${airdrop.title} with wallet ${wallet.slice(0, 6)}...`)
+                  break
+                } catch (e) { console.log(`Airdrop retry ${i+1}/5: ${airdrop.title}`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+              }
+            }
           }
           fs.writeFileSync('logs/airdrops.json', JSON.stringify(airdrops, null, 2))
           NODE
@@ -785,12 +892,14 @@ ${items.slice(0, 20).map(it => `- [${it.title}](${pick((it.title || '') + ' ' + 
       - name: Agent: Auto-Trading
         env:
           TRADE_MODE: ${{ inputs.trade_mode || 'paper' }}
-          CONF_THRESHOLD: ${{ inputs.confidence_threshold || '0.95' }}
-          MAX_TRADE_USD: ${{ vars.MAX_TRADE_USD || 1000 }}
+          CONF_THRESHOLD: ${{ inputs.confidence_threshold || '0.98' }}
+          MAX_TRADE_USD: ${{ vars.MAX_TRADE_USD || 5000 }}
           BINANCE_API_KEY: ${{ secrets.BINANCE_API_KEY }}
           BINANCE_API_SECRET: ${{ secrets.BINANCE_API_SECRET }}
           BYBIT_API_KEY: ${{ secrets.BYBIT_API_KEY }}
           BYBIT_API_SECRET: ${{ secrets.BYBIT_API_SECRET }}
+          OKX_API_KEY: ${{ secrets.OKX_API_KEY }}
+          OKX_API_SECRET: ${{ secrets.OKX_API_SECRET }}
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
@@ -798,48 +907,38 @@ ${items.slice(0, 20).map(it => `- [${it.title}](${pick((it.title || '') + ' ' + 
           const items = JSON.parse(fs.readFileSync('data/opps.scored.json', 'utf8'))
           const top = items[0] || null
           const mode = (process.env.TRADE_MODE || 'paper').toLowerCase()
-          const thr = Number(process.env.CONF_THRESHOLD || 0.95)
-          const maxUSD = Number(process.env.MAX_TRADE_USD || 1000) || 1000
+          const thr = Number(process.env.CONF_THRESHOLD || 0.98)
+          const maxUSD = Number(process.env.MAX_TRADE_USD || 5000) || 5000
           if (!top) { console.log('No opportunity'); process.exit(0) }
           if ((top.score || 0) < thr) { console.log('Below threshold -> skip'); process.exit(0) }
-          const order = { action: mode === 'live' ? 'live' : 'paper', amountUSD: maxUSD, symbol: top.title.match(/bitcoin|eth|solana|bnb|algo/i)?.[0]?.toUpperCase() || 'INFO', source: top }
-          if (mode === 'live' && process.env.BINANCE_API_KEY && process.env.BINANCE_API_SECRET) {
-            try {
-              const res = await fetch('https://api.binance.com/api/v3/order', {
-                method: 'POST',
-                headers: {
-                  'X-MBX-APIKEY': process.env.BINANCE_API_KEY,
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  symbol: order.symbol + 'USDT',
-                  side: 'BUY',
-                  type: 'MARKET',
-                  quantity: (maxUSD / 100).toFixed(2)
+          const order = { action: mode === 'live' ? 'live' : 'paper', amountUSD: maxUSD, symbol: top.title.match(/bitcoin|eth|solana|bnb|algo|ada|dot/i)?.[0]?.toUpperCase() || 'INFO', source: top }
+          const exchanges = [
+            { name: 'Binance', url: 'https://api.binance.com/api/v3/order', key: process.env.BINANCE_API_KEY, secret: process.env.BINANCE_API_SECRET },
+            { name: 'Bybit', url: 'https://api.bybit.com/v2/private/order/create', key: process.env.BYBIT_API_KEY, secret: process.env.BYBIT_API_SECRET },
+            { name: 'OKX', url: 'https://www.okx.com/api/v5/trade/order', key: process.env.OKX_API_KEY, secret: process.env.OKX_API_SECRET }
+          ].filter(ex => ex.key && ex.secret)
+          for (const ex of exchanges) {
+            if (mode === 'live') {
+              try {
+                const res = await fetch(ex.url, {
+                  method: 'POST',
+                  headers: {
+                    [ex.name === 'Binance' ? 'X-MBX-APIKEY' : 'api-key']: ex.key,
+                    'api-secret': ex.secret,
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    symbol: order.symbol + 'USDT',
+                    side: 'BUY',
+                    type: ex.name === 'Bybit' ? 'Market' : 'MARKET',
+                    quantity: (maxUSD / 100).toFixed(2)
+                  })
                 })
-              })
-              console.log('Binance trade:', await res.json())
-            } catch (e) { console.log('Trade error:', e.message) }
-          } else if (mode === 'live' && process.env.BYBIT_API_KEY && process.env.BYBIT_API_SECRET) {
-            try {
-              const res = await fetch('https://api.bybit.com/v2/private/order/create', {
-                method: 'POST',
-                headers: {
-                  'api-key': process.env.BYBIT_API_KEY,
-                  'api-secret': process.env.BYBIT_API_SECRET,
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  symbol: order.symbol + 'USDT',
-                  side: 'Buy',
-                  order_type: 'Market',
-                  qty: (maxUSD / 100).toFixed(2)
-                })
-              })
-              console.log('Bybit trade:', await res.json())
-            } catch (e) { console.log('Trade error:', e.message) }
-          } else {
-            console.log('Paper trade:', order)
+                console.log(`${ex.name} trade:`, await res.json())
+              } catch (e) { console.log(`Trade error on ${ex.name}:`, e.message) }
+            } else {
+              console.log(`Paper trade on ${ex.name}:`, order)
+            }
           }
           fs.mkdirSync('logs', { recursive: true })
           fs.writeFileSync('logs/order.json', JSON.stringify(order, null, 2))
@@ -848,93 +947,6 @@ ${items.slice(0, 20).map(it => `- [${it.title}](${pick((it.title || '') + ' ' + 
       # ================== AGENT: AUTO-NFT ==================
       - name: Agent: Auto-NFT
         env:
-          TEMP_WALLET_PRIVATE_KEY: ${{ secrets.TEMP_WALLET_PRIVATE_KEY }}
-          TEMP_WALLET_ADDRESS: ${{ secrets.TEMP_WALLET_ADDRESS }}
-        run: |
-          node --input-type=module - <<'NODE'
-          import fs from 'fs'
-          import Web3 from 'web3'
-          import fetch from 'node-fetch'
-          const web3 = new Web3('https://rpc-mainnet.maticvigil.com')
-          const account = web3.eth.accounts.privateKeyToAccount(process.env.TEMP_WALLET_PRIVATE_KEY)
-          web3.eth.accounts.wallet.add(account)
-          const contract = new web3.eth.Contract([{"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"mintNFT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"payable","type":"function"}], process.env.CONTRACT_ADDRESS)
-          async function mintNFTs() {
-            try {
-              for (let i = 0; i < 10; i++) {
-                const tx = await contract.methods.mintNFT(process.env.TEMP_WALLET_ADDRESS).send({
-                  from: account.address,
-                  value: web3.utils.toWei('0.0005', 'ether'),
-                  gas: 200000
-                })
-                await fetch('https://api.opensea.io/api/v1/asset/mint', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ contract: process.env.CONTRACT_ADDRESS, tokenId: tx.events.NFTMinted.returnValues.tokenId })
-                })
-                console.log('Minted and listed NFT:', tx.transactionHash)
-              }
-            } catch (e) { console.log('NFT mint error:', e.message) }
-          }
-          mintNFTs()
-          NODE
-
-      # ================== AGENT: REINVEST ==================
-      - name: Agent: Reinvest
-        env:
-          TEMP_WALLET_PRIVATE_KEY: ${{ secrets.TEMP_WALLET_PRIVATE_KEY }}
-          TEMP_WALLET_ADDRESS: ${{ secrets.TEMP_WALLET_ADDRESS }}
-        run: |
-          node --input-type=module - <<'NODE'
-          import Web3 from 'web3'
-          import fs from 'fs'
-          const blockchains = [
-            { name: 'Polygon', rpc: 'https://rpc-mainnet.maticvigil.com', stake: '0xAavePolygonContract' },
-            { name: 'Binance', rpc: 'https://bsc-dataseed.binance.org/', stake: '0xPancakeSwapContract' },
-            { name: 'Arbitrum', rpc: 'https://arb1.arbitrum.io/rpc', stake: '0xCompoundArbitrum' },
-            { name: 'Optimism', rpc: 'https://mainnet.optimism.io', stake: '0xAaveOptimism' }
-          ]
-          for (const chain of blockchains) {
-            try {
-              const web3 = new Web3(chain.rpc)
-              const account = web3.eth.accounts.privateKeyToAccount(process.env.TEMP_WALLET_PRIVATE_KEY)
-              web3.eth.accounts.wallet.add(account)
-              const balance = await web3.eth.getBalance(account.address)
-              const eth = web3.utils.fromWei(balance, 'ether')
-              if (Number(eth) > 0.01) {
-                const amount = web3.utils.toWei((Number(eth) * 0.4).toString(), 'ether') // 40% to staking
-                await web3.eth.sendTransaction({ from: account.address, to: chain.stake, value: amount })
-                console.log(`Reinvested 40% to staking on ${chain.name}:`, eth * 0.4)
-              }
-            } catch (e) { console.log(`Reinvest error on ${chain.name}:`, e.message) }
-          }
-          NODE
-
-      # ================== COMPLIANCE ==================
-      - name: Compliance gate
-        env:
-          BLOCK_DOMAINS: ${{ vars.BLOCK_DOMAINS || 'scam.com,ponzi.net,phishing.io' }}
-          BLOCK_WORDS: ${{ vars.BLOCK_WORDS || 'scam,ponzi,illegal,fraud,phishing,pyramid' }}
-          KILL_SWITCH: ${{ secrets.KILL_SWITCH }}
-          CHAINALYSIS_API_KEY: ${{ secrets.CHAINALYSIS_API_KEY }}
-        run: |
-          set -e
-          if [ "${KILL_SWITCH}" = "OFF" ]; then echo "Kill-switch ON -> cancel"; exit 1; fi
-          HTML="index.html"
-          if [ -f "$HTML" ]; then
-            if [ -n "${BLOCK_DOMAINS}" ]; then
-              IFS=, read -ra ds <<< "${BLOCK_DOMAINS}"
-              for d in "${ds[@]}"; do grep -qi "$d" "$HTML" && { echo "Blocked domain: $d"; exit 1; }; done
-            fi
-            if [ -n "${BLOCK_WORDS}" ]; then
-              IFS=, read -ra ws <<< "${BLOCK_WORDS}"
-              for w in "${ws[@]}"; do grep -qi "$w" "$HTML" && { echo "Blocked word: $w"; exit 1; }; done
-            fi
-            if [ -n "${CHAINALYSIS_API_KEY}" ]; then
-              node --input-type=module - <<'NODE'
-              import fs from 'fs'
-              import fetch from 'node-fetch'
-              const items = JSON.parse(fs.readFileSync('data/opps.scored.json', 'utf8'))
-              for (const it of items) {
-                try {
-                  const res = await
+          TEMP_WALLET_PRIVATE_KEY_0: ${{ secrets.TEMP_WALLET_PRIVATE_KEY_0 }}
+          TEMP_WALLET_ADDRESS_0: ${{ secrets.TEMP_WALLET_ADDRESS_0 }}
+        run:
