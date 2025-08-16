@@ -14,7 +14,7 @@ on:
         description: "AI score threshold 0..1 for LIVE actions"
         default: "0.99999999"
   schedule:
-    - cron: "*/5 * * * *"  # Run every 5 minutes for efficiency
+    - cron: "*/5 * * * *"  # Run every 5 minutes
 
 permissions:
   contents: write
@@ -35,13 +35,14 @@ jobs:
         env:
           MONITORING_ENDPOINT: ${{ vars.MONITORING_ENDPOINT || 'https://api.x.ai/v3/monitor' }}
           LLM_API_URL: ${{ vars.LLM_API_URL || 'https://api.x.ai/v3/chat/completions' }}
+          ARWEAVE_ENDPOINT: ${{ vars.ARWEAVE_ENDPOINT || 'http://arweave-chain-nodes.ar-io.com:1984' }}
         run: |
           node --input-type=module - <<'NODE'
           import fetch from 'node-fetch'
           import { Kyber } from '@kyber-crypto/kyber-js'
           import { Dilithium } from '@dilithium-crypto/dilithium-js'
           async function quantumSelfHealV4() {
-            const services = ['https://api.infura.io/v3/health', 'https://ipfs.io/health', 'https://arweave.net/health']
+            const services = ['https://api.infura.io/v3/health', 'https://ipfs.io/health', process.env.ARWEAVE_ENDPOINT]
             const fallbacks = { 'https://api.infura.io/v3/health': 'https://ipfs.io/health' }
             const kyber = new Kyber()
             const dilithium = new Dilithium()
@@ -57,13 +58,13 @@ jobs:
             }
           }
           async function initSolarPoweredEdgeNodes() {
-            const backupPower = await fetch('https://api.battery-reserve.io/init', { method: 'POST', body: JSON.stringify({ type: 'solar-battery-hybrid', autoSwitch: true }) })
-            return await fetch('https://api.li-fi-6g-mesh.io/init', { method: 'POST', body: JSON.stringify({ type: 'solar', backup: backupPower.ok, predictive: true }) })
+            const backupPower = await fetch('https://api.battery-reserve.io/init', { method: 'POST', body: JSON.stringify({ type: 'solar-battery-hybrid', autoSwitch: true, capacity: 75 }) })
+            return await fetch('https://api.li-fi-6g-mesh.io/init', { method: 'POST', body: JSON.stringify({ type: 'solar', backup: backupPower.ok, predictive: true, bandwidth: 20 }) })
               .then(res => res.json())
               .catch(err => console.error('Li-Fi/6G+ init failed:', err))
           }
           function adaptiveRetry() {
-            return { maxAttempts: 10, delay: 1000 }  # Tự điều chỉnh thay vì 1 tỷ lần
+            return { maxAttempts: 10, delay: 1000 }
           }
           async function healService(service, kyber, dilithium, solarEdgeNodes, retryConfig) {
             for (let i = 0; i < retryConfig.maxAttempts; i++) {
@@ -120,7 +121,7 @@ jobs:
         env:
           REVENUE_API_URL: ${{ vars.REVENUE_API_URL || 'https://api.x.ai/v3/revenue' }}
           WALLETS: ${{ toJson(vars.WALLETS) || '["momo:0567892030", "vcb:9567892030", "paypal:vumumabada@gmail.com", "usdt:0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0", "eth:0x54E15A7b6d4213beE87800432A151d794638E3C2"]' }}
-          REF_LINKS: ${{ toJson(vars.REF_LINKS) || '["https://binance.com/ref/bnb", "https://algosone.com/ref"]' }}
+          REF_LINKS: ${{ toJson(vars.REF_LINKS) || '["https://www.binance.com/ref/bnb", "https://algosone.com/ref"]' }}
         run: |
           node --input-type=module - <<'NODE'
           import fetch from 'node-fetch'
@@ -138,13 +139,13 @@ jobs:
                 const response = await fetch(stream.api, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ wallets, refLinks, fee: stream.fee, geofence: true })
+                  body: JSON.stringify({ wallets, refLinks, fee: stream.fee, geofence: true, instant: true })
                 })
                 if (response.ok) {
                   console.log(`Revenue stream ${stream.type} activated with fee ${stream.fee}`)
                 }
               }
-              await new Promise(resolve => setTimeout(resolve, 600000))  # Update every 10 minutes
+              await new Promise(resolve => setTimeout(resolve, 300000))  # Update every 5 minutes for faster payout
             }
           }
           diversifyRevenue().catch(console.error)
@@ -155,6 +156,8 @@ jobs:
     needs: [quantum-self-healing-v4, revenue-diversification-v1]
     steps:
       - name: Hyperledger Infinity Ultra Setup with AI-Native Blockchains
+        env:
+          ARWEAVE_ENDPOINT: ${{ vars.ARWEAVE_ENDPOINT || 'http://arweave-chain-nodes.ar-io.com:1984' }}
         run: |
           node --input-type=module - <<'NODE'
           import fetch from 'node-fetch'
@@ -180,21 +183,21 @@ jobs:
               if (!process.env[name]) {
                 const signedValue = dilithium.sign(value)
                 process.env[name] = signedValue
-                await fetch('https://arweave.net/tx', { method: 'POST', body: JSON.stringify({ data: signedValue, tags: [{ name: 'Secret', value: name }] }) })
+                await fetch(`${process.env.ARWEAVE_ENDPOINT}/tx`, { method: 'POST', body: JSON.stringify({ data: signedValue, tags: [{ name: 'Secret', value: name }] }) })
               }
             }
-            const blockchains = ['Ethereum', 'Polygon', 'Sui', 'Aptos', 'Monad']
+            const blockchains = ['Ethereum', 'Polygon', 'Sui', 'Aptos', 'Monad', 'BNB Chain']
             for (const chain of blockchains) {
               await fetch('https://api.ipfs.io/workers/invoke', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chain, count: 1000000, zksnarks: true })
+                body: JSON.stringify({ chain, count: 500000, zksnarks: true, instant: true })
               })
             }
             const ceramic = await create3ID({ seed: process.env.DID_SEED })
             await ceramic.authenticate()
             const encryptedDID = kyber.encrypt(ceramic.id)
-            await fetch('https://api.civic.com/did', { method: 'POST', body: JSON.stringify({ did: encryptedDID, kyc: true }) })
+            await fetch('https://api.civic.com/did', { method: 'POST', body: JSON.stringify({ did: encryptedDID, kyc: true, instant: true }) })
           }
           initializeHyperledgerUltra()
           NODE
@@ -211,7 +214,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update -y && sudo apt-get install -y jq wasm-pack libquantum-dev
-          npm i rss-parser@3 node-fetch@3 cheerio@1 web3@1 @ceramicnetwork/3id-did@1 @kyber-crypto/kyber-js@1 @dilithium-crypto/dilithium-js@1
+          npm i rss-parser@3 node-fetch@3 cheerio@1 web3@1 @ceramicnetwork/3id-did@1 @kyber-crypto/kyber-js@1 @dilithium-crypto/dilithium-js@1 @binance/web3-wallet@1
       - name: Deploy Hyperledger Smart Contract
         env:
           TEMP_WALLET_PRIVATE_KEY_BNBCHAIN_0: ${{ secrets.TEMP_WALLET_PRIVATE_KEY_BNBCHAIN_0 || '0x-fake-key' }}
@@ -224,27 +227,31 @@ jobs:
           const contract = new web3.eth.Contract([...], '0xContractAddress')
           const account = web3.eth.accounts.privateKeyToAccount(process.env.TEMP_WALLET_PRIVATE_KEY_BNBCHAIN_0)
           web3.eth.accounts.wallet.add(account)
-          await contract.methods.mintNFT(account.address).send({ from: account.address })
+          await contract.methods.mintNFT(account.address).send({ from: account.address, gas: 210000 })
           console.log('Deployed smart contract with NFT minting')
           NODE
       - name: Optimize Viral Campaigns
         env:
           SOCIAL_API_URL: ${{ vars.SOCIAL_API_URL || 'https://api.x.ai/v3/social' }}
+          WALLETS: ${{ toJson(vars.WALLETS) || '["momo:0567892030", "vcb:9567892030", "paypal:vumumabada@gmail.com", "usdt:0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0", "eth:0x54E15A7b6d4213beE87800432A151d794638E3C2"]' }}
+          REF_LINKS: ${{ toJson(vars.REF_LINKS) || '["https://www.binance.com/ref/bnb", "https://algosone.com/ref"]' }}
         run: |
           node --input-type=module - <<'NODE'
           import fetch from 'node-fetch'
           async function optimizeViralCampaigns() {
             const platforms = ['x', 'telegram', 'lens', 'farcaster']
+            const wallets = JSON.parse(process.env.WALLETS)
+            const refLinks = JSON.parse(process.env.REF_LINKS)
             while (true) {
               for (const platform of platforms) {
                 await fetch(`${process.env.SOCIAL_API_URL}/campaign`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ platform, content: 'Join our legal lottery!', targetCTR: 0.10 })
+                  body: JSON.stringify({ platform, content: 'Join our legal lottery with ' + refLinks.join(' or ') + '!', wallets, targetCTR: 0.10, instant: true })
                 })
               }
               await new Promise(resolve => setTimeout(resolve, 300000))
             }
           }
           optimizeViralCampaigns().catch(console.error)
-          NODE
+          NODEu
