@@ -36,7 +36,8 @@ jobs:
           MONITORING_ENDPOINT: ${{ vars.MONITORING_ENDPOINT || 'https://api.x.ai/v3/monitor' }}
           LLM_API_URL: ${{ vars.LLM_API_URL || 'https://api.x.ai/v3/chat/completions' }}
           ARWEAVE_ENDPOINT: ${{ vars.ARWEAVE_ENDPOINT || 'http://arweave-chain-nodes.ar-io.com:1984' }}
-          QUOTA_THRESHOLD: ${{ vars.QUOTA_THRESHOLD || '0.5' }} # 50% quota limit
+          QUOTA_THRESHOLD: ${{ vars.QUOTA_THRESHOLD || '0.3' }} # Reduce to 30% for safety
+          ENERGY_API: ${{ vars.ENERGY_API || 'https://api.energy-free.io/status' }}
         run: |
           node --input-type=module - <<'NODE'
           import fetch from 'node-fetch'
@@ -47,33 +48,33 @@ jobs:
             const fallbacks = { 'https://api.infura.io/v3/health': 'https://ipfs.io/health' }
             const kyber = new Kyber()
             const dilithium = new Dilithium()
-            const solarEdgeNodes = await initSolarPoweredEdgeNodes()
+            const energyNodes = await initFreeEnergyNodes()
             while (true) {
               for (const service of services) {
-                const response = await fetch(service, { timeout: 500 })
+                const response = await fetch(service, { timeout: 300 }) // Reduced timeout for efficiency
                 if (!response.ok) {
-                  await healService(service, kyber, dilithium, solarEdgeNodes, adaptiveRetry())
+                  await healService(service, kyber, dilithium, energyNodes, adaptiveRetry())
                 }
               }
-              // Monitor quota usage
               const quota = await checkQuota()
-              if (quota > parseFloat(process.env.QUOTA_THRESHOLD)) {
-                console.log('Quota exceeded 50%, scaling back operations')
+              const energy = await checkEnergy()
+              if (quota > parseFloat(process.env.QUOTA_THRESHOLD) || energy < 0.5) { // 30% quota or 50% energy
+                console.log('Quota/energy low, scaling back operations')
                 await scaleBackOperations()
               }
               await new Promise(resolve => setTimeout(resolve, 300000))  # Check every 5 minutes
             }
           }
-          async function initSolarPoweredEdgeNodes() {
-            const backupPower = await fetch('https://api.battery-reserve.io/init', { method: 'POST', body: JSON.stringify({ type: 'solar-battery-hybrid', autoSwitch: true, capacity: 80, redundancy: true }) })
-            return await fetch('https://api.li-fi-6g-mesh.io/init', { method: 'POST', body: JSON.stringify({ type: 'solar', backup: backupPower.ok, predictive: true, bandwidth: 20, failover: true }) })
-              .then(res => res.json())
-              .catch(err => console.error('Li-Fi/6G+ init failed:', err))
+          async function initFreeEnergyNodes() {
+            const solar = await fetch(`${process.env.ENERGY_API}/solar`, { method: 'POST', body: JSON.stringify({ type: 'solar-panel', autoSwitch: true, capacity: 85 }) })
+            const wind = await fetch(`${process.env.ENERGY_API}/wind`, { method: 'POST', body: JSON.stringify({ type: 'wind-turbine', autoSwitch: true, capacity: 10 }) })
+            const hydro = await fetch(`${process.env.ENERGY_API}/hydro`, { method: 'POST', body: JSON.stringify({ type: 'micro-hydro', autoSwitch: true, capacity: 5 }) })
+            return { solar: solar.ok, wind: wind.ok, hydro: hydro.ok, redundancy: true }
           }
           function adaptiveRetry() {
-            return { maxAttempts: 10, delay: 1000 }
+            return { maxAttempts: 8, delay: 500 } // Reduced for efficiency
           }
-          async function healService(service, kyber, dilithium, solarEdgeNodes, retryConfig) {
+          async function healService(service, kyber, dilithium, energyNodes, retryConfig) {
             for (let i = 0; i < retryConfig.maxAttempts; i++) {
               try {
                 const encryptedData = kyber.encrypt(JSON.stringify({ service, timestamp: Date.now() }))
@@ -81,7 +82,7 @@ jobs:
                 await fetch(`${process.env.MONITORING_ENDPOINT}/heal`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ encryptedData, signature, solarEdgeNodes })
+                  body: JSON.stringify({ encryptedData, signature, energyNodes })
                 })
                 break
               } catch (e) {
@@ -95,11 +96,14 @@ jobs:
             const ipfsData = await ipfsResponse.json()
             const arweaveResponse = await fetch(`${process.env.ARWEAVE_ENDPOINT}/info`)
             const arweaveData = await arweaveResponse.json()
-            return (ipfsData.TotalIn + ipfsData.TotalOut + arweaveData.storageUsed) / (1024 * 1024 * 1024 * 2) // GB used vs 2GB limit
+            return (ipfsData.TotalIn + ipfsData.TotalOut + arweaveData.storageUsed) / (1024 * 1024 * 1.1) // GB used vs 1.1GB limit
+          }
+          async function checkEnergy() {
+            const response = await fetch(process.env.ENERGY_API)
+            return (await response.json()).capacityAvailable || 0
           }
           async function scaleBackOperations() {
-            // Reduce transaction volume by 50%
-            global.transactionLimit = (global.transactionLimit || 5000) / 2
+            global.transactionLimit = (global.transactionLimit || 2000) / 2
             console.log(`Scaled back to ${global.transactionLimit} transactions/day`)
           }
           quantumSelfHealV4().catch(console.error)
@@ -118,7 +122,7 @@ jobs:
               { name: 'MoMo', license: process.env.MOMO_LICENSE, endpoint: 'https://api.momo.vn/license' },
               { name: 'Vietcombank', license: process.env.VIETCOMBANK_LICENSE, endpoint: 'https://api.vietcombank.vn/license' }
             ]
-            const geofence = await fetch('https://api.geofence.io/init', { method: 'POST', body: JSON.stringify({ regions: ['US', 'EU'], block: ['VN'], redundancy: true }) })
+            const geofence = await fetch('https://api.geofence.io/init', { method: 'POST', body: JSON.stringify({ regions: ['US', 'EU'], block: ['VN'], redundancy: true, failover: true }) })
             while (true) {
               for (const service of services) {
                 const response = await fetch(service.endpoint, { method: 'POST', body: JSON.stringify({ license: service.license }) })
@@ -126,7 +130,7 @@ jobs:
                   await fetch(`${process.env.LEGAL_API_URL}/alert`, { method: 'POST', body: JSON.stringify({ service: service.name, geofence: geofence.ok }) })
                 }
               }
-              await new Promise(resolve => setTimeout(resolve, 3600000))  # Check every hour
+              await new Promise(resolve => setTimeout(resolve, 1800000))  # Check every 30 minutes for efficiency
             }
           }
           legalComplianceV3().catch(console.error)
@@ -146,10 +150,11 @@ jobs:
           import fetch from 'node-fetch'
           async function diversifyRevenue() {
             const streams = [
-              { type: 'lottery', api: 'https://api.vietlott.io/tickets', fee: 0.01, maxTransactions: 1000 },
-              { type: 'nft-staking', api: 'https://api.nft-staking.io/stake', fee: 0.005, maxTransactions: 500 },
-              { type: 'defi-yield', api: 'https://api.aave.com/yield', fee: 0.003, maxTransactions: 50 },
-              { type: 'ads', api: 'https://api.ad-network.io/campaign', fee: 0.02, maxTransactions: 500 }
+              { type: 'lottery', api: 'https://api.vietlott.io/tickets', fee: 0.01, maxTransactions: 800 },
+              { type: 'nft-staking', api: 'https://api.nft-staking.io/stake', fee: 0.005, maxTransactions: 400 },
+              { type: 'defi-yield', api: 'https://api.aave.com/yield', fee: 0.003, maxTransactions: 40 },
+              { type: 'ads', api: 'https://api.ad-network.io/campaign', fee: 0.02, maxTransactions: 400 },
+              { type: 'peer-to-peer', api: 'https://api.p2p-exchange.io/trade', fee: 0.01, maxTransactions: 300 }
             ]
             const wallets = JSON.parse(process.env.WALLETS)
             const refLinks = JSON.parse(process.env.REF_LINKS)
@@ -216,7 +221,7 @@ jobs:
             const ceramic = await create3ID({ seed: process.env.DID_SEED })
             await ceramic.authenticate()
             const encryptedDID = kyber.encrypt(ceramic.id)
-            await fetch('https://api.civic.com/did', { method: 'POST', body: JSON.stringify({ did: encryptedDID, kyc: true, instant: true, redundancy: true }) })
+            await fetch('https://api.civic.com/did', { method: 'POST', body: JSON.stringify({ did: encryptedDID, kyc: true, instant: true, redundancy: true, failover: true }))
           }
           initializeHyperledgerUltra()
           NODE
@@ -246,7 +251,7 @@ jobs:
           const contract = new web3.eth.Contract([...], '0xContractAddress')
           const account = web3.eth.accounts.privateKeyToAccount(process.env.TEMP_WALLET_PRIVATE_KEY_BNBCHAIN_0)
           web3.eth.accounts.wallet.add(account)
-          await contract.methods.mintNFT(account.address).send({ from: account.address, gas: 210000, redundancy: true })
+          await contract.methods.mintNFT(account.address).send({ from: account.address, gas: 210000, redundancy: true, failover: true })
           console.log('Deployed smart contract with NFT minting')
           NODE
       - name: Optimize Viral Campaigns
@@ -258,7 +263,7 @@ jobs:
           node --input-type=module - <<'NODE'
           import fetch from 'node-fetch'
           async function optimizeViralCampaigns() {
-            const platforms = ['x', 'telegram', 'lens', 'farcaster']
+            const platforms = ['x', 'telegram', 'lens', 'farcaster', 'discord']
             const wallets = JSON.parse(process.env.WALLETS)
             const refLinks = JSON.parse(process.env.REF_LINKS)
             while (true) {
@@ -266,7 +271,7 @@ jobs:
                 await fetch(`${process.env.SOCIAL_API_URL}/campaign`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ platform, content: 'Join our legal lottery with ' + refLinks.join(' or ') + '!', wallets, targetCTR: 0.05, instant: true, redundancy: true })
+                  body: JSON.stringify({ platform, content: 'Join our legal lottery with ' + refLinks.join(' or ') + '!', wallets, targetCTR: 0.03, instant: true, redundancy: true, failover: true })
                 })
               }
               await new Promise(resolve => setTimeout(resolve, 300000))
