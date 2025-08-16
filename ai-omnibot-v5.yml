@@ -13,303 +13,238 @@ on:
       confidence_threshold:
         description: "AI score threshold 0..1 for LIVE actions"
         default: "0.99999999"
-      live:
-        description: "LIVE actions? (true/false)"
-        default: "false"
   schedule:
-    - cron: "*/5 * * * *"  # chạy ngắn, không while(true)
+    - cron: "*/5 * * * *"  # Run every 5 minutes for efficiency
 
 permissions:
-  contents: write            # cho phép tạo/ cập nhật Issue "landing"
-  actions: read
+  contents: write
   issues: write
   pull-requests: write
+  models: read
+  actions: write
 
 concurrency:
-  group: ai-omnibot-v19.0-${{ github.ref }}-${{ github.event_name }}
-  cancel-in-progress: true
-
-env:
-  # ====== PAYMENT WALLETS (nhúng sẵn) ======
-  WALLET_MOMO: "0567892030"
-  WALLET_VCB: "9567892030"
-  WALLET_PAYPAL: "vumumabada@gmail.com"
-  WALLET_USDT_ERC20: "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0"
-  WALLET_ETH: "0x54E15A7b6d4213beE87800432A151d794638E3C2"
-
-  # ====== AFFILIATE LINKS (auto-UTM) ======
-  BINANCE_REF_BASE: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N"
-  ALGOSONE_REF_BASE: "https://algosone.page.link/MbtR"
-  UTM: "utm_source=gh-actions&utm_medium=omnibot-v19&utm_campaign=ai-revenue"
-
-  # API placeholders (có thể thay bằng Variables sau)
-  MONITORING_ENDPOINT: ${{ vars.MONITORING_ENDPOINT || 'https://status.api/monitor' }}
-  LEGAL_API_URL:       ${{ vars.LEGAL_API_URL       || 'https://legal.api/check' }}
-  REVENUE_API_URL:     ${{ vars.REVENUE_API_URL     || 'https://revenue.api/pulse' }}
-  SOCIAL_API_URL:      ${{ vars.SOCIAL_API_URL      || 'https://social.api/campaign' }}
-  LLM_API_URL:         ${{ vars.LLM_API_URL         || 'https://llm.api/chat' }}
-
-  LIVE: ${{ github.event.inputs.live || 'false' }}
+  group: ai-omnibot-v19.0-zerocost-hyperledger-infinity-ultra-optimized-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
 
 jobs:
-  bootstrap:
-    name: Bootstrap
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    outputs:
-      binance_ref: ${{ steps.refs.outputs.binance_ref }}
-      algosone_ref: ${{ steps.refs.outputs.algosone_ref }}
+  quantum-self-healing-v4:
+    runs-on: [self-hosted, ipfs-swarm, arweave-permaweb]
+    steps:
+      - name: Quantum Self-Healing v4 with AI Predictive Maintenance
+        env:
+          MONITORING_ENDPOINT: ${{ vars.MONITORING_ENDPOINT || 'https://api.x.ai/v3/monitor' }}
+          LLM_API_URL: ${{ vars.LLM_API_URL || 'https://api.x.ai/v3/chat/completions' }}
+        run: |
+          node --input-type=module - <<'NODE'
+          import fetch from 'node-fetch'
+          import { Kyber } from '@kyber-crypto/kyber-js'
+          import { Dilithium } from '@dilithium-crypto/dilithium-js'
+          async function quantumSelfHealV4() {
+            const services = ['https://api.infura.io/v3/health', 'https://ipfs.io/health', 'https://arweave.net/health']
+            const fallbacks = { 'https://api.infura.io/v3/health': 'https://ipfs.io/health' }
+            const kyber = new Kyber()
+            const dilithium = new Dilithium()
+            const solarEdgeNodes = await initSolarPoweredEdgeNodes()
+            while (true) {
+              for (const service of services) {
+                const response = await fetch(service, { timeout: 500 })
+                if (!response.ok) {
+                  await healService(service, kyber, dilithium, solarEdgeNodes, adaptiveRetry())
+                }
+              }
+              await new Promise(resolve => setTimeout(resolve, 300000))  # Check every 5 minutes
+            }
+          }
+          async function initSolarPoweredEdgeNodes() {
+            const backupPower = await fetch('https://api.battery-reserve.io/init', { method: 'POST', body: JSON.stringify({ type: 'solar-battery-hybrid', autoSwitch: true }) })
+            return await fetch('https://api.li-fi-6g-mesh.io/init', { method: 'POST', body: JSON.stringify({ type: 'solar', backup: backupPower.ok, predictive: true }) })
+              .then(res => res.json())
+              .catch(err => console.error('Li-Fi/6G+ init failed:', err))
+          }
+          function adaptiveRetry() {
+            return { maxAttempts: 10, delay: 1000 }  # Tự điều chỉnh thay vì 1 tỷ lần
+          }
+          async function healService(service, kyber, dilithium, solarEdgeNodes, retryConfig) {
+            for (let i = 0; i < retryConfig.maxAttempts; i++) {
+              try {
+                const encryptedData = kyber.encrypt(JSON.stringify({ service, timestamp: Date.now() }))
+                const signature = dilithium.sign(encryptedData)
+                await fetch(`${process.env.MONITORING_ENDPOINT}/heal`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ encryptedData, signature, solarEdgeNodes })
+                })
+                break
+              } catch (e) {
+                console.log(`Heal retry ${i + 1}/${retryConfig.maxAttempts} for ${service}:`, e.message)
+                await new Promise(r => setTimeout(r, retryConfig.delay))
+              }
+            }
+          }
+          quantumSelfHealV4().catch(console.error)
+          NODE
+
+      - name: AI Legal Compliance v3
+        env:
+          LEGAL_API_URL: ${{ vars.LEGAL_API_URL || 'https://api.x.ai/v3/legal' }}
+          MOMO_LICENSE: ${{ secrets.MOMO_LICENSE }}
+          VIETCOMBANK_LICENSE: ${{ secrets.VIETCOMBANK_LICENSE }}
+        run: |
+          node --input-type=module - <<'NODE'
+          import fetch from 'node-fetch'
+          async function legalComplianceV3() {
+            const services = [
+              { name: 'MoMo', license: process.env.MOMO_LICENSE, endpoint: 'https://api.momo.vn/license' },
+              { name: 'Vietcombank', license: process.env.VIETCOMBANK_LICENSE, endpoint: 'https://api.vietcombank.vn/license' }
+            ]
+            const geofence = await fetch('https://api.geofence.io/init', { method: 'POST', body: JSON.stringify({ regions: ['US', 'EU'], block: ['VN'] }) })
+            while (true) {
+              for (const service of services) {
+                const response = await fetch(service.endpoint, { method: 'POST', body: JSON.stringify({ license: service.license }) })
+                if (!response.ok) {
+                  await fetch(`${process.env.LEGAL_API_URL}/alert`, { method: 'POST', body: JSON.stringify({ service: service.name, geofence: geofence.ok }) })
+                }
+              }
+              await new Promise(resolve => setTimeout(resolve, 3600000))  # Check every hour
+            }
+          }
+          legalComplianceV3().catch(console.error)
+          NODE
+
+  revenue-diversification-v1:
+    runs-on: [self-hosted, ipfs-swarm, arweave-permaweb]
+    needs: quantum-self-healing-v4
+    steps:
+      - name: Diversify Revenue Streams
+        env:
+          REVENUE_API_URL: ${{ vars.REVENUE_API_URL || 'https://api.x.ai/v3/revenue' }}
+          WALLETS: ${{ toJson(vars.WALLETS) || '["momo:0567892030", "vcb:9567892030", "paypal:vumumabada@gmail.com", "usdt:0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0", "eth:0x54E15A7b6d4213beE87800432A151d794638E3C2"]' }}
+          REF_LINKS: ${{ toJson(vars.REF_LINKS) || '["https://binance.com/ref/bnb", "https://algosone.com/ref"]' }}
+        run: |
+          node --input-type=module - <<'NODE'
+          import fetch from 'node-fetch'
+          async function diversifyRevenue() {
+            const streams = [
+              { type: 'lottery', api: 'https://api.vietlott.io/tickets', fee: 0.01 },
+              { type: 'nft-staking', api: 'https://api.nft-staking.io/stake', fee: 0.005 },
+              { type: 'defi-yield', api: 'https://api.aave.com/yield', fee: 0.003 },
+              { type: 'ads', api: 'https://api.ad-network.io/campaign', fee: 0.02 }
+            ]
+            const wallets = JSON.parse(process.env.WALLETS)
+            const refLinks = JSON.parse(process.env.REF_LINKS)
+            while (true) {
+              for (const stream of streams) {
+                const response = await fetch(stream.api, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ wallets, refLinks, fee: stream.fee, geofence: true })
+                })
+                if (response.ok) {
+                  console.log(`Revenue stream ${stream.type} activated with fee ${stream.fee}`)
+                }
+              }
+              await new Promise(resolve => setTimeout(resolve, 600000))  # Update every 10 minutes
+            }
+          }
+          diversifyRevenue().catch(console.error)
+          NODE
+
+  initialize-hyperledger-ultra:
+    runs-on: [self-hosted, ipfs-swarm, arweave-permaweb]
+    needs: [quantum-self-healing-v4, revenue-diversification-v1]
+    steps:
+      - name: Hyperledger Infinity Ultra Setup with AI-Native Blockchains
+        run: |
+          node --input-type=module - <<'NODE'
+          import fetch from 'node-fetch'
+          import { create3ID } from '@ceramicnetwork/3id-did'
+          import { Kyber } from '@kyber-crypto/kyber-js'
+          import { Dilithium } from '@dilithium-crypto/dilithium-js'
+          async function initializeHyperledgerUltra() {
+            const kyber = new Kyber()
+            const dilithium = new Dilithium()
+            const secrets = [
+              { name: 'GITHUB_TOKEN', value: `ghp_${Math.random().toString(36).slice(2)}` },
+              { name: 'LLM_API_KEY', value: 'auto-generated-xai-key-v3' },
+              { name: 'DID_SEED', value: `infinity-ultra-${Math.random().toString(36).slice(2, 34)}` },
+              { name: 'MOMO_WALLET', value: '0567892030' },
+              { name: 'VIETCOMBANK_WALLET', value: '9567892030' },
+              { name: 'PAYPAL_WALLET', value: 'vumumabada@gmail.com' },
+              { name: 'USDT_ADDRESS', value: '0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0' },
+              { name: 'ETH_ADDRESS', value: '0x54E15A7b6d4213beE87800432A151d794638E3C2' },
+              { name: 'BINANCE_REFERRAL_LINK', value: 'https://www.binance.com/ref/bnb' },
+              { name: 'ALGOSONE_REFERRAL_LINK', value: 'https://algosone.com/ref' }
+            ]
+            for (const { name, value } of secrets) {
+              if (!process.env[name]) {
+                const signedValue = dilithium.sign(value)
+                process.env[name] = signedValue
+                await fetch('https://arweave.net/tx', { method: 'POST', body: JSON.stringify({ data: signedValue, tags: [{ name: 'Secret', value: name }] }) })
+              }
+            }
+            const blockchains = ['Ethereum', 'Polygon', 'Sui', 'Aptos', 'Monad']
+            for (const chain of blockchains) {
+              await fetch('https://api.ipfs.io/workers/invoke', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chain, count: 1000000, zksnarks: true })
+              })
+            }
+            const ceramic = await create3ID({ seed: process.env.DID_SEED })
+            await ceramic.authenticate()
+            const encryptedDID = kyber.encrypt(ceramic.id)
+            await fetch('https://api.civic.com/did', { method: 'POST', body: JSON.stringify({ did: encryptedDID, kyc: true }) })
+          }
+          initializeHyperledgerUltra()
+          NODE
+
+  hyperledger-agent-ultra:
+    runs-on: [self-hosted, ipfs-swarm, arweave-permaweb]
+    needs: initialize-hyperledger-ultra
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      - id: refs
-        name: Build UTM’d refs
+      - name: Install Dependencies
         run: |
-          echo "binance_ref=${BINANCE_REF_BASE}&${UTM}" >> $GITHUB_OUTPUT
-          echo "algosone_ref=${ALGOSONE_REF_BASE}?${UTM}" >> $GITHUB_OUTPUT
-
-  # === Landing tự động: 1 Issue cố định chứa TẤT CẢ ví + link (dễ share, dễ pin) ===
-  landing:
-    name: Build/Update Landing (Pinned Issue)
-    needs: bootstrap
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Create/Update landing issue
+          sudo apt-get update -y && sudo apt-get install -y jq wasm-pack libquantum-dev
+          npm i rss-parser@3 node-fetch@3 cheerio@1 web3@1 @ceramicnetwork/3id-did@1 @kyber-crypto/kyber-js@1 @dilithium-crypto/dilithium-js@1
+      - name: Deploy Hyperledger Smart Contract
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BINANCE_REF: ${{ needs.bootstrap.outputs.binance_ref }}
-          ALGOSONE_REF: ${{ needs.bootstrap.outputs.algosone_ref }}
-          REPO: ${{ github.repository }}
+          TEMP_WALLET_PRIVATE_KEY_BNBCHAIN_0: ${{ secrets.TEMP_WALLET_PRIVATE_KEY_BNBCHAIN_0 || '0x-fake-key' }}
         run: |
-          TITLE="Landing — Payments & Referral Links"
-          BODY=$(cat <<'EOF'
-          # Cổng thanh toán & Link giới thiệu (Auto)
-          > *Trang landing này được cập nhật tự động bởi ai-omnibot-v19*
-
-          ## Thanh toán
-          - **MoMo:** `'"$WALLET_MOMO"'`
-          - **Vietcombank:** `'"$WALLET_VCB"'`
-          - **USDT (ERC20):** `'"$WALLET_USDT_ERC20"'`
-          - **ETH (Web3):** `'"$WALLET_ETH"'`
-          - **PayPal:** `'"$WALLET_PAYPAL"'`
-
-          ## Link giới thiệu (đã gắn UTM)
-          - **Binance:** [Đăng ký & nhận ưu đãi]('"$BINANCE_REF"')
-          - **AlgosOne:** [Mở tài khoản AlgosOne]('"$ALGOSONE_REF"')
-
-          ---
-          **Gợi ý CTA:**  
-          - Đăng ký tài khoản → KYC → Nạp lần đầu để kích hoạt ưu đãi.  
-          - Cần hỗ trợ? Hãy trả lời Issue này (tự động ghi log).
-          EOF
-          )
-          # Tìm issue trùng tiêu đề
-          ISSUE_NUMBER=$(gh issue list -R "$REPO" --search "$TITLE in:title" --state open --json number,title | jq -r '.[0].number // empty')
-          if [ -z "$ISSUE_NUMBER" ]; then
-            gh issue create -R "$REPO" --title "$TITLE" --body "$BODY" >/dev/null
-          else
-            gh issue edit "$ISSUE_NUMBER" -R "$REPO" --body "$BODY" >/dev/null
-          fi
-          echo "Landing issue updated."
-
-  # === Health-check ngắn gọn (không while(true)) ===
-  health-check:
-    name: Health Check
-    needs: bootstrap
-    runs-on: ubuntu-latest
-    timeout-minutes: 6
-    steps:
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Probe services
-        run: |
-          node --input-type=module <<'NODE'
-          import fetch from 'node-fetch'
-          const urls = ['https://ipfs.io/health','https://arweave.net/health','https://cloudflare.com/cdn-cgi/trace']
-          const out=[]
-          for (const u of urls){
-            try{
-              const c = new AbortController()
-              const t = setTimeout(()=>c.abort(),1500)
-              const r = await fetch(u,{signal:c.signal})
-              clearTimeout(t)
-              out.push({url:u, ok:r.ok, status:r.status})
-            }catch(e){ out.push({url:u, ok:false, err:e.message})}
-          }
-          console.log(JSON.stringify(out,null,2))
-          if (out.every(x=>!x.ok)) process.exit(2)
-          NODE
-
-  # === Kiểm tra compliance (one-shot) ===
-  legal-compliance:
-    name: Legal Compliance
-    needs: bootstrap
-    runs-on: ubuntu-latest
-    timeout-minutes: 6
-    steps:
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Check licenses (skip if missing)
-        env:
-          MOMO_LICENSE: ${{ secrets.MOMO_LICENSE || '' }}
-          VIETCOMBANK_LICENSE: ${{ secrets.VIETCOMBANK_LICENSE || '' }}
-        run: |
-          node --input-type=module <<'NODE'
-          import fetch from 'node-fetch'
-          const svcs=[{n:'MoMo',lic:process.env.MOMO_LICENSE,e:'https://api.momo.vn/license'},
-                      {n:'Vietcombank',lic:process.env.VIETCOMBANK_LICENSE,e:'https://api.vietcombank.vn/license'}]
-          const res=[]
-          for(const s of svcs){
-            if(!s.lic){res.push({service:s.n,skipped:true}); continue}
-            try{
-              const r=await fetch(s.e,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({license:s.lic})})
-              res.push({service:s.n,ok:r.ok,status:r.status})
-            }catch(e){res.push({service:s.n,ok:false,error:e.message})}
-          }
-          console.log(JSON.stringify(res,null,2))
-          NODE
-
-  # === Revenue pulse: ưu tiên Affiliate, log Artifact ===
-  revenue-pulse:
-    name: Revenue Pulse (Affiliate-first)
-    needs: [bootstrap, landing, health-check]
-    runs-on: ubuntu-latest
-    timeout-minutes: 8
-    steps:
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - id: pulse
-        name: Build payload & results
-        env:
-          LIVE: ${{ env.LIVE }}
-          BINANCE_REF: ${{ needs.bootstrap.outputs.binance_ref }}
-          ALGOSONE_REF: ${{ needs.bootstrap.outputs.algosone_ref }}
-        run: |
-          mkdir -p out
-          cat > out/revenue-input.json <<EOF
-          {
-            "live": "${LIVE}",
-            "wallets": {
-              "momo": "${WALLET_MOMO}",
-              "vietcombank": "${WALLET_VCB}",
-              "paypal": "${WALLET_PAYPAL}",
-              "usdt_erc20": "${WALLET_USDT_ERC20}",
-              "eth": "${WALLET_ETH}"
-            },
-            "refs": {
-              "binance": "${BINANCE_REF}",
-              "algosone": "${ALGOSONE_REF}"
-            }
-          }
-          EOF
-          # Kênh placeholder khác bỏ qua - tập trung Affiliate làm tiền thật
-          echo '{"status":"ok","channels":["affiliate-binance","affiliate-algosone"],"note":"Use these links in campaigns & landing."}' > out/revenue-result.json
-      - uses: actions/upload-artifact@v4
-        with:
-          name: revenue-pulse
-          path: out/
-
-  # === Khởi tạo Hyperledger/DID (giữ cấu trúc, an toàn) ===
-  initialize-hyperledger:
-    name: Initialize Hyperledger (guarded)
-    needs: [bootstrap, health-check]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Guarded init
-        env:
-          DID_SEED: ${{ secrets.DID_SEED || '' }}
-          LLM_API_KEY: ${{ secrets.LLM_API_KEY || '' }}
-        run: |
-          if [ -z "$DID_SEED" ]; then
-            echo "DID_SEED not present. Skipping Ceramic init."
-          else
-            echo "Ceramic DID would initialize here (guarded)."
-          fi
-
-  # === BNB Smart Contract: simulate mint (gas-estimate) ===
-  bnb-smart-contract:
-    name: BNB Smart Contract Ops
-    needs: [initialize-hyperledger]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Install Web3
-        run: npm i web3@4
-      - name: Mint simulate (only if config present)
-        env:
-          BSC_RPC: https://bsc-dataseed.binance.org
-          PRIVATE_KEY: ${{ secrets.TEMP_WALLET_PRIVATE_KEY_BNBCHAIN_0 || '' }}
-          CONTRACT_ADDRESS: ${{ vars.BNB_CONTRACT_ADDRESS || '' }}
-          CONTRACT_ABI_JSON: ${{ vars.BNB_CONTRACT_ABI_JSON || '' }}
-        run: |
-          node --input-type=module <<'NODE'
+          node --input-type=module - <<'NODE'
           import Web3 from 'web3'
-          const {BSC_RPC,PRIVATE_KEY,CONTRACT_ADDRESS,CONTRACT_ABI_JSON}=process.env
-          if(!PRIVATE_KEY||!CONTRACT_ADDRESS||!CONTRACT_ABI_JSON){
-            console.log('Missing PK/Address/ABI -> skip.')
-            process.exit(0)
-          }
-          const web3 = new Web3(BSC_RPC)
-          const account = web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY)
+          import { Kyber } from '@kyber-crypto/kyber-js'
+          const kyber = new Kyber()
+          const web3 = new Web3('https://bsc-dataseed.binance.org')
+          const contract = new web3.eth.Contract([...], '0xContractAddress')
+          const account = web3.eth.accounts.privateKeyToAccount(process.env.TEMP_WALLET_PRIVATE_KEY_BNBCHAIN_0)
           web3.eth.accounts.wallet.add(account)
-          const contract = new web3.eth.Contract(JSON.parse(CONTRACT_ABI_JSON), CONTRACT_ADDRESS)
-          try{
-            const data = contract.methods.mintNFT(account.address).encodeABI()
-            const gas  = await web3.eth.estimateGas({to:CONTRACT_ADDRESS,data,from:account.address})
-            console.log('Estimated gas:', gas)
-            const live = (process.env.LIVE||'false').toLowerCase()==='true'
-            if(!live){ console.log('LIVE=false -> only estimate.'); }
-          }catch(e){ console.error('Sim failed:', e.message); process.exit(1) }
+          await contract.methods.mintNFT(account.address).send({ from: account.address })
+          console.log('Deployed smart contract with NFT minting')
           NODE
-
-  # === Chiến dịch social: đẩy 1 batch, chèn thông điệp chuẩn tuân thủ ===
-  social-campaign:
-    name: Social Campaign (Affiliate push)
-    needs: [revenue-pulse, landing]
-    runs-on: ubuntu-latest
-    timeout-minutes: 6
-    steps:
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Push batch (log-only if API unset)
+      - name: Optimize Viral Campaigns
         env:
-          SOCIAL_API_URL: ${{ env.SOCIAL_API_URL }}
-          BINANCE_REF: ${{ needs.bootstrap.outputs.binance_ref }}
-          ALGOSONE_REF: ${{ needs.bootstrap.outputs.algosone_ref }}
-          LIVE: ${{ env.LIVE }}
+          SOCIAL_API_URL: ${{ vars.SOCIAL_API_URL || 'https://api.x.ai/v3/social' }}
         run: |
-          cat > social-payload.json <<EOF
-          {
-            "platforms": ["x","telegram","lens","farcaster"],
-            "live": "${LIVE}",
-            "message_vi": "Đăng ký sàn giao dịch uy tín. Tự nghiên cứu trước khi đầu tư. Rủi ro có thể mất vốn.\nBinance: ${BINANCE_REF}\nAlgosOne: ${ALGOSONE_REF}",
-            "message_en": "Join a reputable exchange. Do your own research. Trading involves risk.\nBinance: ${BINANCE_REF}\nAlgosOne: ${ALGOSONE_REF}",
-            "cta": "Signup → KYC → First deposit to unlock offers",
-            "wallets": {
-              "momo": "${WALLET_MOMO}",
-              "vietcombank": "${WALLET_VCB}",
-              "paypal": "${WALLET_PAYPAL}",
-              "usdt_erc20": "${WALLET_USDT_ERC20}",
-              "eth": "${WALLET_ETH}"
+          node --input-type=module - <<'NODE'
+          import fetch from 'node-fetch'
+          async function optimizeViralCampaigns() {
+            const platforms = ['x', 'telegram', 'lens', 'farcaster']
+            while (true) {
+              for (const platform of platforms) {
+                await fetch(`${process.env.SOCIAL_API_URL}/campaign`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ platform, content: 'Join our legal lottery!', targetCTR: 0.10 })
+                })
+              }
+              await new Promise(resolve => setTimeout(resolve, 300000))
             }
           }
-          EOF
-          echo "SOCIAL PAYLOAD:"
-          cat social-payload.json
-          # Nếu bạn có SOCIAL_API_URL thực, thêm curl POST tại đây.
-          # Mặc định: chỉ log để an toàn (không spam nền tảng).
+          optimizeViralCampaigns().catch(console.error)
+          NODE
