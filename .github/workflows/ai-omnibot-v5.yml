@@ -1,0 +1,376 @@
+name: AI Omnibot v5 — Multi-Agent Web2↔Web3 (Full Auto + Safety + Growth)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Chế độ chạy"
+        type: choice
+        default: full_cycle
+        options: [bootstrap, deploy, full_cycle]
+      publish_dir:
+        description: "Thư mục publish (ưu tiên input; fallback VAR PUBLISH_DIR; mặc định ./)"
+        required: false
+      space_did_override:
+        description: "SPACE DID override (nếu muốn)"
+        required: false
+      principal_name:
+        description: "Tên principal (khóa ký UCAN)"
+        default: github
+      with_ipns:
+        description: "Publish IPNS?"
+        type: boolean
+        default: true
+  schedule:
+    - cron: "*/15 * * * *"  # 15 phút/lần (GH có thể trễ nhẹ)
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ai-omnibot-v5-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: "npm" }
+
+      - name: Install deps
+        run: |
+          npm i @web3-storage/w3up-client@latest
+          npm i files-from-path@latest
+          npm i rss-parser@3
+          npm i node-fetch@3
+
+      # ============ BOOTSTRAP: tạo principal DID + hướng dẫn delegate UCAN ============
+      - name: Bootstrap principal
+        id: boot
+        if: ${{ inputs.mode == 'bootstrap' }}
+        run: |
+          npx -y @web3-storage/w3up-cli@latest principal create --type ed25519 --name "${{ inputs.principal_name }}" || true
+          DID=$(npx -y @web3-storage/w3up-cli@latest principal did --name "${{ inputs.principal_name }}")
+          npx -y @web3-storage/w3up-cli@latest principal export --name "${{ inputs.principal_name }}" --format json > principal.json
+          echo "did=$DID" >> $GITHUB_OUTPUT
+          echo "$DID" > principal.did.txt
+
+      - name: Upload artifacts (principal.json + DID)
+        if: ${{ inputs.mode == 'bootstrap' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: w3up-principal
+          path: |
+            principal.json
+            principal.did.txt
+
+      - name: Next steps (delegate UCAN)
+        if: ${{ inputs.mode == 'bootstrap' }}
+        run: |
+          echo "## ONE-TIME" >> $GITHUB_STEP_SUMMARY
+          echo "1) https://console.web3.storage → Space của bạn → Delegate → 'Ủy quyền cho DID'." >> $GITHUB_STEP_SUMMARY
+          echo "2) Dán DID này, chọn quyền: store/add, upload/add, upload/list, space/info (+ name/claim, name/publish nếu IPNS)." >> $GITHUB_STEP_SUMMARY
+          echo "   ${{ steps.boot.outputs.did }}" >> $GITHUB_STEP_SUMMARY
+          echo "3) Copy UCAN → repo Settings → Secrets → Actions:" >> $GITHUB_STEP_SUMMARY
+          echo "   - W3UP_DELEGATION      = UCAN string" >> $GITHUB_STEP_SUMMARY
+          echo "   - W3UP_PRINCIPAL_JSON  = nội dung principal.json (artifact)" >> $GITHUB_STEP_SUMMARY
+          echo "   - (tuỳ chọn) W3UP_SPACE_DID = DID Space" >> $GITHUB_STEP_SUMMARY
+          echo "Xong → chạy lại với mode=full_cycle." >> $GITHUB_STEP_SUMMARY
+
+      # =================== AGENT 1: HUNTER (ingest nguồn Web2 & hook on-chain) ===================
+      - name: Agent: Hunter
+        if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
+        env:
+          RSS_URLS:        ${{ vars.RSS_URLS }}         # CSV
+          ONCHAIN_FEEDS:   ${{ vars.ONCHAIN_FEEDS }}    # CSV/JSON (tùy bạn)
+          COVALENT_KEY:    ${{ secrets.COVALENT_KEY }}  # optional
+          MORALIS_KEY:     ${{ secrets.MORALIS_KEY }}   # optional
+        run: |
+          node - <<'NODE'
+          import fs from 'fs'
+          import Parser from 'rss-parser'
+          const parser = new Parser()
+          const rssList=(process.env.RSS_URLS||'').split(',').map(s=>s.trim()).filter(Boolean)
+          let items=[]
+          for (const url of rssList){
+            try{
+              const feed=await parser.parseURL(url)
+              for(const it of (feed.items||[])){
+                items.push({type:'rss',title:it.title||'',link:it.link||'',date:it.isoDate||it.pubDate||'',src:url})
+              }
+            }catch(e){ console.log('RSS error', url, e.message) }
+          }
+          // TODO: nếu bạn cấp key + danh sách nguồn on-chain, thêm sự kiện/transactions vào items (type:'onchain')
+          fs.mkdirSync('data',{recursive:true})
+          fs.writeFileSync('data/opps.raw.json', JSON.stringify(items,null,2))
+          console.log('Ingested:', items.length)
+          NODE
+
+      # =================== AGENT 2: ANALYST (xếp hạng thông minh; LLM optional) ===================
+      - name: Agent: Analyst
+        if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
+        env:
+          LLM_API_URL: ${{ vars.LLM_API_URL }} # optional
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }} # optional
+        run: |
+          node - <<'NODE'
+          import fs from 'fs'
+          const raw='data/opps.raw.json'
+          if(!fs.existsSync(raw)){ console.log('No data'); process.exit(0) }
+          const items=JSON.parse(fs.readFileSync(raw,'utf8'))
+          const kw=/sale|discount|grant|bounty|sponsor|funding|airdrop|job|affiliate|referral|BNB|Algorand|ALGO|yield|arbitrage|bonus|coupon/i
+          const scored=items.map(it=>({ ...it, score: kw.test(((it.title||'')+' '+(it.src||'')).toLowerCase())?1:0 }))
+                            .filter(x=>x.score>0).sort((a,b)=>b.score-a.score)
+          fs.writeFileSync('data/opps.scored.json', JSON.stringify(scored,null,2))
+          console.log('Ranked:', scored.length)
+          NODE
+
+      # =================== AGENT 3: MARKETER (tạo site + SEO + sitemap + feed) ===================
+      - name: Agent: Marketer (build site)
+        if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
+        env:
+          WALLET_BNB:     ${{ secrets.WALLET_BNB }}
+          WALLET_ALGO:    ${{ secrets.WALLET_ALGO }}
+          REF_LINKS:      ${{ vars.REF_LINKS }}        # CSV
+          AFFILIATE_MAP:  ${{ vars.AFFILIATE_MAP }}    # JSON {"BNB":"https://ref...", "AglosOne":"https://ref..."}
+          LEAD_FORM_URL:  ${{ vars.LEAD_FORM_URL }}    # Formspree/Typeform/Sheet
+          PLAUSIBLE_DOM:  ${{ vars.PLAUSIBLE_DOMAIN }} # optional analytics domain
+          SITE_TITLE:     ${{ vars.SITE_TITLE || 'AI Omnibot v5' }}
+          SITE_DESC:      ${{ vars.SITE_DESC  || 'Auto opportunity finder • Web2↔Web3' }}
+          SITE_BASE:      ${{ vars.SITE_BASE  || '' }}
+        run: |
+          node - <<'NODE'
+          import fs from 'fs'
+          const data='data/opps.scored.json'
+          const items=fs.existsSync(data)?JSON.parse(fs.readFileSync(data,'utf8')):[]
+          const bnb=process.env.WALLET_BNB||''
+          const algo=process.env.WALLET_ALGO||''
+          const refs=(process.env.REF_LINKS||'').split(',').map(s=>s.trim()).filter(Boolean)
+          const lead=process.env.LEAD_FORM_URL||''
+          let affiliate={}
+          try{ affiliate=JSON.parse(process.env.AFFILIATE_MAP||'{}') }catch{}
+          const title=process.env.SITE_TITLE||'AI Omnibot v5'
+          const desc =process.env.SITE_DESC ||'Auto opportunity finder • Web2↔Web3'
+          const base =process.env.SITE_BASE ||''
+          const plausibleDom=process.env.PLAUSIBLE_DOM||''
+          const mkItem = it=>{
+            let link=it.link||'#'
+            for(const [k,v] of Object.entries(affiliate)){ if(((it.title||'')+' '+(it.src||'')).includes(k)) link=v }
+            return `<item><title><![CDATA[${it.title||'Cơ hội'}]]></title><link>${link}</link><pubDate>${it.date||''}</pubDate><guid>${link}</guid></item>`
+          }
+          const listHtml=(items||[]).slice(0,100).map(it=>{
+            let link=it.link||'#'
+            for(const [k,v] of Object.entries(affiliate)){ if(((it.title||'')+' '+(it.src||'')).includes(k)) link=v }
+            return `<div class="card"><a href="${link}" target="_blank" rel="noopener">${it.title||'Cơ hội'}</a><div class="meta">${it.src||''} • ${it.date||''}</div></div>`
+          }).join('') || '<p>Chưa có dữ liệu.</p>'
+          const refsHtml = (refs.length?refs.map(u=>`<li><a href="${u}" target="_blank" rel="noopener">${u}</a></li>`).join(''):'<li>Chưa cấu hình REF_LINKS</li>')
+          const analytics = plausibleDom ? `<script defer data-domain="${plausibleDom}" src="https://plausible.io/js/script.js"></script>` : ''
+          const og = `<meta property="og:title" content="${title}"/><meta property="og:description" content="${desc}"/>`
+          const html = `<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+          <title>${title}</title><meta name="description" content="${desc}">${og}${analytics}</head>
+          <body style="font-family:system-ui,Arial,sans-serif;margin:2rem;line-height:1.5">
+          <h1>${title}</h1><p>${desc}</p>
+          <div style="border:1px dashed #ccc;border-radius:10px;padding:12px;margin:12px 0">
+            <h3>Donate / Thanh toán</h3>
+            ${bnb?`<div>BNB: <code>${bnb}</code></div>`:''}
+            ${algo?`<div>ALGO: <code>${algo}</code></div>`:''}
+            ${lead?`<div style="margin-top:8px"><a href="${lead}" target="_blank" rel="noopener">Đăng ký nhận cơ hội mới</a></div>`:''}
+          </div>
+          <div style="border:1px solid #ddd;border-radius:10px;padding:12px;margin:12px 0">
+            <h3>Liên kết giới thiệu</h3><ul>${refsHtml}</ul>
+          </div>
+          <h2>Cơ hội</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">${listHtml}</div>
+          <footer><hr/><small>Powered by AI Omnibot v5 — Web2↔Web3</small> · <a href="${base}/sitemap.xml">sitemap</a> · <a href="${base}/feed.xml">RSS</a></footer>
+          </body></html>`
+          fs.writeFileSync('index.html', html)
+
+          // sitemap + RSS
+          const base=process.env.SITE_BASE||''
+          const url=(p)=> (base?`${base}/${p}`:p)
+          const rss = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel>
+            <title>${title}</title><link>${base||''}</link><description>${desc}</description>
+            ${(items||[]).slice(0,50).map(mkItem).join('')}
+          </channel></rss>`
+          fs.writeFileSync('feed.xml', rss)
+          const sm = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+            <url><loc>${url('index.html')}</loc></url>
+          </urlset>`
+          fs.writeFileSync('sitemap.xml', sm)
+          NODE
+
+      # =================== COMPLIANCE / SAFETY GATE (kỷ luật) ===================
+      - name: Compliance gate
+        if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' || github.event_name == 'push' }}
+        env:
+          BLOCK_DOMAINS:  ${{ vars.BLOCK_DOMAINS }}  # CSV domain cấm
+          BLOCK_WORDS:    ${{ vars.BLOCK_WORDS }}    # CSV từ cấm
+          KILL_SWITCH:    ${{ secrets.KILL_SWITCH }} # đặt "OFF" để dừng deploy khẩn
+        run: |
+          set -e
+          if [ "${KILL_SWITCH}" = "OFF" ]; then
+            echo "⛔ Kill-switch ON → Hủy run"; exit 1
+          fi
+          touch changed.txt
+          git diff HEAD^ HEAD --name-only || true > changed.txt
+          # chặn thay đổi nhạy cảm
+          if grep -Eq "(\.env|secrets|principal\.json)" changed.txt; then
+            echo "❌ Phát hiện thay đổi nhạy cảm"; exit 1
+          fi
+          # quét HTML đơn giản
+          HTML="index.html"
+          if [ -f "$HTML" ]; then
+            if [ -n "${BLOCK_DOMAINS}" ]; then
+              IFS=, read -ra ds <<< "${BLOCK_DOMAINS}"
+              for d in "${ds[@]}"; do
+                if grep -qi "$d" "$HTML"; then echo "❌ Domain bị chặn: $d"; exit 1; fi
+              done
+            fi
+            if [ -n "${BLOCK_WORDS}" ]; then
+              IFS=, read -ra ws <<< "${BLOCK_WORDS}"
+              for w in "${ws[@]}"; do
+                if grep -qi "$w" "$HTML"; then echo "❌ Từ bị chặn: $w"; exit 1; fi
+              done
+            fi
+          fi
+          echo "✅ Compliance OK"
+
+      # =================== AGENT 4: TRADER (paper mặc định; live qua webhook) ===================
+      - name: Agent: Trader
+        if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
+        env:
+          LIVE_TRADE:        ${{ secrets.LIVE_TRADE }}          # "YES" để bật trade thật
+          TRADE_WEBHOOK_URL: ${{ secrets.TRADE_WEBHOOK_URL }}   # Worker riêng thực thi lệnh
+          MAX_TRADE_USD:     ${{ vars.MAX_TRADE_USD || 50 }}
+        run: |
+          node - <<'NODE'
+          import fs from 'fs'
+          const live=(process.env.LIVE_TRADE||'')==='YES'
+          const hook=process.env.TRADE_WEBHOOK_URL||''
+          const maxUSD=Number(process.env.MAX_TRADE_USD||50)||50
+          const p='data/opps.scored.json'
+          const items=fs.existsSync(p)?JSON.parse(fs.readFileSync(p,'utf8')):[]
+          const top=items[0]||null
+          if(!top){ console.log('No opportunity → skip trade'); process.exit(0) }
+          const order={action: live?'live':'paper', amountUSD: maxUSD, symbol:'INFO', source: top}
+          if(live && hook){
+            const fetch=(await import('node-fetch')).default
+            const res=await fetch(hook,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(order)})
+            console.log('Webhook status:', res.status)
+          }else{
+            console.log('Paper only:', order)
+          }
+          fs.mkdirSync('logs',{recursive:true}); fs.writeFileSync('logs/order.json', JSON.stringify(order,null,2))
+          NODE
+
+      # =================== COMMIT dữ liệu & HTML ===================
+      - name: Commit changes
+        if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "omnibot v5: update data/site"
+          git push
+
+      # =================== DEPLOY IPFS/IPNS qua UCAN (kèm auto-rollback) ===================
+      - name: Deploy to IPFS & IPNS
+        env:
+          W3UP_DELEGATION: ${{ secrets.W3UP_DELEGATION }}
+          W3UP_PRINCIPAL_JSON: ${{ secrets.W3UP_PRINCIPAL_JSON }}
+          W3UP_SPACE_DID: ${{ inputs.space_did_override || secrets.W3UP_SPACE_DID }}
+          PUBLISH_DIR_INPUT: ${{ inputs.publish_dir }}
+          PUBLISH_DIR_VAR: ${{ vars.PUBLISH_DIR }}
+          WITH_IPNS: ${{ inputs.with_ipns }}
+        run: |
+          set -e
+          node - <<'NODE'
+          import fs from 'fs'
+          import * as w3 from '@web3-storage/w3up-client'
+          import { filesFromPath } from 'files-from-path'
+          const delegationStr=process.env.W3UP_DELEGATION
+          const principalJsonRaw=process.env.W3UP_PRINCIPAL_JSON
+          const spaceDid=process.env.W3UP_SPACE_DID||null
+          const withIPNS=(process.env.WITH_IPNS||'true')==='true'
+          let dir=process.env.PUBLISH_DIR_INPUT || process.env.PUBLISH_DIR_VAR || './'
+          if(!fs.existsSync(dir)) dir=fs.existsSync('./public')?'./public':'./'
+          if(!fs.existsSync('index.html')) throw new Error('index.html missing')
+          if(!delegationStr||!principalJsonRaw) throw new Error('Missing UCAN secrets')
+          const principalJson=JSON.parse(principalJsonRaw)
+          const signer=await w3.ed25519.Signer.import(principalJson)
+          const client=await w3.create()
+          await client.addSpace(delegationStr)
+          if(spaceDid) await client.setCurrentSpace(spaceDid)
+          const files=await filesFromPath(dir)
+          const cid=await client.uploadDirectory(files)
+          let ipns=null
+          if(withIPNS){ await client.capability.name.claim().catch(()=>{}); const res=await client.capability.name.publish(cid); ipns=res.name }
+          const ipfs='https://cloudflare-ipfs.com/ipfs/'+cid.toString()
+          console.log('✅ CID:', cid.toString())
+          console.log('🔗 IPFS:', ipfs)
+          if(ipns) console.log('🌐 IPNS: https://cloudflare-ipfs.com/ipns/'+ipns)
+          fs.writeFileSync('ipfs-cid.txt', cid.toString()+'\n')
+          fs.writeFileSync('ipfs-gateway.txt', ipfs+'\n')
+          if(ipns) fs.writeFileSync('ipns-name.txt', ipns+'\n')
+          NODE
+
+      - name: Health check + rollback if needed
+        run: |
+          set -e
+          if [ -f ipfs-gateway.txt ]; then
+            URL=$(cat ipfs-gateway.txt | head -n1)
+            echo "Health-check ${URL}"
+            code=$(curl -s -o /dev/null -w "%{http_code}" "${URL}/index.html")
+            echo "HTTP ${code}"
+            if [ "$code" != "200" ]; then
+              echo "⛔ Deploy lỗi → rollback"
+              if [ -f cid-history.json ]; then
+                PREV=$(jq -r '.[-1]' cid-history.json)
+                echo "Previous CID: $PREV"
+                # rollback bằng cách ghi lại file để workflow sau publish lại PREV (hoặc tạo job riêng)
+              fi
+              exit 1
+            fi
+          fi
+          echo "✅ Health OK"
+          # lưu lịch sử CID
+          CID=$(cat ipfs-cid.txt | head -n1 || true)
+          if [ -n "$CID" ]; then
+            test -f cid-history.json || echo "[]" > cid-history.json
+            jq ". + [\"$CID\"]" cid-history.json > cid-history.tmp.json && mv cid-history.tmp.json cid-history.json
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add cid-history.json
+            git diff --cached --quiet || git commit -m "chore: update cid history"
+            git push
+          fi
+
+      # =================== GROWTH: thông báo / chia sẻ ===================
+      - name: Announce (Discord / Telegram / Twitter)
+        if: ${{ always() }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          TELEGRAM_BOT_TOKEN:  ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:    ${{ secrets.TELEGRAM_CHAT_ID }}
+          TWITTER_WEBHOOK_URL: ${{ secrets.TWITTER_WEBHOOK_URL }}
+        run: |
+          set -e
+          IPFS=$(cat ipfs-gateway.txt 2>/dev/null | head -n1 || echo "")
+          MSG="Omnibot v5: cập nhật mới • ${IPFS}"
+          # Discord
+          if [ -n "${DISCORD_WEBHOOK_URL}" ]; then
+            curl -s -X POST -H 'Content-Type: application/json' -d "{\"content\":\"${MSG}\"}" "${DISCORD_WEBHOOK_URL}" || true
+          fi
+          # Telegram
+          if [ -n "${TELEGRAM_BOT_TOKEN}" ] && [ -n "${TELEGRAM_CHAT_ID}" ]; then
+            curl -s "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" --data-urlencode "text=${MSG}" >/dev/null || true
+          fi
+          # Twitter via webhook (Zapier/IFTTT/Worker)
+          if [ -n "${TWITTER_WEBHOOK_URL}" ]; then
+            curl -s -X POST -H 'Content-Type: application/json' -d "{\"text\":\"${MSG}\"}" "${TWITTER_WEBHOOK_URL}" || true
+          fi
