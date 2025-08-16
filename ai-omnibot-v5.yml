@@ -254,4 +254,4 @@ jobs:
             }
           }
           optimizeViralCampaigns().catch(console.error)
-          NODEu
+          NODE
