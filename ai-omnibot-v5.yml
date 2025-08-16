@@ -36,8 +36,9 @@ jobs:
           MONITORING_ENDPOINT: ${{ vars.MONITORING_ENDPOINT || 'https://api.x.ai/v3/monitor' }}
           LLM_API_URL: ${{ vars.LLM_API_URL || 'https://api.x.ai/v3/chat/completions' }}
           ARWEAVE_ENDPOINT: ${{ vars.ARWEAVE_ENDPOINT || 'http://arweave-chain-nodes.ar-io.com:1984' }}
-          QUOTA_THRESHOLD: ${{ vars.QUOTA_THRESHOLD || '0.3' }} # Reduce to 30% for safety
+          QUOTA_THRESHOLD: ${{ vars.QUOTA_THRESHOLD || '0.3' }} # 30% quota limit
           ENERGY_API: ${{ vars.ENERGY_API || 'https://api.energy-free.io/status' }}
+          PINATA_API_KEY: ${{ secrets.PINATA_API_KEY || 'pinata-free-tier-key' }}
         run: |
           node --input-type=module - <<'NODE'
           import fetch from 'node-fetch'
@@ -51,16 +52,18 @@ jobs:
             const energyNodes = await initFreeEnergyNodes()
             while (true) {
               for (const service of services) {
-                const response = await fetch(service, { timeout: 300 }) // Reduced timeout for efficiency
+                const response = await fetch(service, { timeout: 300 })
                 if (!response.ok) {
                   await healService(service, kyber, dilithium, energyNodes, adaptiveRetry())
+                  await pinToCDN(service) // Decentralized CDN pinning
                 }
               }
               const quota = await checkQuota()
               const energy = await checkEnergy()
-              if (quota > parseFloat(process.env.QUOTA_THRESHOLD) || energy < 0.5) { // 30% quota or 50% energy
-                console.log('Quota/energy low, scaling back operations')
-                await scaleBackOperations()
+              const optimalCTR = await optimizeCTR()
+              if (quota > parseFloat(process.env.QUOTA_THRESHOLD) || energy < 0.5) {
+                console.log('Quota/energy low, scaling back operations or adjusting CTR')
+                await scaleBackOperations(optimalCTR)
               }
               await new Promise(resolve => setTimeout(resolve, 300000))  # Check every 5 minutes
             }
@@ -69,10 +72,11 @@ jobs:
             const solar = await fetch(`${process.env.ENERGY_API}/solar`, { method: 'POST', body: JSON.stringify({ type: 'solar-panel', autoSwitch: true, capacity: 85 }) })
             const wind = await fetch(`${process.env.ENERGY_API}/wind`, { method: 'POST', body: JSON.stringify({ type: 'wind-turbine', autoSwitch: true, capacity: 10 }) })
             const hydro = await fetch(`${process.env.ENERGY_API}/hydro`, { method: 'POST', body: JSON.stringify({ type: 'micro-hydro', autoSwitch: true, capacity: 5 }) })
-            return { solar: solar.ok, wind: wind.ok, hydro: hydro.ok, redundancy: true }
+            const crowdsourced = await fetch('https://api.powerledger.io/crowdsourced', { method: 'POST', body: JSON.stringify({ type: 'crowdsourced', autoSwitch: true, capacity: 5 }) })
+            return { solar: solar.ok, wind: wind.ok, hydro: hydro.ok, crowdsourced: crowdsourced.ok, redundancy: true }
           }
           function adaptiveRetry() {
-            return { maxAttempts: 8, delay: 500 } // Reduced for efficiency
+            return { maxAttempts: 8, delay: 500 }
           }
           async function healService(service, kyber, dilithium, energyNodes, retryConfig) {
             for (let i = 0; i < retryConfig.maxAttempts; i++) {
@@ -96,15 +100,32 @@ jobs:
             const ipfsData = await ipfsResponse.json()
             const arweaveResponse = await fetch(`${process.env.ARWEAVE_ENDPOINT}/info`)
             const arweaveData = await arweaveResponse.json()
-            return (ipfsData.TotalIn + ipfsData.TotalOut + arweaveData.storageUsed) / (1024 * 1024 * 1.1) // GB used vs 1.1GB limit
+            return (ipfsData.TotalIn + ipfsData.TotalOut + arweaveData.storageUsed) / (1024 * 1024 * 1.1)
           }
           async function checkEnergy() {
             const response = await fetch(process.env.ENERGY_API)
             return (await response.json()).capacityAvailable || 0
           }
-          async function scaleBackOperations() {
-            global.transactionLimit = (global.transactionLimit || 2000) / 2
-            console.log(`Scaled back to ${global.transactionLimit} transactions/day`)
+          async function optimizeCTR() {
+            const response = await fetch(`${process.env.LLM_API_URL}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ prompt: 'Optimize CTR for referral campaigns based on current data', max_tokens: 10 })
+            })
+            const data = await response.json()
+            return parseFloat(data.choices[0].text) || 0.03
+          }
+          async function pinToCDN(service) {
+            await fetch('https://api.pinata.cloud/pinning/pinJSONToIPFS', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${process.env.PINATA_API_KEY}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ data: { service, timestamp: Date.now() } })
+            }).catch(err => console.error('Pinata pinning failed:', err))
+          }
+          async function scaleBackOperations(optimalCTR) {
+            global.transactionLimit = (global.transactionLimit || 2500) / 2
+            global.targetCTR = optimalCTR
+            console.log(`Scaled back to ${global.transactionLimit} transactions/day, CTR adjusted to ${optimalCTR}`)
           }
           quantumSelfHealV4().catch(console.error)
           NODE
@@ -130,7 +151,7 @@ jobs:
                   await fetch(`${process.env.LEGAL_API_URL}/alert`, { method: 'POST', body: JSON.stringify({ service: service.name, geofence: geofence.ok }) })
                 }
               }
-              await new Promise(resolve => setTimeout(resolve, 1800000))  # Check every 30 minutes for efficiency
+              await new Promise(resolve => setTimeout(resolve, 1800000))  # Check every 30 minutes
             }
           }
           legalComplianceV3().catch(console.error)
@@ -215,7 +236,7 @@ jobs:
               await fetch('https://api.ipfs.io/workers/invoke', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chain, count: 200000, zksnarks: true, instant: true, redundancy: true })
+                body: JSON.stringify({ chain, count: 300000, zksnarks: true, instant: true, redundancy: true })
               })
             }
             const ceramic = await create3ID({ seed: process.env.DID_SEED })
@@ -271,7 +292,7 @@ jobs:
                 await fetch(`${process.env.SOCIAL_API_URL}/campaign`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ platform, content: 'Join our legal lottery with ' + refLinks.join(' or ') + '!', wallets, targetCTR: 0.03, instant: true, redundancy: true, failover: true })
+                  body: JSON.stringify({ platform, content: 'Join our legal lottery with ' + refLinks.join(' or ') + '!', wallets, targetCTR: global.targetCTR || 0.03, instant: true, redundancy: true, failover: true })
                 })
               }
               await new Promise(resolve => setTimeout(resolve, 300000))
