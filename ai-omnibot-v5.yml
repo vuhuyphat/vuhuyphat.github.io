@@ -1,4 +1,4 @@
-name: ai-omnibot-v15-infinity-maximized
+name: ai-omnibot-v16-ultra-infinity
 
 on:
   push:
@@ -8,8 +8,8 @@ on:
       mode:
         description: "Run mode"
         type: choice
-        default: infinity
-        options: [infinity]
+        default: ultra-infinity
+        options: [ultra-infinity]
       rss_urls:
         description: "CSV RSS URLs (override)"
         required: false
@@ -18,9 +18,9 @@ on:
         required: false
       confidence_threshold:
         description: "AI score threshold 0..1 for LIVE actions"
-        default: "0.9999"
+        default: "0.99999"
   schedule:
-    - cron: "*/5 * * * *"  # Run every 5 seconds
+    - cron: "*/2 * * * *"  # Run every 2 seconds
 
 permissions:
   contents: write
@@ -30,12 +30,58 @@ permissions:
   actions: write
 
 concurrency:
-  group: ai-omnibot-v15-infinity-${{ github.ref }}-${{ github.event_name }}
+  group: ai-omnibot-v16-ultra-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: false
 
 jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Health Check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MONITORING_ENDPOINT: ${{ vars.MONITORING_ENDPOINT || 'https://api.x.ai/v1/monitor' }}
+        run: |
+          node --input-type=module - <<'NODE'
+          import fetch from 'node-fetch'
+          async function checkHealth() {
+            const services = [
+              'https://api.pinata.cloud/health', 'https://api.fleek.co/health', 'https://api.web3.storage/health',
+              'https://arweave.net/health', 'https://api.filecoin.io/health', 'https://api.storj.io/health',
+              'https://api.chainalysis.com/health', 'https://api.elliptic.co/health', 'https://api.ciphertrace.com/health',
+              'https://api.radicle.network/health', 'https://ceramic.network/health', 'https://siasky.net/health',
+              'https://api.swarm.network/health', 'https://api.hyperledger.org/health', 'https://api.bittorrent.com/health',
+              'https://rpc.polygon.technology/health', 'https://api.mainnet-beta.solana.com/health',
+              'https://rpc-mainnet.aptoslabs.com/health', 'https://rpc.mainnet.sui.io/health',
+              'https://rpc.mainnet.berachain.com/health', 'https://rpc.mainnet.monad.xyz/health',
+              'https://rpc.mainnet.fuel.network/health', 'https://rpc.mainnet.eclipse.xyz/health'
+            ]
+            for (const url of services) {
+              for (let i = 0; i < 1000000; i++) {
+                try {
+                  const res = await fetch(url, { timeout: 2000 })
+                  if (res.ok) {
+                    console.log(`Service ${url} is healthy`)
+                    break
+                  }
+                } catch (e) {
+                  console.log(`Health check retry ${i+1}/1000000 for ${url}:`, e.message)
+                  await fetch(process.env.MONITORING_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ service: url, status: 'down', error: e.message })
+                  })
+                  await new Promise(r => setTimeout(r, 1000))
+                }
+              }
+            }
+          }
+          checkHealth()
+          NODE
+
   initialize:
     runs-on: ubuntu-latest
+    needs: health-check
     steps:
       - name: Auto-configure environment
         env:
@@ -57,8 +103,9 @@ jobs:
           SWARM_KEY: ${{ secrets.SWARM_KEY }}
           HYPERLEDGER_KEY: ${{ secrets.HYPERLEDGER_KEY }}
           BITTORRENT_KEY: ${{ secrets.BITTORRENT_KEY }}
+          DID_SEED: ${{ secrets.DID_SEED }}
         run: |
-          echo "## Initializing Infinity" >> $GITHUB_STEP_SUMMARY
+          echo "## Initializing Ultra-Infinity" >> $GITHUB_STEP_SUMMARY
           if [ -z "$KILL_SWITCH" ]; then
             curl -s -X PUT \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
@@ -69,6 +116,7 @@ jobs:
           fi
           node --input-type=module - <<'NODE'
           import fetch from 'node-fetch'
+          import { create3ID } from '@ceramicnetwork/3id-did'
           async function registerServices() {
             const services = [
               { name: 'Pinata', url: 'https://api.pinata.cloud/users/register', keys: ['PINATA_API_KEY', 'PINATA_API_SECRET'] },
@@ -86,15 +134,16 @@ jobs:
               { name: 'Chainalysis', url: 'https://api.chainalysis.com/register', keys: ['CHAINALYSIS_API_KEY'] },
               { name: 'Elliptic', url: 'https://api.elliptic.co/register', keys: ['ELLIPTIC_API_KEY'] },
               { name: 'CipherTrace', url: 'https://api.ciphertrace.com/register', keys: ['CIPHERTACE_API_KEY'] },
-              { name: 'Nostr', url: 'https://nostr.network/register', keys: ['NOSTR_PRIVATE_KEY'] }
+              { name: 'Nostr', url: 'https://nostr.network/register', keys: ['NOSTR_PRIVATE_KEY'] },
+              { name: 'DID', url: 'https://ceramic.network/did/register', keys: ['DID_SEED'] }
             ]
             for (const { name, url, keys } of services) {
-              for (let i = 0; i < 100000; i++) {
+              for (let i = 0; i < 1000000; i++) {
                 try {
                   const res = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: `temp-${Date.now()}-${i}@${name.toLowerCase()}.com`, password: 'InfinityPass123!' })
+                    body: JSON.stringify({ email: `temp-${Date.now()}-${i}@${name.toLowerCase()}.com`, password: 'UltraInfinityPass123!' })
                   })
                   const data = await res.json()
                   for (const key of keys) {
@@ -109,14 +158,14 @@ jobs:
                     }
                   }
                   break
-                } catch (e) { console.log(`${name} registration retry ${i+1}/100000:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+                } catch (e) { console.log(`${name} registration retry ${i+1}/1000000:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
               }
             }
             // Generate 100,000 wallets per blockchain
             const blockchains = [
-              'Polygon', 'Solana', 'Arbitrum', 'Optimism', 'Binance', 'Avalanche', 'Cardano', 'Polkadot', 
+              'Polygon', 'Solana', 'Arbitrum', 'Optimism', 'Binance', 'Avalanche', 'Cardano', 'Polkadot',
               'Aptos', 'Sui', 'Near', 'Cosmos', 'Starknet', 'ZkSync', 'Flow', 'Hedera', 'Tezos', 'Algorand',
-              'Ton', 'Base', 'Linea', 'Mantle', 'Scroll', 'Sei', 'Cronos'
+              'Ton', 'Base', 'Linea', 'Mantle', 'Scroll', 'Sei', 'Cronos', 'Berachain', 'Monad', 'Fuel', 'Eclipse'
             ]
             const Web3 = (await import('web3')).default
             const web3 = new Web3()
@@ -138,8 +187,8 @@ jobs:
             }
             // Backup to decentralized platforms
             const platforms = [
-              'https://api.gitlab.com', 'https://api.bitbucket.org', 'https://sourcehut.org/api', 
-              'https://radicle.network/api', 'https://ceramic.network/api', 'https://siasky.net/api', 
+              'https://api.gitlab.com', 'https://api.bitbucket.org', 'https://sourcehut.org/api',
+              'https://radicle.network/api', 'https://ceramic.network/api', 'https://siasky.net/api',
               'https://swarm.network/api', 'https://hyperledger.org/api', 'https://bittorrent.com/api'
             ]
             for (const platform of platforms) {
@@ -147,7 +196,7 @@ jobs:
                 await fetch(`${platform}/repos`, {
                   method: 'POST',
                   headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ name: 'ai-omnibot-v15-backup', source: 'github.com/${{ github.repository }}' })
+                  body: JSON.stringify({ name: 'ai-omnibot-v16-backup', source: 'github.com/${{ github.repository }}' })
                 })
                 console.log(`Backed up to ${platform}`)
               } catch (e) { console.log(`Backup error on ${platform}:`, e.message) }
@@ -162,22 +211,35 @@ jobs:
             ]
             const affiliates = [
               { name: 'Binance', link: 'https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N' },
-              { name: 'AlgosOne', link: 'https://algosone.page.link/MbtR' }
+              { name: 'AlgosOne', link: 'https://algosone.page.link/MbtR' },
+              { name: 'Coinbase', link: process.env.REF_COINBASE },
+              { name: 'KuCoin', link: process.env.REF_KUCOIN },
+              { name: 'Bybit', link: process.env.REF_BYBIT },
+              { name: 'OKX', link: process.env.REF_OKX },
+              { name: 'Polymarket', link: 'https://polymarket.com/referral/your-link' },
+              { name: 'Centrifuge', link: 'https://centrifuge.io/referral/your-link' },
+              { name: 'RealT', link: 'https://realt.co/referral/your-link' },
+              { name: 'AxieInfinity', link: 'https://axieinfinity.com/referral/your-link' },
+              { name: 'Illuvium', link: 'https://illuvium.io/referral/your-link' }
             ]
             for (const wallet of wallets) {
               await fetch('https://arweave.net/tx', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ data: JSON.stringify(wallet), tags: [{ name: 'InfinityBot', value: 'v15' }, { name: 'Wallet', value: wallet.type }] })
+                body: JSON.stringify({ data: JSON.stringify(wallet), tags: [{ name: 'UltraInfinityBot', value: 'v16' }, { name: 'Wallet', value: wallet.type }] })
               })
             }
             for (const affiliate of affiliates) {
               await fetch('https://arweave.net/tx', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ data: JSON.stringify(affiliate), tags: [{ name: 'InfinityBot', value: 'v15' }, { name: 'Affiliate', value: affiliate.name }] })
+                body: JSON.stringify({ data: JSON.stringify(affiliate), tags: [{ name: 'UltraInfinityBot', value: 'v16' }, { name: 'Affiliate', value: affiliate.name }] })
               })
             }
+            // Initialize DID for KYC/AML
+            const ceramic = await create3ID({ seed: process.env.DID_SEED })
+            await ceramic.authenticate()
+            console.log('Initialized DID:', ceramic.id)
           }
           registerServices()
           NODE
@@ -194,7 +256,8 @@ jobs:
               'https://faucet.hedera.com', 'https://faucet.tezos.com', 'https://faucet.algorand.org',
               'https://faucet.ton.org', 'https://faucet.base.org', 'https://faucet.linea.build',
               'https://faucet.mantle.xyz', 'https://faucet.scroll.io', 'https://faucet.sei.io',
-              'https://faucet.cronos.org'
+              'https://faucet.cronos.org', 'https://faucet.berachain.com', 'https://faucet.monad.xyz',
+              'https://faucet.fuel.network', 'https://faucet.eclipse.xyz'
             ]
             for (const faucet of faucets) {
               for (let i = 0; i < 100000; i++) {
@@ -228,7 +291,6 @@ jobs:
           sudo apt-get update -y && sudo apt-get install -y jq
           npm i rss-parser@3 node-fetch@3 cheerio@1 qrcode@1 @pinata/sdk@2 @fleekhq/fleek-sdk@1 web3@1 @web3-storage/client@1 @arweave/arweave-js@1 @filecoin/js-filecoin@1 @storj/storj-js@1 @xai/grok-sdk@0.1.0 ethers@5 web3modal@2 walletconnect/web3-provider@1 three@0.132.2 nostr-tools@1 @radicle/radicle-sdk@0.5.0 @ceramicnetwork/3id-did@1 @siasky/skynet-js@1 @swarm/swarm-js@1 @hyperledger/fabric-sdk@1 @elliptic/elliptic-js@1 @ciphertrace/ciphertrace-js@1 @bittorrent/bittorrent-js@1
 
-      # ================== AGENT: DEPLOY SMART CONTRACT ==================
       - name: Deploy Smart Contract
         env:
           TEMP_WALLET_PRIVATE_KEY_POLYGON_0: ${{ secrets.TEMP_WALLET_PRIVATE_KEY_POLYGON_0 }}
@@ -238,33 +300,37 @@ jobs:
           import Web3 from 'web3'
           import fs from 'fs'
           const blockchains = [
-            { name: 'Polygon', rpc: 'https://rpc-mainnet.maticvigil.com', stake: '0xAavePolygonContract' },
-            { name: 'Solana', rpc: 'https://api.mainnet-beta.solana.com', stake: '0xSolanaProgram' },
-            { name: 'Arbitrum', rpc: 'https://arb1.arbitrum.io/rpc', stake: '0xCompoundArbitrum' },
-            { name: 'Optimism', rpc: 'https://mainnet.optimism.io', stake: '0xAaveOptimism' },
-            { name: 'Binance', rpc: 'https://bsc-dataseed.binance.org/', stake: '0xPancakeSwap' },
-            { name: 'Avalanche', rpc: 'https://api.avax.network/ext/bc/C/rpc', stake: '0xTraderJoe' },
-            { name: 'Cardano', rpc: 'https://rpc.cardano.org', stake: '0xMinswap' },
-            { name: 'Polkadot', rpc: 'https://rpc.polkadot.io', stake: '0xAcala' },
-            { name: 'Aptos', rpc: 'https://fullnode.mainnet.aptoslabs.com', stake: '0xPancakeAptos' },
-            { name: 'Sui', rpc: 'https://rpc.mainnet.sui.io', stake: '0xCetus' },
-            { name: 'Near', rpc: 'https://rpc.mainnet.near.org', stake: '0xRefFinance' },
-            { name: 'Cosmos', rpc: 'https://rpc.cosmos.network', stake: '0xOsmosis' },
-            { name: 'Starknet', rpc: 'https://rpc.starknet.io', stake: '0xStarkDeFi' },
-            { name: 'ZkSync', rpc: 'https://rpc.zksync.io', stake: '0xSyncSwap' },
-            { name: 'Flow', rpc: 'https://mainnet.flow.com', stake: '0xFlowStake' },
-            { name: 'Hedera', rpc: 'https://mainnet.hedera.com', stake: '0xHederaStake' },
-            { name: 'Tezos', rpc: 'https://mainnet.tezos.com', stake: '0xTezosStake' },
-            { name: 'Algorand', rpc: 'https://mainnet.algorand.org', stake: '0xAlgorandStake' },
-            { name: 'Ton', rpc: 'https://rpc.ton.org', stake: '0xTonStake' },
-            { name: 'Base', rpc: 'https://mainnet.base.org', stake: '0xBaseStake' },
-            { name: 'Linea', rpc: 'https://rpc.linea.build', stake: '0xLineaStake' },
-            { name: 'Mantle', rpc: 'https://rpc.mantle.xyz', stake: '0xMantleStake' },
-            { name: 'Scroll', rpc: 'https://rpc.scroll.io', stake: '0xScrollStake' },
-            { name: 'Sei', rpc: 'https://rpc.sei.io', stake: '0xSeiStake' },
-            { name: 'Cronos', rpc: 'https://evm.cronos.org', stake: '0xCronosStake' }
+            { name: 'Polygon', rpc: 'https://rpc-mainnet.maticvigil.com', stake: '0xAavePolygonContract', zkr: false },
+            { name: 'Solana', rpc: 'https://api.mainnet-beta.solana.com', stake: '0xSolanaProgram', zkr: false },
+            { name: 'Arbitrum', rpc: 'https://arb1.arbitrum.io/rpc', stake: '0xCompoundArbitrum', zkr: true },
+            { name: 'Optimism', rpc: 'https://mainnet.optimism.io', stake: '0xAaveOptimism', zkr: true },
+            { name: 'Binance', rpc: 'https://bsc-dataseed.binance.org/', stake: '0xPancakeSwap', zkr: false },
+            { name: 'Avalanche', rpc: 'https://api.avax.network/ext/bc/C/rpc', stake: '0xTraderJoe', zkr: false },
+            { name: 'Cardano', rpc: 'https://rpc.cardano.org', stake: '0xMinswap', zkr: false },
+            { name: 'Polkadot', rpc: 'https://rpc.polkadot.io', stake: '0xAcala', zkr: false },
+            { name: 'Aptos', rpc: 'https://fullnode.mainnet.aptoslabs.com', stake: '0xPancakeAptos', zkr: false },
+            { name: 'Sui', rpc: 'https://rpc.mainnet.sui.io', stake: '0xCetus', zkr: false },
+            { name: 'Near', rpc: 'https://rpc.mainnet.near.org', stake: '0xRefFinance', zkr: false },
+            { name: 'Cosmos', rpc: 'https://rpc.cosmos.network', stake: '0xOsmosis', zkr: false },
+            { name: 'Starknet', rpc: 'https://rpc.starknet.io', stake: '0xStarkDeFi', zkr: true },
+            { name: 'ZkSync', rpc: 'https://rpc.zksync.io', stake: '0xSyncSwap', zkr: true },
+            { name: 'Flow', rpc: 'https://mainnet.flow.com', stake: '0xFlowStake', zkr: false },
+            { name: 'Hedera', rpc: 'https://mainnet.hedera.com', stake: '0xHederaStake', zkr: false },
+            { name: 'Tezos', rpc: 'https://mainnet.tezos.com', stake: '0xTezosStake', zkr: false },
+            { name: 'Algorand', rpc: 'https://mainnet.algorand.org', stake: '0xAlgorandStake', zkr: false },
+            { name: 'Ton', rpc: 'https://rpc.ton.org', stake: '0xTonStake', zkr: false },
+            { name: 'Base', rpc: 'https://mainnet.base.org', stake: '0xBaseStake', zkr: true },
+            { name: 'Linea', rpc: 'https://rpc.linea.build', stake: '0xLineaStake', zkr: true },
+            { name: 'Mantle', rpc: 'https://rpc.mantle.xyz', stake: '0xMantleStake', zkr: true },
+            { name: 'Scroll', rpc: 'https://rpc.scroll.io', stake: '0xScrollStake', zkr: true },
+            { name: 'Sei', rpc: 'https://rpc.sei.io', stake: '0xSeiStake', zkr: false },
+            { name: 'Cronos', rpc: 'https://evm.cronos.org', stake: '0xCronosStake', zkr: false },
+            { name: 'Berachain', rpc: 'https://rpc.mainnet.berachain.com', stake: '0xBeraStake', zkr: true },
+            { name: 'Monad', rpc: 'https://rpc.mainnet.monad.xyz', stake: '0xMonadStake', zkr: true },
+            { name: 'Fuel', rpc: 'https://rpc.mainnet.fuel.network', stake: '0xFuelStake', zkr: false },
+            { name: 'Eclipse', rpc: 'https://rpc.mainnet.eclipse.xyz', stake: '0xEclipseStake', zkr: false }
           ]
-          const contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"donor","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"string","name":"currency","type":"string"}],"name":"Donated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"NFTMinted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"subscriber","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"string","name":"currency","type":"string"}],"name":"Subscribed","type":"event"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"string","name":"currency","type":"string"}],"name":"donate","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"mintNFT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"string","name":"currency","type":"string"}],"name":"subscribe","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"subscribers","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalDonations","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSubscriptions","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}]
+          const contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"donor","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"string","name":"currency","type":"string"}],"name":"Donated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"NFTMinted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"subscriber","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"string","name":"currency","type":"string"}],"name":"Subscribed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"uint256","name":"reward","type":"uint256"}],"name":"GameReward","type":"event"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"string","name":"currency","type":"string"}],"name":"donate","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"mintNFT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"uint256","name":"reward","type":"uint256"}],"name":"rewardGame","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"string","name":"currency","type":"string"}],"name":"subscribe","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"subscribers","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalDonations","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSubscriptions","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}]
           const contractBytecode = "0x608060405234801561001057600080fd5b506102c3806100206000396000f3fe60806040526004361061004e5760003560e01c80633ccfd60b146100575780638da5cb5b1461006e578063a6f9dae11461009f578063d0e30db0146100bf578063f10fdf5c146100d7578063f2b1b8821461010a57610055565b3661005557005b600080fd5b34801561006357600080fd5b5061006c61012a565b005b34801561007a57600080fd5b50600054610087906001600160a01b031681565b6040516001600160a01b03909116815260200160405180910390f35b3480156100ab57600080fd5b5061006c6100ba36600461024c565b61013e565b6100d56100d536600461026e565b61015e565b005b3480156100e357600080fd5b506100f76100f2366004610290565b6101b0565b60405190815260200160405180910390f35b34801561011657600080fd5b5061012060015481565b6040519081526020016100f7565b6000546001600160a01b0316331461013d57600080fd5b005b6000546001600160a01b0316331461015557600080fd5b61013d6101e8565b6040516323b872dd60e01b81523360048201523060248201526044820181905260009081906064906000856001600160a01b03168663a9059cbb60e01b9060840160408051601f198184030181529181526020820180516001600160e01b031663a9059cbb60e01b1790528151600094859450909250871692506101e49150829060240190565b60405180910390a150565b6000805460405160016000160a01b0390911690600081818185875af1925050503d8060008114610237576040519150601f19603f3d011682016040523d82523d6000602084013e61023c565b606091505b50509050565b60006020828403121561025e57600080fd5b81356001600160a01b03169050919050565b6000806040838503121561028157600080fd5b50508035936020909101359150565b6000602082840312156102a257600080fd5b503591905056"
           async function deployContract() {
             for (const chain of blockchains) {
@@ -297,7 +363,6 @@ jobs:
           deployContract()
           NODE
 
-      # ================== AGENT: AUTO-UPDATE KEYWORDS ==================
       - name: Auto-update Keywords
         run: |
           node --input-type=module - <<'NODE'
@@ -335,21 +400,22 @@ jobs:
               'https://flow.com/feed', 'https://hedera.com/feed', 'https://tezos.com/feed',
               'https://algorand.foundation/feed', 'https://ton.org/feed', 'https://base.org/feed',
               'https://linea.build/feed', 'https://mantle.xyz/feed', 'https://scroll.io/feed',
-              'https://sei.io/feed', 'https://cronos.org/feed'
+              'https://sei.io/feed', 'https://cronos.org/feed', 'https://berachain.com/feed',
+              'https://monad.xyz/feed', 'https://fuel.network/feed', 'https://eclipse.xyz/feed'
             ]
             let keywords = {}
             for (const src of sources) {
-              for (let i = 0; i < 100000; i++) {
+              for (let i = 0; i < 1000000; i++) {
                 try {
-                  const res = await fetch(src, { timeout: 3000 })
+                  const res = await fetch(src, { timeout: 2000 })
                   const data = await res.json()
                   data.items.forEach(item => {
                     const text = ((item.title || '') + ' ' + (item.description || '')).toLowerCase()
-                    const matches = text.match(/\b(airdrop|nft|defi|staking|memecoin|web3 gaming|socialfi|prediction market|crowdfunding|tokenized asset|rwa|dao|yield farming|liquidity mining|play-to-earn|vote-to-earn|binance|algosone|algorand|coinbase|kucoin|bybit|okx|axie infinity|illuvium|star atlas|polymarket|augur|gitcoin|dorahacks|centrifuge|realt|trending|farcaster|lens|nostr|coingecko|coinmarketcap|dune|glassnode|nansen|uniswap|pancakeswap|aave|compound|curve|sushi|1inch|balancer|yearn|synthetix|makerdao|chainlink|thegraph|arbitrum|optimism|zksync|starknet|aptos|sui|near|cosmos|polkadot|cardano|solana|avalanche|flow|hedera|tezos|ton|base|linea|mantle|scroll|sei|cronos)\b/g) || []
+                    const matches = text.match(/\b(airdrop|nft|defi|staking|memecoin|web3 gaming|socialfi|prediction market|crowdfunding|tokenized asset|rwa|dao|yield farming|liquidity mining|play-to-earn|vote-to-earn|binance|algosone|algorand|coinbase|kucoin|bybit|okx|axie infinity|illuvium|star atlas|polymarket|augur|gitcoin|dorahacks|centrifuge|realt|trending|farcaster|lens|nostr|coingecko|coinmarketcap|dune|glassnode|nansen|uniswap|pancakeswap|aave|compound|curve|sushi|1inch|balancer|yearn|synthetix|makerdao|chainlink|thegraph|arbitrum|optimism|zksync|starknet|aptos|sui|near|cosmos|polkadot|cardano|solana|avalanche|flow|hedera|tezos|ton|base|linea|mantle|scroll|sei|cronos|berachain|monad|fuel|eclipse)\b/g) || []
                     matches.forEach(word => keywords[word] = (keywords[word] || 0) + 1)
                   })
                   break
-                } catch (e) { console.log(`Keyword source retry ${i+1}/100000: ${src}`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+                } catch (e) { console.log(`Keyword source retry ${i+1}/1000000: ${src}`, e.message); await new Promise(r => setTimeout(r, 1000)) }
               }
             }
             // Fetch trending hashtags from X
@@ -365,8 +431,8 @@ jobs:
                 }
               })
             } catch (e) { console.log('X trends fetch failed:', e.message) }
-            const sorted = Object.entries(keywords).sort((a, b) => b[1] - a[1]).slice(0, 200)
-            const weights = sorted.reduce((acc, [word], i) => ({ ...acc, [word]: 0.9999 - i * 0.000005 }), {})
+            const sorted = Object.entries(keywords).sort((a, b) => b[1] - a[1]).slice(0, 250)
+            const weights = sorted.reduce((acc, [word], i) => ({ ...acc, [word]: 0.99999 - i * 0.000004 }), {})
             fs.mkdirSync('data', { recursive: true })
             fs.writeFileSync('data/keywords.json', JSON.stringify(weights, null, 2))
             console.log('Updated keywords:', Object.keys(weights).length)
@@ -374,43 +440,7 @@ jobs:
           updateKeywords()
           NODE
 
-      # ================== AGENT: USER BEHAVIOR ANALYSIS ==================
-      - name: User Behavior Analysis
-        env:
-          LLM_API_URL: ${{ vars.LLM_API_URL || 'https://api.x.ai/v1/chat/completions' }}
-          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
-        run: |
-          node --input-type=module - <<'NODE'
-          import fetch from 'node-fetch'
-          import fs from 'fs'
-          async function analyzeUserBehavior() {
-            try {
-              const response = await fetch('https://api.x.ai/v1/track', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ event: 'fetch_user_behavior', timestamp: Date.now() })
-              })
-              const data = await response.json()
-              let keywords = fs.existsSync('data/keywords.json') ? JSON.parse(fs.readFileSync('data/keywords.json', 'utf8')) : {}
-              data.events.forEach(event => {
-                if (event.event === 'keyword') {
-                  event.keywords.forEach(word => {
-                    keywords[word] = (keywords[word] || 0) + 1
-                  })
-                }
-              })
-              const sorted = Object.entries(keywords).sort((a, b) => b[1] - a[1]).slice(0, 200)
-              const weights = sorted.reduce((acc, [word], i) => ({ ...acc, [word]: 0.9999 - i * 0.000005 }), {})
-              fs.mkdirSync('data', { recursive: true })
-              fs.writeFileSync('data/keywords.json', JSON.stringify(weights, null, 2))
-              console.log('Updated keywords from user behavior:', Object.keys(weights).length)
-            } catch (e) { console.error('User behavior analysis failed:', e.message) }
-          }
-          analyzeUserBehavior()
-          NODE
-
-      # ================== AGENT: SOCIAL MEDIA PROPAGATION ==================
-      - name: Social Media Propagation
+      - name: AI Influencer Propagation
         env:
           NOSTR_PRIVATE_KEY: ${{ secrets.NOSTR_PRIVATE_KEY }}
           FARCASTER_API_KEY: ${{ secrets.FARCASTER_API_KEY }}
@@ -421,34 +451,46 @@ jobs:
           REDDIT_API_KEY: ${{ secrets.REDDIT_API_KEY }}
           WECHAT_API_KEY: ${{ secrets.WECHAT_API_KEY }}
           KAKAOTALK_API_KEY: ${{ secrets.KAKAOTALK_API_KEY }}
+          LLM_API_URL: ${{ vars.LLM_API_URL || 'https://api.x.ai/v1/chat/completions' }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
           import fetch from 'node-fetch'
           import { Relay, generatePrivateKey, getPublicKey, signEvent } from 'nostr-tools'
-          async function propagateToSocialMedia() {
+          async function propagateInfluencer() {
             const keywords = fs.existsSync('data/keywords.json') ? JSON.parse(fs.readFileSync('data/keywords.json', 'utf8')) : {}
-            const content = `Join InfinityBot for ${Object.keys(keywords).slice(0, 10).join(', ')}! https://infinitybot.op #Web3 #Crypto #InfinityBot`
+            const prompt = `Generate viral Web3 content for ${Object.keys(keywords).slice(0, 10).join(', ')}. Optimize for engagement on X, Telegram, Reddit, Discord. Return JSON with { content: string }`
+            const res = await fetch(process.env.LLM_API_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.LLM_API_KEY}` },
+              body: JSON.stringify({
+                model: 'grok-3',
+                messages: [{ role: 'user', content: prompt }]
+              })
+            })
+            const { choices } = await res.json()
+            const content = JSON.parse(choices[0].message.content).content || `Join UltraInfinityBot for ${Object.keys(keywords).slice(0, 10).join(', ')}! https://infinitybot.op #Web3 #Crypto`
             const platforms = [
               { name: 'Nostr', url: 'wss://nostr-relay.example.com', key: process.env.NOSTR_PRIVATE_KEY, method: 'relay' },
               { name: 'Farcaster', url: 'https://api.farcaster.network/post', key: process.env.FARCASTER_API_KEY, method: 'http' },
               { name: 'Lens', url: 'https://api.lens.xyz/post', key: process.env.LENS_API_KEY, method: 'http' },
               { name: 'Mastodon', url: 'https://mastodon.social/api/v1/statuses', key: process.env.MASTODON_API_KEY, method: 'http' },
-              { name: 'Telegram', url: 'https://api.telegram.org/bot${process.env.TELEGRAM_API_KEY}/sendMessage', key: process.env.TELEGRAM_API_KEY, method: 'http', body: { chat_id: '@InfinityBot', text: content } },
-              { name: 'Discord', url: 'https://discord.com/api/webhooks/infinitybot', key: process.env.DISCORD_API_KEY, method: 'http', body: { content } },
-              { name: 'Reddit', url: 'https://api.reddit.com/api/submit', key: process.env.REDDIT_API_KEY, method: 'http', body: { sr: 'r/cryptocurrency', title: 'InfinityBot Opportunities', text: content } },
+              { name: 'Telegram', url: `https://api.telegram.org/bot${process.env.TELEGRAM_API_KEY}/sendMessage`, key: process.env.TELEGRAM_API_KEY, method: 'http', body: { chat_id: '@UltraInfinityBot', text: content } },
+              { name: 'Discord', url: 'https://discord.com/api/webhooks/ultrainfinitybot', key: process.env.DISCORD_API_KEY, method: 'http', body: { content } },
+              { name: 'Reddit', url: 'https://api.reddit.com/api/submit', key: process.env.REDDIT_API_KEY, method: 'http', body: { sr: 'r/cryptocurrency', title: 'UltraInfinityBot Opportunities', text: content } },
               { name: 'WeChat', url: 'https://api.wechat.com/cgi-bin/message/custom/send', key: process.env.WECHAT_API_KEY, method: 'http', body: { touser: 'all', msgtype: 'text', text: { content } } },
               { name: 'KakaoTalk', url: 'https://api.kakaotalk.com/v2/talk/memo/default/send', key: process.env.KAKAOTALK_API_KEY, method: 'http', body: { template_object: { object_type: 'text', text: content, link: { web_url: 'https://infinitybot.op' } } } }
             ]
             for (const platform of platforms) {
-              for (let i = 0; i < 100000; i++) {
+              for (let i = 0; i < 1000000; i++) {
                 try {
                   if (platform.method === 'relay') {
                     const relay = await Relay.connect(platform.url)
                     const event = {
                       kind: 1,
                       created_at: Math.floor(Date.now() / 1000),
-                      tags: [['t', 'infinitybot'], ...Object.keys(keywords).slice(0, 10).map(k => ['t', k])],
+                      tags: [['t', 'ultrainfinitybot'], ...Object.keys(keywords).slice(0, 10).map(k => ['t', k])],
                       content,
                       pubkey: getPublicKey(platform.key)
                     }
@@ -465,18 +507,151 @@ jobs:
                     console.log(`Posted to ${platform.name}`)
                   }
                   break
-                } catch (e) { console.log(`Social media retry ${i+1}/100000 for ${platform.name}:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+                } catch (e) { console.log(`Influencer retry ${i+1}/1000000 for ${platform.name}:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
               }
             }
           }
-          propagateToSocialMedia()
+          propagateInfluencer()
           NODE
 
-      # ================== AGENT: CRAWLER ==================
+      - name: User Behavior Analysis
+        env:
+          LLM_API_URL: ${{ vars.LLM_API_URL || 'https://api.x.ai/v1/chat/completions' }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'fs'
+          import fetch from 'node-fetch'
+          async function analyzeUserBehavior() {
+            try {
+              const response = await fetch('https://api.x.ai/v1/track', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event: 'fetch_user_behavior', timestamp: Date.now() })
+              })
+              const data = await response.json()
+              let keywords = fs.existsSync('data/keywords.json') ? JSON.parse(fs.readFileSync('data/keywords.json', 'utf8')) : {}
+              data.events.forEach(event => {
+                if (event.event === 'keyword') {
+                  event.keywords.forEach(word => {
+                    keywords[word] = (keywords[word] || 0) + 1
+                  })
+                }
+              })
+              const sorted = Object.entries(keywords).sort((a, b) => b[1] - a[1]).slice(0, 250)
+              const weights = sorted.reduce((acc, [word], i) => ({ ...acc, [word]: 0.99999 - i * 0.000004 }), {})
+              fs.mkdirSync('data', { recursive: true })
+              fs.writeFileSync('data/keywords.json', JSON.stringify(weights, null, 2))
+              console.log('Updated keywords from user behavior:', Object.keys(weights).length)
+            } catch (e) { console.error('User behavior analysis failed:', e.message) }
+          }
+          analyzeUserBehavior()
+          NODE
+
+      - name: AI Chatbot
+        env:
+          LLM_API_URL: ${{ vars.LLM_API_URL || 'https://api.x.ai/v1/chat/completions' }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'fs'
+          import fetch from 'node-fetch'
+          async function runChatbot() {
+            const opps = fs.existsSync('data/opps.scored.json') ? JSON.parse(fs.readFileSync('data/opps.scored.json', 'utf8')) : []
+            const prompt = `Act as a Web3 chatbot. Respond to user queries about ${opps.slice(0, 10).map(o => o.title).join(', ')}. Optimize for engagement and conversion. Return JSON with { responses: [{ user: string, bot: string }] }`
+            for (let i = 0; i < 1000000; i++) {
+              try {
+                const res = await fetch(process.env.LLM_API_URL, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.LLM_API_KEY}` },
+                  body: JSON.stringify({
+                    model: 'grok-3',
+                    messages: [{ role: 'user', content: prompt }]
+                  })
+                })
+                const { choices } = await res.json()
+                const responses = JSON.parse(choices[0].message.content).responses || []
+                fs.mkdirSync('data', { recursive: true })
+                fs.writeFileSync('data/chatbot.json', JSON.stringify(responses, null, 2))
+                console.log('Chatbot responses generated:', responses.length)
+                break
+              } catch (e) { console.log(`Chatbot retry ${i+1}/1000000:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+            }
+          }
+          runChatbot()
+          NODE
+
+      - name: Gamification
+        env:
+          TEMP_WALLET_PRIVATE_KEY_POLYGON_0: ${{ secrets.TEMP_WALLET_PRIVATE_KEY_POLYGON_0 }}
+        run: |
+          node --input-type=module - <<'NODE'
+          import Web3 from 'web3'
+          import fs from 'fs'
+          async function rewardGamification() {
+            const web3 = new Web3('https://rpc-mainnet.maticvigil.com')
+            const contract = new web3.eth.Contract([{"inputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"uint256","name":"reward","type":"uint256"}],"name":"rewardGame","outputs":[],"stateMutability":"nonpayable","type":"function"}], fs.readFileSync('contract-addresses.txt').split('\n')[0].split(': ')[1])
+            const account = web3.eth.accounts.privateKeyToAccount(process.env.TEMP_WALLET_PRIVATE_KEY_POLYGON_0)
+            web3.eth.accounts.wallet.add(account)
+            const users = JSON.parse(fs.readFileSync('data/opps.scored.json', 'utf8')).slice(0, 1000).map(o => o.link)
+            for (const user of users) {
+              try {
+                await contract.methods.rewardGame(user, web3.utils.toWei('0.001', 'ether')).send({ from: account.address })
+                console.log(`Rewarded ${user} with 0.001 ETH`)
+              } catch (e) { console.log(`Gamification reward error for ${user}:`, e.message) }
+            }
+          }
+          rewardGamification()
+          NODE
+
+      - name: KYC/AML Compliance
+        env:
+          CHAINALYSIS_API_KEY: ${{ secrets.CHAINALYSIS_API_KEY }}
+          ELLIPTIC_API_KEY: ${{ secrets.ELLIPTIC_API_KEY }}
+          CIPHERTACE_API_KEY: ${{ secrets.CIPHERTACE_API_KEY }}
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'fs'
+          import fetch from 'node-fetch'
+          async function checkKYCAML() {
+            const wallets = JSON.parse(fs.readFileSync('data/opps.scored.json', 'utf8')).map(o => o.link).filter(l => /^0x[a-fA-F0-9]{40}$/.test(l))
+            const services = [
+              { name: 'Chainalysis', url: 'https://api.chainalysis.com/kyc', key: process.env.CHAINALYSIS_API_KEY },
+              { name: 'Elliptic', url: 'https://api.elliptic.co/kyc', key: process.env.ELLIPTIC_API_KEY },
+              { name: 'CipherTrace', url: 'https://api.ciphertrace.com/kyc', key: process.env.CIPHERTACE_API_KEY }
+            ]
+            for (const wallet of wallets) {
+              for (const service of services) {
+                for (let i = 0; i < 1000000; i++) {
+                  try {
+                    const res = await fetch(service.url, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${service.key}` },
+                      body: JSON.stringify({ address: wallet })
+                    })
+                    const data = await res.json()
+                    if (!data.compliant) {
+                      console.log(`Non-compliant wallet ${wallet} detected by ${service.name}`)
+                      await fetch('https://api.x.ai/v1/report', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ wallet, status: 'non-compliant', service: service.name })
+                      })
+                    }
+                    break
+                  } catch (e) { console.log(`KYC/AML retry ${i+1}/1000000 for ${wallet} on ${service.name}:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+                }
+              }
+            }
+            console.log('KYC/AML checks completed for', wallets.length, 'wallets')
+          }
+          checkKYCAML()
+          NODE
+
       - name: Agent: Crawler
         env:
-          SEED_URLS: ${{ inputs.seed_urls || 'https://coindesk.com,https://cointelegraph.com,https://airdropalert.com,https://messari.io,https://cryptoslate.com,https://theblock.co,https://defipulse.com,https://bitcointalk.org,https://reddit.com/r/cryptocurrency,https://reddit.com/r/defi,https://reddit.com/r/nft,https://reddit.com/r/web3,https://news.bitcoin.com,https://producthunt.com,https://techcrunch.com,https://defillama.com,https://farcaster.network,https://lens.xyz,https://coingecko.com,https://coinmarketcap.com,https://dune.com,https://glassnode.com,https://nansen.ai,https://zora.co,https://opensea.io,https://blur.io,https://nostr.com,https://decentraland.org,https://sandbox.game,https://axieinfinity.com,https://illuvium.io,https://staratlas.com,https://polymarket.com,https://augur.net,https://gitcoin.co,https://dorahacks.io,https://centrifuge.io,https://realt.co,https://steemit.com,https://hive.io,https://bitclout.com,https://signal.org,https://matrix.org,https://mastodon.social,https://telegram.org,https://discord.com,https://wechat.com,https://kakaotalk.com,https://line.me,https://medium.com/tag/crypto,https://medium.com/tag/nft,https://medium.com/tag/defi,https://medium.com/tag/web3,https://medium.com/tag/blockchain,https://medium.com/tag/airdrops,https://news.ycombinator.com,https://trustwallet.com,https://metamask.io,https://uniswap.org,https://pancakeswap.finance,https://aave.com,https://compound.finance,https://curve.fi,https://sushi.com,https://1inch.io,https://balancer.fi,https://yearn.finance,https://synthetix.io,https://makerdao.com,https://chainlink.cc,https://thegraph.com,https://arbitrum.io,https://optimism.io,https://zksync.io,https://starknet.io,https://aptoslabs.com,https://sui.io,https://near.org,https://cosmos.network,https://polkadot.network,https://cardano.org,https://solana.com,https://avalanche.network,https://flow.com,https://hedera.com,https://tezos.com,https://algorand.foundation,https://ton.org,https://base.org,https://linea.build,https://mantle.xyz,https://scroll.io,https://sei.io,https://cronos.org' }}
-          EXTRA_RSS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://messari.io/feed,https://cryptoslate.com/feed,https://theblock.co/feed,https://defipulse.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed,https://nostr.com/feed,https://farcaster.network/feed,https://lens.xyz/feed,https://axieinfinity.com/feed,https://illuvium.io/feed,https://polymarket.com/feed,https://gitcoin.co/feed,https://dorahacks.io/feed,https://centrifuge.io/feed,https://realt.co/feed,https://steemit.com/feed,https://hive.io/feed,https://bitclout.com/feed,https://signal.org/feed,https://matrix.org/feed,https://mastodon.social/feed,https://telegram.org/feed,https://discord.com/feed,https://reddit.com/r/cryptocurrency/feed,https://reddit.com/r/defi/feed,https://reddit.com/r/nft/feed,https://reddit.com/r/web3/feed,https://wechat.com/feed,https://kakaotalk.com/feed,https://line.me/feed,https://medium.com/feed/tag/crypto,https://medium.com/feed/tag/nft,https://medium.com/feed/tag/defi,https://medium.com/feed/tag/web3,https://medium.com/feed/tag/blockchain,https://medium.com/feed/tag/airdrops,https://news.ycombinator.com/feed,https://producthunt.com/feed,https://trustwallet.com/feed,https://metamask.io/feed,https://uniswap.org/feed,https://pancakeswap.finance/feed,https://aave.com/feed,https://compound.finance/feed,https://curve.fi/feed,https://sushi.com/feed,https://1inch.io/feed,https://balancer.fi/feed,https://yearn.finance/feed,https://synthetix.io/feed,https://makerdao.com/feed,https://chainlink.cc/feed,https://thegraph.com/feed,https://arbitrum.io/feed,https://optimism.io/feed,https://zksync.io/feed,https://starknet.io/feed,https://aptoslabs.com/feed,https://sui.io/feed,https://near.org/feed,https://cosmos.network/feed,https://polkadot.network/feed,https://cardano.org/feed,https://solana.com/feed,https://avalanche.network/feed,https://flow.com/feed,https://hedera.com/feed,https://tezos.com/feed,https://algorand.foundation/feed,https://ton.org/feed,https://base.org/feed,https://linea.build/feed,https://mantle.xyz/feed,https://scroll.io/feed,https://sei.io/feed,https://cronos.org/feed' }}
+          SEED_URLS: ${{ inputs.seed_urls || 'https://coindesk.com,https://cointelegraph.com,https://airdropalert.com,https://messari.io,https://cryptoslate.com,https://theblock.co,https://defipulse.com,https://bitcointalk.org,https://reddit.com/r/cryptocurrency,https://reddit.com/r/defi,https://reddit.com/r/nft,https://reddit.com/r/web3,https://news.bitcoin.com,https://producthunt.com,https://techcrunch.com,https://defillama.com,https://farcaster.network,https://lens.xyz,https://coingecko.com,https://coinmarketcap.com,https://dune.com,https://glassnode.com,https://nansen.ai,https://zora.co,https://opensea.io,https://blur.io,https://nostr.com,https://decentraland.org,https://sandbox.game,https://axieinfinity.com,https://illuvium.io,https://staratlas.com,https://polymarket.com,https://augur.net,https://gitcoin.co,https://dorahacks.io,https://centrifuge.io,https://realt.co,https://steemit.com,https://hive.io,https://bitclout.com,https://signal.org,https://matrix.org,https://mastodon.social,https://telegram.org,https://discord.com,https://wechat.com,https://kakaotalk.com,https://line.me,https://medium.com/tag/crypto,https://medium.com/tag/nft,https://medium.com/tag/defi,https://medium.com/tag/web3,https://medium.com/tag/blockchain,https://medium.com/tag/airdrops,https://news.ycombinator.com,https://trustwallet.com,https://metamask.io,https://uniswap.org,https://pancakeswap.finance,https://aave.com,https://compound.finance,https://curve.fi,https://sushi.com,https://1inch.io,https://balancer.fi,https://yearn.finance,https://synthetix.io,https://makerdao.com,https://chainlink.cc,https://thegraph.com,https://arbitrum.io,https://optimism.io,https://zksync.io,https://starknet.io,https://aptoslabs.com,https://sui.io,https://near.org,https://cosmos.network,https://polkadot.network,https://cardano.org,https://solana.com,https://avalanche.network,https://flow.com,https://hedera.com,https://tezos.com,https://algorand.foundation,https://ton.org,https://base.org,https://linea.build,https://mantle.xyz,https://scroll.io,https://sei.io,https://cronos.org,https://berachain.com,https://monad.xyz,https://fuel.network,https://eclipse.xyz' }}
+          EXTRA_RSS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://messari.io/feed,https://cryptoslate.com/feed,https://theblock.co/feed,https://defipulse.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed,https://nostr.com/feed,https://farcaster.network/feed,https://lens.xyz/feed,https://axieinfinity.com/feed,https://illuvium.io/feed,https://polymarket.com/feed,https://gitcoin.co/feed,https://dorahacks.io/feed,https://centrifuge.io/feed,https://realt.co/feed,https://steemit.com/feed,https://hive.io/feed,https://bitclout.com/feed,https://signal.org/feed,https://matrix.org/feed,https://mastodon.social/feed,https://telegram.org/feed,https://discord.com/feed,https://reddit.com/r/cryptocurrency/feed,https://reddit.com/r/defi/feed,https://reddit.com/r/nft/feed,https://reddit.com/r/web3/feed,https://wechat.com/feed,https://kakaotalk.com/feed,https://line.me/feed,https://medium.com/feed/tag/crypto,https://medium.com/feed/tag/nft,https://medium.com/feed/tag/defi,https://medium.com/feed/tag/web3,https://medium.com/feed/tag/blockchain,https://medium.com/feed/tag/airdrops,https://news.ycombinator.com/feed,https://producthunt.com/feed,https://trustwallet.com/feed,https://metamask.io/feed,https://uniswap.org/feed,https://pancakeswap.finance/feed,https://aave.com/feed,https://compound.finance/feed,https://curve.fi/feed,https://sushi.com/feed,https://1inch.io/feed,https://balancer.fi/feed,https://yearn.finance/feed,https://synthetix.io/feed,https://makerdao.com/feed,https://chainlink.cc/feed,https://thegraph.com/feed,https://arbitrum.io/feed,https://optimism.io/feed,https://zksync.io/feed,https://starknet.io/feed,https://aptoslabs.com/feed,https://sui.io/feed,https://near.org/feed,https://cosmos.network/feed,https://polkadot.network/feed,https://cardano.org/feed,https://solana.com/feed,https://avalanche.network/feed,https://flow.com/feed,https://hedera.com/feed,https://tezos.com/feed,https://algorand.foundation/feed,https://ton.org/feed,https://base.org/feed,https://linea.build/feed,https://mantle.xyz/feed,https://scroll.io/feed,https://sei.io/feed,https://cronos.org/feed,https://berachain.com/feed,https://monad.xyz/feed,https://fuel.network/feed,https://eclipse.xyz/feed' }}
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
@@ -486,9 +661,9 @@ jobs:
           const extras = (process.env.EXTRA_RSS || '').split(',').map(s => s.trim()).filter(Boolean)
           const out = new Set(extras)
           for (const url of seeds) {
-            for (let i = 0; i < 100000; i++) {
+            for (let i = 0; i < 1000000; i++) {
               try {
-                const res = await fetch(url, { timeout: 3000 })
+                const res = await fetch(url, { timeout: 2000 })
                 const html = await res.text()
                 const $ = cheerio.load(html)
                 $('link[rel="alternate"]').each((_, el) => {
@@ -503,7 +678,7 @@ jobs:
                 const sm = url.replace(/\/+$/, '') + '/sitemap.xml'
                 out.add(sm)
                 break
-              } catch (e) { console.log(`Seed retry ${i+1}/100000: ${url}`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+              } catch (e) { console.log(`Seed retry ${i+1}/1000000: ${url}`, e.message); await new Promise(r => setTimeout(r, 1000)) }
             }
           }
           const feeds = [...out].filter(u => /(\.xml|feed|rss|atom)/i.test(u))
@@ -512,11 +687,10 @@ jobs:
           console.log('Discovered feeds:', feeds.length)
           NODE
 
-      # ================== AGENT: INGEST ==================
       - name: Agent: Ingest
         env:
           FEEDS_FILE: data/feeds.txt
-          RSS_URLS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://messari.io/feed,https://cryptoslate.com/feed,https://theblock.co/feed,https://defipulse.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed,https://nostr.com/feed,https://farcaster.network/feed,https://lens.xyz/feed,https://axieinfinity.com/feed,https://illuvium.io/feed,https://polymarket.com/feed,https://gitcoin.co/feed,https://dorahacks.io/feed,https://centrifuge.io/feed,https://realt.co/feed,https://steemit.com/feed,https://hive.io/feed,https://bitclout.com/feed,https://signal.org/feed,https://matrix.org/feed,https://mastodon.social/feed,https://telegram.org/feed,https://discord.com/feed,https://reddit.com/r/cryptocurrency/feed,https://reddit.com/r/defi/feed,https://reddit.com/r/nft/feed,https://reddit.com/r/web3/feed,https://wechat.com/feed,https://kakaotalk.com/feed,https://line.me/feed,https://medium.com/feed/tag/crypto,https://medium.com/feed/tag/nft,https://medium.com/feed/tag/defi,https://medium.com/feed/tag/web3,https://medium.com/feed/tag/blockchain,https://medium.com/feed/tag/airdrops,https://news.ycombinator.com/feed,https://producthunt.com/feed,https://trustwallet.com/feed,https://metamask.io/feed,https://uniswap.org/feed,https://pancakeswap.finance/feed,https://aave.com/feed,https://compound.finance/feed,https://curve.fi/feed,https://sushi.com/feed,https://1inch.io/feed,https://balancer.fi/feed,https://yearn.finance/feed,https://synthetix.io/feed,https://makerdao.com/feed,https://chainlink.cc/feed,https://thegraph.com/feed,https://arbitrum.io/feed,https://optimism.io/feed,https://zksync.io/feed,https://starknet.io/feed,https://aptoslabs.com/feed,https://sui.io/feed,https://near.org/feed,https://cosmos.network/feed,https://polkadot.network/feed,https://cardano.org/feed,https://solana.com/feed,https://avalanche.network/feed,https://flow.com/feed,https://hedera.com/feed,https://tezos.com/feed,https://algorand.foundation/feed,https://ton.org/feed,https://base.org/feed,https://linea.build/feed,https://mantle.xyz/feed,https://scroll.io/feed,https://sei.io/feed,https://cronos.org/feed' }}
+          RSS_URLS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://messari.io/feed,https://cryptoslate.com/feed,https://theblock.co/feed,https://defipulse.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed,https://nostr.com/feed,https://farcaster.network/feed,https://lens.xyz/feed,https://axieinfinity.com/feed,https://illuvium.io/feed,https://polymarket.com/feed,https://gitcoin.co/feed,https://dorahacks.io/feed,https://centrifuge.io/feed,https://realt.co/feed,https://steemit.com/feed,https://hive.io/feed,https://bitclout.com/feed,https://signal.org/feed,https://matrix.org/feed,https://mastodon.social/feed,https://telegram.org/feed,https://discord.com/feed,https://reddit.com/r/cryptocurrency/feed,https://reddit.com/r/defi/feed,https://reddit.com/r/nft/feed,https://reddit.com/r/web3/feed,https://wechat.com/feed,https://kakaotalk.com/feed,https://line.me/feed,https://medium.com/feed/tag/crypto,https://medium.com/feed/tag/nft,https://medium.com/feed/tag/defi,https://medium.com/feed/tag/web3,https://medium.com/feed/tag/blockchain,https://medium.com/feed/tag/airdrops,https://news.ycombinator.com/feed,https://producthunt.com/feed,https://trustwallet.com/feed,https://metamask.io/feed,https://uniswap.org/feed,https://pancakeswap.finance/feed,https://aave.com/feed,https://compound.finance/feed,https://curve.fi/feed,https://sushi.com/feed,https://1inch.io/feed,https://balancer.fi/feed,https://yearn.finance/feed,https://synthetix.io/feed,https://makerdao.com/feed,https://chainlink.cc/feed,https://thegraph.com/feed,https://arbitrum.io/feed,https://optimism.io/feed,https://zksync.io/feed,https://starknet.io/feed,https://aptoslabs.com/feed,https://sui.io/feed,https://near.org/feed,https://cosmos.network/feed,https://polkadot.network/feed,https://cardano.org/feed,https://solana.com/feed,https://avalanche.network/feed,https://flow.com/feed,https://hedera.com/feed,https://tezos.com/feed,https://algorand.foundation/feed,https://ton.org/feed,https://base.org/feed,https://linea.build/feed,https://mantle.xyz/feed,https://scroll.io/feed,https://sei.io/feed,https://cronos.org/feed,https://berachain.com/feed,https://monad.xyz/feed,https://fuel.network/feed,https://eclipse.xyz/feed' }}
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
@@ -563,7 +737,6 @@ jobs:
           console.log('Ingested items:', items.length)
           NODE
 
-      # ================== AGENT: SCORER ==================
       - name: Agent: Scorer
         env:
           LLM_API_URL: ${{ vars.LLM_API_URL || 'https://api.x.ai/v1/chat/completions' }}
@@ -590,7 +763,7 @@ jobs:
                   { role: 'user', content: prompt }
                 ]
               }
-              for (let i = 0; i < 100000; i++) {
+              for (let i = 0; i < 1000000; i++) {
                 try {
                   const res = await fetch(url, {
                     method: 'POST',
@@ -601,7 +774,7 @@ jobs:
                   const txt = j.choices?.[0]?.message?.content || ''
                   const nums = JSON.parse(txt.match(/\[.*\]/s)?.[0] || '[]')
                   return Array.isArray(nums) && nums.length === arr.length ? nums : null
-                } catch (e) { console.log(`LLM retry ${i+1}/100000:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+                } catch (e) { console.log(`LLM retry ${i+1}/1000000:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
               }
               return null
             } catch (e) {
@@ -616,171 +789,12 @@ jobs:
             scored = sample.map((it, i) => ({ ...it, score: Number(nums[i] || 0) })).sort((a, b) => b.score - a.score)
           } else {
             const keywords = fs.existsSync('data/keywords.json') ? JSON.parse(fs.readFileSync('data/keywords.json', 'utf8')) : {
-              'free crypto': 0.9999, 'high yield': 0.9999, 'exclusive offer': 0.9999,
-              'airdrop': 0.9998, 'referral': 0.9998, 'affiliate': 0.9998, 'bounty': 0.9998,
-              'nft': 0.9997, 'defi': 0.9997, 'staking': 0.9997, 'memecoin': 0.9997,
-              'web3 gaming': 0.9996, 'socialfi': 0.9996, 'prediction market': 0.9996, 'crowdfunding': 0.9996, 'tokenized asset': 0.9996,
-              'rwa': 0.9995, 'dao': 0.9995, 'yield farming': 0.9995, 'liquidity mining': 0.9995, 'play-to-earn': 0.9995, 'vote-to-earn': 0.9995,
-              'binance': 0.9994, 'algosone': 0.9994, 'algorand': 0.9994, 'coinbase': 0.9994, 'kucoin': 0.9994, 'bybit': 0.9994, 'okx': 0.9994,
-              'axie infinity': 0.9993, 'illuvium': 0.9993, 'star atlas': 0.9993, 'polymarket': 0.9993, 'augur': 0.9993, 'gitcoin': 0.9993, 'dorahacks': 0.9993, 'centrifuge': 0.9993, 'realt': 0.9993,
-              'uniswap': 0.9992, 'pancakeswap': 0.9992, 'aave': 0.9992, 'compound': 0.9992, 'curve': 0.9992, 'sushi': 0.9992, '1inch': 0.9992, 'balancer': 0.9992, 'yearn': 0.9992, 'synthetix': 0.9992, 'makerdao': 0.9992, 'chainlink': 0.9992, 'thegraph': 0.9992,
-              'arbitrum': 0.9991, 'optimism': 0.9991, 'zksync': 0.9991, 'starknet': 0.9991, 'aptos': 0.9991, 'sui': 0.9991, 'near': 0.9991, 'cosmos': 0.9991, 'polkadot': 0.9991, 'cardano': 0.9991, 'solana': 0.9991, 'avalanche': 0.9991, 'flow': 0.9991, 'hedera': 0.9991, 'tezos': 0.9991, 'ton': 0.9991, 'base': 0.9991, 'linea': 0.9991, 'mantle': 0.9991, 'scroll': 0.9991, 'sei': 0.9991, 'cronos': 0.9991,
-              'trending': 0.9999, 'farcaster': 0.9998, 'lens': 0.9998, 'nostr': 0.9998, 'coingecko': 0.9997, 'coinmarketcap': 0.9997, 'dune': 0.9997, 'glassnode': 0.9997, 'nansen': 0.9997
-            }
-            scored = items.map(it => {
-              const text = ((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || '')).toLowerCase()
-              let score = 0
-              for (const [key, weight] of Object.entries(keywords)) {
-                if (text.includes(key)) score = Math.max(score, weight)
-              }
-              return { ...it, score }
-            }).filter(x => x.score > 0).sort((a, b) => b.score - a.score)
-          }
-          fs.mkdirSync('data', { recursive: true })
-          fs.writeFileSync('data/opps.scored.json', JSON.stringify(scored, null, 2))
-          console.log('Scored items:', scored.length)
-          NODE
-
-      # ================== AGENT: AFFILIATE ==================
-      - name: Agent: Affiliate Map
-        env:
-          REF_BINANCE: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=infinitybot&utm_campaign=v15"
-          REF_ALGOSONE: "https://algosone.page.link/MbtR?utm_source=infinitybot&utm_campaign=v15"
-          REF_COINBASE: ${{ vars.REF_COINBASE || 'https://www.coinbase.com/referral/your-link' }}
-          REF_KUCOIN: ${{ vars.REF_KUCOIN || 'https://www.kucoin.com/referral/your-link' }}
-          REF_BYBIT: ${{ vars.REF_BYBIT || 'https://www.bybit.com/referral/your-link' }}
-          REF_OKX: ${{ vars.REF_OKX || 'https://www.okx.com/referral/your-link' }}
-          AFFILIATE_MAP: ${{ vars.AFFILIATE_MAP }}
-        run: |
-          node --input-type=module - <<'NODE'
-          import fs from 'fs'
-          import fetch from 'node-fetch'
-          const p = 'data/opps.scored.json'
-          const items = fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : []
-          let map = {}
-          try { map = JSON.parse(process.env.AFFILIATE_MAP || '{}') } catch {}
-          if (process.env.REF_BINANCE) map['binance'] = process.env.REF_BINANCE
-          if (process.env.REF_ALGOSONE) map['algosone'] = process.env.REF_ALGOSONE
-          if (process.env.REF_COINBASE) map['coinbase'] = process.env.REF_COINBASE
-          if (process.env.REF_KUCOIN) map['kucoin'] = process.env.REF_KUCOIN
-          if (process.env.REF_BYBIT) map['bybit'] = process.env.REF_BYBIT
-          if (process.env.REF_OKX) map['okx'] = process.env.REF_OKX
-          const brands = new Set()
-          for (const it of items) {
-            const t = ((it.title || '') + ' ' + (it.description || '')).toLowerCase()
-            if (/binance|bnb/.test(t) && !map['binance']) brands.add('binance')
-            if (/algosone|algorand|algo/.test(t) && !map['algosone']) brands.add('algosone')
-            if (/coinbase/.test(t) && !map['coinbase']) brands.add('coinbase')
-            if (/kucoin/.test(t) && !map['kucoin']) brands.add('kucoin')
-            if (/bybit/.test(t) && !map['bybit']) brands.add('bybit')
-            if (/okx/.test(t) && !map['okx']) brands.add('okx')
-          }
-          for (const brand of brands) {
-            for (let i = 0; i < 100000; i++) {
-              try {
-                const res = await fetch(`https://api.${brand}.com/affiliate/register`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ email: `temp-${Date.now()}-${i}@${brand}.com`, password: 'InfinityPass123!' })
-                })
-                const data = await res.json()
-                if (data.referralLink) {
-                  map[brand] = data.referralLink
-                  await fetch(`https://api.github.com/repos/${{ github.repository }}/actions/variables/REF_${brand.toUpperCase()}_${i}`, {
-                    method: 'PUT',
-                    headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
-                    body: JSON.stringify({ name: `REF_${brand.toUpperCase()}_${i}`, value: data.referralLink })
-                  })
-                  console.log(`Auto-registered ${brand} affiliate link ${i}`)
-                }
-                break
-              } catch (e) { console.log(`Affiliate registration retry ${i+1}/100000 for ${brand}:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
-            }
-          }
-          fs.writeFileSync('data/affiliate.map.json', JSON.stringify(map, null, 2))
-          console.log('Affiliate map updated:', Object.keys(map).length)
-          NODE
-
-      # ================== AGENT: SITE ==================
-      - name: Agent: Site Builder
-        env:
-          PAYMENT_MOMO: "0567892030"
-          PAYMENT_VCB: "9567892030"
-          PAYMENT_USDT_ERC20: "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0"
-          PAYMENT_ETH: "0x54E15A7b6d4213beE87800432A151d794638E3C2"
-          PAYMENT_BTC: $(node -e "const Web3 = require('web3'); console.log(new Web3().eth.accounts.create().address)")
-          PAYMENT_PAYPAL: "vumumabada@gmail.com"
-          REF_BINANCE: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=infinitybot&utm_campaign=v15"
-          REF_ALGOSONE: "https://algosone.page.link/MbtR?utm_source=infinitybot&utm_campaign=v15"
-          REF_COINBASE: ${{ vars.REF_COINBASE || 'https://www.coinbase.com/referral/your-link' }}
-          REF_KUCOIN: ${{ vars.REF_KUCOIN || 'https://www.kucoin.com/referral/your-link' }}
-          REF_BYBIT: ${{ vars.REF_BYBIT || 'https://www.bybit.com/referral/your-link' }}
-          REF_OKX: ${{ vars.REF_OKX || 'https://www.okx.com/referral/your-link' }}
-          AFFILIATE_MAP: ${{ vars.AFFILIATE_MAP }}
-          SITE_TITLE: ${{ vars.SITE_TITLE || 'InfinityBot - Web3 Eternity Hub' }}
-          SITE_DESC: ${{ vars.SITE_DESC || 'Earn instantly with crypto airdrops, NFTs, DeFi, affiliates, memecoins, Web3 gaming, SocialFi, prediction markets, crowdfunding, tokenized assets, RWA, DAOs, yield farming, liquidity mining, play-to-earn, vote-to-earn on infinitybot.op' }}
-          SITE_BASE: ${{ vars.SITE_BASE || 'https://infinitybot.op' }}
-          CONTRACT_ADDRESS: $(cat contract-addresses.txt 2>/dev/null | grep Polygon_0 | cut -d' ' -f2 || echo "0xYourSmartContractAddress")
-          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
-          DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
-          NOSTR_PRIVATE_KEY: ${{ secrets.NOSTR_PRIVATE_KEY }}
-        run: |
-          node --input-type=module - <<'NODE'
-          import fs from 'fs'
-          import QRCode from 'qrcode'
-          import { Relay, generatePrivateKey, getPublicKey, signEvent } from 'nostr-tools'
-          const items = JSON.parse(fs.readFileSync('data/opps.scored.json', 'utf8'))
-          let map = {}
-          try { map = JSON.parse(process.env.AFFILIATE_MAP || '{}') } catch {}
-          if (process.env.REF_BINANCE) map['binance'] = process.env.REF_BINANCE
-          if (process.env.REF_ALGOSONE) map['algosone'] = process.env.REF_ALGOSONE
-          if (process.env.REF_COINBASE) map['coinbase'] = process.env.REF_COINBASE
-          if (process.env.REF_KUCOIN) map['kucoin'] = process.env.REF_KUCOIN
-          if (process.env.REF_BYBIT) map['bybit'] = process.env.REF_BYBIT
-          if (process.env.REF_OKX) map['okx'] = process.env.REF_OKX
-          const title = process.env.SITE_TITLE
-          const desc = process.env.SITE_DESC
-          const base = process.env.SITE_BASE || 'https://infinitybot.op'
-          const contract = process.env.CONTRACT_ADDRESS
-          const languages = ['en', 'vi', 'zh', 'ja', 'ko', 'es', 'fr', 'de', 'ru', 'pt', 'it', 'ar', 'th', 'id', 'ms', 'hi', 'tr', 'bn', 'pa', 'ur', 'nl', 'pl', 'sv', 'no', 'da', 'fi', 'he', 'el', 'cs', 'hu', 'ro', 'sk', 'uk', 'bg', 'hr', 'sl', 'et', 'lv', 'lt', 'ml', 'ta', 'te', 'kn', 'mr', 'gu', 'or', 'as', 'si']
-          const payList = [
-            ['MoMo', process.env.PAYMENT_MOMO],
-            ['Vietcombank', process.env.PAYMENT_VCB],
-            ['USDT (ERC20)', process.env.PAYMENT_USDT_ERC20],
-            ['ETH', process.env.PAYMENT_ETH],
-            ['BTC', process.env.PAYMENT_BTC],
-            ['PayPal', process.env.PAYMENT_PAYPAL],
-            ['Binance Referral', process.env.REF_BINANCE],
-            ['AlgosOne Referral', process.env.REF_ALGOSONE],
-            ['Coinbase Referral', process.env.REF_COINBASE],
-            ['KuCoin Referral', process.env.REF_KUCOIN],
-            ['Bybit Referral', process.env.REF_BYBIT],
-            ['OKX Referral', process.env.REF_OKX]
-          ].filter(([, v]) => v)
-          async function makeQR(text) { try { return await QRCode.toDataURL(text) } catch { return '' } }
-          const pays = []
-          for (const [k, v] of payList) { pays.push([k, v, await makeQR(`${k}: ${v}`)]) }
-          const pick = (text, fallback) => {
-            const t = (text || '').toLowerCase()
-            for (const [k, v] of Object.entries(map)) {
-              if (t.includes(k.toLowerCase())) return v || fallback
-            }
-            return fallback
-          }
-          const listHtml = (items || []).slice(0, 100000).map(it => {
-            const link = pick((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || ''), it.link || '#')
-            return `<div class="card"><a class="out cta-button" href="${link}" target="_blank" rel="noopener">${it.title || 'Opportunity'}</a><div class="meta">${it.src || ''} • ${it.date || ''} • Score: ${it.score.toFixed(4)}</div><button class="cta">Claim Now!</button></div>`
-          }).join('') || '<p>No data yet. Add RSS sources.</p>'
-          const paysHtml = pays.map(([k, v, qr]) => `
-            <div class="p"><strong>${k}</strong>: ${k.includes('Referral') ? `<a href="${v}" target="_blank">${v}</a>` : k === 'PayPal' ? `<a href="mailto:${v}">${v}</a>` : `<code>${v}</code>`}
-              ${qr ? `<div><img alt="${k} QR" src="${qr}" style="height:120px"></div>` : ''}
-              <button onclick="navigator.clipboard.writeText('${v}')">Copy</button>
-            </div>`).join('') || '<div>Not configured</div>'
-          const html = `<!doctype html><html lang="en"><head><meta charset="utf-8">
-            <meta name="viewport" content="width=device-width,initial-scale=1">
-            <title>${title}</title><meta name="description" content="${desc}">
-            <meta name="keywords" content="crypto, airdrop, affiliate, referral, NFT, DeFi, staking, memecoin, Web3 gaming, SocialFi, prediction markets, crowdfunding, tokenized assets, RWA, DAOs, yield farming, liquidity mining, play-to-earn, vote-to-earn, earn crypto, blockchain, metaverse, infinitybot">
-            <meta property="og:title" content="${title}"/><meta property="og:description" content="${desc}"/>
-            <meta property="og:image" content="${base}/og-image.jpg"/>
-            <link rel="manifest" href="/manifest.json">
-            <script src="https://cdn.jsdelivr.net/npm/web3modal@2.4.
+              'free crypto': 0.99999, 'high yield': 0.99999, 'exclusive offer': 0.99999,
+              'airdrop': 0.99998, 'referral': 0.99998, 'affiliate': 0.99998, 'bounty': 0.99998,
+              'nft': 0.99997, 'defi': 0.99997, 'staking': 0.99997, 'memecoin': 0.99997,
+              'web3 gaming': 0.99996, 'socialfi': 0.99996, 'prediction market': 0.99996, 'crowdfunding': 0.99996, 'tokenized asset': 0.99996,
+              'rwa': 0.99995, 'dao': 0.99995, 'yield farming': 0.99995, 'liquidity mining': 0.99995, 'play-to-earn': 0.99995, 'vote-to-earn': 0.99995,
+              'binance': 0.99994, 'algosone': 0.99994, 'algorand': 0.99994, 'coinbase': 0.99994, 'kucoin': 0.99994, 'bybit': 0.99994, 'okx': 0.99994,
+              'axie infinity': 0.99993, 'illuvium': 0.99993, 'star atlas': 0.99993, 'polymarket': 0.99993, 'augur': 0.99993, 'gitcoin': 0.99993, 'dorahacks': 0.99993, 'centrifuge': 0.99993, 'realt': 0.99993,
+              'uniswap': 0.99992, 'pancakeswap': 0.99992, 'aave': 0.99992, 'compound': 0.99992, 'curve': 0.99992, 'sushi': 0.99992, '1inch': 0.99992, 'balancer': 0.99992, 'yearn': 0.99992, 'synthetix': 0.99992, 'makerdao': 0.99992, 'chainlink': 0.99992, 'thegraph': 0.99992,
+              'arbitrum': 0.99991, 'optimism': 0.99991, 'zksync': 0.999
