@@ -6,25 +6,25 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "Chế độ chạy"
+        description: "Mode"
         type: choice
         default: full_cycle
         options: [bootstrap, deploy, full_cycle]
       publish_dir:
-        description: "Thư mục publish (ưu tiên input; fallback VAR PUBLISH_DIR; mặc định ./)"
+        description: "Publish directory (override VAR PUBLISH_DIR; default ./)"
         required: false
       space_did_override:
-        description: "SPACE DID override (nếu muốn)"
+        description: "SPACE DID override (optional)"
         required: false
       principal_name:
-        description: "Tên principal (khóa ký UCAN)"
+        description: "Principal name (UCAN signer)"
         default: github
       with_ipns:
         description: "Publish IPNS?"
         type: boolean
         default: true
   schedule:
-    - cron: "*/15 * * * *"  # 15 phút/lần (GH có thể trễ nhẹ)
+    - cron: "*/15 * * * *"
 
 permissions:
   contents: write
@@ -38,7 +38,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: "npm" }
 
@@ -49,7 +48,7 @@ jobs:
           npm i rss-parser@3
           npm i node-fetch@3
 
-      # ============ BOOTSTRAP: tạo principal DID + hướng dẫn delegate UCAN ============
+      # ===== BOOTSTRAP: create principal DID + guide to delegate UCAN =====
       - name: Bootstrap principal
         id: boot
         if: ${{ inputs.mode == 'bootstrap' }}
@@ -73,25 +72,25 @@ jobs:
         if: ${{ inputs.mode == 'bootstrap' }}
         run: |
           echo "## ONE-TIME" >> $GITHUB_STEP_SUMMARY
-          echo "1) https://console.web3.storage → Space của bạn → Delegate → 'Ủy quyền cho DID'." >> $GITHUB_STEP_SUMMARY
-          echo "2) Dán DID này, chọn quyền: store/add, upload/add, upload/list, space/info (+ name/claim, name/publish nếu IPNS)." >> $GITHUB_STEP_SUMMARY
+          echo "1) Open https://console.web3.storage → your Space → Delegate → 'Grant to DID'." >> $GITHUB_STEP_SUMMARY
+          echo "2) Paste this DID, grant: store/add, upload/add, upload/list, space/info (+ name/claim, name/publish if IPNS)." >> $GITHUB_STEP_SUMMARY
           echo "   ${{ steps.boot.outputs.did }}" >> $GITHUB_STEP_SUMMARY
-          echo "3) Copy UCAN → repo Settings → Secrets → Actions:" >> $GITHUB_STEP_SUMMARY
+          echo "3) Put into repo Settings → Secrets → Actions:" >> $GITHUB_STEP_SUMMARY
           echo "   - W3UP_DELEGATION      = UCAN string" >> $GITHUB_STEP_SUMMARY
-          echo "   - W3UP_PRINCIPAL_JSON  = nội dung principal.json (artifact)" >> $GITHUB_STEP_SUMMARY
-          echo "   - (tuỳ chọn) W3UP_SPACE_DID = DID Space" >> $GITHUB_STEP_SUMMARY
-          echo "Xong → chạy lại với mode=full_cycle." >> $GITHUB_STEP_SUMMARY
+          echo "   - W3UP_PRINCIPAL_JSON  = content of principal.json (artifact)" >> $GITHUB_STEP_SUMMARY
+          echo "   - (optional) W3UP_SPACE_DID = your Space DID" >> $GITHUB_STEP_SUMMARY
+          echo "Then re-run with mode=full_cycle." >> $GITHUB_STEP_SUMMARY
 
-      # =================== AGENT 1: HUNTER (ingest nguồn Web2 & hook on-chain) ===================
+      # =================== AGENT 1: HUNTER ===================
       - name: Agent: Hunter
         if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
         env:
-          RSS_URLS:        ${{ vars.RSS_URLS }}         # CSV
-          ONCHAIN_FEEDS:   ${{ vars.ONCHAIN_FEEDS }}    # CSV/JSON (tùy bạn)
-          COVALENT_KEY:    ${{ secrets.COVALENT_KEY }}  # optional
-          MORALIS_KEY:     ${{ secrets.MORALIS_KEY }}   # optional
+          RSS_URLS:        ${{ vars.RSS_URLS }}
+          ONCHAIN_FEEDS:   ${{ vars.ONCHAIN_FEEDS }}
+          COVALENT_KEY:    ${{ secrets.COVALENT_KEY }}
+          MORALIS_KEY:     ${{ secrets.MORALIS_KEY }}
         run: |
-          node - <<'NODE'
+          node --input-type=module - <<'NODE'
           import fs from 'fs'
           import Parser from 'rss-parser'
           const parser = new Parser()
@@ -105,20 +104,20 @@ jobs:
               }
             }catch(e){ console.log('RSS error', url, e.message) }
           }
-          // TODO: nếu bạn cấp key + danh sách nguồn on-chain, thêm sự kiện/transactions vào items (type:'onchain')
+          // TODO: use ONCHAIN_FEEDS + keys to push on-chain events into items
           fs.mkdirSync('data',{recursive:true})
           fs.writeFileSync('data/opps.raw.json', JSON.stringify(items,null,2))
           console.log('Ingested:', items.length)
           NODE
 
-      # =================== AGENT 2: ANALYST (xếp hạng thông minh; LLM optional) ===================
+      # =================== AGENT 2: ANALYST ===================
       - name: Agent: Analyst
         if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
         env:
-          LLM_API_URL: ${{ vars.LLM_API_URL }} # optional
-          LLM_API_KEY: ${{ secrets.LLM_API_KEY }} # optional
+          LLM_API_URL: ${{ vars.LLM_API_URL }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
         run: |
-          node - <<'NODE'
+          node --input-type=module - <<'NODE'
           import fs from 'fs'
           const raw='data/opps.raw.json'
           if(!fs.existsSync(raw)){ console.log('No data'); process.exit(0) }
@@ -130,21 +129,21 @@ jobs:
           console.log('Ranked:', scored.length)
           NODE
 
-      # =================== AGENT 3: MARKETER (tạo site + SEO + sitemap + feed) ===================
+      # =================== AGENT 3: MARKETER ===================
       - name: Agent: Marketer (build site)
         if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
         env:
           WALLET_BNB:     ${{ secrets.WALLET_BNB }}
           WALLET_ALGO:    ${{ secrets.WALLET_ALGO }}
-          REF_LINKS:      ${{ vars.REF_LINKS }}        # CSV
-          AFFILIATE_MAP:  ${{ vars.AFFILIATE_MAP }}    # JSON {"BNB":"https://ref...", "AglosOne":"https://ref..."}
-          LEAD_FORM_URL:  ${{ vars.LEAD_FORM_URL }}    # Formspree/Typeform/Sheet
-          PLAUSIBLE_DOM:  ${{ vars.PLAUSIBLE_DOMAIN }} # optional analytics domain
-          SITE_TITLE:     ${{ vars.SITE_TITLE || 'AI Omnibot v5' }}
-          SITE_DESC:      ${{ vars.SITE_DESC  || 'Auto opportunity finder • Web2↔Web3' }}
-          SITE_BASE:      ${{ vars.SITE_BASE  || '' }}
+          REF_LINKS:      ${{ vars.REF_LINKS }}
+          AFFILIATE_MAP:  ${{ vars.AFFILIATE_MAP }}
+          LEAD_FORM_URL:  ${{ vars.LEAD_FORM_URL }}
+          PLAUSIBLE_DOM:  ${{ vars.PLAUSIBLE_DOMAIN }}
+          SITE_TITLE:     ${{ vars.SITE_TITLE }}
+          SITE_DESC:      ${{ vars.SITE_DESC }}
+          SITE_BASE:      ${{ vars.SITE_BASE }}
         run: |
-          node - <<'NODE'
+          node --input-type=module - <<'NODE'
           import fs from 'fs'
           const data='data/opps.scored.json'
           const items=fs.existsSync(data)?JSON.parse(fs.readFileSync(data,'utf8')):[]
@@ -191,7 +190,6 @@ jobs:
           fs.writeFileSync('index.html', html)
 
           // sitemap + RSS
-          const base=process.env.SITE_BASE||''
           const url=(p)=> (base?`${base}/${p}`:p)
           const rss = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel>
             <title>${title}</title><link>${base||''}</link><description>${desc}</description>
@@ -204,51 +202,48 @@ jobs:
           fs.writeFileSync('sitemap.xml', sm)
           NODE
 
-      # =================== COMPLIANCE / SAFETY GATE (kỷ luật) ===================
+      # =================== COMPLIANCE / SAFETY ===================
       - name: Compliance gate
         if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' || github.event_name == 'push' }}
         env:
-          BLOCK_DOMAINS:  ${{ vars.BLOCK_DOMAINS }}  # CSV domain cấm
-          BLOCK_WORDS:    ${{ vars.BLOCK_WORDS }}    # CSV từ cấm
-          KILL_SWITCH:    ${{ secrets.KILL_SWITCH }} # đặt "OFF" để dừng deploy khẩn
+          BLOCK_DOMAINS:  ${{ vars.BLOCK_DOMAINS }}
+          BLOCK_WORDS:    ${{ vars.BLOCK_WORDS }}
+          KILL_SWITCH:    ${{ secrets.KILL_SWITCH }}
         run: |
           set -e
           if [ "${KILL_SWITCH}" = "OFF" ]; then
-            echo "⛔ Kill-switch ON → Hủy run"; exit 1
+            echo "⛔ Kill-switch ON → cancel run"; exit 1
           fi
-          touch changed.txt
-          git diff HEAD^ HEAD --name-only || true > changed.txt
-          # chặn thay đổi nhạy cảm
+          (git diff HEAD^ HEAD --name-only || true) > changed.txt
           if grep -Eq "(\.env|secrets|principal\.json)" changed.txt; then
-            echo "❌ Phát hiện thay đổi nhạy cảm"; exit 1
+            echo "❌ Sensitive change detected"; exit 1
           fi
-          # quét HTML đơn giản
           HTML="index.html"
           if [ -f "$HTML" ]; then
             if [ -n "${BLOCK_DOMAINS}" ]; then
               IFS=, read -ra ds <<< "${BLOCK_DOMAINS}"
               for d in "${ds[@]}"; do
-                if grep -qi "$d" "$HTML"; then echo "❌ Domain bị chặn: $d"; exit 1; fi
+                if grep -qi "$d" "$HTML"; then echo "❌ Blocked domain: $d"; exit 1; fi
               done
             fi
             if [ -n "${BLOCK_WORDS}" ]; then
               IFS=, read -ra ws <<< "${BLOCK_WORDS}"
               for w in "${ws[@]}"; do
-                if grep -qi "$w" "$HTML"; then echo "❌ Từ bị chặn: $w"; exit 1; fi
+                if grep -qi "$w" "$HTML"; then echo "❌ Blocked word: $w"; exit 1; fi
               done
             fi
           fi
           echo "✅ Compliance OK"
 
-      # =================== AGENT 4: TRADER (paper mặc định; live qua webhook) ===================
+      # =================== AGENT 4: TRADER (paper by default) ===================
       - name: Agent: Trader
         if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
         env:
-          LIVE_TRADE:        ${{ secrets.LIVE_TRADE }}          # "YES" để bật trade thật
-          TRADE_WEBHOOK_URL: ${{ secrets.TRADE_WEBHOOK_URL }}   # Worker riêng thực thi lệnh
-          MAX_TRADE_USD:     ${{ vars.MAX_TRADE_USD || 50 }}
+          LIVE_TRADE:        ${{ secrets.LIVE_TRADE }}
+          TRADE_WEBHOOK_URL: ${{ secrets.TRADE_WEBHOOK_URL }}
+          MAX_TRADE_USD:     ${{ vars.MAX_TRADE_USD }}
         run: |
-          node - <<'NODE'
+          node --input-type=module - <<'NODE'
           import fs from 'fs'
           const live=(process.env.LIVE_TRADE||'')==='YES'
           const hook=process.env.TRADE_WEBHOOK_URL||''
@@ -268,7 +263,7 @@ jobs:
           fs.mkdirSync('logs',{recursive:true}); fs.writeFileSync('logs/order.json', JSON.stringify(order,null,2))
           NODE
 
-      # =================== COMMIT dữ liệu & HTML ===================
+      # =================== COMMIT ===================
       - name: Commit changes
         if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
         run: |
@@ -278,7 +273,7 @@ jobs:
           git diff --cached --quiet || git commit -m "omnibot v5: update data/site"
           git push
 
-      # =================== DEPLOY IPFS/IPNS qua UCAN (kèm auto-rollback) ===================
+      # =================== DEPLOY IPFS/IPNS (UCAN) ===================
       - name: Deploy to IPFS & IPNS
         env:
           W3UP_DELEGATION: ${{ secrets.W3UP_DELEGATION }}
@@ -289,7 +284,7 @@ jobs:
           WITH_IPNS: ${{ inputs.with_ipns }}
         run: |
           set -e
-          node - <<'NODE'
+          node --input-type=module - <<'NODE'
           import fs from 'fs'
           import * as w3 from '@web3-storage/w3up-client'
           import { filesFromPath } from 'files-from-path'
@@ -323,23 +318,21 @@ jobs:
         run: |
           set -e
           if [ -f ipfs-gateway.txt ]; then
-            URL=$(cat ipfs-gateway.txt | head -n1)
+            URL=$(head -n1 ipfs-gateway.txt)
             echo "Health-check ${URL}"
             code=$(curl -s -o /dev/null -w "%{http_code}" "${URL}/index.html")
             echo "HTTP ${code}"
             if [ "$code" != "200" ]; then
-              echo "⛔ Deploy lỗi → rollback"
+              echo "⛔ Deploy failed → rollback"
               if [ -f cid-history.json ]; then
                 PREV=$(jq -r '.[-1]' cid-history.json)
                 echo "Previous CID: $PREV"
-                # rollback bằng cách ghi lại file để workflow sau publish lại PREV (hoặc tạo job riêng)
               fi
               exit 1
             fi
           fi
           echo "✅ Health OK"
-          # lưu lịch sử CID
-          CID=$(cat ipfs-cid.txt | head -n1 || true)
+          CID=$(head -n1 ipfs-cid.txt 2>/dev/null || true)
           if [ -n "$CID" ]; then
             test -f cid-history.json || echo "[]" > cid-history.json
             jq ". + [\"$CID\"]" cid-history.json > cid-history.tmp.json && mv cid-history.tmp.json cid-history.json
@@ -350,7 +343,7 @@ jobs:
             git push
           fi
 
-      # =================== GROWTH: thông báo / chia sẻ ===================
+      # =================== ANNOUNCE ===================
       - name: Announce (Discord / Telegram / Twitter)
         if: ${{ always() }}
         env:
@@ -360,17 +353,16 @@ jobs:
           TWITTER_WEBHOOK_URL: ${{ secrets.TWITTER_WEBHOOK_URL }}
         run: |
           set -e
-          IPFS=$(cat ipfs-gateway.txt 2>/dev/null | head -n1 || echo "")
+          IPFS=$(head -n1 ipfs-gateway.txt 2>/dev/null || echo "")
           MSG="Omnibot v5: cập nhật mới • ${IPFS}"
-          # Discord
           if [ -n "${DISCORD_WEBHOOK_URL}" ]; then
             curl -s -X POST -H 'Content-Type: application/json' -d "{\"content\":\"${MSG}\"}" "${DISCORD_WEBHOOK_URL}" || true
           fi
-          # Telegram
           if [ -n "${TELEGRAM_BOT_TOKEN}" ] && [ -n "${TELEGRAM_CHAT_ID}" ]; then
-            curl -s "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" --data-urlencode "text=${MSG}" >/dev/null || true
+            curl -s "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+              --data-urlencode "text=${MSG}" >/dev/null || true
           fi
-          # Twitter via webhook (Zapier/IFTTT/Worker)
           if [ -n "${TWITTER_WEBHOOK_URL}" ]; then
             curl -s -X POST -H 'Content-Type: application/json' -d "{\"text\":\"${MSG}\"}" "${TWITTER_WEBHOOK_URL}" || true
           fi
