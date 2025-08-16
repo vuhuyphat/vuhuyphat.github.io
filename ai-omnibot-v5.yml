@@ -277,11 +277,162 @@ jobs:
           deployContract()
           NODE
 
+      # ================== AGENT: AUTO-UPDATE KEYWORDS ==================
+      - name: Auto-update Keywords
+        run: |
+          node --input-type=module - <<'NODE'
+          import fetch from 'node-fetch'
+          import fs from 'fs'
+          async function updateKeywords() {
+            const sources = [
+              'https://coindesk.com/feed',
+              'https://cointelegraph.com/rss',
+              'https://airdropalert.com/feed',
+              'https://messari.io/feed',
+              'https://cryptoslate.com/feed',
+              'https://theblock.co/feed',
+              'https://defipulse.com/feed',
+              'https://news.bitcoin.com/feed',
+              'https://coingecko.com/feed',
+              'https://coinmarketcap.com/feed',
+              'https://defillama.com/feed',
+              'https://zora.co/feed',
+              'https://nostr.com/feed',
+              'https://farcaster.network/feed',
+              'https://lens.xyz/feed',
+              'https://axieinfinity.com/feed',
+              'https://illuvium.io/feed',
+              'https://polymarket.com/feed',
+              'https://gitcoin.co/feed',
+              'https://dorahacks.io/feed',
+              'https://centrifuge.io/feed',
+              'https://realt.co/feed',
+              'https://steemit.com/feed',
+              'https://hive.io/feed',
+              'https://bitclout.com/feed',
+              'https://signal.org/feed',
+              'https://matrix.org/feed',
+              'https://mastodon.social/feed',
+              'https://weibo.com/feed',
+              'https://vk.com/feed'
+            ]
+            let keywords = {}
+            for (const src of sources) {
+              for (let i = 0; i < 10000; i++) {
+                try {
+                  const res = await fetch(src, { timeout: 3000 })
+                  const data = await res.json()
+                  data.items.forEach(item => {
+                    const text = ((item.title || '') + ' ' + (item.description || '')).toLowerCase()
+                    const matches = text.match(/\b(airdrop|nft|defi|staking|memecoin|web3 gaming|socialfi|prediction market|crowdfunding|tokenized asset|rwa|dao|yield farming|liquidity mining|play-to-earn|vote-to-earn|binance|algosone|algorand|coinbase|kucoin|bybit|okx|axie infinity|illuvium|star atlas|polymarket|augur|gitcoin|dorahacks|centrifuge|realt|trending|farcaster|lens|nostr|coingecko|coinmarketcap|dune)\b/g) || []
+                    matches.forEach(word => keywords[word] = (keywords[word] || 0) + 1)
+                  })
+                  break
+                } catch (e) { console.log(`Keyword source retry ${i+1}/10000: ${src}`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+              }
+            }
+            const sorted = Object.entries(keywords).sort((a, b) => b[1] - a[1]).slice(0, 100)
+            const weights = sorted.reduce((acc, [word], i) => ({ ...acc, [word]: 0.9999 - i * 0.00001 }), {})
+            fs.mkdirSync('data', { recursive: true })
+            fs.writeFileSync('data/keywords.json', JSON.stringify(weights, null, 2))
+            console.log('Updated keywords:', Object.keys(weights).length)
+          }
+          updateKeywords()
+          NODE
+
+      # ================== AGENT: USER BEHAVIOR ANALYSIS ==================
+      - name: User Behavior Analysis
+        env:
+          LLM_API_URL: ${{ vars.LLM_API_URL || 'https://api.x.ai/v1/chat/completions' }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        run: |
+          node --input-type=module - <<'NODE'
+          import fetch from 'node-fetch'
+          import fs from 'fs'
+          async function analyzeUserBehavior() {
+            try {
+              const response = await fetch('https://api.x.ai/v1/track', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event: 'fetch_user_behavior', timestamp: Date.now() })
+              })
+              const data = await response.json()
+              let keywords = fs.existsSync('data/keywords.json') ? JSON.parse(fs.readFileSync('data/keywords.json', 'utf8')) : {}
+              data.events.forEach(event => {
+                if (event.event === 'keyword') {
+                  event.keywords.forEach(word => {
+                    keywords[word] = (keywords[word] || 0) + 1
+                  })
+                }
+              })
+              const sorted = Object.entries(keywords).sort((a, b) => b[1] - a[1]).slice(0, 100)
+              const weights = sorted.reduce((acc, [word], i) => ({ ...acc, [word]: 0.9999 - i * 0.00001 }), {})
+              fs.mkdirSync('data', { recursive: true })
+              fs.writeFileSync('data/keywords.json', JSON.stringify(weights, null, 2))
+              console.log('Updated keywords from user behavior:', Object.keys(weights).length)
+            } catch (e) { console.error('User behavior analysis failed:', e.message) }
+          }
+          analyzeUserBehavior()
+          NODE
+
+      # ================== AGENT: SOCIAL MEDIA PROPAGATION ==================
+      - name: Social Media Propagation
+        env:
+          NOSTR_PRIVATE_KEY: ${{ secrets.NOSTR_PRIVATE_KEY }}
+          FARCASTER_API_KEY: ${{ secrets.FARCASTER_API_KEY }}
+          LENS_API_KEY: ${{ secrets.LENS_API_KEY }}
+          MASTODON_API_KEY: ${{ secrets.MASTODON_API_KEY }}
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'fs'
+          import fetch from 'node-fetch'
+          import { Relay, generatePrivateKey, getPublicKey, signEvent } from 'nostr-tools'
+          async function propagateToSocialMedia() {
+            const keywords = fs.existsSync('data/keywords.json') ? JSON.parse(fs.readFileSync('data/keywords.json', 'utf8')) : {}
+            const content = `Join InfinityBot for ${Object.keys(keywords).slice(0, 5).join(', ')}! https://infinitybot.op #Web3 #Crypto #InfinityBot`
+            const platforms = [
+              { name: 'Nostr', url: 'wss://nostr-relay.example.com', key: process.env.NOSTR_PRIVATE_KEY, method: 'relay' },
+              { name: 'Farcaster', url: 'https://api.farcaster.network/post', key: process.env.FARCASTER_API_KEY, method: 'http' },
+              { name: 'Lens', url: 'https://api.lens.xyz/post', key: process.env.LENS_API_KEY, method: 'http' },
+              { name: 'Mastodon', url: 'https://mastodon.social/api/v1/statuses', key: process.env.MASTODON_API_KEY, method: 'http' }
+            ]
+            for (const platform of platforms) {
+              for (let i = 0; i < 10000; i++) {
+                try {
+                  if (platform.method === 'relay') {
+                    const relay = await Relay.connect(platform.url)
+                    const event = {
+                      kind: 1,
+                      created_at: Math.floor(Date.now() / 1000),
+                      tags: [['t', 'infinitybot'], ...Object.keys(keywords).slice(0, 5).map(k => ['t', k])],
+                      content,
+                      pubkey: getPublicKey(platform.key)
+                    }
+                    event.id = getEventHash(event)
+                    event.sig = signEvent(event, platform.key)
+                    await relay.publish(event)
+                    console.log(`Posted to ${platform.name}`)
+                  } else {
+                    await fetch(platform.url, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${platform.key}` },
+                      body: JSON.stringify({ status: content })
+                    })
+                    console.log(`Posted to ${platform.name}`)
+                  }
+                  break
+                } catch (e) { console.log(`Social media retry ${i+1}/10000 for ${platform.name}:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+              }
+            }
+          }
+          propagateToSocialMedia()
+          NODE
+
       # ================== AGENT: CRAWLER ==================
       - name: Agent: Crawler
         env:
-          SEED_URLS: ${{ inputs.seed_urls || 'https://coindesk.com,https://cointelegraph.com,https://airdropalert.com,https://bitcointalk.org,https://reddit.com/r/cryptocurrency,https://news.bitcoin.com,https://theblock.co,https://producthunt.com,https://techcrunch.com,https://defillama.com,https://farcaster.network,https://lens.xyz,https://coingecko.com,https://coinmarketcap.com,https://dune.com,https://zora.co,https://opensea.io,https://blur.io,https://nostr.com,https://decentraland.org,https://sandbox.game,https://axieinfinity.com,https://illuvium.io,https://staratlas.com,https://polymarket.com,https://augur.net,https://gitcoin.co,https://dorahacks.io,https://centrifuge.io,https://realt.co,https://steemit.com,https://hive.io,https://bitclout.com,https://signal.org,https://matrix.org,https://mastodon.social,https://weibo.com,https://vk.com' }}
-          EXTRA_RSS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed,https://nostr.com/feed,https://axieinfinity.com/feed,https://illuvium.io/feed,https://polymarket.com/feed,https://gitcoin.co/feed,https://centrifuge.io/feed,https://signal.org/feed,https://matrix.org/feed,https://mastodon.social/feed,https://weibo.com/feed,https://vk.com/feed' }}
+          SEED_URLS: ${{ inputs.seed_urls || 'https://coindesk.com,https://cointelegraph.com,https://airdropalert.com,https://messari.io,https://cryptoslate.com,https://theblock.co,https://defipulse.com,https://bitcointalk.org,https://reddit.com/r/cryptocurrency,https://news.bitcoin.com,https://producthunt.com,https://techcrunch.com,https://defillama.com,https://farcaster.network,https://lens.xyz,https://coingecko.com,https://coinmarketcap.com,https://dune.com,https://zora.co,https://opensea.io,https://blur.io,https://nostr.com,https://decentraland.org,https://sandbox.game,https://axieinfinity.com,https://illuvium.io,https://staratlas.com,https://polymarket.com,https://augur.net,https://gitcoin.co,https://dorahacks.io,https://centrifuge.io,https://realt.co,https://steemit.com,https://hive.io,https://bitclout.com,https://signal.org,https://matrix.org,https://mastodon.social,https://weibo.com,https://vk.com' }}
+          EXTRA_RSS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://messari.io/feed,https://cryptoslate.com/feed,https://theblock.co/feed,https://defipulse.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed,https://nostr.com/feed,https://farcaster.network/feed,https://lens.xyz/feed,https://axieinfinity.com/feed,https://illuvium.io/feed,https://polymarket.com/feed,https://gitcoin.co/feed,https://dorahacks.io/feed,https://centrifuge.io/feed,https://realt.co/feed,https://steemit.com/feed,https://hive.io/feed,https://bitclout.com/feed,https://signal.org/feed,https://matrix.org/feed,https://mastodon.social/feed,https://weibo.com/feed,https://vk.com/feed' }}
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
@@ -321,7 +472,7 @@ jobs:
       - name: Agent: Ingest
         env:
           FEEDS_FILE: data/feeds.txt
-          RSS_URLS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed,https://nostr.com/feed,https://axieinfinity.com/feed,https://illuvium.io/feed,https://polymarket.com/feed,https://gitcoin.co/feed,https://centrifuge.io/feed,https://signal.org/feed,https://matrix.org/feed,https://mastodon.social/feed,https://weibo.com/feed,https://vk.com/feed' }}
+          RSS_URLS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://messari.io/feed,https://cryptoslate.com/feed,https://theblock.co/feed,https://defipulse.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed,https://nostr.com/feed,https://farcaster.network/feed,https://lens.xyz/feed,https://axieinfinity.com/feed,https://illuvium.io/feed,https://polymarket.com/feed,https://gitcoin.co/feed,https://dorahacks.io/feed,https://centrifuge.io/feed,https://realt.co/feed,https://steemit.com/feed,https://hive.io/feed,https://bitclout.com/feed,https://signal.org/feed,https://matrix.org/feed,https://mastodon.social/feed,https://weibo.com/feed,https://vk.com/feed' }}
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
@@ -420,7 +571,7 @@ jobs:
           if (nums) {
             scored = sample.map((it, i) => ({ ...it, score: Number(nums[i] || 0) })).sort((a, b) => b.score - a.score)
           } else {
-            const weights = {
+            const keywords = fs.existsSync('data/keywords.json') ? JSON.parse(fs.readFileSync('data/keywords.json', 'utf8')) : {
               'free crypto': 0.9999, 'high yield': 0.9999, 'exclusive offer': 0.9999,
               'airdrop': 0.9998, 'referral': 0.9998, 'affiliate': 0.9998, 'bounty': 0.9998,
               'nft': 0.9997, 'defi': 0.9997, 'staking': 0.9997, 'memecoin': 0.9997,
@@ -433,7 +584,7 @@ jobs:
             scored = items.map(it => {
               const text = ((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || '')).toLowerCase()
               let score = 0
-              for (const [key, weight] of Object.entries(weights)) {
+              for (const [key, weight] of Object.entries(keywords)) {
                 if (text.includes(key)) score = Math.max(score, weight)
               }
               return { ...it, score }
@@ -606,4 +757,41 @@ jobs:
               a { color: #0b61ff; text-decoration: none }
               button { margin-top: 6px; padding: 6px 10px; border: 1px solid #d0d7e2; border-radius: 8px; background: #fff; cursor: pointer }
               footer { margin: 20px; text-align: center }
-              #metaverse { width: 100%; height: 400px; background: linear-gradient(45deg, #0b61ff, #ffd
+              #metaverse { width: 100%; height: 400px; background: linear-gradient(45deg, #0b61ff, #ffd700) }
+            </style></head>
+            <body><header style="text-align:center;padding:20px"><h1>${title}</h1><p>${desc}</p></header>
+            <div id="metaverse"></div>
+            <section class="grid">${listHtml}</section>
+            <section style="margin:20px;text-align:center"><h2>Support InfinityBot</h2>${paysHtml}</section>
+            <footer>Powered by InfinityBot &copy; 2025</footer>
+            <script>
+              const contractAddress = '${contract}'
+              const contractABI = ${JSON.stringify(contractABI)}
+              const web3 = new Web3(Web3.givenProvider || 'https://rpc-mainnet.maticvigil.com')
+              const contract = new web3.eth.Contract(contractABI, contractAddress)
+              async function connectWallet() {
+                try {
+                  const provider = await new Web3Modal().connect()
+                  const web3 = new Web3(provider)
+                  const accounts = await web3.eth.getAccounts()
+                  return accounts[0]
+                } catch (e) { console.error('Wallet connection failed:', e) }
+              }
+              async function donate(amount, currency) {
+                const account = await connectWallet()
+                await contract.methods.donate(amount, currency).send({ from: account, value: web3.utils.toWei('0.001', 'ether') })
+              }
+              async function subscribe(amount, currency) {
+                const account = await connectWallet()
+                await contract.methods.subscribe(amount, currency).send({ from: account, value: web3.utils.toWei('0.001', 'ether') })
+              }
+              async function mintNFT(to) {
+                const account = await connectWallet()
+                await contract.methods.mintNFT(to).send({ from: account, value: web3.utils.toWei('0.001', 'ether') })
+              }
+            </script>
+          </body></html>`
+          fs.mkdirSync('public', { recursive: true })
+          fs.writeFileSync('public/index.html', html)
+          console.log('Site generated')
+          NODE
