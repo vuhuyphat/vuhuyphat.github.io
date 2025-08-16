@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "Mode"
+        description: "Run mode"
         type: choice
         default: full_cycle
         options: [bootstrap, deploy, full_cycle]
@@ -22,7 +22,7 @@ on:
         type: boolean
         default: true
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "*/15 * * * *"   # every 15 minutes
 
 permissions:
   contents: write
@@ -46,7 +46,7 @@ jobs:
           npm i rss-parser@3
           npm i node-fetch@3
 
-      # ===== BOOTSTRAP (create principal DID for UCAN delegation one-time) =====
+      # ====================== BOOTSTRAP (create principal for UCAN) ======================
       - name: Bootstrap principal
         id: boot
         if: ${{ inputs.mode == 'bootstrap' }}
@@ -70,22 +70,22 @@ jobs:
         if: ${{ inputs.mode == 'bootstrap' }}
         run: |
           echo "## ONE-TIME" >> $GITHUB_STEP_SUMMARY
-          echo "1) Open https://console.web3.storage → your Space → Delegate → 'Grant to DID'." >> $GITHUB_STEP_SUMMARY
-          echo "2) Paste this DID, grant: store/add, upload/add, upload/list, space/info (+ name/claim, name/publish if IPNS)." >> $GITHUB_STEP_SUMMARY
+          echo "1) Visit https://console.web3.storage → your Space → Delegate → 'Grant to DID'." >> $GITHUB_STEP_SUMMARY
+          echo "2) Paste this DID and grant: store/add, upload/add, upload/list, space/info (+ name/claim, name/publish for IPNS)." >> $GITHUB_STEP_SUMMARY
           echo "   ${{ steps.boot.outputs.did }}" >> $GITHUB_STEP_SUMMARY
           echo "3) Repo → Settings → Secrets and variables → Actions:" >> $GITHUB_STEP_SUMMARY
           echo "   Secrets: W3UP_DELEGATION, W3UP_PRINCIPAL_JSON, (optional) W3UP_SPACE_DID" >> $GITHUB_STEP_SUMMARY
-          echo "   Variables: RSS_URLS, REF_LINKS, AFFILIATE_MAP, SITE_TITLE, SITE_DESC, SITE_BASE, PUBLISH_DIR, BLOCK_DOMAINS, BLOCK_WORDS, MAX_TRADE_USD" >> $GITHUB_STEP_SUMMARY
-          echo "Then re-run with mode=full_cycle." >> $GITHUB_STEP_SUMMARY
+          echo "   Variables (optional): RSS_URLS, SITE_TITLE, SITE_DESC, SITE_BASE, PUBLISH_DIR, BLOCK_DOMAINS, BLOCK_WORDS, MAX_TRADE_USD" >> $GITHUB_STEP_SUMMARY
+          echo "Rerun with mode=full_cycle." >> $GITHUB_STEP_SUMMARY
 
-      # =================== AGENT 1: HUNTER (ingest sources) ===================
+      # ====================== AGENT 1: HUNTER (ingest RSS) ======================
       - name: Agent: Hunter
         if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
         env:
-          RSS_URLS:        ${{ vars.RSS_URLS }}
-          ONCHAIN_FEEDS:   ${{ vars.ONCHAIN_FEEDS }}
-          COVALENT_KEY:    ${{ secrets.COVALENT_KEY }}
-          MORALIS_KEY:     ${{ secrets.MORALIS_KEY }}
+          RSS_URLS:        ${{ vars.RSS_URLS }}         # CSV list (optional)
+          ONCHAIN_FEEDS:   ${{ vars.ONCHAIN_FEEDS }}    # reserved for future on-chain sources
+          COVALENT_KEY:    ${{ secrets.COVALENT_KEY }}  # optional
+          MORALIS_KEY:     ${{ secrets.MORALIS_KEY }}   # optional
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
@@ -101,13 +101,12 @@ jobs:
               }
             }catch(e){ console.log('RSS error', url, e.message) }
           }
-          // TODO: add on-chain events via ONCHAIN_FEEDS if configured
           fs.mkdirSync('data',{recursive:true})
           fs.writeFileSync('data/opps.raw.json', JSON.stringify(items,null,2))
           console.log('Ingested:', items.length)
           NODE
 
-      # =================== AGENT 2: ANALYST (score/filter) ===================
+      # ====================== AGENT 2: ANALYST (score & filter) ======================
       - name: Agent: Analyst
         if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
         run: |
@@ -123,11 +122,11 @@ jobs:
           console.log('Ranked:', scored.length)
           NODE
 
-      # =================== AGENT 3: MARKETER (build site with payments + referrals) ===================
+      # ====================== AGENT 3: MARKETER (build site + payments/referrals) ======================
       - name: Agent: Marketer (build site)
         if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
         env:
-          # hardwired payment & referral (from your message)
+          # YOUR payment & referral (from your message)
           PAYMENT_MOMO: "0567892030"
           PAYMENT_VCB: "9567892030"
           PAYMENT_USDT_ERC20: "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0"
@@ -135,7 +134,7 @@ jobs:
           PAYMENT_PAYPAL: "vumumabada@gmail.com"
           REF_BINANCE: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N"
           REF_ALGOSONE: "https://algosone.page.link/MbtR"
-          # optional extras (can be set via repo Variables/Secrets)
+          # Optional extras via Variables/Secrets
           WALLET_BNB:       ${{ secrets.WALLET_BNB }}
           WALLET_ALGO:      ${{ secrets.WALLET_ALGO }}
           LEAD_FORM_URL:    ${{ vars.LEAD_FORM_URL }}
@@ -143,20 +142,19 @@ jobs:
           SITE_TITLE:       ${{ vars.SITE_TITLE }}
           SITE_DESC:        ${{ vars.SITE_DESC }}
           SITE_BASE:        ${{ vars.SITE_BASE }}
-          REF_LINKS:        ${{ vars.REF_LINKS }}
-          AFFILIATE_MAP:    ${{ vars.AFFILIATE_MAP }}
+          REF_LINKS:        ${{ vars.REF_LINKS }}        # CSV
+          AFFILIATE_MAP:    ${{ vars.AFFILIATE_MAP }}    # JSON
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
-          const p='data/opps.scored.json'
-          const items=fs.existsSync(p)?JSON.parse(fs.readFileSync(p,'utf8')):[]
-          // Payments (hardwired from env)
+          const data='data/opps.scored.json'
+          const items=fs.existsSync(data)?JSON.parse(fs.readFileSync(data,'utf8')):[]
+          // Payments
           const momo=process.env.PAYMENT_MOMO||''
           const vcb=process.env.PAYMENT_VCB||''
           const usdtErc=process.env.PAYMENT_USDT_ERC20||''
           const eth=process.env.PAYMENT_ETH||''
           const paypal=process.env.PAYMENT_PAYPAL||''
-          // Optional extra wallets
           const bnb=(process.env.WALLET_BNB||'').trim()
           const algo=(process.env.WALLET_ALGO||'').trim()
           // Referrals
@@ -165,7 +163,6 @@ jobs:
           const refList=(process.env.REF_LINKS||'').split(',').map(s=>s.trim()).filter(Boolean)
           let affiliate={}
           try{ affiliate=JSON.parse(process.env.AFFILIATE_MAP||'{}') }catch{}
-          // Site meta
           const title=process.env.SITE_TITLE||'AI Omnibot v5'
           const desc =process.env.SITE_DESC ||'Auto opportunity finder • Web2↔Web3'
           const base =process.env.SITE_BASE ||''
@@ -175,10 +172,8 @@ jobs:
             ...(affiliate||{}),
             'BNB': refBinance,
             'AglosOne': refAlgosOne,
-            'AlgosOne': refAlgosOne,
             'ALGOSONE': refAlgosOne
           }
-
           const pickAffiliate=(text, fallback)=>{
             for(const [k,v] of Object.entries(affiliateMap)){
               if(!v) continue
@@ -186,18 +181,16 @@ jobs:
             }
             return fallback
           }
-
           const mkItemXML=it=>{
             const raw=(it.title||'')+' '+(it.src||'')
             const link=pickAffiliate(raw, it.link||'#')
-            return `<item><title><![CDATA[${it.title||'Cơ hội'}]]></title><link>${link}</link><pubDate>${it.date||''}</pubDate><guid>${link}</guid></item>`
+            return `<item><title><![CDATA[${it.title||'Opportunity'}]]></title><link>${link}</link><pubDate>${it.date||''}</pubDate><guid>${link}</guid></item>`
           }
-
           const listHtml=(items||[]).slice(0,100).map(it=>{
             const raw=(it.title||'')+' '+(it.src||'')
             const link=pickAffiliate(raw, it.link||'#')
-            return `<div class="card"><a href="${link}" target="_blank" rel="noopener">${it.title||'Cơ hội'}</a><div class="meta">${it.src||''} • ${it.date||''}</div></div>`
-          }).join('') || '<p>Chưa có dữ liệu.</p>'
+            return `<div class="card"><a href="${link}" target="_blank" rel="noopener">${it.title||'Opportunity'}</a><div class="meta">${it.src||''} • ${it.date||''}</div></div>`
+          }).join('') || '<p>No data yet.</p>'
 
           const refsHtml = [
             refBinance?`<li>BNB/Binance: <a href="${refBinance}" target="_blank" rel="noopener">${refBinance}</a></li>`:'',
@@ -231,17 +224,17 @@ jobs:
           <h1>${title}</h1><p>${desc}</p>
 
           <div class="box">
-            <h3>Thanh toán / Ủng hộ</h3>
-            ${payRows || '<div>Chưa cấu hình kênh thanh toán.</div>'}
-            ${process.env.LEAD_FORM_URL?`<div style="margin-top:8px"><a href="${process.env.LEAD_FORM_URL}" target="_blank" rel="noopener">Đăng ký nhận cơ hội mới</a></div>`:''}
+            <h3>Payments / Donate</h3>
+            ${payRows || '<div>No payment channel configured.</div>'}
+            ${process.env.LEAD_FORM_URL?`<div style="margin-top:8px"><a href="${process.env.LEAD_FORM_URL}" target="_blank" rel="noopener">Subscribe for new opportunities</a></div>`:''}
           </div>
 
           <div class="card">
-            <h3>Liên kết giới thiệu</h3>
-            <ul>${refsHtml || '<li>Chưa có liên kết.</li>'}</ul>
+            <h3>Referral Links</h3>
+            <ul>${refsHtml || '<li>None</li>'}</ul>
           </div>
 
-          <h2 style="margin-top:20px">Cơ hội</h2>
+          <h2 style="margin-top:20px">Opportunities</h2>
           <div class="grid">${listHtml}</div>
 
           <footer><hr/><small>Powered by AI Omnibot v5 — Web2↔Web3</small> · <a href="${base||''}/sitemap.xml">sitemap</a> · <a href="${base||''}/feed.xml">RSS</a></footer>
@@ -261,7 +254,7 @@ jobs:
           fs.writeFileSync('sitemap.xml', sm)
           NODE
 
-      # =================== COMPLIANCE / SAFETY ===================
+      # ====================== COMPLIANCE / SAFETY ======================
       - name: Compliance gate
         if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' || github.event_name == 'push' }}
         env:
@@ -286,7 +279,7 @@ jobs:
           fi
           echo "✅ Compliance OK"
 
-      # =================== AGENT 4: TRADER (paper by default; live via webhook) ===================
+      # ====================== AGENT 4: TRADER (paper by default) ======================
       - name: Agent: Trader
         if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
         env:
@@ -314,7 +307,7 @@ jobs:
           fs.mkdirSync('logs',{recursive:true}); fs.writeFileSync('logs/order.json', JSON.stringify(order,null,2))
           NODE
 
-      # =================== COMMIT DATA/SITE ===================
+      # ====================== COMMIT DATA/SITE ======================
       - name: Commit changes
         if: ${{ inputs.mode == 'full_cycle' || github.event_name == 'schedule' }}
         run: |
@@ -324,7 +317,7 @@ jobs:
           git diff --cached --quiet || git commit -m "omnibot v5: update data/site"
           git push
 
-      # =================== DEPLOY IPFS/IPNS via UCAN ===================
+      # ====================== DEPLOY IPFS/IPNS via UCAN ======================
       - name: Deploy to IPFS & IPNS
         env:
           W3UP_DELEGATION:     ${{ secrets.W3UP_DELEGATION }}
@@ -337,6 +330,9 @@ jobs:
           set -e
           node --input-type=module - <<'NODE'
           import fs from 'fs'
+          if(!process.env.W3UP_DELEGATION || !process.env.W3UP_PRINCIPAL_JSON){
+            console.log('⚠️ UCAN secrets missing → skip IPFS/IPNS deploy'); process.exit(0)
+          }
           import * as w3 from '@web3-storage/w3up-client'
           import { filesFromPath } from 'files-from-path'
           const delegationStr=process.env.W3UP_DELEGATION
@@ -346,7 +342,6 @@ jobs:
           let dir=process.env.PUBLISH_DIR_INPUT || process.env.PUBLISH_DIR_VAR || './'
           if(!fs.existsSync(dir)) dir=fs.existsSync('./public')?'./public':'./'
           if(!fs.existsSync('index.html')) throw new Error('index.html missing')
-          if(!delegationStr||!principalJsonRaw) throw new Error('Missing UCAN secrets')
           const principalJson=JSON.parse(principalJsonRaw)
           await w3.ed25519.Signer.import(principalJson) // validate JSON
           const client=await w3.create()
@@ -386,6 +381,7 @@ jobs:
             git push
           fi
 
+      # ====================== ANNOUNCE ======================
       - name: Announce (Discord / Telegram / Twitter)
         if: ${{ always() }}
         env:
