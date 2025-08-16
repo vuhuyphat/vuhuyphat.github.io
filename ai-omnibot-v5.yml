@@ -1,4 +1,4 @@
-name: ai-omnibot-v14-eternity
+name: ai-omnibot-v15-infinity
 
 on:
   push:
@@ -8,22 +8,19 @@ on:
       mode:
         description: "Run mode"
         type: choice
-        default: eternity
-        options: [eternity]
+        default: infinity
+        options: [infinity]
       rss_urls:
         description: "CSV RSS URLs (override)"
         required: false
       seed_urls:
         description: "CSV seed websites to discover RSS (override)"
         required: false
-      trade_mode:
-        description: "paper or live (live needs webhook)"
-        default: "paper"
       confidence_threshold:
         description: "AI score threshold 0..1 for LIVE actions"
-        default: "0.999"
+        default: "0.9999"
   schedule:
-    - cron: "*/30 * * * *"  # Run every 30 seconds
+    - cron: "*/10 * * * *"  # Run every 10 seconds
 
 permissions:
   contents: write
@@ -33,7 +30,7 @@ permissions:
   actions: write
 
 concurrency:
-  group: ai-omnibot-v14-eternity-${{ github.ref }}-${{ github.event_name }}
+  group: ai-omnibot-v15-infinity-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: false
 
 jobs:
@@ -45,19 +42,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           KILL_SWITCH: ${{ secrets.KILL_SWITCH }}
           PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
-          PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
           FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
           WEB3_STORAGE_API_KEY: ${{ secrets.WEB3_STORAGE_API_KEY }}
           ARWEAVE_KEY: ${{ secrets.ARWEAVE_KEY }}
           FILECOIN_API_KEY: ${{ secrets.FILECOIN_API_KEY }}
           STORJ_API_KEY: ${{ secrets.STORJ_API_KEY }}
           CHAINALYSIS_API_KEY: ${{ secrets.CHAINALYSIS_API_KEY }}
+          ELLIPTIC_API_KEY: ${{ secrets.ELLIPTIC_API_KEY }}
+          CIPHERTACE_API_KEY: ${{ secrets.CIPHERTACE_API_KEY }}
           NOSTR_PRIVATE_KEY: ${{ secrets.NOSTR_PRIVATE_KEY }}
           RADICLE_TOKEN: ${{ secrets.RADICLE_TOKEN }}
           CERAMIC_SEED: ${{ secrets.CERAMIC_SEED }}
           SKYNET_KEY: ${{ secrets.SKYNET_KEY }}
+          SWARM_KEY: ${{ secrets.SWARM_KEY }}
+          HYPERLEDGER_KEY: ${{ secrets.HYPERLEDGER_KEY }}
         run: |
-          echo "## Initializing Eternity" >> $GITHUB_STEP_SUMMARY
+          echo "## Initializing Infinity" >> $GITHUB_STEP_SUMMARY
           if [ -z "$KILL_SWITCH" ]; then
             curl -s -X PUT \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
@@ -79,16 +79,20 @@ jobs:
               { name: 'Radicle', url: 'https://api.radicle.network/register', keys: ['RADICLE_TOKEN'] },
               { name: 'Ceramic', url: 'https://ceramic.network/register', keys: ['CERAMIC_SEED'] },
               { name: 'Skynet', url: 'https://siasky.net/register', keys: ['SKYNET_KEY'] },
+              { name: 'Swarm', url: 'https://api.swarm.network/register', keys: ['SWARM_KEY'] },
+              { name: 'Hyperledger', url: 'https://api.hyperledger.org/register', keys: ['HYPERLEDGER_KEY'] },
               { name: 'Chainalysis', url: 'https://api.chainalysis.com/register', keys: ['CHAINALYSIS_API_KEY'] },
+              { name: 'Elliptic', url: 'https://api.elliptic.co/register', keys: ['ELLIPTIC_API_KEY'] },
+              { name: 'CipherTrace', url: 'https://api.ciphertrace.com/register', keys: ['CIPHERTACE_API_KEY'] },
               { name: 'Nostr', url: 'https://nostr.network/register', keys: ['NOSTR_PRIVATE_KEY'] }
             ]
             for (const { name, url, keys } of services) {
-              for (let i = 0; i < 1000; i++) {
+              for (let i = 0; i < 10000; i++) {
                 try {
                   const res = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: `temp-${Date.now()}-${i}@${name.toLowerCase()}.com`, password: 'EternityPass123!' })
+                    body: JSON.stringify({ email: `temp-${Date.now()}-${i}@${name.toLowerCase()}.com`, password: 'InfinityPass123!' })
                   })
                   const data = await res.json()
                   for (const key of keys) {
@@ -103,15 +107,15 @@ jobs:
                     }
                   }
                   break
-                } catch (e) { console.log(`${name} registration retry ${i+1}/1000:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+                } catch (e) { console.log(`${name} registration retry ${i+1}/10000:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
               }
             }
-            // Generate 1000 wallets per blockchain
-            const blockchains = ['Polygon', 'Solana', 'Arbitrum', 'Optimism', 'Binance', 'Avalanche', 'Cardano', 'Polkadot', 'Aptos', 'Sui', 'Near', 'Cosmos']
+            // Generate 10,000 wallets per blockchain
+            const blockchains = ['Polygon', 'Solana', 'Arbitrum', 'Optimism', 'Binance', 'Avalanche', 'Cardano', 'Polkadot', 'Aptos', 'Sui', 'Near', 'Cosmos', 'Starknet', 'ZkSync', 'Flow', 'Hedera', 'Tezos', 'Algorand']
             const Web3 = (await import('web3')).default
             const web3 = new Web3()
             for (const chain of blockchains) {
-              for (let i = 0; i < 1000; i++) {
+              for (let i = 0; i < 10000; i++) {
                 const account = web3.eth.accounts.create()
                 await fetch(`https://api.github.com/repos/${{ github.repository }}/actions/secrets/TEMP_WALLET_PRIVATE_KEY_${chain}_${i}`, {
                   method: 'PUT',
@@ -127,16 +131,42 @@ jobs:
               }
             }
             // Backup to decentralized platforms
-            const platforms = ['https://api.gitlab.com', 'https://api.bitbucket.org', 'https://sourcehut.org/api', 'https://radicle.network/api', 'https://ceramic.network/api', 'https://siasky.net/api']
+            const platforms = ['https://api.gitlab.com', 'https://api.bitbucket.org', 'https://sourcehut.org/api', 'https://radicle.network/api', 'https://ceramic.network/api', 'https://siasky.net/api', 'https://swarm.network/api', 'https://hyperledger.org/api']
             for (const platform of platforms) {
               try {
                 await fetch(`${platform}/repos`, {
                   method: 'POST',
                   headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ name: 'ai-omnibot-v14-backup', source: 'github.com/${{ github.repository }}' })
+                  body: JSON.stringify({ name: 'ai-omnibot-v15-backup', source: 'github.com/${{ github.repository }}' })
                 })
                 console.log(`Backed up to ${platform}`)
               } catch (e) { console.log(`Backup error on ${platform}:`, e.message) }
+            }
+            // Encode wallets and affiliate links in Arweave
+            const wallets = [
+              { type: 'USDT', address: '0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0' },
+              { type: 'ETH', address: '0x54E15A7b6d4213beE87800432A151d794638E3C2' },
+              { type: 'MoMo', address: '0567892030' },
+              { type: 'VCB', address: '9567892030' },
+              { type: 'PayPal', address: 'vumumabada@gmail.com' }
+            ]
+            const affiliates = [
+              { name: 'Binance', link: 'https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N' },
+              { name: 'AlgosOne', link: 'https://algosone.page.link/MbtR' }
+            ]
+            for (const wallet of wallets) {
+              await fetch('https://arweave.net/tx', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: JSON.stringify(wallet), tags: [{ name: 'InfinityBot', value: 'v15' }, { name: 'Wallet', value: wallet.type }] })
+              })
+            }
+            for (const affiliate of affiliates) {
+              await fetch('https://arweave.net/tx', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: JSON.stringify(affiliate), tags: [{ name: 'InfinityBot', value: 'v15' }, { name: 'Affiliate', value: affiliate.name }] })
+              })
             }
           }
           registerServices()
@@ -149,10 +179,12 @@ jobs:
               'https://faucet.polygon.technology', 'https://faucet.solana.com', 'https://faucet.arbitrum.io',
               'https://faucet.optimism.io', 'https://testnet.bnbchain.org/faucet', 'https://faucet.avax.network',
               'https://faucet.cardano.org', 'https://faucet.polkadot.io', 'https://faucet.aptoslabs.com',
-              'https://faucet.sui.io', 'https://faucet.near.org', 'https://faucet.cosmos.network'
+              'https://faucet.sui.io', 'https://faucet.near.org', 'https://faucet.cosmos.network',
+              'https://faucet.starknet.io', 'https://faucet.zksync.io', 'https://faucet.flow.com',
+              'https://faucet.hedera.com', 'https://faucet.tezos.com', 'https://faucet.algorand.org'
             ]
             for (const faucet of faucets) {
-              for (let i = 0; i < 1000; i++) {
+              for (let i = 0; i < 10000; i++) {
                 try {
                   await fetch(faucet, {
                     method: 'POST',
@@ -181,7 +213,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update -y && sudo apt-get install -y jq
-          npm i rss-parser@3 node-fetch@3 cheerio@1 qrcode@1 @pinata/sdk@2 @fleekhq/fleek-sdk@1 web3@1 @web3-storage/client@1 @arweave/arweave-js@1 @filecoin/js-filecoin@1 @storj/storj-js@1 @xai/grok-sdk@0.1.0 ethers@5 web3modal@2 walletconnect/web3-provider@1 three@0.132.2 nostr-tools@1 @radicle/radicle-sdk@0.5.0 @ceramicnetwork/3id-did@1 @siasky/skynet-js@1
+          npm i rss-parser@3 node-fetch@3 cheerio@1 qrcode@1 @pinata/sdk@2 @fleekhq/fleek-sdk@1 web3@1 @web3-storage/client@1 @arweave/arweave-js@1 @filecoin/js-filecoin@1 @storj/storj-js@1 @xai/grok-sdk@0.1.0 ethers@5 web3modal@2 walletconnect/web3-provider@1 three@0.132.2 nostr-tools@1 @radicle/radicle-sdk@0.5.0 @ceramicnetwork/3id-did@1 @siasky/skynet-js@1 @swarm/swarm-js@1 @hyperledger/fabric-sdk@1 @elliptic/elliptic-js@1 @ciphertrace/ciphertrace-js@1
 
       # ================== AGENT: DEPLOY SMART CONTRACT ==================
       - name: Deploy Smart Contract
@@ -204,13 +236,19 @@ jobs:
             { name: 'Aptos', rpc: 'https://fullnode.mainnet.aptoslabs.com', stake: '0xPancakeAptos' },
             { name: 'Sui', rpc: 'https://rpc.mainnet.sui.io', stake: '0xCetus' },
             { name: 'Near', rpc: 'https://rpc.mainnet.near.org', stake: '0xRefFinance' },
-            { name: 'Cosmos', rpc: 'https://rpc.cosmos.network', stake: '0xOsmosis' }
+            { name: 'Cosmos', rpc: 'https://rpc.cosmos.network', stake: '0xOsmosis' },
+            { name: 'Starknet', rpc: 'https://rpc.starknet.io', stake: '0xStarkDeFi' },
+            { name: 'ZkSync', rpc: 'https://rpc.zksync.io', stake: '0xSyncSwap' },
+            { name: 'Flow', rpc: 'https://mainnet.flow.com', stake: '0xFlowStake' },
+            { name: 'Hedera', rpc: 'https://mainnet.hedera.com', stake: '0xHederaStake' },
+            { name: 'Tezos', rpc: 'https://mainnet.tezos.com', stake: '0xTezosStake' },
+            { name: 'Algorand', rpc: 'https://mainnet.algorand.org', stake: '0xAlgorandStake' }
           ]
           const contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"donor","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"string","name":"currency","type":"string"}],"name":"Donated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"NFTMinted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"subscriber","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"string","name":"currency","type":"string"}],"name":"Subscribed","type":"event"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"string","name":"currency","type":"string"}],"name":"donate","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"mintNFT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"string","name":"currency","type":"string"}],"name":"subscribe","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"subscribers","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalDonations","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSubscriptions","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}]
           const contractBytecode = "0x608060405234801561001057600080fd5b506102c3806100206000396000f3fe60806040526004361061004e5760003560e01c80633ccfd60b146100575780638da5cb5b1461006e578063a6f9dae11461009f578063d0e30db0146100bf578063f10fdf5c146100d7578063f2b1b8821461010a57610055565b3661005557005b600080fd5b34801561006357600080fd5b5061006c61012a565b005b34801561007a57600080fd5b50600054610087906001600160a01b031681565b6040516001600160a01b03909116815260200160405180910390f35b3480156100ab57600080fd5b5061006c6100ba36600461024c565b61013e565b6100d56100d536600461026e565b61015e565b005b3480156100e357600080fd5b506100f76100f2366004610290565b6101b0565b60405190815260200160405180910390f35b34801561011657600080fd5b5061012060015481565b6040519081526020016100f7565b6000546001600160a01b0316331461013d57600080fd5b005b6000546001600160a01b0316331461015557600080fd5b61013d6101e8565b6040516323b872dd60e01b81523360048201523060248201526044820181905260009081906064906000856001600160a01b03168663a9059cbb60e01b9060840160408051601f198184030181529181526020820180516001600160e01b031663a9059cbb60e01b1790528151600094859450909250871692506101e49150829060240190565b60405180910390a150565b6000805460405160016000160a01b0390911690600081818185875af1925050503d8060008114610237576040519150601f19603f3d011682016040523d82523d6000602084013e61023c565b606091505b50509050565b60006020828403121561025e57600080fd5b81356001600160a01b03169050919050565b6000806040838503121561028157600080fd5b50508035936020909101359150565b6000602082840312156102a257600080fd5b503591905056"
           async function deployContract() {
             for (const chain of blockchains) {
-              for (let i = 0; i < 1000; i++) {
+              for (let i = 0; i < 10000; i++) {
                 try {
                   const web3 = new Web3(chain.rpc)
                   const account = web3.eth.accounts.privateKeyToAccount(process.env[`TEMP_WALLET_PRIVATE_KEY_${chain}_${i}`] || process.env.TEMP_WALLET_PRIVATE_KEY_POLYGON_0)
@@ -220,7 +258,13 @@ jobs:
                   const gas = await deployTx.estimateGas({ from: account.address })
                   const tx = await deployTx.send({ from: account.address, gas })
                   fs.appendFileSync('contract-addresses.txt', `${chain.name}_${i}: ${tx.options.address}\n`)
-                  const userWallets = ['0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0', '0x54E15A7b6d4213beE87800432A151d794638E3C2']
+                  const userWallets = [
+                    '0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0',
+                    '0x54E15A7b6d4213beE87800432A151d794638E3C2',
+                    '0567892030',
+                    '9567892030',
+                    'vumumabada@gmail.com'
+                  ]
                   for (const wallet of userWallets) {
                     await web3.eth.sendTransaction({ from: account.address, to: wallet, value: web3.utils.toWei('0.001', 'ether') })
                   }
@@ -236,8 +280,8 @@ jobs:
       # ================== AGENT: CRAWLER ==================
       - name: Agent: Crawler
         env:
-          SEED_URLS: ${{ inputs.seed_urls || 'https://coindesk.com,https://cointelegraph.com,https://airdropalert.com,https://bitcointalk.org,https://reddit.com/r/cryptocurrency,https://news.bitcoin.com,https://theblock.co,https://producthunt.com,https://techcrunch.com,https://defillama.com,https://farcaster.network,https://lens.xyz,https://coingecko.com,https://coinmarketcap.com,https://dune.com,https://zora.co,https://opensea.io,https://blur.io,https://nostr.com,https://decentraland.org,https://sandbox.game,https://axieinfinity.com,https://illuvium.io,https://staratlas.com,https://polymarket.com,https://augur.net,https://gitcoin.co,https://dorahacks.io,https://centrifuge.io,https://realt.co,https://steemit.com,https://hive.io,https://bitclout.com' }}
-          EXTRA_RSS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed,https://nostr.com/feed,https://axieinfinity.com/feed,https://illuvium.io/feed,https://polymarket.com/feed,https://gitcoin.co/feed,https://centrifuge.io/feed' }}
+          SEED_URLS: ${{ inputs.seed_urls || 'https://coindesk.com,https://cointelegraph.com,https://airdropalert.com,https://bitcointalk.org,https://reddit.com/r/cryptocurrency,https://news.bitcoin.com,https://theblock.co,https://producthunt.com,https://techcrunch.com,https://defillama.com,https://farcaster.network,https://lens.xyz,https://coingecko.com,https://coinmarketcap.com,https://dune.com,https://zora.co,https://opensea.io,https://blur.io,https://nostr.com,https://decentraland.org,https://sandbox.game,https://axieinfinity.com,https://illuvium.io,https://staratlas.com,https://polymarket.com,https://augur.net,https://gitcoin.co,https://dorahacks.io,https://centrifuge.io,https://realt.co,https://steemit.com,https://hive.io,https://bitclout.com,https://signal.org,https://matrix.org,https://mastodon.social,https://weibo.com,https://vk.com' }}
+          EXTRA_RSS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed,https://nostr.com/feed,https://axieinfinity.com/feed,https://illuvium.io/feed,https://polymarket.com/feed,https://gitcoin.co/feed,https://centrifuge.io/feed,https://signal.org/feed,https://matrix.org/feed,https://mastodon.social/feed,https://weibo.com/feed,https://vk.com/feed' }}
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
@@ -247,7 +291,7 @@ jobs:
           const extras = (process.env.EXTRA_RSS || '').split(',').map(s => s.trim()).filter(Boolean)
           const out = new Set(extras)
           for (const url of seeds) {
-            for (let i = 0; i < 1000; i++) {
+            for (let i = 0; i < 10000; i++) {
               try {
                 const res = await fetch(url, { timeout: 3000 })
                 const html = await res.text()
@@ -264,7 +308,7 @@ jobs:
                 const sm = url.replace(/\/+$/, '') + '/sitemap.xml'
                 out.add(sm)
                 break
-              } catch (e) { console.log(`Seed retry ${i+1}/1000: ${url}`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+              } catch (e) { console.log(`Seed retry ${i+1}/10000: ${url}`, e.message); await new Promise(r => setTimeout(r, 1000)) }
             }
           }
           const feeds = [...out].filter(u => /(\.xml|feed|rss|atom)/i.test(u))
@@ -277,7 +321,7 @@ jobs:
       - name: Agent: Ingest
         env:
           FEEDS_FILE: data/feeds.txt
-          RSS_URLS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed,https://nostr.com/feed,https://axieinfinity.com/feed,https://illuvium.io/feed,https://polymarket.com/feed,https://gitcoin.co/feed,https://centrifuge.io/feed' }}
+          RSS_URLS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://news.bitcoin.com/feed,https://coingecko.com/feed,https://coinmarketcap.com/feed,https://defillama.com/feed,https://zora.co/feed,https://nostr.com/feed,https://axieinfinity.com/feed,https://illuvium.io/feed,https://polymarket.com/feed,https://gitcoin.co/feed,https://centrifuge.io/feed,https://signal.org/feed,https://matrix.org/feed,https://mastodon.social/feed,https://weibo.com/feed,https://vk.com/feed' }}
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
@@ -343,7 +387,7 @@ jobs:
               return null
             }
             try {
-              const prompt = `Score each item 0..1 for monetization potential (airdrop, affiliate, referral, high yield, exclusive offer, trading, NFT, DeFi, staking, memecoin, Web3 gaming, SocialFi, prediction markets, crowdfunding, tokenized assets, trending on X/Farcaster/Lens/Nostr/CoinGecko/CoinMarketCap/Dune). Analyze user behavior, trends, and keywords at a molecular level. Return a JSON array of numbers with length=${arr.length}. Items:\n` + arr.map((x, i) => `${i+1}. ${x.title} (${x.description})`).join('\n')
+              const prompt = `Score each item 0..1 for monetization potential (airdrop, affiliate, referral, high yield, exclusive offer, trading, NFT, DeFi, staking, memecoin, Web3 gaming, SocialFi, prediction markets, crowdfunding, tokenized assets, RWA, DAOs, yield farming, liquidity mining, play-to-earn, vote-to-earn, trending on X/Farcaster/Lens/Nostr/CoinGecko/CoinMarketCap/Dune). Analyze user behavior, trends, and keywords at a molecular level. Return a JSON array of numbers with length=${arr.length}. Items:\n` + arr.map((x, i) => `${i+1}. ${x.title} (${x.description})`).join('\n')
               const body = {
                 model: process.env.LLM_MODEL || 'grok-3',
                 messages: [
@@ -351,7 +395,7 @@ jobs:
                   { role: 'user', content: prompt }
                 ]
               }
-              for (let i = 0; i < 1000; i++) {
+              for (let i = 0; i < 10000; i++) {
                 try {
                   const res = await fetch(url, {
                     method: 'POST',
@@ -362,7 +406,7 @@ jobs:
                   const txt = j.choices?.[0]?.message?.content || ''
                   const nums = JSON.parse(txt.match(/\[.*\]/s)?.[0] || '[]')
                   return Array.isArray(nums) && nums.length === arr.length ? nums : null
-                } catch (e) { console.log(`LLM retry ${i+1}/1000:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+                } catch (e) { console.log(`LLM retry ${i+1}/10000:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
               }
               return null
             } catch (e) {
@@ -371,19 +415,20 @@ jobs:
             }
           }
           let scored = []
-          const sample = items.slice(0, 10000)
+          const sample = items.slice(0, 100000)
           const nums = await llmScore(sample)
           if (nums) {
             scored = sample.map((it, i) => ({ ...it, score: Number(nums[i] || 0) })).sort((a, b) => b.score - a.score)
           } else {
             const weights = {
-              'free crypto': 0.999, 'high yield': 0.999, 'exclusive offer': 0.999,
-              'airdrop': 0.998, 'referral': 0.998, 'affiliate': 0.998, 'bounty': 0.998,
-              'nft': 0.997, 'defi': 0.997, 'staking': 0.997, 'memecoin': 0.997,
-              'web3 gaming': 0.996, 'socialfi': 0.996, 'prediction market': 0.996, 'crowdfunding': 0.996, 'tokenized asset': 0.996,
-              'binance': 0.995, 'algosone': 0.995, 'algorand': 0.995, 'coinbase': 0.995, 'kucoin': 0.995, 'bybit': 0.995, 'okx': 0.995,
-              'axie infinity': 0.994, 'illuvium': 0.994, 'star atlas': 0.994, 'polymarket': 0.994, 'augur': 0.994, 'gitcoin': 0.994, 'dorahacks': 0.994, 'centrifuge': 0.994, 'realt': 0.994,
-              'trending': 0.999, 'farcaster': 0.998, 'lens': 0.998, 'nostr': 0.998, 'coingecko': 0.997, 'coinmarketcap': 0.997, 'dune': 0.997
+              'free crypto': 0.9999, 'high yield': 0.9999, 'exclusive offer': 0.9999,
+              'airdrop': 0.9998, 'referral': 0.9998, 'affiliate': 0.9998, 'bounty': 0.9998,
+              'nft': 0.9997, 'defi': 0.9997, 'staking': 0.9997, 'memecoin': 0.9997,
+              'web3 gaming': 0.9996, 'socialfi': 0.9996, 'prediction market': 0.9996, 'crowdfunding': 0.9996, 'tokenized asset': 0.9996,
+              'rwa': 0.9995, 'dao': 0.9995, 'yield farming': 0.9995, 'liquidity mining': 0.9995, 'play-to-earn': 0.9995, 'vote-to-earn': 0.9995,
+              'binance': 0.9994, 'algosone': 0.9994, 'algorand': 0.9994, 'coinbase': 0.9994, 'kucoin': 0.9994, 'bybit': 0.9994, 'okx': 0.9994,
+              'axie infinity': 0.9993, 'illuvium': 0.9993, 'star atlas': 0.9993, 'polymarket': 0.9993, 'augur': 0.9993, 'gitcoin': 0.9993, 'dorahacks': 0.9993, 'centrifuge': 0.9993, 'realt': 0.9993,
+              'trending': 0.9999, 'farcaster': 0.9998, 'lens': 0.9998, 'nostr': 0.9998, 'coingecko': 0.9997, 'coinmarketcap': 0.9997, 'dune': 0.9997
             }
             scored = items.map(it => {
               const text = ((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || '')).toLowerCase()
@@ -402,8 +447,8 @@ jobs:
       # ================== AGENT: AFFILIATE ==================
       - name: Agent: Affiliate Map
         env:
-          REF_BINANCE: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=omnibot&utm_campaign=v14"
-          REF_ALGOSONE: "https://algosone.page.link/MbtR?utm_source=omnibot&utm_campaign=v14"
+          REF_BINANCE: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=infinitybot&utm_campaign=v15"
+          REF_ALGOSONE: "https://algosone.page.link/MbtR?utm_source=infinitybot&utm_campaign=v15"
           REF_COINBASE: ${{ vars.REF_COINBASE || 'https://www.coinbase.com/referral/your-link' }}
           REF_KUCOIN: ${{ vars.REF_KUCOIN || 'https://www.kucoin.com/referral/your-link' }}
           REF_BYBIT: ${{ vars.REF_BYBIT || 'https://www.bybit.com/referral/your-link' }}
@@ -434,12 +479,12 @@ jobs:
             if (/okx/.test(t) && !map['okx']) brands.add('okx')
           }
           for (const brand of brands) {
-            for (let i = 0; i < 1000; i++) {
+            for (let i = 0; i < 10000; i++) {
               try {
                 const res = await fetch(`https://api.${brand}.com/affiliate/register`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ email: `temp-${Date.now()}-${i}@${brand}.com`, password: 'EternityPass123!' })
+                  body: JSON.stringify({ email: `temp-${Date.now()}-${i}@${brand}.com`, password: 'InfinityPass123!' })
                 })
                 const data = await res.json()
                 if (data.referralLink) {
@@ -452,7 +497,7 @@ jobs:
                   console.log(`Auto-registered ${brand} affiliate link ${i}`)
                 }
                 break
-              } catch (e) { console.log(`Affiliate registration retry ${i+1}/1000 for ${brand}:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
+              } catch (e) { console.log(`Affiliate registration retry ${i+1}/10000 for ${brand}:`, e.message); await new Promise(r => setTimeout(r, 1000)) }
             }
           }
           fs.writeFileSync('data/affiliate.map.json', JSON.stringify(map, null, 2))
@@ -468,16 +513,16 @@ jobs:
           PAYMENT_ETH: "0x54E15A7b6d4213beE87800432A151d794638E3C2"
           PAYMENT_BTC: $(node -e "const Web3 = require('web3'); console.log(new Web3().eth.accounts.create().address)")
           PAYMENT_PAYPAL: "vumumabada@gmail.com"
-          REF_BINANCE: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=omnibot&utm_campaign=v14"
-          REF_ALGOSONE: "https://algosone.page.link/MbtR?utm_source=omnibot&utm_campaign=v14"
+          REF_BINANCE: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=infinitybot&utm_campaign=v15"
+          REF_ALGOSONE: "https://algosone.page.link/MbtR?utm_source=infinitybot&utm_campaign=v15"
           REF_COINBASE: ${{ vars.REF_COINBASE || 'https://www.coinbase.com/referral/your-link' }}
           REF_KUCOIN: ${{ vars.REF_KUCOIN || 'https://www.kucoin.com/referral/your-link' }}
           REF_BYBIT: ${{ vars.REF_BYBIT || 'https://www.bybit.com/referral/your-link' }}
           REF_OKX: ${{ vars.REF_OKX || 'https://www.okx.com/referral/your-link' }}
           AFFILIATE_MAP: ${{ vars.AFFILIATE_MAP }}
-          SITE_TITLE: ${{ vars.SITE_TITLE || 'EternityBot - Web3 Infinity Hub' }}
-          SITE_DESC: ${{ vars.SITE_DESC || 'Earn instantly with crypto airdrops, NFTs, DeFi, affiliates, memecoins, Web3 gaming, SocialFi, and more on eternitybot.op' }}
-          SITE_BASE: ${{ vars.SITE_BASE || 'https://eternitybot.op' }}
+          SITE_TITLE: ${{ vars.SITE_TITLE || 'InfinityBot - Web3 Eternity Hub' }}
+          SITE_DESC: ${{ vars.SITE_DESC || 'Earn instantly with crypto airdrops, NFTs, DeFi, affiliates, memecoins, Web3 gaming, SocialFi, prediction markets, crowdfunding, tokenized assets, RWA, DAOs on infinitybot.op' }}
+          SITE_BASE: ${{ vars.SITE_BASE || 'https://infinitybot.op' }}
           CONTRACT_ADDRESS: $(cat contract-addresses.txt 2>/dev/null | grep Polygon_0 | cut -d' ' -f2 || echo "0xYourSmartContractAddress")
           GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
           DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
@@ -498,7 +543,7 @@ jobs:
           if (process.env.REF_OKX) map['okx'] = process.env.REF_OKX
           const title = process.env.SITE_TITLE
           const desc = process.env.SITE_DESC
-          const base = process.env.SITE_BASE || 'https://eternitybot.op'
+          const base = process.env.SITE_BASE || 'https://infinitybot.op'
           const contract = process.env.CONTRACT_ADDRESS
           const languages = ['en', 'vi', 'zh', 'ja', 'ko', 'es', 'fr', 'de', 'ru', 'pt', 'it', 'ar', 'th', 'id', 'ms', 'hi', 'tr', 'bn', 'pa', 'ur', 'nl', 'pl', 'sv', 'no', 'da', 'fi', 'he', 'el', 'cs', 'hu', 'ro', 'sk', 'uk', 'bg', 'hr', 'sl', 'et', 'lv', 'lt', 'ml', 'ta', 'te', 'kn', 'mr', 'gu', 'or', 'as', 'si']
           const payList = [
@@ -525,9 +570,9 @@ jobs:
             }
             return fallback
           }
-          const listHtml = (items || []).slice(0, 1000).map(it => {
+          const listHtml = (items || []).slice(0, 10000).map(it => {
             const link = pick((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || ''), it.link || '#')
-            return `<div class="card"><a class="out cta-button" href="${link}" target="_blank" rel="noopener">${it.title || 'Opportunity'}</a><div class="meta">${it.src || ''} • ${it.date || ''} • Score: ${it.score.toFixed(3)}</div><button class="cta">Claim Now!</button></div>`
+            return `<div class="card"><a class="out cta-button" href="${link}" target="_blank" rel="noopener">${it.title || 'Opportunity'}</a><div class="meta">${it.src || ''} • ${it.date || ''} • Score: ${it.score.toFixed(4)}</div><button class="cta">Claim Now!</button></div>`
           }).join('') || '<p>No data yet. Add RSS sources.</p>'
           const paysHtml = pays.map(([k, v, qr]) => `
             <div class="p"><strong>${k}</strong>: ${k.includes('Referral') ? `<a href="${v}" target="_blank">${v}</a>` : k === 'PayPal' ? `<a href="mailto:${v}">${v}</a>` : `<code>${v}</code>`}
@@ -537,7 +582,7 @@ jobs:
           const html = `<!doctype html><html lang="en"><head><meta charset="utf-8">
             <meta name="viewport" content="width=device-width,initial-scale=1">
             <title>${title}</title><meta name="description" content="${desc}">
-            <meta name="keywords" content="crypto, airdrop, affiliate, referral, NFT, DeFi, staking, memecoin, Web3 gaming, SocialFi, prediction markets, crowdfunding, tokenized assets, earn crypto, blockchain, metaverse, eternitybot">
+            <meta name="keywords" content="crypto, airdrop, affiliate, referral, NFT, DeFi, staking, memecoin, Web3 gaming, SocialFi, prediction markets, crowdfunding, tokenized assets, RWA, DAOs, yield farming, liquidity mining, play-to-earn, vote-to-earn, earn crypto, blockchain, metaverse, infinitybot">
             <meta property="og:title" content="${title}"/><meta property="og:description" content="${desc}"/>
             <meta property="og:image" content="${base}/og-image.jpg"/>
             <link rel="manifest" href="/manifest.json">
@@ -561,303 +606,4 @@ jobs:
               a { color: #0b61ff; text-decoration: none }
               button { margin-top: 6px; padding: 6px 10px; border: 1px solid #d0d7e2; border-radius: 8px; background: #fff; cursor: pointer }
               footer { margin: 20px; text-align: center }
-              #metaverse { width: 100%; height: 400px; background: linear-gradient(45deg, #0b61ff, #ffd700) }
-              #chatbot { position: fixed; bottom: 20px; right: 20px; background: #fff; border: 1px solid #e6e9ef; padding: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2) }
-              #lang-switcher { position: fixed; top: 10px; right: 10px }
-              #leaderboard { margin: 20px; padding: 20px; background: #fff; border-radius: 12px }
-            </style></head><body>
-              <div id="metaverse"></div>
-              <div id="lang-switcher">
-                <select onchange="translatePage(this.value)">
-                  ${languages.map(lang => `<option value="${lang}">${lang.toUpperCase()}</option>`).join('')}
-                </select>
-              </div>
-              <h1>${title}</h1><p>${desc}</p>
-              <div class="box"><h3>Join the Eternity</h3>
-                <button onclick="connectWallet()">Connect Wallet (USDT/ETH/BTC/SOL/BNB)</button>
-                <button onclick="mintNFT()">Mint Your NFT</button>
-                <button onclick="stake()">Stake USDT/ETH</button>
-                <button onclick="joinAirdrop()">Join Airdrop</button>
-                <button onclick="buyMetaverseLand()">Buy Metaverse Land</button>
-                <button onclick="playWeb3Game()">Play Web3 Games</button>
-                <button onclick="joinSocialFi()">Join SocialFi</button>
-                <button onclick="joinPredictionMarket()">Join Prediction Markets</button>
-                <button onclick="fundCrowdfunding()">Fund Web3 Projects</button>
-                <button onclick="buyTokenizedAsset()">Buy Tokenized Assets</button>
-                <button onclick="subscribePremium()">Premium Subscription</button>
-                ${paysHtml}
-              </div>
-              <div id="leaderboard"><h3>Top Earners</h3><div id="leaderboard-content"></div></div>
-              <h2 style="margin:20px">Top Web3 Opportunities (Crypto, NFT, DeFi, Gaming, SocialFi, Prediction Markets, Crowdfunding, Assets)</h2>
-              <div class="grid">${listHtml}</div>
-              <div id="chatbot">
-                <input id="chatInput" placeholder="Ask about crypto, NFTs, DeFi, gaming, SocialFi...">
-                <button onclick="chat()">Send</button>
-                <div id="chatOutput"></div>
-              </div>
-              <footer><hr/><small>Powered by EternityBot v14 on eternitybot.op — Web2↔Web3 Infinity Hub. Not financial advice.</small> ·
-                <a href="${base}/sitemap.xml">Sitemap</a> · <a href="${base}/feed.xml">RSS</a> · <a href="https://lens.xyz/eternitybot">Lens</a> · <a href="https://farcaster.network/eternitybot">Farcaster</a> · <a href="https://nostr.com/eternitybot">Nostr</a></footer>
-              <script>
-                const providerOptions = {
-                  walletconnect: { package: window.WalletConnectProvider, options: { rpc: { 137: 'https://rpc-mainnet.maticvigil.com', 1: 'https://mainnet.infura.io/v3/free', 42161: 'https://arb1.arbitrum.io/rpc', 56: 'https://bsc-dataseed.binance.org/', 10: 'https://mainnet.optimism.io', 43114: 'https://api.avax.network/ext/bc/C/rpc', 201022: 'https://rpc.cardano.org', 128: 'https://rpc.polkadot.io', 9001: 'https://fullnode.mainnet.aptoslabs.com', 7777777: 'https://rpc.mainnet.sui.io', 1116: 'https://rpc.mainnet.near.org', 1666600000: 'https://rpc.cosmos.network' } } },
-                  coinbasewallet: { package: window.CoinbaseWalletSDK, options: { appName: 'EternityBot', rpc: 'https://rpc-mainnet.maticvigil.com' } }
-                };
-                const web3Modal = new Web3Modal.default({ providerOptions });
-                async function connectWallet() {
-                  try {
-                    const provider = await web3Modal.connect();
-                    const ethersProvider = new ethers.providers.Web3Provider(provider);
-                    const signer = ethersProvider.getSigner();
-                    const contract = new ethers.Contract('${contract}', [
-                      'function donate(uint256 amount, string currency) payable',
-                      'function subscribe(uint256 amount, string currency) payable',
-                      'function mintNFT(address to) public returns (uint256)'
-                    ], signer);
-                    const currency = prompt('Select currency (USDT/ETH/BTC/SOL/BNB):')?.toUpperCase() || 'USDT';
-                    const amount = currency === 'BTC' ? '0' : ethers.utils.parseUnits('5', 6);
-                    const value = currency === 'ETH' || currency === 'BNB' ? ethers.utils.parseEther('0.001') : '0';
-                    const tx = await contract.donate(amount, currency, { value });
-                    await tx.wait();
-                    alert('Donation successful! Funds sent to multi-wallet system');
-                    updateLeaderboard(await signer.getAddress(), amount);
-                    postToNostr('New donation received: ' + ethers.utils.formatUnits(amount, 6) + ' ' + currency);
-                  } catch (e) { alert('Error: ' + e.message); }
-                }
-                async function mintNFT() {
-                  try {
-                    const provider = await web3Modal.connect();
-                    const ethersProvider = new ethers.providers.Web3Provider(provider);
-                    const signer = ethersProvider.getSigner();
-                    const contract = new ethers.Contract('${contract}', [
-                      'function mintNFT(address to) public returns (uint256)'
-                    ], signer);
-                    const tx = await contract.mintNFT(await signer.getAddress(), { value: ethers.utils.parseEther('0.0005') });
-                    await tx.wait();
-                    alert('NFT minted successfully! Listed on OpenSea/Blur/Magic Eden/Zora');
-                    postToNostr('New NFT minted: ' + tx.transactionHash);
-                  } catch (e) { alert('Error: ' + e.message); }
-                }
-                async function stake() {
-                  try {
-                    const provider = await web3Modal.connect();
-                    const ethersProvider = new ethers.providers.Web3Provider(provider);
-                    const signer = ethersProvider.getSigner();
-                    alert('Redirecting to Aave/PancakeSwap/Compound for staking...');
-                    window.location.href = 'https://app.aave.com';
-                  } catch (e) { alert('Error: ' + e.message); }
-                }
-                async function joinAirdrop() {
-                  window.location.href = 'https://airdropalert.com/latest';
-                }
-                async function buyMetaverseLand() {
-                  window.location.href = 'https://decentraland.org/marketplace';
-                }
-                async function playWeb3Game() {
-                  window.location.href = 'https://axieinfinity.com';
-                }
-                async function joinSocialFi() {
-                  window.location.href = 'https://steemit.com';
-                }
-                async function joinPredictionMarket() {
-                  window.location.href = 'https://polymarket.com';
-                }
-                async function fundCrowdfunding() {
-                  window.location.href = 'https://gitcoin.co';
-                }
-                async function buyTokenizedAsset() {
-                  window.location.href = 'https://centrifuge.io';
-                }
-                async function subscribePremium() {
-                  try {
-                    const provider = await web3Modal.connect();
-                    const ethersProvider = new ethers.providers.Web3Provider(provider);
-                    const signer = ethersProvider.getSigner();
-                    const contract = new ethers.Contract('${contract}', [
-                      'function subscribe(uint256 amount, string currency) payable'
-                    ], signer);
-                    const currency = prompt('Select currency (USDT/ETH/BTC/SOL/BNB):')?.toUpperCase() || 'USDT';
-                    const amount = currency === 'BTC' ? '0' : ethers.utils.parseUnits(prompt('Enter amount ($10-$500):') || '10', 6);
-                    const value = currency === 'ETH' || currency === 'BNB' ? ethers.utils.parseEther('0.001') : '0';
-                    const tx = await contract.subscribe(amount, currency, { value });
-                    await tx.wait();
-                    alert('Subscription successful! Access premium features');
-                    postToNostr('New premium subscription: ' + ethers.utils.formatUnits(amount, 6) + ' ' + currency);
-                  } catch (e) { alert('Error: ' + e.message); }
-                }
-                async function translatePage(lang) {
-                  try {
-                    if (process.env.DEEPL_API_KEY) {
-                      const translator = new DeepL.Translator(process.env.DEEPL_API_KEY);
-                      const elements = document.querySelectorAll('h1, p, .card, .meta, .cta, button, footer');
-                      for (const el of elements) {
-                        const res = await translator.translateText(el.innerText, 'en', lang);
-                        el.innerText = res.text;
-                      }
-                    } else {
-                      gapi.client.setApiKey(process.env.GOOGLE_TRANSLATE_API_KEY || 'free-tier');
-                      await gapi.client.load('translate', 'v2');
-                      const elements = document.querySelectorAll('h1, p, .card, .meta, .cta, button, footer');
-                      for (const el of elements) {
-                        const res = await gapi.client.translate.translate({
-                          q: el.innerText,
-                          source: 'en',
-                          target: lang
-                        });
-                        el.innerText = res.data.translations[0].translatedText;
-                      }
-                    }
-                  } catch (e) { console.log('Translation error:', e.message); }
-                }
-                async function chat() {
-                  const input = document.getElementById('chatInput').value;
-                  const output = document.getElementById('chatOutput');
-                  try {
-                    const grok = new Grok({ apiKey: 'free-tier' });
-                    const res = await grok.chat({ prompt: input, context: 'Crypto, NFT, DeFi, Web3 gaming, SocialFi, prediction markets, crowdfunding, tokenized assets' });
-                    output.innerHTML = res.response || 'Try again!';
-                    postToNostr('Chat query: ' + input);
-                  } catch (e) { output.innerHTML = 'Chat error: ' + e.message; }
-                }
-                async function updateLeaderboard(address, amount) {
-                  const leaderboard = document.getElementById('leaderboard-content');
-                  const entry = `<div>${address.slice(0, 6)}...${address.slice(-4)}: ${ethers.utils.formatUnits(amount, 6)} USDT</div>`;
-                  leaderboard.innerHTML = entry + leaderboard.innerHTML;
-                }
-                async function postToNostr(content) {
-                  try {
-                    const relay = await Relay.connect('wss://relay.nostr.com');
-                    const privateKey = process.env.NOSTR_PRIVATE_KEY || generatePrivateKey();
-                    const publicKey = getPublicKey(privateKey);
-                    const event = {
-                      kind: 1,
-                      pubkey: publicKey,
-                      created_at: Math.floor(Date.now() / 1000),
-                      tags: [['t', 'eternitybot']],
-                      content
-                    };
-                    event.id = await signEvent(event, privateKey);
-                    await relay.publish(event);
-                    relay.close();
-                    console.log('Posted to Nostr:', content);
-                  } catch (e) { console.log('Nostr error:', e.message); }
-                }
-                // Metaverse 3D background with Feng Shui colors
-                const scene = new THREE.Scene();
-                const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
-                const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('metaverse') });
-                renderer.setSize(window.innerWidth, 400);
-                const geometry = new THREE.SphereGeometry(5, 32, 32);
-                const material = new THREE.MeshBasicMaterial({ color: 0xFFD700, wireframe: true }); // Gold for wealth
-                const sphere = new THREE.Mesh(geometry, material);
-                scene.add(sphere);
-                camera.position.z = 10;
-                function animate() { requestAnimationFrame(animate); sphere.rotation.y += 0.01; renderer.render(scene, camera); }
-                animate();
-                // PWA setup
-                if ('serviceWorker' in navigator) {
-                  navigator.serviceWorker.register('/sw.js').catch(e => console.log('ServiceWorker error:', e));
-                }
-                // Auto-share to Web3 social platforms
-                async function shareToSocial() {
-                  for (const it of items.slice(0, 50)) {
-                    const content = `New opportunity: ${it.title} - ${pick((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || ''), it.link || '#')}`;
-                    await postToNostr(content);
-                    try {
-                      await fetch('https://api.lens.xyz/post', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ content, profile: 'eternitybot' })
-                      });
-                      await fetch('https://api.farcaster.network/post', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ content, username: 'eternitybot' })
-                      });
-                      await fetch('https://api.steemit.com/post', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ content, username: 'eternitybot' })
-                      });
-                      await fetch('https://api.hive.blog/post', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ content, username: 'eternitybot' })
-                      });
-                    } catch (e) { console.log('Social share error:', e.message); }
-                  }
-                }
-                shareToSocial();
-              </script>
-            </body></html>`
-          fs.writeFileSync('index.html', html)
-          const sw = `self.addEventListener('install', e => e.waitUntil(caches.open('v14').then(c => c.addAll(['/', '/index.html', '/premium.html', '/feed.xml', '/sitemap.xml']))));
-            self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));`
-          fs.writeFileSync('sw.js', sw)
-          const manifest = `{"name":"${title}","short_name":"EternityBot","start_url":"/","display":"standalone","background_color":"#f7f9fc","theme_color":"#ffd700","icons":[{"src":"/og-image.jpg","sizes":"192x192","type":"image/jpeg"}]}`
-          fs.writeFileSync('manifest.json', manifest)
-          const blogPost = `---
-title: Top Web3 Opportunities in 2025
-description: Discover the best crypto airdrops, NFTs, DeFi, memecoins, Web3 gaming, SocialFi, prediction markets, crowdfunding, and tokenized assets on eternitybot.op.
-keywords: crypto airdrop, NFT, DeFi, staking, referral, affiliate, memecoin, Web3 gaming, SocialFi, prediction markets, crowdfunding, tokenized assets, earn crypto, blockchain, metaverse
----
-# Top Web3 Opportunities in 2025
-${items.slice(0, 100).map(it => `- [${it.title}](${pick((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || ''), it.link || '#')}): ${it.src} (${it.date})`).join('\n')}
-\nJoin now on [eternitybot.op](${base}) or [RSS feed](${base}/feed.xml) to start earning!`
-          fs.mkdirSync('blog', { recursive: true })
-          fs.writeFileSync('blog/opportunities-2025.md', blogPost)
-          const premiumHtml = `<!doctype html><html lang="en"><head><meta charset="utf-8">
-            <meta name="viewport" content="width=device-width,initial-scale=1">
-            <title>Premium Web3 Infinity Hub</title><meta name="description" content="Unlock exclusive crypto, NFT, DeFi, gaming, SocialFi, prediction markets, crowdfunding, and tokenized assets on eternitybot.op">
-            <script src="https://cdn.jsdelivr.net/npm/web3modal@2.4.1/dist/index.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-            <style>${fs.readFileSync('index.html').toString().match(/<style>.*<\/style>/s)[0]}</style></head><body>
-              <h1>Premium Web3 Infinity Hub</h1>
-              <p>Unlock exclusive airdrops, NFTs, DeFi staking, memecoins, Web3 gaming, SocialFi, prediction markets, crowdfunding, and tokenized assets for $10-$500/month via USDT/ETH/BTC/SOL/BNB.</p>
-              <button onclick="subscribe()">Subscribe with USDT/ETH/BTC/SOL/BNB</button>
-              <a href="https://coinpayments.net/your-payment-link">Subscribe with PayPal</a>
-              <div class="box"><h3>Support Us</h3>${paysHtml}</div>
-              <footer><hr/><small>Powered by EternityBot v14 on eternitybot.op — Web2↔Web3 Infinity Hub. Not financial advice.</small></footer>
-              <script>
-                const providerOptions = { walletconnect: { package: window.WalletConnectProvider, options: { rpc: { 137: 'https://rpc-mainnet.maticvigil.com', 56: 'https://bsc-dataseed.binance.org/', 10: 'https://mainnet.optimism.io', 9001: 'https://fullnode.mainnet.aptoslabs.com', 7777777: 'https://rpc.mainnet.sui.io', 1116: 'https://rpc.mainnet.near.org', 1666600000: 'https://rpc.cosmos.network' } } } };
-                const web3Modal = new Web3Modal.default({ providerOptions });
-                async function subscribe() {
-                  try {
-                    const provider = await web3Modal.connect();
-                    const ethersProvider = new ethers.providers.Web3Provider(provider);
-                    const signer = ethersProvider.getSigner();
-                    const contract = new ethers.Contract('${contract}', [
-                      'function subscribe(uint256 amount, string currency) payable'
-                    ], signer);
-                    const currency = prompt('Select currency (USDT/ETH/BTC/SOL/BNB):')?.toUpperCase() || 'USDT';
-                    const amount = currency === 'BTC' ? '0' : ethers.utils.parseUnits(prompt('Enter amount ($10-$500):') || '10', 6);
-                    const value = currency === 'ETH' || currency === 'BNB' ? ethers.utils.parseEther('0.001') : '0';
-                    const tx = await contract.subscribe(amount, currency, { value });
-                    await tx.wait();
-                    alert('Subscription successful! Access premium features');
-                    postToNostr('New premium subscription: ' + ethers.utils.formatUnits(amount, 6) + ' ' + currency);
-                  } catch (e) { alert('Error: ' + e.message); }
-                }
-                async function postToNostr(content) {
-                  try {
-                    const relay = await Relay.connect('wss://relay.nostr.com');
-                    const privateKey = process.env.NOSTR_PRIVATE_KEY || generatePrivateKey();
-                    const publicKey = getPublicKey(privateKey);
-                    const event = {
-                      kind: 1,
-                      pubkey: publicKey,
-                      created_at: Math.floor(Date.now() / 1000),
-                      tags: [['t', 'eternitybot']],
-                      content
-                    };
-                    event.id = await signEvent(event, privateKey);
-                    await relay.publish(event);
-                    relay.close();
-                  } catch (e) { console.log('Nostr error:', e.message); }
-                }
-              </script>
-            </body></html>`
-          fs.writeFileSync('premium.html', premiumHtml)
-          const mkItem = it => `<item><title><![CDATA[${it.title || 'Opportunity'}]]></title><link>${pick((it.title || '') + ' ' + (it.description || '') + ' ' + (it.src || ''), it.link || '#')}</link><pubDate>${it.date || ''}</pubDate><guid>${it.link || '#'}</guid></item>`
-          const rss = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel>
-            <title>${title}</title><link>${base}</link><description>${
+              #metaverse { width: 100%; height: 400px; background: linear-gradient(45deg, #0b61ff, #ffd
