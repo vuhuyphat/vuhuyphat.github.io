@@ -41,34 +41,76 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update -y && sudo apt-get install -y jq
-          npm i rss-parser@3 files-from-path@latest @web3-storage/w3up-client@latest node-fetch@3
+          npm i rss-parser@3 files-from-path@latest @web3-storage/w3up-client@latest node-fetch@3 qrcode@1
 
-      # ---------- Build site (ingest → rank → render) ----------
+      # --------- (optional) Bootstrap UCAN principal to get DID ----------
+      - name: Bootstrap principal
+        if: ${{ inputs.mode == 'bootstrap' }}
+        id: boot
+        run: |
+          npx -y @web3-storage/w3up-cli@latest principal create --type ed25519 --name github || true
+          DID=$(npx -y @web3-storage/w3up-cli@latest principal did --name github)
+          npx -y @web3-storage/w3up-cli@latest principal export --name github --format json > principal.json
+          echo "$DID" > principal.did.txt
+          echo "did=$DID" >> $GITHUB_OUTPUT
+      - name: Upload principal artifacts
+        if: ${{ inputs.mode == 'bootstrap' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: w3up-principal
+          path: |
+            principal.json
+            principal.did.txt
+      - name: Next steps
+        if: ${{ inputs.mode == 'bootstrap' }}
+        run: |
+          echo "1) Open https://console.web3.storage → your Space → Delegate → paste DID:"
+          echo "   ${{ steps.boot.outputs.did }}"
+          echo "   grant: store/add, upload/add, upload/list, space/info, (name/claim, name/publish if IPNS)"
+          echo "2) Put secrets in repo Settings → Secrets → Actions:"
+          echo "   - W3UP_DELEGATION = UCAN string you exported"
+          echo "   - W3UP_PRINCIPAL_JSON = content of principal.json"
+          echo "   - (optional) W3UP_SPACE_DID = your Space DID"
+          echo "3) Re-run workflow with mode=full_cycle."
+
+      # --------------------- Build site (ingest → score → render) ---------------------
       - name: Build site
+        if: ${{ inputs.mode != 'bootstrap' }}
         env:
           # Data sources
           RSS_URLS: ${{ inputs.rss_urls || vars.RSS_URLS }}
 
-          # === Payments (YOUR data) ===
+          # === Payments (your data) ===
           PAYMENT_MOMO: "0567892030"
           PAYMENT_VCB: "9567892030"
           PAYMENT_USDT_ERC20: "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0"
           PAYMENT_ETH: "0x54E15A7b6d4213beE87800432A151d794638E3C2"
           PAYMENT_PAYPAL: "vumumabada@gmail.com"
 
-          # === Referral links (YOUR data) ===
+          # === Referral links (your data) ===
           REF_BINANCE: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N"
           REF_ALGOSONE: "https://algosone.page.link/MbtR"
-          REF_LINKS: ${{ vars.REF_LINKS }} # optional CSV for more links
+          REF_LINKS: ${{ vars.REF_LINKS }}  # optional CSV for more links
 
-          # Site meta (optional)
+          # Site meta / analytics
           SITE_TITLE: ${{ vars.SITE_TITLE || 'AI Omnibot v5' }}
           SITE_DESC:  ${{ vars.SITE_DESC  || 'Auto opportunity finder • Web2↔Web3' }}
           SITE_BASE:  ${{ vars.SITE_BASE  || '' }}
+          PLAUSIBLE_DOMAIN: ${{ vars.PLAUSIBLE_DOMAIN }}
+          GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID }}
+
+          # LLM scoring (optional)
+          LLM_API_URL: ${{ vars.LLM_API_URL }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_MODEL:   ${{ vars.LLM_MODEL || 'gpt-4o-mini' }}
+
+          # Client-side click tracking webhook (optional)
+          CLICK_WEBHOOK_URL: ${{ secrets.CLICK_WEBHOOK_URL }}
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
           import Parser from 'rss-parser'
+          import QRCode from 'qrcode'
           const parser = new Parser()
 
           // 1) Ingest RSS
@@ -85,58 +127,115 @@ jobs:
           fs.mkdirSync('data',{recursive:true})
           fs.writeFileSync('data/opps.raw.json', JSON.stringify(items,null,2))
 
-          // 2) Rank (simple keyword filter)
-          const kw=/sale|discount|grant|bounty|sponsor|funding|airdrop|job|affiliate|referral|bnb|algos?one|algorand|algo|yield|arbitrage|bonus|coupon/i
-          const scored=items.map(it=>({ ...it, score: kw.test(((it.title||'')+' '+(it.src||'')).toLowerCase())?1:0 }))
-                            .filter(x=>x.score>0).sort((a,b)=>b.score-a.score)
+          // 2) Score: LLM (if available) -> fallback keyword
+          let scored=[]
+          async function llmScore(arr){
+            const url=process.env.LLM_API_URL, key=process.env.LLM_API_KEY
+            if(!url||!key) return null
+            try{
+              const fetch=(await import('node-fetch')).default
+              const prompt=`Score each item from 0..1 for monetization potential (airdrop, affiliate, bounty, discount, referral, Binance, Algorand/AlgosOne).
+Return JSON array of numbers only. Items:\n`+arr.map((x,i)=>`${i+1}. ${x.title}`).join('\n')
+              const body={
+                model: process.env.LLM_MODEL || 'gpt-4o-mini',
+                messages: [
+                  {role:'system', content:'You are a concise ranking model. Output only numbers JSON.'},
+                  {role:'user', content: prompt}
+                ]
+              }
+              const res=await fetch(url,{method:'POST',headers:{'content-type':'application/json','authorization':`Bearer ${key}`},body:JSON.stringify(body)})
+              const j=await res.json()
+              const txt=j.choices?.[0]?.message?.content || ''
+              const nums=JSON.parse(txt.match(/\[.*\]/s)?.[0]||'[]')
+              return nums
+            }catch(e){ console.log('LLM scoring failed:', e.message); return null }
+          }
+          const llm=await llmScore(items.slice(0,50))
+          if(llm && llm.length){
+            scored=items.slice(0,50).map((it,i)=>({...it, score:Number(llm[i]||0)})).sort((a,b)=>b.score-a.score)
+          }else{
+            const kw=/sale|discount|grant|bounty|sponsor|funding|airdrop|job|affiliate|referral|bnb|algos?one|algorand|algo|yield|arbitrage|bonus|coupon/i
+            scored=items.map(it=>({ ...it, score: kw.test(((it.title||'')+' '+(it.src||'')).toLowerCase())?1:0 }))
+                         .filter(x=>x.score>0).sort((a,b)=>b.score-a.score)
+          }
           fs.writeFileSync('data/opps.scored.json', JSON.stringify(scored,null,2))
 
-          // 3) Render HTML + RSS + sitemap
-          const title=process.env.SITE_TITLE
-          const desc =process.env.SITE_DESC
-          const base =process.env.SITE_BASE
-
-          const pays=[
+          // 3) Generate QR for payments (as data URLs)
+          async function makeQR(text){ try{ return await QRCode.toDataURL(text) }catch{return ''} }
+          const pays = [
             ['MoMo', process.env.PAYMENT_MOMO],
             ['Vietcombank', process.env.PAYMENT_VCB],
             ['USDT (ERC20)', process.env.PAYMENT_USDT_ERC20],
             ['ETH', process.env.PAYMENT_ETH],
-            ['PayPal', process.env.PAYMENT_PAYPAL],
+            ['PayPal', process.env.PAYMENT_PAYPAL]
           ].filter(([,v])=>v)
+          for (let i=0;i<pays.length;i++){
+            const [k,v]=pays[i]
+            pays[i]=[k,v, await makeQR(`${k}: ${v}`)]
+          }
+
+          // 4) Render HTML + RSS + sitemap
+          const title=process.env.SITE_TITLE || 'AI Omnibot v5'
+          const desc =process.env.SITE_DESC  || 'Auto opportunity finder • Web2↔Web3'
+          const base =process.env.SITE_BASE  || ''
+          const plausible=process.env.PLAUSIBLE_DOMAIN||''
+          const gaid=process.env.GA_MEASUREMENT_ID||''
+          const clickHook=process.env.CLICK_WEBHOOK_URL||''
 
           const extra=(process.env.REF_LINKS||'').split(',').map(s=>s.trim()).filter(Boolean)
           const refs=[ process.env.REF_BINANCE, process.env.REF_ALGOSONE, ...extra ].filter(Boolean)
-
           const pickRef=(text, fallback)=>{
             const t=(text||'').toLowerCase()
-            if (t.includes('binance') || t.includes('bnb')) return process.env.REF_BINANCE || fallback
-            if (t.includes('algosone') || t.includes('algo')) return process.env.REF_ALGOSONE || fallback
+            if(t.includes('binance')||t.includes('bnb')) return process.env.REF_BINANCE || fallback
+            if(t.includes('algosone')||t.includes('algorand')||t.includes('algo')) return process.env.REF_ALGOSONE || fallback
             return fallback
           }
 
           const listHtml=(scored||[]).slice(0,80).map(it=>{
             const link=pickRef((it.title||'')+' '+(it.src||''), it.link||'#')
-            return `<div class="card"><a href="${link}" target="_blank" rel="noopener">${it.title||'Opportunity'}</a><div class="meta">${it.src||''} • ${it.date||''}</div></div>`
+            return `<div class="card">
+              <a class="out" href="${link}" target="_blank" rel="noopener">${it.title||'Opportunity'}</a>
+              <div class="meta">${it.src||''} • ${it.date||''}</div>
+            </div>`
           }).join('') || '<p>No data yet. Configure RSS_URLS variable.</p>'
 
-          const paysHtml = pays.map(([k,v]) => k==='PayPal'
-            ? `<div>${k}: <a href="mailto:${v}">${v}</a></div>`
-            : `<div>${k}: <code>${v}</code></div>`
+          const paysHtml = pays.map(([k,v,qr]) =>
+            `<div class="p"><strong>${k}</strong>: ${k==='PayPal' ? `<a href="mailto:${v}">${v}</a>` : `<code>${v}</code>`}
+              ${qr?`<div><img alt="${k} QR" src="${qr}" style="height:120px"></div>`:''}
+              <button onclick="navigator.clipboard.writeText('${v}')">Copy</button>
+            </div>`
           ).join('') || '<div>Not configured</div>'
 
-          const refsHtml = refs.length ? refs.map(u=>`<li><a href="${u}" target="_blank" rel="noopener">${u}</a></li>`).join('') : '<li>None</li>'
+          const refsHtml = refs.length ? refs.map(u=>`<li><a class="out" href="${u}" target="_blank" rel="noopener">${u}</a></li>`).join('') : '<li>None</li>'
+
+          const analytics = `
+            ${plausible?`<script defer data-domain="${plausible}" src="https://plausible.io/js/script.js"></script>`:''}
+            ${gaid?`<script async src="https://www.googletagmanager.com/gtag/js?id=${gaid}"></script>
+            <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);} gtag('js',new Date()); gtag('config','${gaid}');</script>`:''}
+          `
+          const clickJs = clickHook ? `<script>
+            const hook='${clickHook}';
+            function send(evt,href){ try{ navigator.sendBeacon(hook, new Blob([JSON.stringify({href,ts:Date.now()})],{type:'application/json'})); }catch(e){} }
+            document.addEventListener('click',e=>{
+              const a=e.target.closest('a.out'); if(!a) return;
+              send(e,a.href);
+            });
+          </script>` : ''
 
           const html = `<!doctype html><html lang="vi"><head><meta charset="utf-8">
           <meta name="viewport" content="width=device-width,initial-scale=1">
           <title>${title}</title><meta name="description" content="${desc}">
+          <meta property="og:title" content="${title}"/><meta property="og:description" content="${desc}"/>
           <style>
-            body{font-family:system-ui,Arial,sans-serif;margin:2rem;line-height:1.55}
+            body{font-family:system-ui,Arial,sans-serif;margin:2rem;line-height:1.55;background:#f7f9fc}
             .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
-            .card{border:1px solid #ddd;border-radius:10px;padding:12px;background:#fff}
-            .box{border:1px dashed #ccc;border-radius:10px;padding:12px;margin:12px 0;background:#fafafa}
-            code{background:#f5f5f5;padding:2px 6px;border-radius:6px}
+            .card{border:1px solid #e6e9ef;border-radius:12px;padding:14px;background:#fff}
+            .box{border:1px dashed #cfd6e4;border-radius:12px;padding:12px;margin:12px 0;background:#fff}
+            .p{margin:10px 0}
+            code{background:#f1f3f7;padding:2px 6px;border-radius:6px}
             a{color:#0b61ff;text-decoration:none}
-          </style></head><body>
+            button{margin-top:6px;padding:6px 10px;border:1px solid #d0d7e2;border-radius:8px;background:#fff;cursor:pointer}
+          </style>${analytics}${clickJs}</head><body>
             <h1>${title}</h1><p>${desc}</p>
             <div class="box"><h3>Payments</h3>${paysHtml}</div>
             <div class="card"><h3>Referral Links</h3><ul>${refsHtml}</ul></div>
@@ -161,7 +260,38 @@ jobs:
           fs.writeFileSync('sitemap.xml', sm)
           NODE
 
+      # -------------- Compliance gate (basic content checks) --------------
+      - name: Compliance gate
+        if: ${{ inputs.mode != 'bootstrap' }}
+        env:
+          BLOCK_DOMAINS: ${{ vars.BLOCK_DOMAINS }}
+          BLOCK_WORDS:   ${{ vars.BLOCK_WORDS }}
+          KILL_SWITCH:   ${{ secrets.KILL_SWITCH }}
+        run: |
+          set -e
+          if [ "${KILL_SWITCH}" = "OFF" ]; then
+            echo "Kill-switch ON -> cancel"; exit 1
+          fi
+          HTML="index.html"
+          if [ -f "$HTML" ]; then
+            if [ -n "${BLOCK_DOMAINS}" ]; then
+              IFS=, read -ra ds <<< "${BLOCK_DOMAINS}"
+              for d in "${ds[@]}"; do
+                if grep -qi "$d" "$HTML"; then echo "Blocked domain: $d"; exit 1; fi
+              done
+            fi
+            if [ -n "${BLOCK_WORDS}" ]; then
+              IFS=, read -ra ws <<< "${BLOCK_WORDS}"
+              for w in "${ws[@]}"; do
+                if grep -qi "$w" "$HTML"; then echo "Blocked word: $w"; exit 1; fi
+              done
+            fi
+          fi
+          echo "Compliance OK"
+
+      # -------------------- Commit generated site --------------------
       - name: Commit site
+        if: ${{ inputs.mode != 'bootstrap' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -169,8 +299,33 @@ jobs:
           git diff --cached --quiet || git commit -m "omnibot v5: update site/data"
           git push
 
-      # ---------- Optional: deploy to IPFS/IPNS via UCAN ----------
-      - name: Deploy to IPFS/IPNS (optional)
+      # -------------------- Announce to social (optional) --------------------
+      - name: Announce
+        if: ${{ inputs.mode != 'bootstrap' }}
+        env:
+          REPO_OWNER:             ${{ github.repository_owner }}
+          DISCORD_WEBHOOK_URL:    ${{ secrets.DISCORD_WEBHOOK_URL }}
+          TELEGRAM_BOT_TOKEN:     ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:       ${{ secrets.TELEGRAM_CHAT_ID }}
+          TWITTER_WEBHOOK_URL:    ${{ secrets.TWITTER_WEBHOOK_URL }}
+        run: |
+          set -e
+          SITE_URL="https://${REPO_OWNER}.github.io/"
+          MSG="Omnibot v5: site updated • ${SITE_URL}"
+          if [ -n "${DISCORD_WEBHOOK_URL}" ]; then
+            curl -s -X POST -H 'Content-Type: application/json' -d "{\"content\":\"${MSG}\"}" "${DISCORD_WEBHOOK_URL}" || true
+          fi
+          if [ -n "${TELEGRAM_BOT_TOKEN}" ] && [ -n "${TELEGRAM_CHAT_ID}" ]; then
+            curl -s "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" --data-urlencode "text=${MSG}" >/dev/null || true
+          fi
+          if [ -n "${TWITTER_WEBHOOK_URL}" ]; then
+            curl -s -X POST -H 'Content-Type: application/json' -d "{\"text\":\"${MSG}\"}" "${TWITTER_WEBHOOK_URL}" || true
+          fi
+
+      # -------------------- Deploy to IPFS/IPNS (optional with UCAN) --------------------
+      - name: Deploy to IPFS/IPNS
+        if: ${{ inputs.mode != 'bootstrap' }}
         env:
           W3UP_DELEGATION:     ${{ secrets.W3UP_DELEGATION }}
           W3UP_PRINCIPAL_JSON: ${{ secrets.W3UP_PRINCIPAL_JSON }}
@@ -179,7 +334,7 @@ jobs:
         run: |
           set -e
           if [ -z "${W3UP_DELEGATION}" ] || [ -z "${W3UP_PRINCIPAL_JSON}" ]; then
-            echo "No UCAN secrets → skip deploy"; exit 0
+            echo "No UCAN secrets -> skip deploy"; exit 0
           fi
           node --input-type=module - <<'NODE'
           import fs from 'fs'
