@@ -9,7 +9,7 @@ on:
         description: "Run mode"
         type: choice
         default: full_cycle
-        options: [bootstrap, deploy, full_cycle]
+        options: [bootstrap, full_cycle]
       rss_urls:
         description: "CSV RSS URLs (override)"
         required: false
@@ -18,7 +18,7 @@ on:
         type: boolean
         default: true
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/30 * * * *"   # every 30 minutes
 
 permissions:
   contents: write
@@ -43,22 +43,23 @@ jobs:
           sudo apt-get update -y && sudo apt-get install -y jq
           npm i rss-parser@3 files-from-path@latest @web3-storage/w3up-client@latest node-fetch@3
 
-      # ---------- BUILD SITE (ingest → rank → render) ----------
+      # ---------- Build site (ingest → rank → render) ----------
       - name: Build site
         env:
+          # Data sources
           RSS_URLS: ${{ inputs.rss_urls || vars.RSS_URLS }}
 
-          # Payments (YOUR data)
+          # === Payments (YOUR data) ===
           PAYMENT_MOMO: "0567892030"
           PAYMENT_VCB: "9567892030"
           PAYMENT_USDT_ERC20: "0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0"
           PAYMENT_ETH: "0x54E15A7b6d4213beE87800432A151d794638E3C2"
           PAYMENT_PAYPAL: "vumumabada@gmail.com"
 
-          # Referral (YOUR data)
+          # === Referral links (YOUR data) ===
           REF_BINANCE: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N"
           REF_ALGOSONE: "https://algosone.page.link/MbtR"
-          REF_LINKS: ${{ vars.REF_LINKS }} # optional CSV extra links
+          REF_LINKS: ${{ vars.REF_LINKS }} # optional CSV for more links
 
           # Site meta (optional)
           SITE_TITLE: ${{ vars.SITE_TITLE || 'AI Omnibot v5' }}
@@ -70,27 +71,27 @@ jobs:
           import Parser from 'rss-parser'
           const parser = new Parser()
 
-          // --- 1) Ingest RSS
+          // 1) Ingest RSS
           const rssList=(process.env.RSS_URLS||'').split(',').map(s=>s.trim()).filter(Boolean)
           let items=[]
           for (const url of rssList){
-            try {
+            try{
               const feed=await parser.parseURL(url)
               for(const it of (feed.items||[])){
                 items.push({title:it.title||'',link:it.link||'#',date:it.isoDate||it.pubDate||'',src:url})
               }
-            } catch(e){ console.log('RSS error', url, e.message) }
+            }catch(e){ console.log('RSS error', url, e.message) }
           }
           fs.mkdirSync('data',{recursive:true})
           fs.writeFileSync('data/opps.raw.json', JSON.stringify(items,null,2))
 
-          // --- 2) Rank (simple keywords)
+          // 2) Rank (simple keyword filter)
           const kw=/sale|discount|grant|bounty|sponsor|funding|airdrop|job|affiliate|referral|bnb|algos?one|algorand|algo|yield|arbitrage|bonus|coupon/i
           const scored=items.map(it=>({ ...it, score: kw.test(((it.title||'')+' '+(it.src||'')).toLowerCase())?1:0 }))
                             .filter(x=>x.score>0).sort((a,b)=>b.score-a.score)
           fs.writeFileSync('data/opps.scored.json', JSON.stringify(scored,null,2))
 
-          // --- 3) Render HTML + RSS + sitemap
+          // 3) Render HTML + RSS + sitemap
           const title=process.env.SITE_TITLE
           const desc =process.env.SITE_DESC
           const base =process.env.SITE_BASE
@@ -104,11 +105,7 @@ jobs:
           ].filter(([,v])=>v)
 
           const extra=(process.env.REF_LINKS||'').split(',').map(s=>s.trim()).filter(Boolean)
-          const refs=[
-            process.env.REF_BINANCE,
-            process.env.REF_ALGOSONE,
-            ...extra
-          ].filter(Boolean)
+          const refs=[ process.env.REF_BINANCE, process.env.REF_ALGOSONE, ...extra ].filter(Boolean)
 
           const pickRef=(text, fallback)=>{
             const t=(text||'').toLowerCase()
@@ -172,7 +169,7 @@ jobs:
           git diff --cached --quiet || git commit -m "omnibot v5: update site/data"
           git push
 
-      # ---------- OPTIONAL: Deploy to IPFS/IPNS if UCAN secrets are present ----------
+      # ---------- Optional: deploy to IPFS/IPNS via UCAN ----------
       - name: Deploy to IPFS/IPNS (optional)
         env:
           W3UP_DELEGATION:     ${{ secrets.W3UP_DELEGATION }}
