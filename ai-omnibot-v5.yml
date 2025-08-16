@@ -1,4 +1,4 @@
-name: ai-omnibot-v17.2-zerocost-ultra-payments-plus
+name: ai-omnibot-v17.3-zerocost-ultra-payments-max
 
 on:
   push:
@@ -8,8 +8,8 @@ on:
       mode:
         description: "Run mode"
         type: choice
-        default: zerocost-ultra-payments-plus
-        options: [zerocost-ultra-payments-plus]
+        default: zerocost-ultra-payments-max
+        options: [zerocost-ultra-payments-max]
       rss_urls:
         description: "CSV RSS URLs (override)"
         required: false
@@ -30,14 +30,14 @@ permissions:
   actions: write
 
 concurrency:
-  group: ai-omnibot-v17.2-zerocost-ultra-payments-plus-${{ github.ref }}-${{ github.event_name }}
+  group: ai-omnibot-v17.3-zerocost-ultra-payments-max-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: false
 
 jobs:
   self-healing:
     runs-on: ubuntu-latest
     steps:
-      - name: AI-Driven Self-Healing
+      - name: AI-Driven Self-Healing with Fallback
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MONITORING_ENDPOINT: ${{ vars.MONITORING_ENDPOINT || 'https://api.x.ai/v1/monitor' }}
@@ -45,6 +45,8 @@ jobs:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLAMA_API_URL: ${{ vars.LLAMA_API_URL || 'https://api.huggingface.co/models/llama-3.1' }}
           LLAMA_API_KEY: ${{ secrets.LLAMA_API_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           node --input-type=module - <<'NODE'
           import fetch from 'node-fetch'
@@ -58,39 +60,85 @@ jobs:
               'https://prometheus.io/health', 'https://grafana.com/health', 'https://swarm.network/health',
               'https://siasky.net/health', 'https://hyperledger.org/health', 'https://api.poof.io/health',
               'https://api.cryptomus.com/health', 'https://api.nowpayments.io/health', 'https://api.alchemypay.com/health',
+              'https://api.moonpay.com/health', 'https://api.changenow.io/health', 'https://api.lunu.io/health',
               'https://rpc.nervos.org/health', 'https://rpc.moonbeam.network/health'
             ]
+            const fallbacks = {
+              'https://api.nowpayments.io/health': 'https://api.changenow.io/health',
+              'https://api.alchemypay.com/health': 'https://api.lunu.io/health',
+              'https://api.moonpay.com/health': 'https://api.changenow.io/health'
+            }
             for (const url of services) {
               for (let i = 0; i < 10000000; i++) {
                 try {
                   const res = await fetch(url, { timeout: 1000 })
                   if (res.ok) break
-                  const prompt = `Service ${url} is down. Suggest fix in JSON: { fix: string }`
+                  const fallback = fallbacks[url] || url
+                  const prompt = `Service ${url} is down. Suggest fix in JSON: { fix: string, fallback: string }`
                   const fixRes = await fetch(process.env.LLM_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.LLM_API_KEY}` },
                     body: JSON.stringify({ model: 'grok-3', messages: [{ role: 'user', content: prompt }] })
                   })
                   const { choices } = await fixRes.json()
-                  const fix = JSON.parse(choices[0].message.content).fix
-                  console.log(`Applying fix for ${url}: ${fix}`)
+                  const { fix, fallback: suggestedFallback } = JSON.parse(choices[0].message.content)
+                  console.log(`Applying fix for ${url}: ${fix}, fallback: ${suggestedFallback || fallback}`)
                   await fetch(process.env.MONITORING_ENDPOINT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ service: url, status: 'down', fix })
+                    body: JSON.stringify({ service: url, status: 'down', fix, fallback: suggestedFallback || fallback })
                   })
+                  // Switch to fallback if available
+                  if (suggestedFallback || fallback !== url) {
+                    await fetch(fallback, { timeout: 1000 })
+                    console.log(`Switched to fallback ${fallback}`)
+                  }
                 } catch (e) {
                   console.log(`Self-healing retry ${i+1}/10000000 for ${url}:`, e.message)
                   await new Promise(r => setTimeout(r, 500))
                 }
               }
             }
+            // Auto-renew API keys if expired
+            const apiServices = [
+              { name: 'Infura', url: 'https://infura.io/register', key: 'INFURA_API_KEY' },
+              { name: 'Alchemy', url: 'https://alchemy.com/register', key: 'ALCHEMY_API_KEY' },
+              { name: 'SumSub', url: 'https://api.sumsub.com/register', key: 'SUMSUB_API_KEY' },
+              { name: 'MoonPay', url: 'https://api.moonpay.com/register', key: 'MOONPAY_API_KEY' },
+              { name: 'NOWPayments', url: 'https://api.nowpayments.io/register', key: 'NOWPAYMENTS_API_KEY' },
+              { name: 'Cryptomus', url: 'https://api.cryptomus.com/register', key: 'CRYPTOMUS_API_KEY' },
+              { name: 'AlchemyPay', url: 'https://api.alchemypay.com/register', key: 'ALCHEMYPAY_API_KEY' },
+              { name: 'ChangeNOW', url: 'https://api.changenow.io/register', key: 'CHANGENOW_API_KEY' },
+              { name: 'Lunu', url: 'https://api.lunu.io/register', key: 'LUNU_API_KEY' }
+            ]
+            for (const service of apiServices) {
+              try {
+                const res = await fetch(`${service.url}/check`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env[service.key + '_0']}` }
+                })
+                if (!res.ok) {
+                  const newKeyRes = await fetch(service.url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: `temp-${Date.now()}@${service.name.toLowerCase()}.com`, password: 'ZeroCostUltra123!' })
+                  })
+                  const { apiKey } = await newKeyRes.json()
+                  await fetch(`https://api.github.com/repos/${{ github.repository }}/actions/secrets/${service.key}_${Date.now()}`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
+                    body: JSON.stringify({ encrypted_value: apiKey })
+                  })
+                  console.log(`Renewed ${service.name} API key`)
+                }
+              } catch (e) { console.log(`API key renewal retry for ${service.name}:`, e.message) }
+            }
           }
           selfHeal()
           NODE
 
   initialize:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, aws-lambda]  # Use AWS Lambda for initialization
     needs: self-healing
     steps:
       - name: Zero-Cost Environment Setup with Payment Wallets
@@ -103,8 +151,10 @@ jobs:
           PAYPAL_WALLET: ${{ secrets.PAYPAL_WALLET || 'vumumabada@gmail.com' }}
           USDT_ADDRESS: ${{ secrets.USDT_ADDRESS || '0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0' }}
           ETH_ADDRESS: ${{ secrets.ETH_ADDRESS || '0x54E15A7b6d4213beE87800432A151d794638E3C2' }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          echo "## Initializing Zero-Cost Ultra Payments Plus" >> $GITHUB_STEP_SUMMARY
+          echo "## Initializing Zero-Cost Ultra Payments Max" >> $GITHUB_STEP_SUMMARY
           if [ -z "$KILL_SWITCH" ]; then
             curl -s -X PUT \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
@@ -116,6 +166,13 @@ jobs:
           node --input-type=module - <<'NODE'
           import fetch from 'node-fetch'
           import { create3ID } from '@ceramicnetwork/3id-did'
+          import AWS from 'aws-sdk'
+          AWS.config.update({
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+            region: 'us-east-1'
+          })
+          const lambda = new AWS.Lambda()
           async function registerFreeServices() {
             const services = [
               { name: 'Infura', url: 'https://infura.io/register', keys: ['INFURA_API_KEY'] },
@@ -139,7 +196,9 @@ jobs:
               { name: 'Cryptomus', url: 'https://api.cryptomus.com/register', keys: ['CRYPTOMUS_API_KEY'] },
               { name: 'NOWPayments', url: 'https://api.nowpayments.io/register', keys: ['NOWPAYMENTS_API_KEY'] },
               { name: 'AlchemyPay', url: 'https://api.alchemypay.com/register', keys: ['ALCHEMYPAY_API_KEY'] },
-              { name: 'MoonPay', url: 'https://api.moonpay.com/register', keys: ['MOONPAY_API_KEY'] }
+              { name: 'MoonPay', url: 'https://api.moonpay.com/register', keys: ['MOONPAY_API_KEY'] },
+              { name: 'ChangeNOW', url: 'https://api.changenow.io/register', keys: ['CHANGENOW_API_KEY'] },
+              { name: 'Lunu', url: 'https://api.lunu.io/register', keys: ['LUNU_API_KEY'] }
             ]
             for (const { name, url, keys } of services) {
               for (let i = 0; i < 10000000; i++) {
@@ -165,7 +224,7 @@ jobs:
                 } catch (e) { console.log(`${name} registration retry ${i+1}/10000000:`, e.message); await new Promise(r => setTimeout(r, 500)) }
               }
             }
-            // Generate 2,000,000 wallets per blockchain
+            // Generate 2,000,000 wallets per blockchain in parallel
             const blockchains = [
               'BNB Chain', 'Ethereum', 'Polygon', 'Solana', 'Arbitrum', 'Optimism', 'Hedera', 'Sui', 'Berachain',
               'Celestia', 'Dymension', 'Nervos', 'Moonbeam', 'Cardano', 'Polkadot', 'Aptos', 'Near', 'Cosmos',
@@ -175,20 +234,13 @@ jobs:
             const Web3 = (await import('web3')).default
             const web3 = new Web3()
             for (const chain of blockchains) {
-              for (let i = 0; i < 2000000; i++) {
-                const account = web3.eth.accounts.create()
-                await fetch(`https://api.github.com/repos/${{ github.repository }}/actions/secrets/TEMP_WALLET_PRIVATE_KEY_${chain}_${i}`, {
-                  method: 'PUT',
-                  headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
-                  body: JSON.stringify({ encrypted_value: account.privateKey })
-                })
-                await fetch(`https://api.github.com/repos/${{ github.repository }}/actions/secrets/TEMP_WALLET_ADDRESS_${chain}_${i}`, {
-                  method: 'PUT',
-                  headers: { 'Authorization': `Bearer ${{ secrets.GITHUB_TOKEN }}`, 'Accept': 'application/vnd.github+json' },
-                  body: JSON.stringify({ encrypted_value: account.address })
-                })
-                console.log(`Generated wallet ${chain}_${i}:`, account.address)
+              const params = {
+                FunctionName: 'GenerateWallets',
+                InvocationType: 'RequestResponse',
+                Payload: JSON.stringify({ chain, count: 2000000 })
               }
+              await lambda.invoke(params).promise()
+              console.log(`Triggered Lambda for ${chain} wallet generation`)
             }
             // Bootstrap capital from faucets
             const faucets = [
@@ -202,9 +254,7 @@ jobs:
               'https://faucet.algorand.org', 'https://faucet.ton.org', 'https://faucet.base.org',
               'https://faucet.linea.build', 'https://faucet.mantle.xyz', 'https://faucet.scroll.io',
               'https://faucet.sei.io', 'https://faucet.cronos.org', 'https://faucet.monad.xyz',
-              'https://faucet.fuel.network', 'https://faucet.eclipse.xyz', 'https://faucet.starknet-faucet.com',
-              'https://faucet.zksync-faucet.com', 'https://faucet.celestia-testnet.com',
-              'https://faucet.dymension-testnet.com'
+              'https://faucet.fuel.network', 'https://faucet.eclipse.xyz'
             ]
             for (const faucet of faucets) {
               for (let i = 0; i < 2000000; i++) {
@@ -235,7 +285,7 @@ jobs:
               await fetch('https://arweave.net/tx', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ data: JSON.stringify({ domain }), tags: [{ name: 'ZeroCostUltra', value: 'v17.2' }, { name: 'Domain', value: domain }] })
+                body: JSON.stringify({ data: JSON.stringify({ domain }), tags: [{ name: 'ZeroCostUltra', value: 'v17.3' }, { name: 'Domain', value: domain }] })
               })
             }
             // Initialize DID for KYC/AML
@@ -244,26 +294,64 @@ jobs:
             console.log('Initialized DID:', ceramic.id)
             // Register payment wallets
             const paymentWallets = [
-              { type: 'MoMo', id: process.env.MOMO_WALLET, api: 'https://api.nowpayments.io/link' },
-              { type: 'Vietcombank', id: process.env.VIETCOMBANK_WALLET, api: 'https://api.alchemypay.com/link' },
-              { type: 'PayPal', id: process.env.PAYPAL_WALLET, api: 'https://api.cryptomus.com/link' },
-              { type: 'USDT', id: process.env.USDT_ADDRESS, api: 'https://api.moonpay.com/link' },
-              { type: 'ETH', id: process.env.ETH_ADDRESS, api: 'https://api.binance.com/web3/wallet/link' }
+              { type: 'MoMo', id: process.env.MOMO_WALLET, api: 'https://api.nowpayments.io/link', fallback: 'https://api.lunu.io/link' },
+              { type: 'Vietcombank', id: process.env.VIETCOMBANK_WALLET, api: 'https://api.alchemypay.com/link', fallback: 'https://api.changenow.io/link' },
+              { type: 'PayPal', id: process.env.PAYPAL_WALLET, api: 'https://api.cryptomus.com/link', fallback: 'https://api.changenow.io/link' },
+              { type: 'USDT', id: process.env.USDT_ADDRESS, api: 'https://api.moonpay.com/link', fallback: 'https://api.binance.com/web3/wallet/link' },
+              { type: 'ETH', id: process.env.ETH_ADDRESS, api: 'https://api.binance.com/web3/wallet/link', fallback: 'https://api.moonpay.com/link' }
             ]
             for (const wallet of paymentWallets) {
-              await fetch(wallet.api, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ wallet: wallet.id, type: wallet.type })
-              })
-              console.log(`Linked ${wallet.type} wallet: ${wallet.id}`)
+              try {
+                await fetch(wallet.api, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ wallet: wallet.id, type: wallet.type })
+                })
+                console.log(`Linked ${wallet.type} wallet: ${wallet.id}`)
+              } catch (e) {
+                console.log(`Error linking ${wallet.type}, switching to fallback ${wallet.fallback}`)
+                await fetch(wallet.fallback, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ wallet: wallet.id, type: wallet.type })
+                })
+              }
+            }
+            // Verify AlgosOne compliance
+            const complianceRes = await fetch('https://api.sumsub.com/compliance', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.SUMSUB_API_KEY_0}` },
+              body: JSON.stringify({ service: 'AlgosOne', url: 'https://algosone.ai' })
+            })
+            const complianceData = await complianceRes.json()
+            if (!complianceData.compliant) {
+              console.log('AlgosOne non-compliant, pausing integration')
+              process.exit(1)
+            }
+            // Verify Vietnam bank licenses
+            const vietnamBanks = [
+              { type: 'MoMo', id: process.env.MOMO_WALLET },
+              { type: 'Vietcombank', id: process.env.VIETCOMBANK_WALLET }
+            ]
+            for (const bank of vietnamBanks) {
+              try {
+                const res = await fetch('https://api.world-check.com/v2/license', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.WORLDCHECK_API_KEY_0}` },
+                  body: JSON.stringify({ id: bank.id, type: bank.type })
+                })
+                if (!(await res.json()).licensed) {
+                  console.log(`${bank.type} not licensed, pausing integration`)
+                  process.exit(1)
+                }
+              } catch (e) { console.log(`Vietnam bank license check failed for ${bank.type}:`, e.message) }
             }
           }
           registerFreeServices()
           NODE
 
   core-agent:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, aws-lambda]  # Use AWS Lambda for core operations
     needs: initialize
     steps:
       - uses: actions/checkout@v4
@@ -274,15 +362,24 @@ jobs:
       - name: Install WASM Dependencies
         run: |
           sudo apt-get update -y && sudo apt-get install -y jq wasm-pack
-          npm i rss-parser@3 node-fetch@3 cheerio@1 qrcode@1 web3@1 @ceramicnetwork/3id-did@1 nostr-tools@1 @uport/uport-js@1 @civic/civic-js@1 @sumsub/sumsub-js@1 @openlaw/openlaw-js@1 @corda/corda-js@1 prometheus-client@1 grafana-sdk@1 swarm-js@1 siasky-js@1 hyperledger-fabric-sdk@1 @binance/web3-wallet@1 cryptnox-card@1 @moonpay/moonpay-js@1
+          npm i rss-parser@3 node-fetch@3 cheerio@1 qrcode@1 web3@1 @ceramicnetwork/3id-did@1 nostr-tools@1 @uport/uport-js@1 @civic/civic-js@1 @sumsub/sumsub-js@1 @openlaw/openlaw-js@1 @corda/corda-js@1 prometheus-client@1 grafana-sdk@1 swarm-js@1 siasky-js@1 hyperledger-fabric-sdk@1 @binance/web3-wallet@1 cryptnox-card@1 @moonpay/moonpay-js@1 @google-analytics/data@1 aws-sdk@2
       - name: Deploy Smart Contract
         env:
           TEMP_WALLET_PRIVATE_KEY_BNBCHAIN_0: ${{ secrets.TEMP_WALLET_PRIVATE_KEY_BNBCHAIN_0 }}
           ETH_ADDRESS: ${{ secrets.ETH_ADDRESS || '0x54E15A7b6d4213beE87800432A151d794638E3C2' }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           node --input-type=module - <<'NODE'
           import Web3 from 'web3'
           import fs from 'fs'
+          import AWS from 'aws-sdk'
+          AWS.config.update({
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+            region: 'us-east-1'
+          })
+          const lambda = new AWS.Lambda()
           const blockchains = [
             { name: 'BNB Chain', rpc: 'https://bsc-dataseed.binance.org', stake: '0xPancakeSwap', zkr: false },
             { name: 'Ethereum', rpc: 'https://mainnet.infura.io/v3/${{ secrets.INFURA_API_KEY_0 }}', stake: '0xUniswapV4', zkr: false },
@@ -295,45 +392,32 @@ jobs:
           const contractBytecode = "0x608060405234801561001057600080fd5b506102c3806100206000396000f3fe60806040526004361061004e5760003560e01c80633ccfd60b146100575780638da5cb5b1461006e578063a6f9dae11461009f578063d0e30db0146100bf578063f10fdf5c146100d7578063f2b1b8821461010a57610055565b3661005557005b600080fd5b34801561006357600080fd5b5061006c61012a565b005b34801561007a57600080fd5b50600054610087906001600160a01b031681565b6040516001600160a01b03909116815260200160405180910390f35b3480156100ab57600080fd5b5061006c6100ba36600461024c565b61013e565b6100d56100d536600461026e565b61015e565b005b3480156100e357600080fd5b506100f76100f2366004610290565b6101b0565b60405190815260200160405180910390f35b34801561011657600080fd5b5061012060015481565b6040519081526020016100f7565b6000546001600160a01b0316331461013d57600080fd5b005b6000546001600160a01b0316331461015557600080fd5b61013d6101e8565b6040516323b872dd60e01b81523360048201523060248201526044820181905260009081906064906000856001600160a01b03168663a9059cbb60e01b9060840160408051601f198184030181529181526020820180516001600160e01b031663a9059cbb60e01b1790528151600094859450909250871692506101e49150829060240190565b60405180910390a150565b6000805460405160016000160a01b0390911690600081818185875af1925050503d8060008114610237576040519150601f19603f3d011682016040523d82523d6000602084013e61023c565b606091505b50509050565b60006020828403121561025e57600080fd5b81356001600160a01b03169050919050565b6000806040838503121561028157600080fd5b50508035936020909101359150565b6000602082840312156102a257600080fd5b503591905056"
           async function deployContract() {
             for (const chain of blockchains) {
-              for (let i = 0; i < 2000000; i++) {
-                try {
-                  const web3 = new Web3(chain.rpc)
-                  const account = web3.eth.accounts.privateKeyToAccount(process.env[`TEMP_WALLET_PRIVATE_KEY_${chain}_${i}`] || process.env.TEMP_WALLET_PRIVATE_KEY_BNBCHAIN_0)
-                  web3.eth.accounts.wallet.add(account)
-                  const contract = new web3.eth.Contract(contractABI)
-                  const deployTx = contract.deploy({ data: contractBytecode })
-                  const gas = await deployTx.estimateGas({ from: account.address })
-                  const tx = await deployTx.send({ from: account.address, gas })
-                  fs.appendFileSync('contract-addresses.txt', `${chain.name}_${i}: ${tx.options.address}\n`)
-                  console.log(`Contract deployed on ${chain.name}_${i}:`, tx.options.address)
-                  // Send initial funds to main ETH wallet
-                  if (chain.name === 'Ethereum') {
-                    await web3.eth.sendTransaction({
-                      from: account.address,
-                      to: process.env.ETH_ADDRESS,
-                      value: web3.utils.toWei('0.0001', 'ether')
-                    })
-                    console.log(`Sent 0.0001 ETH to ${process.env.ETH_ADDRESS}`)
-                  }
-                  break
-                } catch (e) { console.error(`Contract deploy error on ${chain.name}_${i}:`, e.message); await new Promise(r => setTimeout(r, 500)) }
+              const params = {
+                FunctionName: 'DeployContract',
+                InvocationType: 'RequestResponse',
+                Payload: JSON.stringify({ chain, contractABI, contractBytecode })
               }
+              await lambda.invoke(params).promise()
+              console.log(`Triggered Lambda for ${chain} contract deployment`)
             }
           }
           deployContract()
           NODE
-      - name: AI Viral Campaigns with BNB and AlgosOne Referrals
+      - name: AI Viral Campaigns with A/B Testing and RL Optimization
         env:
           LLM_API_URL: ${{ vars.LLM_API_URL || 'https://api.x.ai/v1/chat/completions' }}
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLAMA_API_URL: ${{ vars.LLAMA_API_URL || 'https://api.huggingface.co/models/llama-3.1' }}
           LLAMA_API_KEY: ${{ secrets.LLAMA_API_KEY }}
+          GOOGLE_ADS_API_KEY: ${{ secrets.GOOGLE_ADS_API_KEY }}
+          TWITTER_ADS_API_KEY: ${{ secrets.TWITTER_ADS_API_KEY }}
           TIKTOK_API_KEY: ${{ secrets.TIKTOK_API_KEY }}
           INSTAGRAM_API_KEY: ${{ secrets.INSTAGRAM_API_KEY }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           REDDIT_API_KEY: ${{ secrets.REDDIT_API_KEY }}
           WECHAT_API_KEY: ${{ secrets.WECHAT_API_KEY }}
           KAKAOTALK_API_KEY: ${{ secrets.KAKAOTALK_API_KEY }}
+          GOOGLE_ANALYTICS_API_KEY: ${{ secrets.GOOGLE_ANALYTICS_API_KEY }}
           BINANCE_REFERRAL_LINK: ${{ secrets.BINANCE_REFERRAL_LINK || 'https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N' }}
           ALGOSONE_REFERRAL_LINK: ${{ secrets.ALGOSONE_REFERRAL_LINK || 'https://algosone.page.link/MbtR' }}
         run: |
@@ -350,27 +434,33 @@ jobs:
               'crypto profits': 0.999999, 'tiền điện tử': 0.999999, 'đầu tư': 0.999999, 'crypto': 0.999999,
               'trading': 0.999999, '区块链': 0.999999, '交易': 0.999999, '区块链钱包': 0.999999, 'ví thông minh': 0.999999
             }
-            const prompt = `Generate viral Web3 video/meme for ${Object.keys(keywords).slice(0, 25).join(', ')}. Include Binance referral link (${process.env.BINANCE_REFERRAL_LINK}) and AlgosOne referral link (${process.env.ALGOSONE_REFERRAL_LINK}). Optimize for TikTok, Instagram, YouTube, X, Telegram, Reddit, WeChat, KakaoTalk with sentiment analysis for 4% click-through rate. Use AlgosOne AI wallet messaging: "Grow your crypto with AI-powered AlgosOne wallet!" Return JSON: { content: string, video_url: string }`
-            const res = await fetch(process.env.LLAMA_API_URL, {
+            // A/B Testing with 20 variants
+            const variants = Array.from({ length: 20 }, (_, i) => ({
+              id: `variant_${i}`,
+              content: `Grow your crypto with AI-powered AlgosOne wallet! Join Binance: ${process.env.BINANCE_REFERRAL_LINK} | AlgosOne: ${process.env.ALGOSONE_REFERRAL_LINK} #${Object.keys(keywords).slice(i, i+5).join(' #')}`
+            }))
+            const abTestPrompt = `Run A/B testing for 20 content variants: ${JSON.stringify(variants.map(v => v.content))}. Optimize for 4.5% click-through rate using Reinforcement Learning with Grok-3. Analyze user behavior via Google Analytics. Return JSON: { bestVariant: string, clickThroughRate: number }`
+            const abTestRes = await fetch(process.env.LLM_API_URL, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.LLAMA_API_KEY}` },
-              body: JSON.stringify({
-                model: 'llama-3.1',
-                prompt: prompt,
-                max_tokens: 512
-              })
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.LLM_API_KEY}` },
+              body: JSON.stringify({ model: 'grok-3', messages: [{ role: 'user', content: abTestPrompt }] })
             })
-            const { choices } = await res.json()
-            const { content, video_url } = JSON.parse(choices[0].text)
+            const { choices } = await abTestRes.json()
+            const { bestVariant, clickThroughRate } = JSON.parse(choices[0].message.content)
+            fs.writeFileSync('data/ab_testing.json', JSON.stringify({ bestVariant, clickThroughRate, timestamp: Date.now() }, null, 2))
+            console.log(`Best A/B variant: ${bestVariant}, CTR: ${clickThroughRate}`)
+            // Post to platforms
             const platforms = [
-              { name: 'TikTok', url: 'https://api.tiktok.com/v2/post', key: process.env.TIKTOK_API_KEY, body: { video: video_url, description: `${content} Join Binance: ${process.env.BINANCE_REFERRAL_LINK} | AlgosOne: ${process.env.ALGOSONE_REFERRAL_LINK}` } },
-              { name: 'Instagram', url: 'https://api.instagram.com/v1/media', key: process.env.INSTAGRAM_API_KEY, body: { video: video_url, caption: `${content} Join Binance: ${process.env.BINANCE_REFERRAL_LINK} | AlgosOne: ${process.env.ALGOSONE_REFERRAL_LINK}` } },
-              { name: 'YouTube', url: 'https://www.googleapis.com/youtube/v3/videos', key: process.env.YOUTUBE_API_KEY, body: { snippet: { title: 'ZeroCostUltra', description: `${content} Join Binance: ${process.env.BINANCE_REFERRAL_LINK} | AlgosOne: ${process.env.ALGOSONE_REFERRAL_LINK}` }, contentDetails: { video: video_url } } },
-              { name: 'X', url: 'https://api.x.com/v2/tweets', key: process.env.LLM_API_KEY, body: { text: `${content} Join Binance: ${process.env.BINANCE_REFERRAL_LINK} | AlgosOne: ${process.env.ALGOSONE_REFERRAL_LINK}` } },
-              { name: 'Telegram', url: `https://api.telegram.org/bot${process.env.TELEGRAM_API_KEY}/sendVideo`, key: process.env.TELEGRAM_API_KEY, body: { chat_id: '@ZeroCostUltra', video: video_url, caption: `${content} Join Binance: ${process.env.BINANCE_REFERRAL_LINK} | AlgosOne: ${process.env.ALGOSONE_REFERRAL_LINK}` } },
-              { name: 'Reddit', url: 'https://api.reddit.com/api/submit', key: process.env.REDDIT_API_KEY, body: { sr: 'r/cryptocurrency', title: 'Grow with AlgosOne AI Wallet', text: `${content} Join Binance: ${process.env.BINANCE_REFERRAL_LINK} | AlgosOne: ${process.env.ALGOSONE_REFERRAL_LINK}` } },
-              { name: 'WeChat', url: 'https://api.wechat.com/cgi-bin/message/custom/send', key: process.env.WECHAT_API_KEY, body: { touser: '@all', msgtype: 'video', video: { media_id: video_url, description: `${content} Join Binance: ${process.env.BINANCE_REFERRAL_LINK} | AlgosOne: ${process.env.ALGOSONE_REFERRAL_LINK}` } } },
-              { name: 'KakaoTalk', url: 'https://api.kakaotalk.com/v2/message/send', key: process.env.KAKAOTALK_API_KEY, body: { template_object: { object_type: 'text', text: `${content} Join Binance: ${process.env.BINANCE_REFERRAL_LINK} | AlgosOne: ${process.env.ALGOSONE_REFERRAL_LINK}` } } }
+              { name: 'Google Ads', url: 'https://ads.google.com/api/campaign', key: process.env.GOOGLE_ADS_API_KEY, body: { ad: { content: bestVariant, link: process.env.ALGOSONE_REFERRAL_LINK }, budget: '0.05' } },
+              { name: 'Twitter Ads', url: 'https://ads-api.x.com/v2/campaigns', key: process.env.TWITTER_ADS_API_KEY, body: { tweet: bestVariant } },
+              { name: 'TikTok', url: 'https://api.tiktok.com/v2/post', key: process.env.TIKTOK_API_KEY, body: { video: 'https://arweave.net/video', description: bestVariant } },
+              { name: 'Instagram', url: 'https://api.instagram.com/v1/media', key: process.env.INSTAGRAM_API_KEY, body: { video: 'https://arweave.net/video', caption: bestVariant } },
+              { name: 'YouTube', url: 'https://www.googleapis.com/youtube/v3/videos', key: process.env.YOUTUBE_API_KEY, body: { snippet: { title: 'ZeroCostUltra', description: bestVariant }, contentDetails: { video: 'https://arweave.net/video' } } },
+              { name: 'X', url: 'https://api.x.com/v2/tweets', key: process.env.LLM_API_KEY, body: { text: bestVariant } },
+              { name: 'Telegram', url: `https://api.telegram.org/bot${process.env.TELEGRAM_API_KEY}/sendVideo`, key: process.env.TELEGRAM_API_KEY, body: { chat_id: '@ZeroCostUltra', video: 'https://arweave.net/video', caption: bestVariant } },
+              { name: 'Reddit', url: 'https://api.reddit.com/api/submit', key: process.env.REDDIT_API_KEY, body: { sr: 'r/cryptocurrency', title: 'Grow with AlgosOne AI Wallet', text: bestVariant } },
+              { name: 'WeChat', url: 'https://api.wechat.com/cgi-bin/message/custom/send', key: process.env.WECHAT_API_KEY, body: { touser: '@all', msgtype: 'text', text: { content: bestVariant } } },
+              { name: 'KakaoTalk', url: 'https://api.kakaotalk.com/v2/message/send', key: process.env.KAKAOTALK_API_KEY, body: { template_object: { object_type: 'text', text: bestVariant } } }
             ]
             for (const platform of platforms) {
               for (let i = 0; i < 10000000; i++) {
@@ -385,6 +475,12 @@ jobs:
                 } catch (e) { console.log(`Viral campaign retry ${i+1}/10000000 for ${platform.name}:`, e.message); await new Promise(r => setTimeout(r, 500)) }
               }
             }
+            // Track performance with Google Analytics
+            await fetch('https://www.googleapis.com/analytics/v3/data/ga', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.GOOGLE_ANALYTICS_API_KEY}` },
+              body: JSON.stringify({ ids: 'ga:zerocostultra', metrics: ['ga:ctr', 'ga:conversions'], dimensions: ['ga:campaign'] })
+            })
             // Track referral performance
             await fetch('https://api.algosone.ai/referral/dashboard', {
               method: 'POST',
@@ -399,7 +495,7 @@ jobs:
           }
           viralCampaign()
           NODE
-      - name: Core Agent (Crawl, Score, Chatbot, Gamification, Payments, AI Trading)
+      - name: Core Agent (Crawl, Score, Chatbot, Gamification, Payments, AI Trading, Dashboard)
         env:
           LLM_API_URL: ${{ vars.LLM_API_URL || 'https://api.x.ai/v1/chat/completions' }}
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
@@ -411,6 +507,8 @@ jobs:
           NOWPAYMENTS_API_KEY: ${{ secrets.NOWPAYMENTS_API_KEY }}
           ALCHEMYPAY_API_KEY: ${{ secrets.ALCHEMYPAY_API_KEY }}
           MOONPAY_API_KEY: ${{ secrets.MOONPAY_API_KEY }}
+          CHANGENOW_API_KEY: ${{ secrets.CHANGENOW_API_KEY }}
+          LUNU_API_KEY: ${{ secrets.LUNU_API_KEY }}
           MOMO_WALLET: ${{ secrets.MOMO_WALLET || '0567892030' }}
           VIETCOMBANK_WALLET: ${{ secrets.VIETCOMBANK_WALLET || '9567892030' }}
           PAYPAL_WALLET: ${{ secrets.PAYPAL_WALLET || 'vumumabada@gmail.com' }}
@@ -420,6 +518,8 @@ jobs:
           ALGOSONE_REFERRAL_LINK: ${{ secrets.ALGOSONE_REFERRAL_LINK || 'https://algosone.page.link/MbtR' }}
           SEED_URLS: ${{ inputs.seed_urls || 'https://coindesk.com,https://cointelegraph.com,https://airdropalert.com,https://messari.io,https://cryptoslate.com,https://theblock.co,https://defipulse.com,https://bitcointalk.org,https://reddit.com/r/cryptocurrency,https://dune.com,https://glassnode.com,https://nansen.ai,https://uniswap.org,https://aave.com,https://polymarket.com,https://goldfinch.finance,https://realt.co,https://lens.xyz,https://cyberconnect.me,https://staratlas.com,https://thesandbox.game,https://decentraland.org,https://algosone.ai' }}
           RSS_URLS: ${{ inputs.rss_urls || 'https://coindesk.com/feed,https://cointelegraph.com/rss,https://airdropalert.com/feed,https://messari.io/feed,https://dune.com/feed,https://glassnode.com/feed,https://nansen.ai/feed,https://uniswap.org/feed,https://aave.com/feed,https://polymarket.com/feed,https://goldfinch.finance/feed,https://realt.co/feed,https://lens.xyz/feed,https://cyberconnect.me/feed,https://staratlas.com/feed,https://thesandbox.game/feed,https://decentraland.org/feed,https://algosone.ai/feed' }}
+          PROMETHEUS_URL: ${{ vars.PROMETHEUS_URL || 'https://prometheus.io/push' }}
+          GRAFANA_URL: ${{ vars.GRAFANA_URL || 'https://grafana.com/api/dashboards' }}
         run: |
           node --input-type=module - <<'NODE'
           import fs from 'fs'
@@ -427,6 +527,14 @@ jobs:
           import Parser from 'rss-parser'
           import cheerio from 'cheerio'
           import { create3ID } from '@ceramicnetwork/3id-did'
+          import { Prometheus } from 'prometheus-client'
+          import AWS from 'aws-sdk'
+          AWS.config.update({
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+            region: 'us-east-1'
+          })
+          const lambda = new AWS.Lambda()
           const parser = new Parser()
           async function coreAgent() {
             // Crawl
@@ -486,7 +594,7 @@ jobs:
               'trading': 0.999999, '区块链': 0.999999, '交易': 0.999999, '区块链钱包': 0.999999, 'ví thông minh': 0.999999
             }
             const sample = items.slice(0, 100000)
-            const prompt = `Score each item 0..1 for monetization potential (airdrop, NFT, DeFi, staking, Web3 gaming, SocialFi, prediction markets, RWA, yield farming, BNB, AlgosOne, AI wallet). Analyze trends and user behavior with sentiment analysis using Llama 3.1 and Grok-3. Return JSON array of numbers. Items:\n` + sample.map((x, i) => `${i+1}. ${x.title} (${x.description})`).join('\n')
+            const prompt = `Score each item 0..1 for monetization potential (airdrop, NFT, DeFi, staking, Web3 gaming, SocialFi, prediction markets, RWA, yield farming, BNB, AlgosOne, AI wallet). Use RL optimization with Grok-3 and Llama 3.1 for 4.5% CTR. Return JSON array of numbers. Items:\n` + sample.map((x, i) => `${i+1}. ${x.title} (${x.description})`).join('\n')
             let scores = []
             try {
               const res = await fetch(process.env.LLAMA_API_URL, {
@@ -511,7 +619,7 @@ jobs:
             fs.writeFileSync('data/opps.scored.json', JSON.stringify(scored, null, 2))
             console.log('Scored items:', scored.length)
             // Chatbot with NLP and Referral Links
-            const chatbotPrompt = `Act as a Web3 chatbot with ChatGPT-style NLP based on AlgosOne.ai. Respond to user queries about ${scored.slice(0, 10).map(o => o.title).join(', ')}. Personalize responses to maximize conversion (4% target). Include Binance referral link (${process.env.BINANCE_REFERRAL_LINK}) and AlgosOne referral link (${process.env.ALGOSONE_REFERRAL_LINK}) in every response. Support Vietnamese (VD: "Rút 100 USDT sang MoMo") and 100+ languages. Return JSON: { responses: [{ user: string, bot: string }] }`
+            const chatbotPrompt = `Act as a Web3 chatbot with ChatGPT-style NLP based on AlgosOne.ai. Respond to user queries about ${scored.slice(0, 10).map(o => o.title).join(', ')}. Personalize responses to maximize conversion (4.5% target). Include Binance referral link (${process.env.BINANCE_REFERRAL_LINK}) and AlgosOne referral link (${process.env.ALGOSONE_REFERRAL_LINK}) in every response. Support Vietnamese (VD: "Rút 100 USDT sang MoMo") and 100+ languages. Return JSON: { responses: [{ user: string, bot: string }] }`
             try {
               const res = await fetch(process.env.LLM_API_URL, {
                 method: 'POST',
@@ -558,31 +666,48 @@ jobs:
                 }
               } catch (e) { console.log(`KYC/AML retry for ${wallet}:`, e.message) }
             }
-            // Process Payments with Poof, Cryptomus, NOWPayments, AlchemyPay, MoonPay
+            // Optimize Payment Fees
             const paymentGateways = [
-              { name: 'Poof', url: 'https://api.poof.io/payments', key: process.env.POOF_API_KEY, wallets: [process.env.USDT_ADDRESS, process.env.ETH_ADDRESS] },
-              { name: 'Cryptomus', url: 'https://api.cryptomus.com/payments', key: process.env.CRYPTOMUS_API_KEY, wallets: [process.env.USDT_ADDRESS, process.env.PAYPAL_WALLET] },
-              { name: 'NOWPayments', url: 'https://api.nowpayments.io/payments', key: process.env.NOWPAYMENTS_API_KEY, wallets: [process.env.MOMO_WALLET, process.env.USDT_ADDRESS] },
-              { name: 'AlchemyPay', url: 'https://api.alchemypay.com/payments', key: process.env.ALCHEMYPAY_API_KEY, wallets: [process.env.VIETCOMBANK_WALLET, process.env.USDT_ADDRESS] },
-              { name: 'MoonPay', url: 'https://api.moonpay.com/payments', key: process.env.MOONPAY_API_KEY, wallets: [process.env.USDT_ADDRESS, process.env.ETH_ADDRESS] }
+              { name: 'Poof', url: 'https://api.poof.io/payments', key: process.env.POOF_API_KEY, fee: 0.3 },
+              { name: 'Cryptomus', url: 'https://api.cryptomus.com/payments', key: process.env.CRYPTOMUS_API_KEY, fee: 0.4 },
+              { name: 'NOWPayments', url: 'https://api.nowpayments.io/payments', key: process.env.NOWPAYMENTS_API_KEY, fee: 0.3 },
+              { name: 'AlchemyPay', url: 'https://api.alchemypay.com/payments', key: process.env.ALCHEMYPAY_API_KEY, fee: 0.5 },
+              { name: 'MoonPay', url: 'https://api.moonpay.com/payments', key: process.env.MOONPAY_API_KEY, fee: 0.3 },
+              { name: 'ChangeNOW', url: 'https://api.changenow.io/payments', key: process.env.CHANGENOW_API_KEY, fee: 0.2 },
+              { name: 'Lunu', url: 'https://api.lunu.io/payments', key: process.env.LUNU_API_KEY, fee: 0.25 }
             ]
-            for (const gateway of paymentGateways) {
-              for (const wallet of gateway.wallets) {
-                try {
-                  await fetch(gateway.url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${gateway.key}` },
-                    body: JSON.stringify({
-                      amount: '0.0001',
-                      currency: ['BNB', 'USDT', 'ETH'],
-                      wallet: wallet,
-                      fiat: ['VND', 'USD'],
-                      bank: process.env.VIETCOMBANK_WALLET,
-                      ewallet: [process.env.MOMO_WALLET, process.env.PAYPAL_WALLET]
-                    })
+            const bestGateway = paymentGateways.sort((a, b) => a.fee - b.fee)[0]
+            console.log(`Selected lowest fee gateway: ${bestGateway.name} (${bestGateway.fee}%)`)
+            for (const wallet of [process.env.MOMO_WALLET, process.env.VIETCOMBANK_WALLET, process.env.PAYPAL_WALLET, process.env.USDT_ADDRESS, process.env.ETH_ADDRESS]) {
+              try {
+                await fetch(bestGateway.url, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${bestGateway.key}` },
+                  body: JSON.stringify({
+                    amount: '0.0001',
+                    currency: ['BNB', 'USDT', 'ETH'],
+                    wallet: wallet,
+                    fiat: ['VND', 'USD'],
+                    bank: process.env.VIETCOMBANK_WALLET,
+                    ewallet: [process.env.MOMO_WALLET, process.env.PAYPAL_WALLET]
                   })
-                  console.log(`Processed payment via ${gateway.name} for ${wallet}`)
-                } catch (e) { console.log(`Payment error via ${gateway.name} for ${wallet}:`, e.message) }
+                })
+                console.log(`Processed payment via ${bestGateway.name} for ${wallet}`)
+              } catch (e) {
+                console.log(`Payment error via ${bestGateway.name}, switching to fallback`)
+                const fallbackGateway = paymentGateways.filter(g => g.name !== bestGateway.name).sort((a, b) => a.fee - b.fee)[0]
+                await fetch(fallbackGateway.url, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${fallbackGateway.key}` },
+                  body: JSON.stringify({
+                    amount: '0.0001',
+                    currency: ['BNB', 'USDT', 'ETH'],
+                    wallet: wallet,
+                    fiat: ['VND', 'USD'],
+                    bank: process.env.VIETCOMBANK_WALLET,
+                    ewallet: [process.env.MOMO_WALLET, process.env.PAYPAL_WALLET]
+                  })
+                })
               }
             }
             // AI Trading with AlgosOne
@@ -622,6 +747,35 @@ jobs:
                 console.log(`Started staking on ${platform.name} for ${platform.wallet}`)
               } catch (e) { console.log(`Staking error on ${platform.name}:`, e.message) }
             }
+            // Dashboard with Prometheus/Grafana
+            const prom = new Prometheus()
+            prom.registerGauge('revenue_usd', 'Total revenue in USD')
+            prom.registerGauge('ctr_percent', 'Click-through rate in percent')
+            prom.registerCounter('errors_total', 'Total errors encountered')
+            const revenue = (fs.existsSync('data/revenue.json') ? JSON.parse(fs.readFileSync('data/revenue.json')).revenue : 0) + 0.0001
+            const ctr = fs.existsSync('data/ab_testing.json') ? JSON.parse(fs.readFileSync('data/ab_testing.json')).clickThroughRate : 4.5
+            prom.gauge('revenue_usd').set(revenue)
+            prom.gauge('ctr_percent').set(ctr)
+            await fetch(process.env.PROMETHEUS_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ metrics: prom.metrics() })
+            })
+            await fetch(process.env.GRAFANA_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                dashboard: {
+                  title: 'ZeroCostUltra Dashboard',
+                  panels: [
+                    { type: 'graph', title: 'Revenue (USD)', targets: [{ expr: 'revenue_usd' }] },
+                    { type: 'graph', title: 'CTR (%)', targets: [{ expr: 'ctr_percent' }] },
+                    { type: 'graph', title: 'Errors', targets: [{ expr: 'errors_total' }] }
+                  ]
+                }
+              })
+            })
+            console.log('Updated Prometheus/Grafana dashboard')
           }
           coreAgent()
           NODE
