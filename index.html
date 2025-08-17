@@ -4,35 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Cổng Tài Lộc — Binance & AlgosOne</title>
-<meta name="description" content="FUN 3D phong thủy đậm, Trái Đất 3D ở giữa, CTA kép, ticker giả lập, spin-to-join, confetti, counter, countdown. Song ngữ Việt–Anh.">
-<meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#07121a">
+<meta name="description" content="Giao diện đen phong thủy, Trái Đất 3D xoay, CTA vàng: Mở tài khoản miễn phí tại đây. Ticker, Spin-to-Join, confetti, counter, countdown. Song ngữ Việt–Anh.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
 
 <style>
-  /* ===== Palette nâng cấp phong thủy (ĐẬM – RÕ) ===== */
+  /* ===== Bảng màu mới (đen đậm – nút vàng, nút phụ xanh lá) ===== */
   :root{
-    --bg:#07121a;            /* lam ngọc rất đậm */
-    --bg2:#041018;
-    --card:#0b1620;          /* khối card sẫm hơn, rõ nét */
-    --text:#f5fbff;          /* trắng hơi ngà để tương phản cao */
-    --muted:#9fb2c2;
-    --jade:#28f090;          /* lục bảo phát tài */
-    --gold:#ffd24d;          /* vàng kim */
-    --cyan:#08d0ff;          /* lam sáng */
-    --ring:0 0 0 1px rgba(40,240,144,.5), 0 0 80px rgba(8,208,255,.18), inset 0 1px 0 rgba(255,255,255,.05);
-    --radius:16px;
-    --shadow:0 14px 48px rgba(0,0,0,.55);
-  }
-  @media (prefers-color-scheme: light){
-    :root{ --bg:#eaf2f8; --bg2:#dfe9f2; --card:#ffffff; --text:#0b1218; --muted:#4a5b6d; --shadow:0 10px 28px rgba(13,31,51,.18); }
+    --bg:#000; --bg2:#000; --card:#0a0a0a; --text:#f8fbff; --muted:#9fb2c2;
+    --green:#0eba6a; --green-deep:#0a6c40;
+    --gold:#ffd24d; --gold-deep:#a57a00;
+    --cyan:#08d0ff;
+    --ring:0 0 0 1px rgba(14,186,106,.45), 0 0 80px rgba(8,208,255,.16), inset 0 1px 0 rgba(255,255,255,.05);
+    --radius:16px; --shadow:0 16px 60px rgba(0,0,0,.7);
   }
 
   *{box-sizing:border-box}
   body{
     margin:0;
     background:
-      radial-gradient(1200px 700px at 20% -10%, rgba(8,208,255,.22), transparent 60%),
-      radial-gradient(1200px 700px at 100% 15%, rgba(40,240,144,.20), transparent 60%),
+      radial-gradient(1100px 600px at 20% -10%, rgba(8,208,255,.18), transparent 60%),
+      radial-gradient(1100px 600px at 100% 15%, rgba(14,186,106,.16), transparent 60%),
       linear-gradient(180deg, var(--bg2), var(--bg));
     color:var(--text);
     font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Helvetica,Arial;
@@ -41,61 +33,58 @@
   .wrap{max-width:1120px;margin:0 auto;padding:22px 16px 120px}
 
   /* ===== HERO ===== */
-  .hero{
-    position:relative; border-radius:var(--radius); padding:24px 16px 18px;
-    background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
-    border:1px solid rgba(255,255,255,.10); box-shadow:var(--shadow); overflow:hidden; text-align:center;
-  }
+  .hero{position:relative;border-radius:var(--radius);padding:20px 14px 18px;
+        background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));
+        border:1px solid rgba(255,255,255,.10);box-shadow:var(--shadow);overflow:hidden;text-align:center}
   .hero:before{content:"";position:absolute;inset:-1px;border-radius:inherit;box-shadow:var(--ring);pointer-events:none}
-  .hero-title{
-    font-size:clamp(28px,4.6vw,46px); line-height:1.08; margin:10px 0 6px;
-    background-image:linear-gradient(90deg,#fff, #ffe9a8, #fff);
-    -webkit-background-clip:text; background-clip:text; color:transparent; animation:shimmer 12s linear infinite;
-  }
+  .hero-title{font-size:clamp(26px,4.6vw,44px);line-height:1.08;margin:10px 0 6px;
+              background-image:linear-gradient(90deg,#fff,#ffe5a2,#fff);-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 12s linear infinite}
   @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-  .sub{color:var(--muted);max-width:72ch;margin:0 auto 10px}
+  .sub{color:var(--muted);max-width:76ch;margin:0 auto 10px}
 
   .langbar{position:absolute;top:10px;right:10px;display:flex;gap:8px}
-  .langbtn{padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.35);color:#e9f6ff;cursor:pointer;font-weight:700}
+  .langbtn{padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#eef;cursor:pointer;font-weight:800}
   .langbtn.active{border-color:var(--gold);box-shadow:0 0 0 1px rgba(255,210,77,.45)}
 
   /* ===== CTA ===== */
   .cta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:12px}
-  .btn{appearance:none;border:0;cursor:pointer;text-decoration:none;font-weight:900;letter-spacing:.2px;
+  /* nút vàng: dùng cho OPEN */
+  .btn--gold{appearance:none;border:0;cursor:pointer;text-decoration:none;font-weight:900;letter-spacing:.2px;
        padding:14px 18px;border-radius:14px;transition:.18s transform,.18s box-shadow,.18s background,.18s border-color;
-       background:linear-gradient(180deg,#0f2030,#0a1a28); color:#e7fbff; border:1px solid rgba(40,240,144,.55)}
-  .btn:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,0,0,.5)}
-  .btn--accent{background:linear-gradient(120deg, rgba(40,240,144,.28), rgba(8,208,255,.25)); border-color:rgba(255,210,77,.75)}
-  .copy{padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.20);background:rgba(0,0,0,.35);color:#d7e9ff;cursor:pointer;font-weight:800}
-  .copy.ok{background:rgba(40,240,144,.28); color:#083; }
+       color:#1a1400;background:linear-gradient(180deg,#ffe37a,#ffd24d); border:1px solid #e6b83a; box-shadow:0 8px 24px rgba(255,210,77,.25)}
+  .btn--gold:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(255,210,77,.35)}
+  /* nút phụ xanh lá đậm: copy/share */
+  .btn--green{appearance:none;border:1px solid rgba(14,186,106,.55);cursor:pointer;font-weight:800;
+       padding:12px 14px;border-radius:12px;color:#def;background:linear-gradient(180deg,rgba(14,186,106,.24),rgba(10,108,64,.24))}
+  .btn--green.ok{background:linear-gradient(180deg,rgba(14,186,106,.38),rgba(10,108,64,.34));color:#083}
 
-  /* ===== TRÁI ĐẤT 3D (center top) ===== */
-  .globe-wrap{display:flex;justify-content:center;margin-top:6px}
+  /* ===== TRÁI ĐẤT 3D xoay tròn (ở giữa) ===== */
+  .globe-wrap{display:flex;justify-content:center;margin-top:8px}
   .globe{
-    width:min(220px,48vw); aspect-ratio:1/1; border-radius:50%; position:relative;
+    width:min(220px,50vw); aspect-ratio:1/1; border-radius:50%; position:relative; overflow:hidden;
     background:
-      radial-gradient(circle at 35% 35%, rgba(255,255,255,.25) 0%, rgba(255,255,255,.05) 35%, transparent 40%),
-      radial-gradient(circle at 50% 55%, rgba(0,0,0,.35), transparent 50%),
-      radial-gradient(circle at 50% 50%, #0a2842 0%, #083b5c 55%, #06344f 100%);
-    box-shadow:0 20px 60px rgba(0,0,0,.55), inset 0 0 32px rgba(0,0,0,.35);
-    overflow:hidden; transform-style:preserve-3d;
+      radial-gradient(circle at 35% 35%, rgba(255,255,255,.22) 0%, rgba(255,255,255,.07) 36%, transparent 42%),
+      radial-gradient(circle at 50% 60%, rgba(0,0,0,.45), transparent 55%),
+      radial-gradient(circle at 50% 50%, #0a2842 0%, #083b5c 55%, #062a46 100%);
+    box-shadow:0 22px 60px rgba(0,0,0,.7), inset 0 0 34px rgba(0,0,0,.45);
+    transform-style:preserve-3d;
   }
-  /* vĩ tuyến/kinh tuyến */
-  .globe::before, .globe::after{
+  /* lưới xoay */
+  .globe::before{
     content:""; position:absolute; inset:-2%; border-radius:50%;
     background:
       repeating-conic-gradient(from 0deg, rgba(255,210,77,.18) 0 1deg, transparent 1deg 15deg),
       repeating-radial-gradient(circle at 50% 50%, transparent 0 11%, rgba(8,208,255,.12) 11.4% 11.9%);
-    animation:spin 14s linear infinite;
+    animation:spin 12s linear infinite;
   }
-  .glow{content:""; position:absolute; inset:-12%; border-radius:50%;
-        box-shadow:0 0 120px rgba(8,208,255,.25), inset 0 0 90px rgba(40,240,144,.18); pointer-events:none;}
+  .globe::after{content:""; position:absolute; inset:-12%; border-radius:50%;
+                box-shadow:0 0 120px rgba(255,210,77,.22), inset 0 0 90px rgba(8,208,255,.18); pointer-events:none;}
   @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
-  /* ===== Ticker (đậm, rõ) ===== */
-  .ticker{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0 6px}
+  /* ===== Ticker ===== */
+  .ticker{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0 8px}
   .tick{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.22);
-        background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,.30));font-weight:800}
+        background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.35));font-weight:800}
   .sym{font-family:ui-monospace,Menlo,monospace;padding:2px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.24)}
   .price{min-width:84px;text-align:right}
   .chg.up{color:#47ff9f}.chg.down{color:#ff7979}
@@ -105,30 +94,31 @@
   /* ===== GRID ===== */
   .grid{display:grid;gap:16px;margin-top:16px}
   @media(min-width:960px){.grid{grid-template-columns:1fr 1fr}}
-  .card{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.02));border-radius:var(--radius);padding:18px;border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));border-radius:var(--radius);padding:18px;border:1px solid rgba(255,255,255,.14);box-shadow:var(--shadow);position:relative;overflow:hidden}
   .card:before{content:"";position:absolute;inset:-1px;border-radius:inherit;box-shadow:var(--ring);pointer-events:none}
   .sect-title{font-size:20px;margin:0 0 8px}
-  .pill{display:inline-block;padding:4px 8px;border:1px solid rgba(255,255,255,.22);border-radius:8px;color:var(--muted);font-size:12px}
+  .pill{display:inline-block;padding:4px 8px;border:1px solid rgba(255,255,255,.24);border-radius:8px;color:var(--muted);font-size:12px}
   ul{padding-left:18px;margin:8px 0} li{margin:6px 0}
 
-  /* ===== Spin-to-Join (giữ nguyên) ===== */
+  /* ===== Spin-to-Join ===== */
   .spin{display:flex;gap:10px;align-items:center;justify-content:center;margin:14px 0 2px}
   .wheel{width:140px;height:140px;border-radius:50%;border:6px solid rgba(255,210,77,.7);
-         background:conic-gradient(#28f090 0 60deg,#08d0ff 60deg 180deg,#ffd24d 180deg 300deg,#28f090 300deg 360deg);
-         box-shadow:0 10px 30px rgba(0,0,0,.35),inset 0 0 30px rgba(255,255,255,.12);position:relative}
-  .pin{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:18px solid #ffd24d;filter:drop-shadow(0 4px 6px rgba(0,0,0,.45))}
+         background:conic-gradient(#0eba6a 0 60deg,#08d0ff 60deg 180deg,#ffd24d 180deg 300deg,#0eba6a 300deg 360deg);
+         box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 0 30px rgba(255,255,255,.12);position:relative}
+  .pin{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:18px solid #ffd24d;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
   .wheel.spin{animation:turn 2.2s cubic-bezier(.2,.8,.2,1) forwards}
   @keyframes turn{to{transform:rotate(1220deg)}}
 
-  /* ===== Sticky CTA ===== */
+  /* ===== Sticky CTA (vàng) ===== */
   .sticky{position:fixed;left:0;right:0;bottom:0;padding:max(10px,env(safe-area-inset-bottom));
-          background:linear-gradient(180deg,transparent,rgba(0,0,0,.55) 28%,rgba(0,0,0,.78) 100%);
+          background:linear-gradient(180deg,transparent,rgba(0,0,0,.65) 30%,rgba(0,0,0,.85) 100%);
           display:grid;grid-template-columns:1fr 1fr;gap:10px;border-top:1px solid rgba(255,255,255,.14);backdrop-filter:blur(10px);z-index:50}
+  .sticky a{justify-self:stretch}
   @media(min-width:960px){.sticky{display:none}}
 
   /* ===== FOMO chips ===== */
   .stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;color:var(--muted);font-size:13px;justify-content:center}
-  .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(0,0,0,.28)}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(0,0,0,.32)}
 </style>
 </head>
 <body>
@@ -139,37 +129,37 @@
       <button class="langbtn" id="enBtn">EN</button>
     </div>
 
-    <!-- GLOBE 3D ở GIỮA TRÊN -->
-    <div class="globe-wrap">
-      <div class="globe"><div class="glow"></div></div>
-    </div>
+    <!-- Trái Đất 3D xoay tròn -->
+    <div class="globe-wrap"><div class="globe"></div></div>
 
-    <h1 class="hero-title" data-i18n="hero_title">Cổng Tài Lộc — Binance &amp; AlgosOne</h1>
-    <p class="sub" data-i18n="hero_sub">Giao diện phong thủy FUN 3D. Chạm là mở tài khoản. Hai lựa chọn trung tâm: Binance &amp; AlgosOne.</p>
+    <!-- === CÂU GIỚI THIỆU THU HÚT (thay vùng khoanh đỏ) === -->
+    <h1 class="hero-title" data-i18n="hero_title">Chạm nút vàng – mở tài khoản miễn phí ngay</h1>
+    <p class="sub" data-i18n="hero_sub">
+      Chọn Binance hoặc AlgosOne để bắt đầu. Liên kết chính thức, thao tác nhanh, hỗ trợ tiếng Việt &amp; tiếng Anh.
+    </p>
 
-    <!-- Ticker giả lập -->
-    <div class="ticker" id="ticker" aria-live="polite">
+    <!-- Ticker -->
+    <div class="ticker" aria-live="polite">
       <div class="tick"><span class="sym">BTC</span><span class="price" data-sym="BTC">62315</span><span class="chg up" data-chg="BTC">+0.8%</span></div>
       <div class="tick"><span class="sym">ETH</span><span class="price" data-sym="ETH">2476</span><span class="chg down" data-chg="ETH">-0.4%</span></div>
       <div class="tick"><span class="sym">USDT</span><span class="price" data-sym="USDT">1.000</span><span class="chg up" data-chg="USDT">+0.0%</span></div>
     </div>
 
-    <!-- CTA -->
+    <!-- CTA (nút vàng “Mở tài khoản miễn phí tại đây”) -->
     <div class="cta">
-      <a data-link="bn" class="btn btn--accent" target="_blank" rel="noopener" data-i18n="cta_bn">Mở tài khoản Binance</a>
-      <button class="copy" data-copy="BN" data-i18n="copy_bn">Sao chép link Binance</button>
-      <a data-link="ao" class="btn btn--accent" target="_blank" rel="noopener" data-i18n="cta_ao">Mở tài khoản AlgosOne</a>
-      <button class="copy" data-copy="AO" data-i18n="copy_ao">Sao chép link AlgosOne</button>
-      <button class="btn" id="shareBtn" data-i18n="share">Chia sẻ</button>
+      <a data-link="bn" class="btn--gold" target="_blank" rel="noopener" aria-label="Mở tài khoản Binance miễn phí" data-i18n="cta_bn">Mở tài khoản miễn phí tại đây</a>
+      <button class="btn--green" data-copy="BN" data-i18n="copy_bn">Sao chép link Binance</button>
+      <a data-link="ao" class="btn--gold" target="_blank" rel="noopener" aria-label="Mở tài khoản AlgosOne miễn phí" data-i18n="cta_ao">Mở tài khoản miễn phí tại đây</a>
+      <button class="btn--green" data-copy="AO" data-i18n="copy_ao">Sao chép link AlgosOne</button>
+      <button class="btn--green" id="shareBtn" data-i18n="share">Chia sẻ</button>
     </div>
 
-    <!-- Spin-to-Join (giữ) -->
+    <!-- Spin-to-Join -->
     <div class="spin">
       <div class="wheel" id="wheel"><div class="pin"></div></div>
-      <button class="btn" id="spinBtn" data-i18n="spin">Quay mở lộc</button>
+      <button class="btn--green" id="spinBtn" data-i18n="spin">Quay mở lộc</button>
     </div>
 
-    <!-- FOMO/Stats -->
     <div class="stats">
       <span class="chip">🔥 <span id="liveCount">128</span> <span data-i18n="joined">người đã mở hôm nay</span></span>
       <span class="chip">⏳ <span data-i18n="ends">Cơ hội hôm nay còn</span>: <span id="countdown">00:00:00</span></span>
@@ -190,8 +180,8 @@
         <li data-i18n="b_li5"><b>Ứng dụng mạnh:</b> biểu đồ TradingView, lệnh nâng cao, app mượt.</li>
       </ul>
       <div class="cta">
-        <a data-link="bn" class="btn btn--accent" target="_blank" rel="noopener" data-i18n="cta_bn">Mở tài khoản Binance</a>
-        <button class="copy" data-copy="BN" data-i18n="copy_bn">Sao chép link Binance</button>
+        <a data-link="bn" class="btn--gold" target="_blank" rel="noopener" data-i18n="cta_bn">Mở tài khoản miễn phí tại đây</a>
+        <button class="btn--green" data-copy="BN" data-i18n="copy_bn">Sao chép link Binance</button>
       </div>
     </article>
 
@@ -206,25 +196,26 @@
         <li data-i18n="a_li5"><b>3 bước:</b> Mở tài khoản → Cấu hình rủi ro → Kích hoạt chiến lược.</li>
       </ul>
       <div class="cta">
-        <a data-link="ao" class="btn btn--accent" target="_blank" rel="noopener" data-i18n="cta_ao">Mở tài khoản AlgosOne</a>
-        <button class="copy" data-copy="AO" data-i18n="copy_ao">Sao chép link AlgosOne</button>
+        <a data-link="ao" class="btn--gold" target="_blank" rel="noopener" data-i18n="cta_ao">Mở tài khoản miễn phí tại đây</a>
+        <button class="btn--green" data-copy="AO" data-i18n="copy_ao">Sao chép link AlgosOne</button>
       </div>
     </article>
   </section>
 
+  <!-- === Câu cuối trang (thay vùng khoanh đỏ ở footer) === -->
   <footer style="margin-top:14px;color:var(--muted);font-size:13px;text-align:center">
-    © <span id="y"></span> — <span data-i18n="foot">Giao diện phong thủy FUN 3D. Không phải lời khuyên đầu tư.</span>
+    © <span id="y"></span> — <span data-i18n="foot">Trang dành cho liên kết giới thiệu. Vui lòng tự đánh giá rủi ro trước khi giao dịch.</span>
   </footer>
 </div>
 
-<!-- Sticky CTA -->
+<!-- Sticky CTA (vàng) -->
 <div class="sticky" role="navigation">
-  <a data-link="bn" class="btn btn--accent" target="_blank" rel="noopener" data-i18n="cta_bn">Mở tài khoản Binance</a>
-  <a data-link="ao" class="btn btn--accent" target="_blank" rel="noopener" data-i18n="cta_ao">Mở tài khoản AlgosOne</a>
+  <a data-link="bn" class="btn--gold" target="_blank" rel="noopener" data-i18n="cta_bn">Mở tài khoản miễn phí tại đây</a>
+  <a data-link="ao" class="btn--gold" target="_blank" rel="noopener" data-i18n="cta_ao">Mở tài khoản miễn phí tại đây</a>
 </div>
 
 <script>
-  /* ===== Links + ?src= giữ nguyên ===== */
+  /* ===== Links + ?src= ===== */
   const LINKS = {
     BN: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=default",
     AO: "https://algosone.page.link/MbtR"
@@ -247,7 +238,7 @@
       setTimeout(()=>{ el.classList.remove('ok'); el.textContent = old; }, 1200);
     }).catch(()=>alert('Copy failed'));
   }
-  document.querySelectorAll('.copy').forEach(btn=>{
+  document.querySelectorAll('[data-copy]').forEach(btn=>{
     btn.addEventListener('click', ()=>{ const k = btn.dataset.copy; doCopy(withSrc(LINKS[k]), btn); });
   });
 
@@ -264,7 +255,7 @@
   const wheel = document.getElementById('wheel'); const spinBtn = document.getElementById('spinBtn');
   spinBtn.addEventListener('click', ()=>{
     wheel.classList.remove('spin'); void wheel.offsetWidth; wheel.classList.add('spin');
-    setTimeout(()=>{ spinBtn.textContent = dict[cur]['spin_done']; spinBtn.classList.add('btn--accent'); confetti(); }, 2200);
+    setTimeout(()=>{ spinBtn.textContent = dict[cur]['spin_done']; spinBtn.classList.add('ok'); confetti(); }, 2200);
   });
 
   // Confetti
@@ -313,43 +304,69 @@
   // Year
   const y=document.getElementById('y'); if(y) y.textContent=new Date().getFullYear();
 
-  // ===== Bilingual dict =====
+  /* ===== Bilingual dict (đã cập nhật nội dung mới) ===== */
   const dict = {
-    vi: { hero_title:"Cổng Tài Lộc — Binance & AlgosOne", hero_sub:"Giao diện phong thủy FUN 3D. Chạm là mở tài khoản. Hai lựa chọn trung tâm: Binance & AlgosOne.",
-      cta_bn:"Mở tài khoản Binance", cta_ao:"Mở tài khoản AlgosOne", copy_bn:"Sao chép link Binance", copy_ao:"Sao chép link AlgosOne",
-      share:"Chia sẻ", share_text:"Cổng đăng ký Binance & AlgosOne (FUN 3D)", spin:"Quay mở lộc", spin_done:"Sẵn sàng — Bấm MỞ ngay!",
-      joined:"người đã mở hôm nay", ends:"Cơ hội hôm nay còn", trending:"Đang thịnh hành",
-      b_title:"Binance (BNB)", b_pill:"Giao dịch • Earn • Launchpool • Giảm phí",
+    vi: {
+      hero_title:"Chạm nút vàng – mở tài khoản miễn phí ngay",
+      hero_sub:"Chọn Binance hoặc AlgosOne để bắt đầu. Liên kết chính thức, thao tác nhanh, hỗ trợ tiếng Việt & tiếng Anh.",
+      cta_bn:"Mở tài khoản miễn phí tại đây",
+      cta_ao:"Mở tài khoản miễn phí tại đây",
+      copy_bn:"Sao chép link Binance",
+      copy_ao:"Sao chép link AlgosOne",
+      share:"Chia sẻ",
+      share_text:"Trang mở tài khoản Binance & AlgosOne (nút vàng, miễn phí)",
+      spin:"Quay mở lộc",
+      spin_done:"Sẵn sàng — Bấm nút vàng!",
+      joined:"người đã mở hôm nay",
+      ends:"Cơ hội hôm nay còn",
+      trending:"Đang thịnh hành",
+      b_title:"Binance (BNB)",
+      b_pill:"Giao dịch • Earn • Launchpool • Giảm phí",
       b_li1:"<b>Sản phẩm:</b> Spot, Margin, <b>Futures</b>, Options, Convert.",
       b_li2:"<b>Gia tăng tài sản:</b> Earn / Simple Earn, <b>Launchpool/Launchpad</b>.",
       b_li3:"<b>Tiết kiệm phí:</b> dùng <b>BNB</b> thanh toán phí để nhận mức giảm tương ứng.",
       b_li4:"<b>An toàn &amp; tuân thủ:</b> KYC, 2FA, Proof-of-Reserves, hỗ trợ toàn cầu.",
       b_li5:"<b>Ứng dụng mạnh:</b> biểu đồ TradingView, lệnh nâng cao, app mượt.",
-      a_title:"AlgosOne", a_pill:"AI Trading • Copy Strategy • Kỷ luật lệnh",
+      a_title:"AlgosOne",
+      a_pill:"AI Trading • Copy Strategy • Kỷ luật lệnh",
       a_li1:"<b>Hỗ trợ AI/thuật toán:</b> gợi ý theo dữ liệu, giảm cảm tính.",
       a_li2:"<b>Chiến lược tự động:</b> đặt sẵn entry/exit/SL/TP theo quy tắc.",
       a_li3:"<b>Copy Strategy:</b> theo dõi &amp; sao chép chiến lược có lịch sử hiệu suất (tự đánh giá rủi ro).",
       a_li4:"<b>Dashboard trực quan:</b> theo dõi tín hiệu &amp; trạng thái lệnh.",
       a_li5:"<b>3 bước:</b> Mở tài khoản → Cấu hình rủi ro → Kích hoạt chiến lược.",
-      foot:"Giao diện phong thủy FUN 3D. Không phải lời khuyên đầu tư.", copied:"Đã sao chép ✓"
+      foot:"Trang dành cho liên kết giới thiệu. Vui lòng tự đánh giá rủi ro trước khi giao dịch.",
+      copied:"Đã sao chép ✓"
     },
-    en: { hero_title:"Wealth Gateway — Binance & AlgosOne", hero_sub:"Feng-shui FUN 3D landing. Tap to open an account. Two central options: Binance & AlgosOne.",
-      cta_bn:"Open Binance Account", cta_ao:"Open AlgosOne Account", copy_bn:"Copy Binance Link", copy_ao:"Copy AlgosOne Link",
-      share:"Share", share_text:"Signup hub for Binance & AlgosOne (FUN 3D)", spin:"Spin to Join", spin_done:"Ready — Tap OPEN!",
-      joined:"people joined today", ends:"Today ends in", trending:"Trending now",
-      b_title:"Binance (BNB)", b_pill:"Trading • Earn • Launchpool • Fee discounts",
+    en: {
+      hero_title:"Tap the gold button — open a free account now",
+      hero_sub:"Choose Binance or AlgosOne. Official links, quick flow, Vietnamese & English supported.",
+      cta_bn:"Open a free account here",
+      cta_ao:"Open a free account here",
+      copy_bn:"Copy Binance Link",
+      copy_ao:"Copy AlgosOne Link",
+      share:"Share",
+      share_text:"Signup hub for Binance & AlgosOne (gold CTA, free)",
+      spin:"Spin to Join",
+      spin_done:"Ready — tap the gold button!",
+      joined:"people joined today",
+      ends:"Today ends in",
+      trending:"Trending now",
+      b_title:"Binance (BNB)",
+      b_pill:"Trading • Earn • Launchpool • Fee discounts",
       b_li1:"<b>Products:</b> Spot, Margin, <b>Futures</b>, Options, Convert.",
       b_li2:"<b>Grow assets:</b> Earn / Simple Earn, <b>Launchpool/Launchpad</b>.",
       b_li3:"<b>Save fees:</b> pay with <b>BNB</b> for eligible discounts.",
       b_li4:"<b>Security & compliance:</b> KYC, 2FA, Proof of Reserves, global support.",
       b_li5:"<b>Powerful app:</b> TradingView charts, advanced orders.",
-      a_title:"AlgosOne", a_pill:"AI Trading • Copy Strategy • Disciplined orders",
+      a_title:"AlgosOne",
+      a_pill:"AI Trading • Copy Strategy • Disciplined orders",
       a_li1:"<b>AI/Algorithmic assist:</b> data-driven suggestions to reduce bias.",
       a_li2:"<b>Automated strategies:</b> preset entry/exit/SL/TP.",
       a_li3:"<b>Copy Strategy:</b> follow & copy strategies with historical performance (assess your own risk).",
       a_li4:"<b>Intuitive dashboard:</b> track signals & positions.",
       a_li5:"<b>3 steps:</b> Open account → Configure risk → Activate strategy.",
-      foot:"FUN 3D feng-shui interface. Not financial advice.", copied:"Copied ✓"
+      foot:"Affiliate landing page. Please assess risks before trading.",
+      copied:"Copied ✓"
     }
   };
   let cur=(localStorage.getItem('lang')||(navigator.language||'vi').slice(0,2)).toLowerCase(); if(cur!=='en') cur='vi';
