@@ -4,21 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Cổng Tài Lộc — Binance & AlgosOne</title>
-<meta name="description" content="Giao diện đen phong thủy, Trái Đất 3D xoay, CTA vàng: Mở tài khoản miễn phí tại đây. Ticker, Spin-to-Join, confetti, counter, countdown. Song ngữ Việt–Anh.">
+<meta name="description" content="Giao diện đen phong thủy, Trái Đất 3D xoay đẹp mắt, CTA vàng: Mở tài khoản miễn phí tại đây. Ticker, Spin-to-Join, confetti, counter, countdown. Song ngữ Việt–Anh.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#000000">
 
 <style>
-  /* ===== Bảng màu mới (đen đậm – nút vàng, nút phụ xanh lá) ===== */
+  /* ===== Palette: đen đậm – CTA vàng – phụ xanh lá ===== */
   :root{
-    --bg:#000; --bg2:#000; --card:#0a0a0a; --text:#f8fbff; --muted:#9fb2c2;
+    --bg:#000; --bg2:#000; --card:#0a0a0a; --text:#f6fbff; --muted:#a8bdd0;
     --green:#0eba6a; --green-deep:#0a6c40;
-    --gold:#ffd24d; --gold-deep:#a57a00;
+    --gold:#ffd24d; --gold-border:#e6b83a;
     --cyan:#08d0ff;
     --ring:0 0 0 1px rgba(14,186,106,.45), 0 0 80px rgba(8,208,255,.16), inset 0 1px 0 rgba(255,255,255,.05);
     --radius:16px; --shadow:0 16px 60px rgba(0,0,0,.7);
   }
-
   *{box-sizing:border-box}
   body{
     margin:0;
@@ -48,28 +47,26 @@
 
   /* ===== CTA ===== */
   .cta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:12px}
-  /* nút vàng: dùng cho OPEN */
-  .btn--gold{appearance:none;border:0;cursor:pointer;text-decoration:none;font-weight:900;letter-spacing:.2px;
+  .btn--gold{appearance:none;border:1px solid var(--gold-border);cursor:pointer;text-decoration:none;font-weight:900;letter-spacing:.2px;
        padding:14px 18px;border-radius:14px;transition:.18s transform,.18s box-shadow,.18s background,.18s border-color;
-       color:#1a1400;background:linear-gradient(180deg,#ffe37a,#ffd24d); border:1px solid #e6b83a; box-shadow:0 8px 24px rgba(255,210,77,.25)}
+       color:#1a1400;background:linear-gradient(180deg,#ffe989,#ffd24d); box-shadow:0 8px 24px rgba(255,210,77,.25)}
   .btn--gold:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(255,210,77,.35)}
-  /* nút phụ xanh lá đậm: copy/share */
   .btn--green{appearance:none;border:1px solid rgba(14,186,106,.55);cursor:pointer;font-weight:800;
        padding:12px 14px;border-radius:12px;color:#def;background:linear-gradient(180deg,rgba(14,186,106,.24),rgba(10,108,64,.24))}
   .btn--green.ok{background:linear-gradient(180deg,rgba(14,186,106,.38),rgba(10,108,64,.34));color:#083}
 
-  /* ===== TRÁI ĐẤT 3D xoay tròn (ở giữa) ===== */
+  /* ===== TRÁI ĐẤT 3D xoay (đẹp – layers clouds/lat-long) ===== */
   .globe-wrap{display:flex;justify-content:center;margin-top:8px}
   .globe{
-    width:min(220px,50vw); aspect-ratio:1/1; border-radius:50%; position:relative; overflow:hidden;
+    width:min(240px,54vw); aspect-ratio:1/1; border-radius:50%; position:relative; overflow:hidden;
     background:
-      radial-gradient(circle at 35% 35%, rgba(255,255,255,.22) 0%, rgba(255,255,255,.07) 36%, transparent 42%),
-      radial-gradient(circle at 50% 60%, rgba(0,0,0,.45), transparent 55%),
-      radial-gradient(circle at 50% 50%, #0a2842 0%, #083b5c 55%, #062a46 100%);
+      radial-gradient(circle at 35% 35%, rgba(255,255,255,.25) 0%, rgba(255,255,255,.07) 34%, transparent 42%),
+      radial-gradient(circle at 48% 60%, rgba(0,0,0,.45), transparent 55%),
+      radial-gradient(circle at 50% 50%, #07253d 0%, #0a3960 55%, #062a46 100%);
     box-shadow:0 22px 60px rgba(0,0,0,.7), inset 0 0 34px rgba(0,0,0,.45);
     transform-style:preserve-3d;
   }
-  /* lưới xoay */
+  /* kinh vĩ tuyến */
   .globe::before{
     content:""; position:absolute; inset:-2%; border-radius:50%;
     background:
@@ -77,9 +74,16 @@
       repeating-radial-gradient(circle at 50% 50%, transparent 0 11%, rgba(8,208,255,.12) 11.4% 11.9%);
     animation:spin 12s linear infinite;
   }
-  .globe::after{content:""; position:absolute; inset:-12%; border-radius:50%;
-                box-shadow:0 0 120px rgba(255,210,77,.22), inset 0 0 90px rgba(8,208,255,.18); pointer-events:none;}
+  /* mây mù xoay chậm */
+  .globe::after{
+    content:""; position:absolute; inset:-8%; border-radius:50%;
+    background:
+      radial-gradient(60% 40% at 40% 30%, rgba(255,255,255,.09), transparent 60%),
+      radial-gradient(50% 35% at 70% 65%, rgba(255,255,255,.06), transparent 70%);
+    filter:blur(6px); mix-blend-mode:screen; animation:clouds 30s linear infinite;
+  }
   @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes clouds{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
 
   /* ===== Ticker ===== */
   .ticker{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0 8px}
@@ -90,6 +94,11 @@
   .chg.up{color:#47ff9f}.chg.down{color:#ff7979}
   .flash{animation:flash .28s ease}
   @keyframes flash{from{filter:brightness(2)}to{filter:brightness(1)}}
+
+  /* ===== Reasons (lý do bấm ngay) ===== */
+  .reasons{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px 0 2px;padding:0;list-style:none}
+  .reasons li{padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.22);
+    background:rgba(0,0,0,.35);font-weight:700;color:#cfe3f5}
 
   /* ===== GRID ===== */
   .grid{display:grid;gap:16px;margin-top:16px}
@@ -129,14 +138,19 @@
       <button class="langbtn" id="enBtn">EN</button>
     </div>
 
-    <!-- Trái Đất 3D xoay tròn -->
+    <!-- Trái Đất 3D xoay -->
     <div class="globe-wrap"><div class="globe"></div></div>
 
-    <!-- === CÂU GIỚI THIỆU THU HÚT (thay vùng khoanh đỏ) === -->
-    <h1 class="hero-title" data-i18n="hero_title">Chạm nút vàng – mở tài khoản miễn phí ngay</h1>
-    <p class="sub" data-i18n="hero_sub">
-      Chọn Binance hoặc AlgosOne để bắt đầu. Liên kết chính thức, thao tác nhanh, hỗ trợ tiếng Việt &amp; tiếng Anh.
-    </p>
+    <!-- Headline/Sub kích hoạt -->
+    <h1 class="hero-title" data-i18n="hero_title">Chạm nút vàng — mở tài khoản miễn phí ngay</h1>
+    <p class="sub" data-i18n="hero_sub">Chọn Binance hoặc AlgosOne. Liên kết chính thức, thao tác nhanh, hỗ trợ tiếng Việt &amp; tiếng Anh.</p>
+
+    <!-- Lý do bấm ngay -->
+    <ul class="reasons">
+      <li data-i18n="r1">Miễn phí 100% mở tài khoản</li>
+      <li data-i18n="r2">Nhanh ≈ 30 giây • VI/EN</li>
+      <li data-i18n="r3">Liên kết chính thức • An toàn</li>
+    </ul>
 
     <!-- Ticker -->
     <div class="ticker" aria-live="polite">
@@ -145,7 +159,7 @@
       <div class="tick"><span class="sym">USDT</span><span class="price" data-sym="USDT">1.000</span><span class="chg up" data-chg="USDT">+0.0%</span></div>
     </div>
 
-    <!-- CTA (nút vàng “Mở tài khoản miễn phí tại đây”) -->
+    <!-- CTA vàng -->
     <div class="cta">
       <a data-link="bn" class="btn--gold" target="_blank" rel="noopener" aria-label="Mở tài khoản Binance miễn phí" data-i18n="cta_bn">Mở tài khoản miễn phí tại đây</a>
       <button class="btn--green" data-copy="BN" data-i18n="copy_bn">Sao chép link Binance</button>
@@ -160,14 +174,15 @@
       <button class="btn--green" id="spinBtn" data-i18n="spin">Quay mở lộc</button>
     </div>
 
+    <!-- FOMO/Stats -->
     <div class="stats">
-      <span class="chip">🔥 <span id="liveCount">128</span> <span data-i18n="joined">người đã mở hôm nay</span></span>
+      <span class="chip">🔥 <span id="liveCount">128</span> <span data-i18n="joined">người hoàn tất đăng ký hôm nay</span></span>
       <span class="chip">⏳ <span data-i18n="ends">Cơ hội hôm nay còn</span>: <span id="countdown">00:00:00</span></span>
       <span class="chip">🏆 <span data-i18n="trending">Đang thịnh hành</span></span>
     </div>
   </section>
 
-  <!-- Features (giữ nguyên nội dung) -->
+  <!-- Features -->
   <section class="grid" aria-label="Tính năng">
     <article class="card">
       <h2 class="sect-title" data-i18n="b_title">Binance (BNB)</h2>
@@ -175,6 +190,10 @@
       <ul>
         <li data-i18n="b_li1"><b>Sản phẩm:</b> Spot, Margin, <b>Futures</b>, Options, Convert.</li>
         <li data-i18n="b_li2"><b>Gia tăng tài sản:</b> Earn / Simple Earn, <b>Launchpool/Launchpad</b>.</li>
+        <!-- === BỔ SUNG TÍCH LUỸ/TRÍCH TRỮ === -->
+        <li data-i18n="b_li2b"><b>Tích luỹ tài sản số:</b> <u>Auto-Invest (DCA)</u> &amp; Simple Earn — mua định kỳ, lưu trữ dài hạn như “vàng số”.</li>
+        <li data-i18n="b_li2c"><b>Trích trữ an toàn:</b> giữ trên ví Binance hoặc rút về ví riêng; dễ chuyển đổi qua stablecoin.</li>
+        <!-- =================================== -->
         <li data-i18n="b_li3"><b>Tiết kiệm phí:</b> dùng <b>BNB</b> thanh toán phí để nhận mức giảm tương ứng.</li>
         <li data-i18n="b_li4"><b>An toàn &amp; tuân thủ:</b> KYC, 2FA, Proof-of-Reserves, hỗ trợ toàn cầu.</li>
         <li data-i18n="b_li5"><b>Ứng dụng mạnh:</b> biểu đồ TradingView, lệnh nâng cao, app mượt.</li>
@@ -202,20 +221,20 @@
     </article>
   </section>
 
-  <!-- === Câu cuối trang (thay vùng khoanh đỏ ở footer) === -->
+  <!-- Footer -->
   <footer style="margin-top:14px;color:var(--muted);font-size:13px;text-align:center">
-    © <span id="y"></span> — <span data-i18n="foot">Trang dành cho liên kết giới thiệu. Vui lòng tự đánh giá rủi ro trước khi giao dịch.</span>
+    © <span id="y"></span> — <span data-i18n="foot">Trang liên kết giới thiệu. Miễn phí mở tài khoản; hãy tự đánh giá rủi ro trước khi giao dịch.</span>
   </footer>
 </div>
 
-<!-- Sticky CTA (vàng) -->
+<!-- Sticky CTA -->
 <div class="sticky" role="navigation">
   <a data-link="bn" class="btn--gold" target="_blank" rel="noopener" data-i18n="cta_bn">Mở tài khoản miễn phí tại đây</a>
   <a data-link="ao" class="btn--gold" target="_blank" rel="noopener" data-i18n="cta_ao">Mở tài khoản miễn phí tại đây</a>
 </div>
 
 <script>
-  /* ===== Links + ?src= ===== */
+  /* ===== Links + optional ?src= ===== */
   const LINKS = {
     BN: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=default",
     AO: "https://algosone.page.link/MbtR"
@@ -231,9 +250,18 @@
     a.href = withSrc(key==='BN' ? LINKS.BN : LINKS.AO);
   });
 
-  // Copy
+  // Copy + haptic ripple
+  function ripple(el){
+    const r=document.createElement('span');
+    r.style.position='absolute'; r.style.inset='0'; r.style.borderRadius='inherit';
+    r.style.boxShadow='0 0 0 0 rgba(255,210,77,.65)'; r.style.transition='box-shadow .35s ease'; r.style.pointerEvents='none';
+    el.style.position='relative'; el.appendChild(r);
+    requestAnimationFrame(()=>{ r.style.boxShadow='0 0 0 18px rgba(255,210,77,0)'; });
+    setTimeout(()=> r.remove(), 360);
+  }
   function doCopy(text, el){
     navigator.clipboard.writeText(text).then(()=>{
+      if(navigator.vibrate) navigator.vibrate(15); ripple(el);
       const old = el.textContent; el.classList.add('ok'); el.textContent = dict[cur]['copied'];
       setTimeout(()=>{ el.classList.remove('ok'); el.textContent = old; }, 1200);
     }).catch(()=>alert('Copy failed'));
@@ -287,7 +315,7 @@
   }
   setInterval(tick, 1000); tick();
 
-  // Ticker fake
+  // Ticker giả lập
   const prices = { BTC: 62315, ETH: 2476, USDT: 1.000 };
   const pct    = { BTC: 0.8,   ETH:-0.4,  USDT: 0.0 };
   function fmt(n, sym){ if(sym==='USDT') return n.toFixed(3); if(sym==='ETH') return Math.max(0.01,n).toFixed(0); return Math.max(1,n).toFixed(0); }
@@ -301,71 +329,71 @@
   }
   setInterval(()=>['BTC','ETH','USDT'].forEach(step), 1800);
 
+  // Sticky CTA thông minh: hiện khi CTA chính rời màn
+  const heroCta = document.querySelector('.cta');
+  const sticky = document.querySelector('.sticky');
+  if(heroCta && sticky && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver(e=>{
+      sticky.style.display = e[0].isIntersecting ? 'none' : 'grid';
+    },{threshold:0.1});
+    io.observe(heroCta);
+  }
+
   // Year
   const y=document.getElementById('y'); if(y) y.textContent=new Date().getFullYear();
 
-  /* ===== Bilingual dict (đã cập nhật nội dung mới) ===== */
+  /* ===== Bilingual dict (đã cập nhật) ===== */
   const dict = {
     vi: {
-      hero_title:"Chạm nút vàng – mở tài khoản miễn phí ngay",
-      hero_sub:"Chọn Binance hoặc AlgosOne để bắt đầu. Liên kết chính thức, thao tác nhanh, hỗ trợ tiếng Việt & tiếng Anh.",
-      cta_bn:"Mở tài khoản miễn phí tại đây",
-      cta_ao:"Mở tài khoản miễn phí tại đây",
-      copy_bn:"Sao chép link Binance",
-      copy_ao:"Sao chép link AlgosOne",
-      share:"Chia sẻ",
-      share_text:"Trang mở tài khoản Binance & AlgosOne (nút vàng, miễn phí)",
-      spin:"Quay mở lộc",
-      spin_done:"Sẵn sàng — Bấm nút vàng!",
-      joined:"người đã mở hôm nay",
-      ends:"Cơ hội hôm nay còn",
-      trending:"Đang thịnh hành",
-      b_title:"Binance (BNB)",
-      b_pill:"Giao dịch • Earn • Launchpool • Giảm phí",
+      hero_title:"Chạm nút vàng — mở tài khoản miễn phí ngay",
+      hero_sub:"Chọn Binance hoặc AlgosOne. Liên kết chính thức, thao tác nhanh, hỗ trợ tiếng Việt & tiếng Anh.",
+      r1:"Miễn phí 100% mở tài khoản", r2:"Nhanh ≈ 30 giây • VI/EN", r3:"Liên kết chính thức • An toàn",
+      cta_bn:"Mở tài khoản miễn phí tại đây", cta_ao:"Mở tài khoản miễn phí tại đây",
+      copy_bn:"Sao chép link Binance", copy_ao:"Sao chép link AlgosOne",
+      share:"Chia sẻ", share_text:"Trang mở tài khoản Binance & AlgosOne (nút vàng, miễn phí)",
+      spin:"Quay mở lộc", spin_done:"Sẵn sàng — Bấm nút vàng!",
+      joined:"người hoàn tất đăng ký hôm nay", ends:"Cơ hội hôm nay còn", trending:"Đang thịnh hành",
+      b_title:"Binance (BNB)", b_pill:"Giao dịch • Earn • Launchpool • Giảm phí",
       b_li1:"<b>Sản phẩm:</b> Spot, Margin, <b>Futures</b>, Options, Convert.",
       b_li2:"<b>Gia tăng tài sản:</b> Earn / Simple Earn, <b>Launchpool/Launchpad</b>.",
+      b_li2b:"<b>Tích luỹ tài sản số:</b> <u>Auto-Invest (DCA)</u> &amp; Simple Earn — mua định kỳ, lưu trữ dài hạn như “vàng số”.",
+      b_li2c:"<b>Trích trữ an toàn:</b> giữ trên ví Binance hoặc rút về ví riêng; dễ chuyển đổi qua stablecoin.",
       b_li3:"<b>Tiết kiệm phí:</b> dùng <b>BNB</b> thanh toán phí để nhận mức giảm tương ứng.",
       b_li4:"<b>An toàn &amp; tuân thủ:</b> KYC, 2FA, Proof-of-Reserves, hỗ trợ toàn cầu.",
       b_li5:"<b>Ứng dụng mạnh:</b> biểu đồ TradingView, lệnh nâng cao, app mượt.",
-      a_title:"AlgosOne",
-      a_pill:"AI Trading • Copy Strategy • Kỷ luật lệnh",
+      a_title:"AlgosOne", a_pill:"AI Trading • Copy Strategy • Kỷ luật lệnh",
       a_li1:"<b>Hỗ trợ AI/thuật toán:</b> gợi ý theo dữ liệu, giảm cảm tính.",
       a_li2:"<b>Chiến lược tự động:</b> đặt sẵn entry/exit/SL/TP theo quy tắc.",
       a_li3:"<b>Copy Strategy:</b> theo dõi &amp; sao chép chiến lược có lịch sử hiệu suất (tự đánh giá rủi ro).",
       a_li4:"<b>Dashboard trực quan:</b> theo dõi tín hiệu &amp; trạng thái lệnh.",
       a_li5:"<b>3 bước:</b> Mở tài khoản → Cấu hình rủi ro → Kích hoạt chiến lược.",
-      foot:"Trang dành cho liên kết giới thiệu. Vui lòng tự đánh giá rủi ro trước khi giao dịch.",
+      foot:"Trang liên kết giới thiệu. Miễn phí mở tài khoản; hãy tự đánh giá rủi ro trước khi giao dịch.",
       copied:"Đã sao chép ✓"
     },
     en: {
       hero_title:"Tap the gold button — open a free account now",
       hero_sub:"Choose Binance or AlgosOne. Official links, quick flow, Vietnamese & English supported.",
-      cta_bn:"Open a free account here",
-      cta_ao:"Open a free account here",
-      copy_bn:"Copy Binance Link",
-      copy_ao:"Copy AlgosOne Link",
-      share:"Share",
-      share_text:"Signup hub for Binance & AlgosOne (gold CTA, free)",
-      spin:"Spin to Join",
-      spin_done:"Ready — tap the gold button!",
-      joined:"people joined today",
-      ends:"Today ends in",
-      trending:"Trending now",
-      b_title:"Binance (BNB)",
-      b_pill:"Trading • Earn • Launchpool • Fee discounts",
+      r1:"100% free sign-up", r2:"Fast ≈ 30s • VI/EN", r3:"Official links • Secure",
+      cta_bn:"Open a free account here", cta_ao:"Open a free account here",
+      copy_bn:"Copy Binance Link", copy_ao:"Copy AlgosOne Link",
+      share:"Share", share_text:"Signup hub for Binance & AlgosOne (gold CTA, free)",
+      spin:"Spin to Join", spin_done:"Ready — tap the gold button!",
+      joined:"people completed sign-up today", ends:"Today ends in", trending:"Trending now",
+      b_title:"Binance (BNB)", b_pill:"Trading • Earn • Launchpool • Fee discounts",
       b_li1:"<b>Products:</b> Spot, Margin, <b>Futures</b>, Options, Convert.",
       b_li2:"<b>Grow assets:</b> Earn / Simple Earn, <b>Launchpool/Launchpad</b>.",
+      b_li2b:"<b>Accumulate crypto:</b> <u>Auto-Invest (DCA)</u> &amp; Simple Earn — schedule buys, long-term hold like “digital gold”.",
+      b_li2c:"<b>Store safely:</b> keep on Binance wallet or withdraw to self-custody; easy swap to stablecoins.",
       b_li3:"<b>Save fees:</b> pay with <b>BNB</b> for eligible discounts.",
       b_li4:"<b>Security & compliance:</b> KYC, 2FA, Proof of Reserves, global support.",
       b_li5:"<b>Powerful app:</b> TradingView charts, advanced orders.",
-      a_title:"AlgosOne",
-      a_pill:"AI Trading • Copy Strategy • Disciplined orders",
+      a_title:"AlgosOne", a_pill:"AI Trading • Copy Strategy • Disciplined orders",
       a_li1:"<b>AI/Algorithmic assist:</b> data-driven suggestions to reduce bias.",
       a_li2:"<b>Automated strategies:</b> preset entry/exit/SL/TP.",
       a_li3:"<b>Copy Strategy:</b> follow & copy strategies with historical performance (assess your own risk).",
       a_li4:"<b>Intuitive dashboard:</b> track signals & positions.",
       a_li5:"<b>3 steps:</b> Open account → Configure risk → Activate strategy.",
-      foot:"Affiliate landing page. Please assess risks before trading.",
+      foot:"Affiliate landing page. Free to sign up; assess risks before trading.",
       copied:"Copied ✓"
     }
   };
