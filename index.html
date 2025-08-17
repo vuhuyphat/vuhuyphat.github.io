@@ -3,167 +3,349 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Vào Là Bấm Ngay — Binance & AlgosOne</title>
-<meta name="description" content="Hero toàn màn hình, CTA cực lớn. Bấm mở tài khoản Binance hoặc AlgosOne ngay. Ticker BTC/ETH/USDT giả lập xanh-đỏ.">
+<title>Cổng Tài Lộc — Binance & AlgosOne</title>
+<meta name="description" content="Siêu sao FUN 3D, phong thủy tài lộc. CTA kép, Spin-to-Join, confetti vàng, counter động. Song ngữ Việt–Anh, chuyển đổi tức thì.">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#0b0f14">
+
 <style>
   :root{
-    --bg:#0b0f14; --text:#e8f0ff; --muted:#8ea0b3;
+    --bg:#0b0f14; --card:#0f1520; --text:#e8f0ff; --muted:#8ea0b3;
     --jade:#39ff88; --gold:#ffd166; --cyan:#00d1ff;
-    --ring:0 0 0 1px rgba(57,255,136,.35),0 0 60px rgba(0,209,255,.15),inset 0 1px 0 rgba(255,255,255,.06);
-    --radius:18px; --shadow:0 18px 60px rgba(0,0,0,.45);
+    --ring:0 0 0 1px rgba(57,255,136,.35),0 0 60px rgba(0,209,255,.15),inset 0 1px 0 rgba(255,255,255,.04);
+    --radius:16px; --shadow:0 10px 40px rgba(0,0,0,.35);
   }
   @media (prefers-color-scheme: light){
-    :root{ --bg:#f6f8fb; --text:#0b0f14; --muted:#4a5b6d; --shadow:0 18px 40px rgba(13,31,51,.14); }
+    :root{ --bg:#f6f8fb; --card:#ffffff; --text:#0b0f14; --muted:#4a5b6d; --shadow:0 10px 30px rgba(13,31,51,.12); }
   }
   *{box-sizing:border-box}
-  body{
-    margin:0; background:
+  body{margin:0;background:
       radial-gradient(1200px 600px at 20% -10%, rgba(0,209,255,.18), transparent 60%),
       radial-gradient(1200px 600px at 100% 10%, rgba(57,255,136,.16), transparent 60%),
-      var(--bg);
-    color:var(--text); font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Helvetica,Arial;
-  }
-  .hero{min-height:100svh; display:grid; place-items:center; padding:22px 16px; position:relative; overflow:hidden}
-  .panel{width:min(960px,100%); border-radius:var(--radius); border:1px solid rgba(255,255,255,.1); box-shadow:var(--shadow);
-          background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02)); padding:20px; isolation:isolate; position:relative; overflow:hidden}
-  .panel:before{content:""; position:absolute; inset:-1px; border-radius:inherit; box-shadow:var(--ring); pointer-events:none}
-  .title{font-size:clamp(24px,4vw,40px); line-height:1.1; margin:4px 0 6px;
-          background-image:linear-gradient(90deg,#fff,#ffe9b0,#fff); -webkit-background-clip:text; background-clip:text; color:transparent;
-          animation:shimmer 12s linear infinite}
-  @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-  .sub{color:var(--muted); margin:0 0 8px; text-align:center}
+      var(--bg); color:var(--text); font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Helvetica,Arial; line-height:1.6}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 16px 120px}
 
-  /* 3D Coin (CSS) */
-  .coin-wrap{position:absolute; right:18px; top:18px; width:140px; height:140px; perspective:800px; pointer-events:none}
-  .coin{position:absolute; inset:0; transform-style:preserve-3d; animation:spin 6s linear infinite}
-  .face,.edge{position:absolute; left:0; top:0; width:100%; height:100%; border-radius:50%}
-  .face{background:radial-gradient(circle at 30% 30%, #fff6cc 0%, #ffd166 35%, #e6b750 60%, #a97822 100%); box-shadow:inset 0 0 20px rgba(0,0,0,.25)}
-  .face.front{transform:translateZ(7px)}
-  .face.back{transform:translateZ(-7px) rotateY(180deg); filter:brightness(.9)}
-  .edge{background:linear-gradient(90deg,#e6b750,#c99a36,#e6b750,#a97822); transform:translateZ(0) rotateY(90deg); width:14px; left:63px}
+  /* HERO */
+  .hero{position:relative;border-radius:var(--radius);padding:24px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);overflow:hidden}
+  .hero:before{content:"";position:absolute;inset:-1px;border-radius:inherit;box-shadow:var(--ring);pointer-events:none}
+  .hero-title{font-size:clamp(28px,4.5vw,46px);line-height:1.08;margin:8px 0 4px;background-image:linear-gradient(90deg,#fff, #ffe9b0, #fff);-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 12s linear infinite}
+  @keyframes shimmer{0%{background-position: -200% 0}100%{background-position: 200% 0}}
+  .sub{color:var(--muted);max-width:72ch;margin-bottom:8px}
+
+  .langbar{display:flex;gap:8px;position:absolute;top:10px;right:10px}
+  .langbtn{padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.25);color:#dfe;cursor:pointer}
+  .langbtn.active{border-color:var(--gold);box-shadow:0 0 0 1px rgba(255,209,102,.35)}
+
+  .cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+  .btn{appearance:none;border:0;cursor:pointer;text-decoration:none;font-weight:800;letter-spacing:.2px;
+       padding:12px 16px;border-radius:14px;transition:.2s transform,.2s box-shadow,.2s background,.2s border-color;
+       background:#0f1b28;color:#dff;border:1px solid rgba(57,255,136,.35)}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+  .btn--accent{background:linear-gradient(120deg,rgba(57,255,136,.22),rgba(0,209,255,.22));border-color:rgba(255,209,102,.55)}
+  .copy{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.25);color:#cde;cursor:pointer;font-weight:700}
+  .copy.ok{background:rgba(57,255,136,.25);color:#063}
+
+  /* FUN 3D coin (CSS 3D) */
+  .coin-wrap{position:absolute;right:10px;top:10px;width:140px;height:140px;perspective:800px;pointer-events:none}
+  .coin{position:absolute;width:100%;height:100%;transform-style:preserve-3d;animation:spin 6s linear infinite}
+  .face, .edge{position:absolute;left:0;top:0;width:100%;height:100%;border-radius:50%}
+  .face{background:radial-gradient(circle at 30% 30%, #fff6cc 0%, #ffd166 35%, #e6b750 60%, #a97822 100%);box-shadow:inset 0 0 20px rgba(0,0,0,.25)}
+  .face.front{transform:translateZ(6px)}
+  .face.back{transform:translateZ(-6px) rotateY(180deg);filter:brightness(.9)}
+  .edge{background:linear-gradient(90deg,#e6b750,#c99a36,#e6b750,#a97822);transform:translateZ(0) rotateY(90deg);width:12px;left:64px}
   @keyframes spin{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
 
-  /* Fake Ticker */
-  .ticker{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:12px 0 14px}
-  .tick{display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.14);
-         background:rgba(0,0,0,.25); font-weight:700}
-  .sym{font-family:ui-monospace,Menlo,monospace; padding:2px 6px; border-radius:6px; border:1px solid rgba(255,255,255,.16)}
-  .price{min-width:84px; text-align:right}
-  .chg.up{color:#6CFF9F} .chg.down{color:#ff7a7a}
-  .flash{animation:flash .3s ease}
-  @keyframes flash{from{filter:brightness(1.8)}to{filter:brightness(1)}}
+  /* GRID FEATURES */
+  .grid{display:grid;gap:16px;margin-top:16px}
+  @media(min-width:960px){.grid{grid-template-columns:1fr 1fr}}
+  .card{background:var(--card);border-radius:var(--radius);padding:18px;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .card:before{content:"";position:absolute;inset:-1px;border-radius:inherit;box-shadow:var(--ring);pointer-events:none}
+  .sect-title{font-size:20px;margin:0 0 8px}
+  .pill{display:inline-block;padding:4px 8px;border:1px solid rgba(255,255,255,.14);border-radius:8px;color:var(--muted);font-size:12px}
+  ul{padding-left:18px;margin:8px 0} li{margin:6px 0}
 
-  /* CTA Big */
-  .cta{display:grid; grid-template-columns:1fr; gap:10px; margin-top:8px}
-  @media(min-width:720px){ .cta{grid-template-columns:1fr 1fr} }
-  .btn{appearance:none; border:0; cursor:pointer; text-decoration:none; font-weight:900; letter-spacing:.3px;
-       padding:16px; border-radius:16px; transition:.2s transform,.2s box-shadow,.2s background,.2s border-color;
-       background:#0f1b28; color:#dff; border:1px solid rgba(57,255,136,.35); text-align:center; font-size:18px}
-  .btn:hover{transform:translateY(-1px); box-shadow:0 10px 28px rgba(0,0,0,.35)}
-  .btn--accent{background:linear-gradient(120deg, rgba(57,255,136,.25), rgba(0,209,255,.22)); border-color:rgba(255,209,102,.6)}
-  .copy{padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,.18); background:rgba(0,0,0,.25); color:#cde; cursor:pointer; font-weight:800; font-size:16px}
-  .copy.ok{background:rgba(57,255,136,.25); color:#063}
+  /* SPIN-TO-JOIN */
+  .spin{display:flex;gap:10px;align-items:center;justify-content:center;margin:14px 0 2px}
+  .wheel{width:140px;height:140px;border-radius:50%;border:6px solid rgba(255,209,102,.65);
+         background:conic-gradient(#39ff88 0 60deg,#00d1ff 60deg 180deg,#ffd166 180deg 300deg,#39ff88 300deg 360deg);
+         box-shadow:0 10px 30px rgba(0,0,0,.3),inset 0 0 30px rgba(255,255,255,.15);position:relative}
+  .pin{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:18px solid #ffd166;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
+  .wheel.spin{animation:turn 2.2s cubic-bezier(.2,.8,.2,1) forwards}
+  @keyframes turn{to{transform:rotate(1220deg)}}
 
-  /* Lock scroll overlay / portal */
-  .veil{position:fixed; inset:0; display:grid; place-items:center; background:radial-gradient(1200px 800px at 50% 20%, rgba(255,209,102,.18), transparent 60%), rgba(0,0,0,.72);
-         z-index:50; animation:veilOut 1.6s ease forwards}
-  @keyframes veilOut{0%{opacity:1}100%{opacity:0; visibility:hidden}}
+  /* Sticky CTA */
+  .sticky{position:fixed;left:0;right:0;bottom:0;padding:max(8px,env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,rgba(0,0,0,.45) 28%,rgba(0,0,0,.65) 100%);
+          display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid rgba(255,255,255,.1);backdrop-filter:blur(8px);z-index:50}
+  @media(min-width:960px){.sticky{display:none}}
 
-  /* Footer mini */
-  .foot{margin-top:12px; color:var(--muted); font-size:12px; text-align:center}
+  /* Counter/FOMO */
+  .stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;color:var(--muted);font-size:13px}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14)}
 </style>
 </head>
 <body>
-<section class="hero" role="main" id="main">
-  <div class="panel">
-    <h1 class="title">Vào là bấm ngay</h1>
-    <p class="sub">Chọn nền tảng bạn muốn mở. Giá BTC/ETH/USDT đang chạy phía dưới. Bấm để mở tài khoản.</p>
-
-    <!-- 3D coin -->
-    <div class="coin-wrap" aria-hidden="true">
-      <div class="coin"><div class="face front"></div><div class="edge"></div><div class="face back"></div></div>
+<div class="wrap">
+  <section class="hero" aria-label="Cổng tài lộc">
+    <div class="langbar" role="group" aria-label="Language switch">
+      <button class="langbtn active" id="viBtn">VI</button>
+      <button class="langbtn" id="enBtn">EN</button>
     </div>
 
-    <!-- Fake Ticker -->
-    <div class="ticker" id="ticker" aria-live="polite">
-      <div class="tick"><span class="sym">BTC</span><span class="price" data-sym="BTC">62315</span><span class="chg up" data-chg="BTC">+0.8%</span></div>
-      <div class="tick"><span class="sym">ETH</span><span class="price" data-sym="ETH">2476</span><span class="chg down" data-chg="ETH">-0.4%</span></div>
-      <div class="tick"><span class="sym">USDT</span><span class="price" data-sym="USDT">1.000</span><span class="chg up" data-chg="USDT">+0.0%</span></div>
-    </div>
+    <h1 class="hero-title" data-i18n="hero_title">Cổng Tài Lộc — Binance &amp; AlgosOne</h1>
+    <p class="sub" data-i18n="hero_sub">Giao diện phong thủy FUN 3D. Chạm là mở tài khoản. Hai lựa chọn trung tâm: Binance &amp; AlgosOne.</p>
 
-    <!-- CTA -->
     <div class="cta">
-      <a id="bn" class="btn btn--accent" target="_blank" rel="noopener" href="https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=default">MỞ TÀI KHOẢN BINANCE</a>
-      <a id="ao" class="btn btn--accent" target="_blank" rel="noopener" href="https://algosone.page.link/MbtR">MỞ TÀI KHOẢN ALGOSONE</a>
-      <button class="copy" data-copy="https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=default">Sao chép link Binance</button>
-      <button class="copy" data-copy="https://algosone.page.link/MbtR">Sao chép link AlgosOne</button>
+      <a data-link="bn" class="btn btn--accent" target="_blank" rel="noopener" data-i18n="cta_bn">Mở tài khoản Binance</a>
+      <button class="copy" data-copy="BN" data-i18n="copy_bn">Sao chép link Binance</button>
+      <a data-link="ao" class="btn btn--accent" target="_blank" rel="noopener" data-i18n="cta_ao">Mở tài khoản AlgosOne</a>
+      <button class="copy" data-copy="AO" data-i18n="copy_ao">Sao chép link AlgosOne</button>
+      <button class="btn" id="shareBtn" data-i18n="share">Chia sẻ</button>
     </div>
 
-    <div class="foot">© <span id="y"></span> — Giao diện phong thủy FUN 3D. Không phải lời khuyên đầu tư.</div>
-  </div>
-</section>
+    <!-- Fun 3D coin (CSS 3D) -->
+    <div class="coin-wrap" aria-hidden="true">
+      <div class="coin">
+        <div class="face front"></div>
+        <div class="edge"></div>
+        <div class="face back"></div>
+      </div>
+    </div>
 
-<!-- Initial overlay to focus CTA -->
-<div class="veil" id="veil">
-  <a class="btn btn--accent" href="#main" id="enterBtn">Bắt đầu</a>
+    <!-- Gamification Spin-to-Join -->
+    <div class="spin">
+      <div class="wheel" id="wheel"><div class="pin"></div></div>
+      <button class="btn" id="spinBtn" data-i18n="spin">Quay mở lộc</button>
+    </div>
+
+    <!-- FOMO/Stats -->
+    <div class="stats">
+      <span class="chip">🔥 <span id="liveCount">128</span> <span data-i18n="joined">người đã mở hôm nay</span></span>
+      <span class="chip">⏳ <span data-i18n="ends">Cơ hội hôm nay còn</span>: <span id="countdown">00:00:00</span></span>
+      <span class="chip">🏆 <span data-i18n="trending">Đang thịnh hành</span></span>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="grid" aria-label="Tính năng">
+    <article class="card">
+      <h2 class="sect-title" data-i18n="b_title">Binance (BNB)</h2>
+      <span class="pill" data-i18n="b_pill">Giao dịch • Earn • Launchpool • Giảm phí</span>
+      <ul>
+        <li data-i18n="b_li1"><b>Sản phẩm:</b> Spot, Margin, <b>Futures</b>, Options, Convert.</li>
+        <li data-i18n="b_li2"><b>Gia tăng tài sản:</b> Earn / Simple Earn, <b>Launchpool/Launchpad</b>.</li>
+        <li data-i18n="b_li3"><b>Tiết kiệm phí:</b> dùng <b>BNB</b> thanh toán phí để nhận mức giảm tương ứng.</li>
+        <li data-i18n="b_li4"><b>An toàn &amp; tuân thủ:</b> KYC, 2FA, Proof-of-Reserves, hỗ trợ toàn cầu.</li>
+        <li data-i18n="b_li5"><b>Ứng dụng mạnh:</b> biểu đồ TradingView, lệnh nâng cao, app mượt.</li>
+      </ul>
+      <div class="cta">
+        <a data-link="bn" class="btn btn--accent" target="_blank" rel="noopener" data-i18n="cta_bn">Mở tài khoản Binance</a>
+        <button class="copy" data-copy="BN" data-i18n="copy_bn">Sao chép link Binance</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <h2 class="sect-title" data-i18n="a_title">AlgosOne</h2>
+      <span class="pill" data-i18n="a_pill">AI Trading • Copy Strategy • Kỷ luật lệnh</span>
+      <ul>
+        <li data-i18n="a_li1"><b>Hỗ trợ AI/thuật toán:</b> gợi ý theo dữ liệu, giảm cảm tính.</li>
+        <li data-i18n="a_li2"><b>Chiến lược tự động:</b> đặt sẵn entry/exit/SL/TP theo quy tắc.</li>
+        <li data-i18n="a_li3"><b>Copy Strategy:</b> theo dõi &amp; sao chép chiến lược có lịch sử hiệu suất (tự đánh giá rủi ro).</li>
+        <li data-i18n="a_li4"><b>Dashboard trực quan:</b> theo dõi tín hiệu &amp; trạng thái lệnh.</li>
+        <li data-i18n="a_li5"><b>3 bước:</b> Mở tài khoản → Cấu hình rủi ro → Kích hoạt chiến lược.</li>
+      </ul>
+      <div class="cta">
+        <a data-link="ao" class="btn btn--accent" target="_blank" rel="noopener" data-i18n="cta_ao">Mở tài khoản AlgosOne</a>
+        <button class="copy" data-copy="AO" data-i18n="copy_ao">Sao chép link AlgosOne</button>
+      </div>
+    </article>
+  </section>
+
+  <footer style="margin-top:14px;color:var(--muted);font-size:13px">
+    © <span id="y"></span> — <span data-i18n="foot">Giao diện phong thủy FUN 3D. Không phải lời khuyên đầu tư.</span>
+  </footer>
+</div>
+
+<!-- Sticky CTA -->
+<div class="sticky" role="navigation">
+  <a data-link="bn" class="btn btn--accent" target="_blank" rel="noopener" data-i18n="cta_bn">Mở tài khoản Binance</a>
+  <a data-link="ao" class="btn btn--accent" target="_blank" rel="noopener" data-i18n="cta_ao">Mở tài khoản AlgosOne</a>
 </div>
 
 <script>
-  // Year
-  document.getElementById('y').textContent = new Date().getFullYear();
+  // ===== Links with optional ?src= =====
+  const LINKS = {
+    BN: "https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=default",
+    AO: "https://algosone.page.link/MbtR"
+  };
 
-  // Veil: lock first 1.6s to focus CTA (can skip by tapping "Bắt đầu")
-  const veil = document.getElementById('veil');
-  const enterBtn = document.getElementById('enterBtn');
-  setTimeout(()=> veil.style.display='none', 1600);
-  enterBtn.addEventListener('click', (e)=>{ e.preventDefault(); veil.style.display='none'; });
+  const src = new URLSearchParams(location.search).get('src');
+  function withSrc(base){
+    if(!src) return base;
+    try{ const u = new URL(base); u.hash = (u.hash?u.hash+'&':'#') + 'src=' + encodeURIComponent(src); return u.toString(); }
+    catch(e){ return base; }
+  }
+  document.querySelectorAll('[data-link]').forEach(a=>{
+    const key = a.getAttribute('data-link').toUpperCase();
+    a.href = withSrc(key==='BN' ? LINKS.BN : LINKS.AO);
+  });
 
-  // Copy buttons
+  // Copy
   function doCopy(text, el){
     navigator.clipboard.writeText(text).then(()=>{
-      el.classList.add('ok'); const old = el.textContent; el.textContent='Đã sao chép ✓';
+      const old = el.textContent; el.classList.add('ok'); el.textContent = dict[cur]['copied'];
       setTimeout(()=>{ el.classList.remove('ok'); el.textContent = old; }, 1200);
-    }).catch(()=> alert('Không thể sao chép'));
+    }).catch(()=>alert('Copy failed'));
   }
-  document.querySelectorAll('.copy').forEach(b=> b.addEventListener('click', ()=> doCopy(b.dataset.copy, b)));
-
-  // Ticker: fake random walk with green/red flash
-  const prices = { BTC: 62315, ETH: 2476, USDT: 1.000 };
-  const pct =    { BTC: 0.8,   ETH:-0.4,  USDT: 0.0 };
-  function fmt(n, sym){
-    if(sym==='USDT'){ return n.toFixed(3); }
-    if(sym==='ETH'){ return Math.max(0.01, n).toFixed(0); }
-    return Math.max(1, n).toFixed(0);
-  }
-  function step(sym){
-    const dir = Math.random() > .5 ? 1 : -1;
-    const mag = sym==='USDT' ? (Math.random()*0.0008) : (Math.random()* (sym==='ETH'? 4 : 25));
-    prices[sym] += dir*mag;
-    pct[sym] += (dir*(Math.random()*0.08)) * (sym==='USDT'? 0.1 : 1);
-    pct[sym] = Math.max(-9.9, Math.min(9.9, pct[sym]));
-    const priceEl = document.querySelector('[data-sym="'+sym+'"]');
-    const chgEl = document.querySelector('[data-chg="'+sym+'"]');
-    if(!priceEl || !chgEl) return;
-    priceEl.textContent = fmt(prices[sym], sym);
-    const up = pct[sym] >= 0;
-    chgEl.className = 'chg ' + (up? 'up' : 'down') + ' flash';
-    chgEl.textContent = (up? '+' : '') + pct[sym].toFixed(1) + '%';
-    setTimeout(()=> chgEl.classList.remove('flash'), 300);
-  }
-  setInterval(()=> ['BTC','ETH','USDT'].forEach(step), 1800);
-
-  // Optional: add ?src= to anchors as #src=...
-  const src = new URLSearchParams(location.search).get('src');
-  if(src){
-    ['bn','ao'].forEach(id=>{
-      try{
-        const a = document.getElementById(id);
-        const u = new URL(a.href); u.hash = (u.hash?u.hash+'&':'#') + 'src=' + encodeURIComponent(src); a.href = u.toString();
-      }catch(e){}
+  document.querySelectorAll('.copy').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const k = btn.dataset.copy; doCopy(withSrc(LINKS[k]), btn);
     });
+  });
+
+  // Share
+  document.getElementById('shareBtn').addEventListener('click', async ()=>{
+    const text = dict[cur]['share_text'];
+    try{
+      if(navigator.share){ await navigator.share({title: document.title, text, url: location.href}); }
+      else{ doCopy(location.href, document.getElementById('shareBtn')); }
+    }catch(e){}
+  });
+
+  // Spin-to-Join
+  const wheel = document.getElementById('wheel'); const spinBtn = document.getElementById('spinBtn');
+  spinBtn.addEventListener('click', ()=>{
+    wheel.classList.remove('spin'); void wheel.offsetWidth; // restart anim
+    wheel.classList.add('spin');
+    setTimeout(()=>{
+      // After spin -> small prompt to click
+      spinBtn.textContent = dict[cur]['spin_done'];
+      spinBtn.classList.add('btn--accent');
+      // confetti
+      confetti();
+    }, 2200);
+  });
+
+  // Confetti (tiny)
+  function confetti(){
+    const n = 28;
+    for(let i=0;i<n;i++){
+      const s = document.createElement('span');
+      s.textContent = '🟡';
+      s.style.position='fixed'; s.style.zIndex=60;
+      s.style.left = Math.random()*100 + 'vw';
+      s.style.top = '-20px';
+      s.style.fontSize = (12+Math.random()*16)+'px';
+      s.style.transition = 'transform 1.4s ease-in, opacity 1.4s ease-in';
+      document.body.appendChild(s);
+      setTimeout(()=>{ s.style.transform = 'translateY(110vh) rotate('+(Math.random()*360)+'deg)'; s.style.opacity=.8; }, 10);
+      setTimeout(()=> s.remove(), 1500);
+    }
   }
+
+  // Live counter (fake growth)
+  const countEl = document.getElementById('liveCount');
+  setInterval(()=>{
+    const v = parseInt(countEl.textContent.replace(/\D/g,'')) + Math.floor(Math.random()*3);
+    countEl.textContent = v.toString();
+  }, 3000);
+
+  // Countdown (daily reset to 23:59:59)
+  const countdownEl = document.getElementById('countdown');
+  function tick(){
+    const now = new Date();
+    const end = new Date(); end.setHours(23,59,59,999);
+    const d = Math.max(0, end-now);
+    const h = String(Math.floor(d/3.6e6)).padStart(2,'0');
+    const m = String(Math.floor((d%3.6e6)/6e4)).padStart(2,'0');
+    const s = String(Math.floor((d%6e4)/1000)).padStart(2,'0');
+    countdownEl.textContent = h+':'+m+':'+s;
+  }
+  setInterval(tick, 1000); tick();
+
+  // Year
+  document.getElementById('y') && (document.getElementById('y').textContent = new Date().getFullYear());
+
+  // ===== Bilingual dictionary =====
+  const dict = {
+    vi: {
+      hero_title: "Cổng Tài Lộc — Binance & AlgosOne",
+      hero_sub: "Giao diện phong thủy FUN 3D. Chạm là mở tài khoản. Hai lựa chọn trung tâm: Binance & AlgosOne.",
+      cta_bn: "Mở tài khoản Binance",
+      cta_ao: "Mở tài khoản AlgosOne",
+      copy_bn: "Sao chép link Binance",
+      copy_ao: "Sao chép link AlgosOne",
+      share: "Chia sẻ",
+      share_text: "Cổng đăng ký Binance & AlgosOne (FUN 3D)",
+      spin: "Quay mở lộc",
+      spin_done: "Sẵn sàng — Bấm MỞ ngay!",
+      joined: "người đã mở hôm nay",
+      ends: "Cơ hội hôm nay còn",
+      trending: "Đang thịnh hành",
+      b_title: "Binance (BNB)",
+      b_pill: "Giao dịch • Earn • Launchpool • Giảm phí",
+      b_li1: "<b>Sản phẩm:</b> Spot, Margin, <b>Futures</b>, Options, Convert.",
+      b_li2: "<b>Gia tăng tài sản:</b> Earn / Simple Earn, <b>Launchpool/Launchpad</b>.",
+      b_li3: "<b>Tiết kiệm phí:</b> dùng <b>BNB</b> thanh toán phí để nhận mức giảm tương ứng.",
+      b_li4: "<b>An toàn &amp; tuân thủ:</b> KYC, 2FA, Proof-of-Reserves, hỗ trợ toàn cầu.",
+      b_li5: "<b>Ứng dụng mạnh:</b> biểu đồ TradingView, lệnh nâng cao, app mượt.",
+      a_title: "AlgosOne",
+      a_pill: "AI Trading • Copy Strategy • Kỷ luật lệnh",
+      a_li1: "<b>Hỗ trợ AI/thuật toán:</b> gợi ý theo dữ liệu, giảm cảm tính.",
+      a_li2: "<b>Chiến lược tự động:</b> đặt sẵn entry/exit/SL/TP theo quy tắc.",
+      a_li3: "<b>Copy Strategy:</b> theo dõi &amp; sao chép chiến lược có lịch sử hiệu suất (tự đánh giá rủi ro).",
+      a_li4: "<b>Dashboard trực quan:</b> theo dõi tín hiệu &amp; trạng thái lệnh.",
+      a_li5: "<b>3 bước:</b> Mở tài khoản → Cấu hình rủi ro → Kích hoạt chiến lược.",
+      foot: "Giao diện phong thủy FUN 3D. Không phải lời khuyên đầu tư.",
+      copied: "Đã sao chép ✓"
+    },
+    en: {
+      hero_title: "Wealth Gateway — Binance & AlgosOne",
+      hero_sub: "Feng-shui FUN 3D landing. Tap to open an account. Two central options: Binance & AlgosOne.",
+      cta_bn: "Open Binance Account",
+      cta_ao: "Open AlgosOne Account",
+      copy_bn: "Copy Binance Link",
+      copy_ao: "Copy AlgosOne Link",
+      share: "Share",
+      share_text: "Signup hub for Binance & AlgosOne (FUN 3D)",
+      spin: "Spin to Join",
+      spin_done: "Ready — Tap OPEN!",
+      joined: "people joined today",
+      ends: "Today ends in",
+      trending: "Trending now",
+      b_title: "Binance (BNB)",
+      b_pill: "Trading • Earn • Launchpool • Fee discounts",
+      b_li1: "<b>Products:</b> Spot, Margin, <b>Futures</b>, Options, Convert.",
+      b_li2: "<b>Grow assets:</b> Earn / Simple Earn, <b>Launchpool/Launchpad</b>.",
+      b_li3: "<b>Save fees:</b> pay with <b>BNB</b> for eligible discounts.",
+      b_li4: "<b>Security & compliance:</b> KYC, 2FA, Proof of Reserves, global support.",
+      b_li5: "<b>Powerful app:</b> TradingView charts, advanced orders.",
+      a_title: "AlgosOne",
+      a_pill: "AI Trading • Copy Strategy • Disciplined orders",
+      a_li1: "<b>AI/Algorithmic assist:</b> data-driven suggestions to reduce bias.",
+      a_li2: "<b>Automated strategies:</b> preset entry/exit/SL/TP.",
+      a_li3: "<b>Copy Strategy:</b> follow & copy strategies with historical performance (assess your own risk).",
+      a_li4: "<b>Intuitive dashboard:</b> track signals & positions.",
+      a_li5: "<b>3 steps:</b> Open account → Configure risk → Activate strategy.",
+      foot: "FUN 3D feng-shui interface. Not financial advice.",
+      copied: "Copied ✓"
+    }
+  };
+
+  let cur = (localStorage.getItem('lang') || (navigator.language||'vi').slice(0,2)).toLowerCase();
+  if(cur!=='en') cur='vi';
+  function applyLang(){
+    document.documentElement.lang = cur;
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      const html = dict[cur][key];
+      if(html) el.innerHTML = html;
+    });
+    document.getElementById('viBtn').classList.toggle('active', cur==='vi');
+    document.getElementById('enBtn').classList.toggle('active', cur==='en');
+  }
+  applyLang();
+  document.getElementById('viBtn').addEventListener('click', ()=>{cur='vi';localStorage.setItem('lang','vi');applyLang();});
+  document.getElementById('enBtn').addEventListener('click', ()=>{cur='en';localStorage.setItem('lang','en');applyLang();});
 </script>
 </body>
 </html>
