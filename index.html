@@ -1,67 +1,169 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cổng Thanh Toán & Liên Kết Giới Thiệu</title>
-  <style>
-    body {
-      font-family: system-ui, sans-serif;
-      margin: 0; padding: 20px;
-      background: #0d0d0d; color: #f0f0f0;
-    }
-    h1 { color: #00ff7f; text-align: center; margin-bottom: 30px; }
-    .section { margin-bottom: 40px; }
-    .card {
-      background: #1a1a1a; border-radius: 8px;
-      padding: 20px; margin: 10px 0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-    }
-    .label { font-weight: bold; color: #ffd700; }
-    a.btn {
-      display: inline-block; padding: 10px 15px;
-      margin-top: 10px; border-radius: 5px;
-      background: #00ff7f; color: #000;
-      text-decoration: none; font-weight: bold;
-      transition: background 0.2s;
-    }
-    a.btn:hover { background: #00cc66; }
-    code { background: #333; padding: 2px 5px; border-radius: 4px; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Vào Là Bấm Ngay — Binance & AlgosOne</title>
+<meta name="description" content="Hero toàn màn hình, CTA cực lớn. Bấm mở tài khoản Binance hoặc AlgosOne ngay. Ticker BTC/ETH/USDT giả lập xanh-đỏ.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0b0f14">
+<style>
+  :root{
+    --bg:#0b0f14; --text:#e8f0ff; --muted:#8ea0b3;
+    --jade:#39ff88; --gold:#ffd166; --cyan:#00d1ff;
+    --ring:0 0 0 1px rgba(57,255,136,.35),0 0 60px rgba(0,209,255,.15),inset 0 1px 0 rgba(255,255,255,.06);
+    --radius:18px; --shadow:0 18px 60px rgba(0,0,0,.45);
+  }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#f6f8fb; --text:#0b0f14; --muted:#4a5b6d; --shadow:0 18px 40px rgba(13,31,51,.14); }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:
+      radial-gradient(1200px 600px at 20% -10%, rgba(0,209,255,.18), transparent 60%),
+      radial-gradient(1200px 600px at 100% 10%, rgba(57,255,136,.16), transparent 60%),
+      var(--bg);
+    color:var(--text); font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Helvetica,Arial;
+  }
+  .hero{min-height:100svh; display:grid; place-items:center; padding:22px 16px; position:relative; overflow:hidden}
+  .panel{width:min(960px,100%); border-radius:var(--radius); border:1px solid rgba(255,255,255,.1); box-shadow:var(--shadow);
+          background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02)); padding:20px; isolation:isolate; position:relative; overflow:hidden}
+  .panel:before{content:""; position:absolute; inset:-1px; border-radius:inherit; box-shadow:var(--ring); pointer-events:none}
+  .title{font-size:clamp(24px,4vw,40px); line-height:1.1; margin:4px 0 6px;
+          background-image:linear-gradient(90deg,#fff,#ffe9b0,#fff); -webkit-background-clip:text; background-clip:text; color:transparent;
+          animation:shimmer 12s linear infinite}
+  @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+  .sub{color:var(--muted); margin:0 0 8px; text-align:center}
+
+  /* 3D Coin (CSS) */
+  .coin-wrap{position:absolute; right:18px; top:18px; width:140px; height:140px; perspective:800px; pointer-events:none}
+  .coin{position:absolute; inset:0; transform-style:preserve-3d; animation:spin 6s linear infinite}
+  .face,.edge{position:absolute; left:0; top:0; width:100%; height:100%; border-radius:50%}
+  .face{background:radial-gradient(circle at 30% 30%, #fff6cc 0%, #ffd166 35%, #e6b750 60%, #a97822 100%); box-shadow:inset 0 0 20px rgba(0,0,0,.25)}
+  .face.front{transform:translateZ(7px)}
+  .face.back{transform:translateZ(-7px) rotateY(180deg); filter:brightness(.9)}
+  .edge{background:linear-gradient(90deg,#e6b750,#c99a36,#e6b750,#a97822); transform:translateZ(0) rotateY(90deg); width:14px; left:63px}
+  @keyframes spin{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
+
+  /* Fake Ticker */
+  .ticker{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:12px 0 14px}
+  .tick{display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.14);
+         background:rgba(0,0,0,.25); font-weight:700}
+  .sym{font-family:ui-monospace,Menlo,monospace; padding:2px 6px; border-radius:6px; border:1px solid rgba(255,255,255,.16)}
+  .price{min-width:84px; text-align:right}
+  .chg.up{color:#6CFF9F} .chg.down{color:#ff7a7a}
+  .flash{animation:flash .3s ease}
+  @keyframes flash{from{filter:brightness(1.8)}to{filter:brightness(1)}}
+
+  /* CTA Big */
+  .cta{display:grid; grid-template-columns:1fr; gap:10px; margin-top:8px}
+  @media(min-width:720px){ .cta{grid-template-columns:1fr 1fr} }
+  .btn{appearance:none; border:0; cursor:pointer; text-decoration:none; font-weight:900; letter-spacing:.3px;
+       padding:16px; border-radius:16px; transition:.2s transform,.2s box-shadow,.2s background,.2s border-color;
+       background:#0f1b28; color:#dff; border:1px solid rgba(57,255,136,.35); text-align:center; font-size:18px}
+  .btn:hover{transform:translateY(-1px); box-shadow:0 10px 28px rgba(0,0,0,.35)}
+  .btn--accent{background:linear-gradient(120deg, rgba(57,255,136,.25), rgba(0,209,255,.22)); border-color:rgba(255,209,102,.6)}
+  .copy{padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,.18); background:rgba(0,0,0,.25); color:#cde; cursor:pointer; font-weight:800; font-size:16px}
+  .copy.ok{background:rgba(57,255,136,.25); color:#063}
+
+  /* Lock scroll overlay / portal */
+  .veil{position:fixed; inset:0; display:grid; place-items:center; background:radial-gradient(1200px 800px at 50% 20%, rgba(255,209,102,.18), transparent 60%), rgba(0,0,0,.72);
+         z-index:50; animation:veilOut 1.6s ease forwards}
+  @keyframes veilOut{0%{opacity:1}100%{opacity:0; visibility:hidden}}
+
+  /* Footer mini */
+  .foot{margin-top:12px; color:var(--muted); font-size:12px; text-align:center}
+</style>
 </head>
 <body>
-  <h1>🌐 Cổng Thanh Toán & Link Giới Thiệu</h1>
+<section class="hero" role="main" id="main">
+  <div class="panel">
+    <h1 class="title">Vào là bấm ngay</h1>
+    <p class="sub">Chọn nền tảng bạn muốn mở. Giá BTC/ETH/USDT đang chạy phía dưới. Bấm để mở tài khoản.</p>
 
-  <div class="section">
-    <h2>💳 Thanh toán trực tiếp</h2>
-    <div class="card"><span class="label">MoMo:</span> <code>0567892030</code></div>
-    <div class="card"><span class="label">Vietcombank:</span> <code>9567892030</code></div>
-    <div class="card"><span class="label">USDT (ERC20):</span> <code>0x5da80d0f7e2df3cb0aa73d6a942bbe36b046b8f0</code></div>
-    <div class="card"><span class="label">ETH (Web3):</span> <code>0x54E15A7b6d4213beE87800432A151d794638E3C2</code></div>
-    <div class="card"><span class="label">PayPal:</span> <code>vumumabada@gmail.com</code></div>
-  </div>
-
-  <div class="section">
-    <h2>🔗 Link Giới Thiệu</h2>
-    <div class="card">
-      <span class="label">Binance:</span><br>
-      <a class="btn" target="_blank" 
-         href="https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=gh-actions&utm_medium=omnibot-v19&utm_campaign=ai-revenue">
-        Đăng ký Binance
-      </a>
+    <!-- 3D coin -->
+    <div class="coin-wrap" aria-hidden="true">
+      <div class="coin"><div class="face front"></div><div class="edge"></div><div class="face back"></div></div>
     </div>
-    <div class="card">
-      <span class="label">AlgosOne:</span><br>
-      <a class="btn" target="_blank" 
-         href="https://algosone.page.link/MbtR?utm_source=gh-actions&utm_medium=omnibot-v19&utm_campaign=ai-revenue">
-        Mở tài khoản AlgosOne
-      </a>
-    </div>
-  </div>
 
-  <footer style="text-align:center; font-size:0.85em; color:#888; margin-top:50px;">
-    © 2025 OmniBot v19.0 — Auto Landing Page • Nội dung chỉ mang tính giới thiệu, 
-    hãy tự nghiên cứu trước khi đầu tư. Rủi ro có thể mất vốn.
-  </footer>
+    <!-- Fake Ticker -->
+    <div class="ticker" id="ticker" aria-live="polite">
+      <div class="tick"><span class="sym">BTC</span><span class="price" data-sym="BTC">62315</span><span class="chg up" data-chg="BTC">+0.8%</span></div>
+      <div class="tick"><span class="sym">ETH</span><span class="price" data-sym="ETH">2476</span><span class="chg down" data-chg="ETH">-0.4%</span></div>
+      <div class="tick"><span class="sym">USDT</span><span class="price" data-sym="USDT">1.000</span><span class="chg up" data-chg="USDT">+0.0%</span></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <a id="bn" class="btn btn--accent" target="_blank" rel="noopener" href="https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=default">MỞ TÀI KHOẢN BINANCE</a>
+      <a id="ao" class="btn btn--accent" target="_blank" rel="noopener" href="https://algosone.page.link/MbtR">MỞ TÀI KHOẢN ALGOSONE</a>
+      <button class="copy" data-copy="https://www.binance.com/referral/earn-together/refer-in-hotsummer/claim?hl=vi&ref=GRO_20338_9V44N&utm_source=default">Sao chép link Binance</button>
+      <button class="copy" data-copy="https://algosone.page.link/MbtR">Sao chép link AlgosOne</button>
+    </div>
+
+    <div class="foot">© <span id="y"></span> — Giao diện phong thủy FUN 3D. Không phải lời khuyên đầu tư.</div>
+  </div>
+</section>
+
+<!-- Initial overlay to focus CTA -->
+<div class="veil" id="veil">
+  <a class="btn btn--accent" href="#main" id="enterBtn">Bắt đầu</a>
+</div>
+
+<script>
+  // Year
+  document.getElementById('y').textContent = new Date().getFullYear();
+
+  // Veil: lock first 1.6s to focus CTA (can skip by tapping "Bắt đầu")
+  const veil = document.getElementById('veil');
+  const enterBtn = document.getElementById('enterBtn');
+  setTimeout(()=> veil.style.display='none', 1600);
+  enterBtn.addEventListener('click', (e)=>{ e.preventDefault(); veil.style.display='none'; });
+
+  // Copy buttons
+  function doCopy(text, el){
+    navigator.clipboard.writeText(text).then(()=>{
+      el.classList.add('ok'); const old = el.textContent; el.textContent='Đã sao chép ✓';
+      setTimeout(()=>{ el.classList.remove('ok'); el.textContent = old; }, 1200);
+    }).catch(()=> alert('Không thể sao chép'));
+  }
+  document.querySelectorAll('.copy').forEach(b=> b.addEventListener('click', ()=> doCopy(b.dataset.copy, b)));
+
+  // Ticker: fake random walk with green/red flash
+  const prices = { BTC: 62315, ETH: 2476, USDT: 1.000 };
+  const pct =    { BTC: 0.8,   ETH:-0.4,  USDT: 0.0 };
+  function fmt(n, sym){
+    if(sym==='USDT'){ return n.toFixed(3); }
+    if(sym==='ETH'){ return Math.max(0.01, n).toFixed(0); }
+    return Math.max(1, n).toFixed(0);
+  }
+  function step(sym){
+    const dir = Math.random() > .5 ? 1 : -1;
+    const mag = sym==='USDT' ? (Math.random()*0.0008) : (Math.random()* (sym==='ETH'? 4 : 25));
+    prices[sym] += dir*mag;
+    pct[sym] += (dir*(Math.random()*0.08)) * (sym==='USDT'? 0.1 : 1);
+    pct[sym] = Math.max(-9.9, Math.min(9.9, pct[sym]));
+    const priceEl = document.querySelector('[data-sym="'+sym+'"]');
+    const chgEl = document.querySelector('[data-chg="'+sym+'"]');
+    if(!priceEl || !chgEl) return;
+    priceEl.textContent = fmt(prices[sym], sym);
+    const up = pct[sym] >= 0;
+    chgEl.className = 'chg ' + (up? 'up' : 'down') + ' flash';
+    chgEl.textContent = (up? '+' : '') + pct[sym].toFixed(1) + '%';
+    setTimeout(()=> chgEl.classList.remove('flash'), 300);
+  }
+  setInterval(()=> ['BTC','ETH','USDT'].forEach(step), 1800);
+
+  // Optional: add ?src= to anchors as #src=...
+  const src = new URLSearchParams(location.search).get('src');
+  if(src){
+    ['bn','ao'].forEach(id=>{
+      try{
+        const a = document.getElementById(id);
+        const u = new URL(a.href); u.hash = (u.hash?u.hash+'&':'#') + 'src=' + encodeURIComponent(src); a.href = u.toString();
+      }catch(e){}
+    });
+  }
+</script>
 </body>
 </html>
