@@ -4,29 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Cổng Tài Lộc — Binance & AlgosOne</title>
-<meta name="description" content="Bản 10/10: Globe 3D xanh, nền xanh phong thủy, nút vàng đậm, CTA kép, ticker giả lập, spin, counter, countdown, copy/share, song ngữ Việt–Anh.">
+<meta name="description" content="Globe 3D xanh, nền xanh phong thủy, nút vàng đậm phát sáng, CTA kép, ticker giả lập, spin, counter, countdown, copy/share, song ngữ Việt–Anh.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#031a12">
 
 <style>
   /* === Palette: nền xanh toàn trang + nút vàng đậm === */
   :root{
-    --bg:#031a12;            /* xanh đậm phong thủy */
-    --bg2:#01120c;           /* chuyển tiếp xanh đậm */
-    --card:#0b1713;
-    --text:#f6fbff;
-    --muted:#a8bdd0;
-    --green:#10b981;
-    --gold:#ffbf1a;          /* vàng đậm */
-    --gold-border:#e0a400;   /* viền vàng đậm */
-    --cyan:#23d6c5;          /* ánh xanh ngọc */
+    --bg:#031a12; --bg2:#01120c; --card:#0b1713;
+    --text:#f6fbff; --muted:#a8bdd0;
+    --green:#10b981; --cyan:#23d6c5;
+    --gold:#ffbf1a; --gold-border:#e0a400;
     --ring:0 0 0 1px rgba(16,185,129,.45), 0 0 80px rgba(35,214,197,.18), inset 0 1px 0 rgba(255,255,255,.05);
     --radius:16px; --shadow:0 16px 60px rgba(0,0,0,.7);
   }
   *{box-sizing:border-box}
   body{
     margin:0;
-    /* NỀN XANH kéo dài toàn trang */
     background:
       radial-gradient(1200px 700px at 12% -8%, rgba(35,214,197,.22), transparent 60%),
       radial-gradient(1200px 700px at 100% 12%, rgba(53,193,255,.20), transparent 60%),
@@ -43,31 +37,43 @@
         border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);overflow:hidden;text-align:center}
   .hero:before{content:"";position:absolute;inset:-1px;border-radius:inherit;box-shadow:var(--ring);pointer-events:none}
   .hero-title{
-    font-size:clamp(26px,4.8vw,46px);line-height:1.08;margin:12px 0 8px;
+    font-size:clamp(28px,5.2vw,48px);line-height:1.06;margin:14px 0 10px;
     background-image:linear-gradient(90deg,#fff,#ffe5a2,#fff);
     -webkit-background-clip:text;background-clip:text;color:transparent;
-    text-shadow:0 2px 10px rgba(255,231,140,.25), 0 1px 0 rgba(0,0,0,.6);
+    text-shadow:0 2px 12px rgba(255,231,140,.30), 0 1px 0 rgba(0,0,0,.65);
     animation:shimmer 12s linear infinite;
   }
   @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-  .sub{color:var(--muted);max-width:76ch;margin:0 auto 10px}
+  .sub{
+    color:#cfe7f8; text-shadow:0 1px 0 rgba(0,0,0,.55);
+    max-width:78ch;margin:0 auto 14px;
+  }
 
   .langbar{position:absolute;top:10px;right:10px;display:flex;gap:8px}
   .langbtn{padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#eef;cursor:pointer;font-weight:800}
   .langbtn.active{border-color:var(--gold);box-shadow:0 0 0 1px rgba(255,210,77,.45)}
 
   /* ===== CTA ===== */
-  .cta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:12px}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:14px}
   .btn--gold{
     appearance:none;border:1px solid var(--gold-border);cursor:pointer;text-decoration:none;font-weight:900;letter-spacing:.2px;
-    padding:16px 20px;border-radius:14px;transition:.18s transform,.18s box-shadow,.18s background,.18s border-color;
+    padding:18px 22px;border-radius:16px;
+    transition:.18s transform,.18s box-shadow,.18s background,.18s border-color,.2s filter;
     color:#1a1400;
-    background:linear-gradient(180deg,#ffe37a 0%,#ffc72c 60%,#ffb60f 100%);
-    box-shadow:0 12px 28px rgba(255,191,26,.40), 0 0 0 1px rgba(224,164,0,.30) inset, 0 2px 0 rgba(0,0,0,.25) inset;
+    background:linear-gradient(180deg,#ffe889 0%,#ffc930 58%,#ffb40a 100%);
+    box-shadow:
+      0 12px 28px rgba(255,191,26,.42),
+      0 0 0 1px rgba(224,164,0,.34) inset,
+      0 2px 0 rgba(0,0,0,.25) inset,
+      0 0 24px rgba(255,200,60,.25);
   }
   .btn--gold:hover{
-    transform:translateY(-1px);
-    box-shadow:0 16px 40px rgba(255,191,26,.55), 0 0 0 1px rgba(224,164,0,.38) inset, 0 2px 0 rgba(0,0,0,.25) inset;
+    transform:translateY(-1px); filter:saturate(1.05);
+    box-shadow:
+      0 18px 46px rgba(255,191,26,.58),
+      0 0 0 1px rgba(224,164,0,.40) inset,
+      0 2px 0 rgba(0,0,0,.25) inset,
+      0 0 34px rgba(255,210,80,.32);
   }
   .btn--green{
     appearance:none;border:1px solid rgba(16,185,129,.55);cursor:pointer;font-weight:800;
@@ -85,12 +91,12 @@
   }
   #globe3d:after{ /* halo xanh */
     content:""; position:absolute; inset:-12%; border-radius:50%;
-    box-shadow:0 0 160px rgba(46,230,200,.30), 0 0 90px rgba(120,200,255,.22) inset;
+    box-shadow:0 0 170px rgba(46,230,200,.34), 0 0 100px rgba(120,200,255,.26) inset;
     pointer-events:none;
   }
 
   /* ===== Ticker ===== */
-  .ticker{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0 8px}
+  .ticker{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:16px 0 12px}
   .tick{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.22);
         background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.35));font-weight:800}
   .sym{font-family:ui-monospace,Menlo,monospace;padding:2px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.24)}
@@ -101,8 +107,11 @@
 
   /* ===== Reasons ===== */
   .reasons{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px 0 2px;padding:0;list-style:none}
-  .reasons li{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.28);
-    background:linear-gradient(180deg,rgba(1,40,30,.55),rgba(1,30,22,.45));font-weight:800;color:#e5f3ff}
+  .reasons li{
+    padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.30);
+    background:linear-gradient(180deg,rgba(1,50,38,.62),rgba(1,32,24,.52));
+    font-weight:800;color:#ecf7ff
+  }
 
   /* ===== GRID ===== */
   .grid{display:grid;gap:16px;margin-top:16px}
@@ -253,11 +262,13 @@
   renderer.setSize(w, h); renderer.setPixelRatio(Math.min(2, window.devicePixelRatio||1));
   cont.appendChild(renderer.domElement);
 
-  // Lights — sáng hơn
-  const amb = new THREE.AmbientLight(0x9fd0ff, 0.9); scene.add(amb);
-  const dir = new THREE.DirectionalLight(0xffffff, 1.25); dir.position.set(5,2,3); scene.add(dir);
+  // Lights — sáng & có rim xanh ngọc
+  const amb = new THREE.AmbientLight(0xaee2ff, 1.05);
+  const dir = new THREE.DirectionalLight(0xffffff, 1.5); dir.position.set(5,2,3);
+  const rim = new THREE.PointLight(0x23d6c5, 0.65, 6); rim.position.set(-3,1.5,2.2);
+  scene.add(amb, dir, rim);
 
-  // Textures (CDN)
+  // Textures
   const loader = new THREE.TextureLoader();
   const earthTex = loader.load('https://unpkg.com/three-globe/example/img/earth-dark.jpg');
   const bumpTex  = loader.load('https://unpkg.com/three-globe/example/img/earth-topology.png');
@@ -269,19 +280,17 @@
     map: earthTex, bumpMap: bumpTex, bumpScale: 0.02,
     specular: new THREE.Color(0x333333), shininess: 8
   });
-  mat.color = new THREE.Color(0x6ecbff);     // phủ xanh biển sáng
-  mat.emissive = new THREE.Color(0x0a3a3a);  // phát sáng nhẹ xanh lục lam
-  mat.emissiveIntensity = 0.25;
-  const earth = new THREE.Mesh(geo, mat);
-  scene.add(earth);
+  mat.color = new THREE.Color(0x82d7ff);
+  mat.emissive = new THREE.Color(0x0b4a4a);
+  mat.emissiveIntensity = 0.38;
+  const earth = new THREE.Mesh(geo, mat); scene.add(earth);
 
-  // Clouds trong suốt
+  // Clouds
   const cgeo = new THREE.SphereGeometry(1.01, 96, 96);
-  const cmat = new THREE.MeshLambertMaterial({ map: cloudTex, transparent:true, opacity:0.45, depthWrite:false });
-  const clouds = new THREE.Mesh(cgeo, cmat);
-  scene.add(clouds);
+  const cmat = new THREE.MeshLambertMaterial({ map: cloudTex, transparent:true, opacity:0.50, depthWrite:false });
+  const clouds = new THREE.Mesh(cgeo, cmat); scene.add(clouds);
 
-  // Background sphere (đậm xanh)
+  // Background sphere
   const starGeo = new THREE.SphereGeometry(20, 64, 64);
   const starMat = new THREE.MeshBasicMaterial({ color:0x071b14, side:THREE.BackSide });
   scene.add(new THREE.Mesh(starGeo, starMat));
@@ -400,7 +409,7 @@
   }
   setInterval(()=>['BTC','ETH','USDT'].forEach(step), 1800);
 
-  // Sticky CTA thông minh
+  // Sticky CTA: ẩn khi CTA hero trong khung nhìn
   const heroCta = document.querySelector('.cta');
   const sticky = document.querySelector('.sticky');
   if(heroCta && sticky && 'IntersectionObserver' in window){
@@ -442,7 +451,6 @@
       a_li5:"<b>Dashboard trực quan:</b> theo dõi tín hiệu &amp; trạng thái lệnh thời gian thực.",
       a_li6:"<b>3 bước đơn giản:</b> Mở tài khoản → Chọn mức rủi ro → Bấm kích hoạt — AI chạy thay bạn.",
 
-      /* Footer đã chốt (#3) */
       foot:"Cổng tài lộc 3D. Đăng ký miễn phí ngay, mở ra cơ hội tích lũy tài sản số cho bạn.",
       copied:"Đã sao chép ✓"
     },
