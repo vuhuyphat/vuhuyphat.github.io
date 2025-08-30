@@ -10,40 +10,36 @@
 <meta property="og:description" content="Thời trang, gia dụng, công nghệ… Ưu đãi cập nhật liên tục. Nhấn để mở Shopee.">
 <meta property="og:type" content="website">
 <meta name="color-scheme" content="light">
+<meta name="theme-color" content="#EE4D2D">
 <link rel="preconnect" href="https://s.shopee.vn">
 <style>
   :root{
     --cam:#EE4D2D; --cam2:#FF6A3D; --gold:#FFD400;
-    --ink:#191919; --muted:#6b6b6b; --bg:#FFF3EC; --card:#fff; --ring:#ffc9b6;
+    --ink:#ffffff; --muted:#ffffffcc; --card:#ffffff14; --ring:#ffffff45;
   }
-  *{box-sizing:border-box}html,body{margin:0}
-  body{
+  *{box-sizing:border-box} html,body{margin:0; height:100%}
+  /* NỀN CAM FULL PAGE */
+  html,body{
+    background: linear-gradient(180deg,#EE4D2D 0%, #FF6A3D 55%, #FF8A66 100%) fixed;
+    color:var(--ink); -webkit-font-smoothing:antialiased;
     font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Arial,sans-serif;
-    color:var(--ink); line-height:1.6; background:var(--bg);
-    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+    line-height:1.6; overflow-x:hidden;
   }
   a{color:inherit;text-decoration:none}
-
-  /* ===== Shopee orange backdrop from top to bottom ===== */
-  .orange-bg{
-    position:fixed; inset:-20vmax -20vmax -20vmax -20vmax; z-index:-2;
-    background:
-      radial-gradient(1200px 600px at 50% -10%, #ffdbc9 0%, transparent 60%),
-      linear-gradient(180deg, var(--cam) 0%, var(--cam2) 60%, #FFB095 110%);
-  }
-
   .wrap{max-width:1080px;margin:0 auto;padding:16px}
 
-  /* ===== 3D Stage & Parallax ===== */
+  /* 3D nhẹ */
   .stage{perspective:1200px; transform-style:preserve-3d}
-  .hero3d{transform:rotateX(0.4deg) rotateY(-0.6deg); will-change:transform}
+  .hero3d{transform:rotateX(.4deg) rotateY(-.6deg); will-change:transform}
 
-  /* ===== HERO CARD ===== */
+  /* HERO “GLASS” TRÊN NỀN CAM */
   .hero{
-    position:relative; color:#fff; border-radius:24px; padding:26px 18px; overflow:hidden;
-    background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.00));
-    backdrop-filter:saturate(130%) blur(6px); border:1px solid rgba(255,255,255,.35);
-    box-shadow:0 25px 60px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.12);
+    position:relative; border-radius:24px; padding:26px 18px; overflow:hidden;
+    background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
+    backdrop-filter:saturate(130%) blur(6px);
+    border:1px solid var(--ring);
+    box-shadow:0 25px 60px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.08);
+    color:#fff;
   }
   .hero:after{
     content:""; position:absolute; inset:auto -24% -40% auto; width:560px; height:560px;
@@ -52,89 +48,73 @@
   }
   @keyframes float{to{transform:translateY(-18px)}}
   .brand{display:flex;align-items:center;gap:14px}
-  .logo{
-    width:48px;height:48px;border-radius:14px;background:#fff;display:grid;place-items:center;
-    color:var(--cam);font-weight:900; box-shadow:0 8px 24px rgba(0,0,0,.15);
-  }
-  .badge{
-    display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);
-    padding:6px 10px;border-radius:999px;font-weight:800
-  }
+  .logo{width:48px;height:48px;border-radius:14px;background:#fff;display:grid;place-items:center;color:#EE4D2D;font-weight:900;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+  .badge{display:inline-block;background:#ffffff1f;border:1px solid #ffffff45;padding:6px 10px;border-radius:999px;font-weight:800}
   .hero h1{margin:10px 0 6px;font-size:29px}
-  .hero p{margin:0 0 12px;opacity:.98}
+  .hero p{margin:0 0 12px}
   .cta{
     display:inline-flex;align-items:center;gap:10px;border-radius:14px;padding:12px 16px;font-weight:900;
-    background:#fff;color:var(--cam);border:2px solid #fff; transition:.22s; will-change:transform;
+    background:#fff;color:#EE4D2D;border:2px solid #fff; transition:.22s; will-change:transform;
   }
   .cta:hover{transform:translateY(-1.5px)}
-  .cta.alt{background:transparent;color:#fff}
+  .cta.alt{background:transparent;color:#fff;border-color:#ffffff70}
   .pulse{animation:pulse 2s ease-in-out infinite}
   @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,212,0,.0)}50%{box-shadow:0 0 0 8px rgba(255,212,0,.28)}}
   .row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 4px}
 
-  /* voucher strip */
+  /* chips/voucher */
   .vstrip{margin-top:12px; display:flex; gap:8px; flex-wrap:wrap}
-  .tag{background:#fff1;border:1px solid rgba(255,255,255,.35);padding:6px 10px;border-radius:999px}
+  .tag{background:#ffffff14;border:1px solid #ffffff45;padding:6px 10px;border-radius:999px}
 
-  /* ===== GRID CONTENT ===== */
+  /* GRID */
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:16px}
   .card{
     grid-column:span 12;background:var(--card);border-radius:18px;padding:16px;border:1px solid var(--ring);
-    box-shadow:0 14px 40px rgba(238,77,45,.18);
-    transform:translateZ(0); transition:transform .25s;
+    box-shadow:0 14px 40px rgba(0,0,0,.18); transform:translateZ(0); transition:transform .25s; color:#fff;
   }
   .card:hover{transform:translateY(-2px)}
   @media(min-width:780px){.half{grid-column:span 6}}
-
   .card h3{margin:0 0 8px;font-size:18px}
   .list{list-style:none;margin:8px 0 0;padding:0}
-  .list li{padding:8px 0;border-top:1px dashed var(--ring)}
+  .list li{padding:8px 0;border-top:1px dashed #ffffff45}
   .list li:first-child{border-top:none}
 
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-  .chip{background:#fff;border:1px solid var(--ring);border-radius:999px;padding:7px 12px;font-size:12px}
+  .chip{background:#ffffff10;border:1px solid #ffffff45;border-radius:999px;padding:7px 12px;font-size:12px}
 
   .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:12px 16px;font-weight:900;
     border:2px solid var(--gold);background:linear-gradient(135deg,var(--gold),#fff0);color:#000; transition:.2s;
   }
   .btn:hover{transform:translateY(-1px)}
-  .btn.ghost{border-color:#fff;background:#fff;color:var(--cam)}
+  .btn.ghost{border-color:#fff;background:#fff;color:#EE4D2D}
 
   .note{color:var(--muted);font-size:13px}
   .faq dt{font-weight:800;margin-top:6px}
   .faq dd{margin:4px 0 10px}
-  .footer{margin:24px 0 96px;color:var(--muted);font-size:13px}
+  .footer{margin:24px 0 96px;color:#ffffffcc;font-size:13px}
 
-  /* Sticky */
-  .sticky{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(90deg,var(--cam),var(--cam2));display:flex;align-items:center;justify-content:center;gap:12px;padding:12px;z-index:10}
-  .sticky a{background:#fff;color:var(--cam);font-weight:900;border-radius:10px;padding:10px 14px}
-
-  /* FAB (floating action) */
-  .fab{position:fixed;right:14px;bottom:88px;background:#fff;color:var(--cam);border:2px solid var(--gold);
-       border-radius:999px;padding:10px 14px;font-weight:900;z-index:11;box-shadow:0 10px 26px rgba(0,0,0,.18)}
-
-  /* Toast */
+  /* Sticky + FAB */
+  .sticky{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(90deg,#EE4D2D,#FF6A3D);display:flex;align-items:center;justify-content:center;gap:12px;padding:12px;z-index:10}
+  .sticky a{background:#fff;color:#EE4D2D;font-weight:900;border-radius:10px;padding:10px 14px}
+  .fab{position:fixed;right:14px;bottom:88px;background:#fff;color:#EE4D2D;border:2px solid var(--gold);border-radius:999px;padding:10px 14px;font-weight:900;z-index:11;box-shadow:0 10px 26px rgba(0,0,0,.18)}
   .toast{position:fixed;left:50%;bottom:130px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;transition:.25s;z-index:12}
   .toast.show{opacity:1}
 
-  /* QR panel (desktop only) */
+  /* QR desktop */
   .qrbox{display:none}
   @media(min-width:960px){
     .qrbox{display:flex;align-items:center;gap:14px;margin-top:10px}
     .qr{width:124px;height:124px;border-radius:12px;background:#fff;display:grid;place-items:center;border:2px dashed #ffcfbf}
     .qr small{color:#fff;opacity:.88}
   }
-
-  /* tiny SVG icon container */
   .ico{width:18px;height:18px;display:inline-grid;place-items:center}
 </style>
 </head>
 <body>
-<div class="orange-bg" aria-hidden="true"></div>
 
 <script>
-  /* ========= CONFIG ========= */
+  /* CẤU HÌNH: đổi link ở đây khi cần */
   const AFF_LINK = "https://s.shopee.vn/4q5pVa3C9Y";
   const HEADLINES = [
     "Freeship theo điều kiện • Flash Sale mỗi ngày",
@@ -144,7 +124,7 @@
 </script>
 
 <div class="wrap stage">
-  <!-- HERO 3D -->
+  <!-- HERO -->
   <section class="hero hero3d">
     <div class="brand">
       <div class="logo" aria-hidden="true">S</div>
@@ -156,14 +136,14 @@
 
     <p>Ưu đãi do Shopee cung cấp. Điều kiện áp dụng tùy chương trình & thời gian hiển thị trong ứng dụng Shopee.</p>
     <div class="row">
-      <a id="cta-hero" class="cta pulse" href="#" target="_blank" rel="nofollow sponsored noopener">
-        <!-- bag icon -->
+      <!-- GẮN SẴN HREF = LINK TỔNG (FALLBACK KỂ CẢ KHI JS LỖI) -->
+      <a id="cta-hero" class="cta pulse" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">
         <span class="ico" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M7 7V6a5 5 0 0 1 10 0v1h2a1 1 0 0 1 1 1v11a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V8a1 1 0 0 1 1-1h2zm2 0h6V6a3 3 0 0 0-6 0v1z"/></svg>
         </span>
         Mở Shopee ngay
       </a>
-      <a id="cta-voucher" class="cta alt" href="#" target="_blank" rel="nofollow sponsored noopener">
+      <a id="cta-voucher" class="cta alt" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">
         <span class="ico" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 7a2 2 0 0 1 2-2h14l2 3-2 3H5a2 2 0 0 1-2-2V7zm0 7a2 2 0 0 1 2-2h14l2 3-2 3H5a2 2 0 0 1-2-2v-2z"/></svg>
         </span>
@@ -179,9 +159,9 @@
       <span class="tag" id="count-pill">Khung giờ kế tiếp: <b><span id="count"></span></b></span>
     </div>
 
-    <!-- QR (desktop) -->
+    <!-- QR desktop -->
     <div class="qrbox">
-      <div class="qr"><img id="qr" alt="QR mở Shopee" width="116" height="116" decoding="async"></div>
+      <div class="qr"><img id="qr" alt="QR mở Shopee" width="116" height="116" decoding="async" loading="lazy"></div>
       <small>Quét QR trên máy tính để mở Shopee trên điện thoại.</small>
     </div>
   </section>
@@ -198,8 +178,8 @@
       </ul>
       <p class="note">Ưu đãi thay đổi theo thời gian/khu vực. Vui lòng xem chi tiết khi mở Shopee.</p>
       <p class="row">
-        <a id="cta-1" class="btn" href="#" target="_blank" rel="nofollow sponsored noopener">Xem ưu đãi trong Shopee</a>
-        <a id="cta-2" class="btn ghost" href="#" target="_blank" rel="nofollow sponsored noopener">Mở app Shopee</a>
+        <a id="cta-1" class="btn" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Xem ưu đãi trong Shopee</a>
+        <a id="cta-2" class="btn ghost" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Mở app Shopee</a>
       </p>
       <p class="row">
         <a id="copy" class="chip" href="#">📋 Sao chép link</a>
@@ -210,12 +190,12 @@
     <article class="card half">
       <h3>Mua sắm theo nhu cầu</h3>
       <div class="chips">
-        <a class="chip" id="cat-1" href="#" target="_blank" rel="nofollow sponsored noopener">Thời trang</a>
-        <a class="chip" id="cat-2" href="#" target="_blank" rel="nofollow sponsored noopener">Gia dụng</a>
-        <a class="chip" id="cat-3" href="#" target="_blank" rel="nofollow sponsored noopener">Công nghệ</a>
-        <a class="chip" id="cat-4" href="#" target="_blank" rel="nofollow sponsored noopener">Làm đẹp</a>
-        <a class="chip" id="cat-5" href="#" target="_blank" rel="nofollow sponsored noopener">Mẹ & Bé</a>
-        <a class="chip" id="cat-6" href="#" target="_blank" rel="nofollow sponsored noopener">Nhà bếp</a>
+        <a class="chip" id="cat-1" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Thời trang</a>
+        <a class="chip" id="cat-2" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Gia dụng</a>
+        <a class="chip" id="cat-3" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Công nghệ</a>
+        <a class="chip" id="cat-4" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Làm đẹp</a>
+        <a class="chip" id="cat-5" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Mẹ & Bé</a>
+        <a class="chip" id="cat-6" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Nhà bếp</a>
       </div>
       <p class="note">Danh mục mang tính gợi ý. Việc chọn & thanh toán diễn ra trực tiếp trong Shopee.</p>
     </article>
@@ -249,28 +229,34 @@
 </div>
 
 <!-- FAB + Sticky + Toast -->
-<a class="fab" id="cta-fab" href="#" target="_blank" rel="nofollow sponsored noopener">Mở Shopee</a>
+<a class="fab" id="cta-fab" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Mở Shopee</a>
 <div class="sticky">
   <span style="color:#fff;font-weight:900">Ưu đãi đang mở</span>
-  <a id="cta-sticky" href="#" target="_blank" rel="nofollow sponsored noopener">Mua sắm ngay 🛍️</a>
+  <a id="cta-sticky" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Mua sắm ngay 🛍️</a>
 </div>
 <div class="toast" id="toast">Đã sao chép link!</div>
 
+<noscript>
+  <!-- Fallback nếu trình duyệt tắt JS -->
+  <div style="position:fixed;left:0;right:0;top:0;background:#111;color:#fff;padding:8px 12px;text-align:center;z-index:9999">
+    Trình duyệt đang tắt JavaScript. <a href="https://s.shopee.vn/4q5pVa3C9Y" style="color:#FFD400;font-weight:800">Nhấn vào đây để mở Shopee</a>.
+  </div>
+</noscript>
+
 <script>
-  // Gắn link cho mọi CTA/chip -> luôn về link tổng (giữ tracking)
+  // GẮN LẠI HREF THEO AFF_LINK (để lần sau bạn chỉ cần đổi 1 chỗ)
   const ids = ["cta-hero","cta-voucher","cta-1","cta-2","cta-fab","cta-sticky",
                "cat-1","cat-2","cat-3","cat-4","cat-5","cat-6"];
   ids.forEach(i => { const a=document.getElementById(i); if(a) a.href = AFF_LINK; });
 
-  // Headline xoay vòng (nhịp nhẹ)
+  // Headline xoay vòng
   const H = document.getElementById('headline'); let k=0;
   setInterval(()=>{ k=(k+1)%HEADLINES.length; H.textContent=HEADLINES[k]; }, 3200);
 
-  // Countdown tới khung giờ (không hứa hẹn ưu đãi; chỉ gợi ý nhịp)
+  // Countdown (nhịp gợi ý, không hứa hẹn)
   const countEl = document.getElementById('count');
   function nextSlot(){
-    const now=new Date(); const n=new Date(now);
-    const slots=[0,12,18]; // tuỳ chỉnh
+    const now=new Date(); const n=new Date(now); const slots=[0,12,18];
     let next=new Date(now); next.setHours(24,0,0,0);
     for(const h of slots){ const t=new Date(n); t.setHours(h,0,0,0); if(t>now){ next=t; break; } }
     return next;
@@ -278,7 +264,7 @@
   function tick(){
     const t=nextSlot().getTime()-Date.now();
     const h=Math.max(0,Math.floor(t/36e5)), m=Math.max(0,Math.floor(t%36e5/6e4)), s=Math.max(0,Math.floor(t%6e4/1e3));
-    countEl.textContent = `${h}h ${m}m ${s}s`;
+    if(countEl) countEl.textContent = `${h}h ${m}m ${s}s`;
   }
   setInterval(tick,1000); tick();
 
@@ -294,24 +280,20 @@
     else { window.open(AFF_LINK,'_blank'); }
   });
 
-  // QR (desktop): dùng dịch vụ ảnh QR công cộng (không thư viện)
+  // QR (desktop)
   const qr = document.getElementById('qr');
   if(qr){ qr.src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(AFF_LINK)}`; }
 
   // Năm
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  // Nhẹ parallax theo chuột (3D hero)
+  // Parallax hero
   const hero = document.querySelector('.hero3d');
-  let rx=0, ry=0;
   hero.addEventListener('mousemove', e=>{
-    const r = hero.getBoundingClientRect();
-    const cx = e.clientX - r.left, cy = e.clientY - r.top;
-    const nx = (cx/r.width - .5)*2, ny = (cy/r.height - .5)*2;
-    rx = ny * 2.2; ry = nx * -2.2;
-    hero.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+    const r=hero.getBoundingClientRect(), nx=((e.clientX-r.left)/r.width-.5)*2, ny=((e.clientY-r.top)/r.height-.5)*2;
+    hero.style.transform = `rotateX(${ny*2.2}deg) rotateY(${nx*-2.2}deg)`;
   });
-  hero.addEventListener('mouseleave', ()=>{ hero.style.transform='rotateX(0.4deg) rotateY(-0.6deg)'; });
+  hero.addEventListener('mouseleave', ()=>{ hero.style.transform='rotateX(.4deg) rotateY(-.6deg)'; });
 </script>
 </body>
 </html>
