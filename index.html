@@ -2,195 +2,176 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Khám phá Shopee – Mua sắm dễ dàng (VI/EN)</title>
-<meta name="description" content="Trang dẫn đến Shopee dành cho người dùng mới & cũ. Nhấn nút vàng để vào Shopee.">
-<meta name="theme-color" content="#062b20">
-
-<!-- OG/TikTok/Zalo share -->
-<meta property="og:title" content="Khám phá Shopee – Mua sắm dễ dàng (VI/EN)">
-<meta property="og:description" content="Nhấn nút vàng để vào Shopee. Giá/khuyến mãi do Shopee quyết định.">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VuHuyPhat • Ưu đãi Shopee – Mua Sắm Thông Minh</title>
+<meta name="description" content="Ưu đãi Shopee: freeship, flash sale, mã giảm giá, deal 0đ (tùy điều kiện). Bấm để vào Shopee và săn khuyến mãi ngay.">
+<meta name="color-scheme" content="light">
+<meta property="og:title" content="Ưu đãi Shopee – Mua Sắm Thông Minh">
+<meta property="og:description" content="Freeship, flash sale, mã giảm giá, deal 0đ (tùy điều kiện). Vào Shopee ngay!">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://i.ibb.co/kxgqj7n/binance-og.png">
-
-<!-- Favicon tối giản -->
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><circle cx=%2232%22 cy=%2232%22 r=%2230%22 fill=%22%23ffbf1a%22/><path d=%22M14 20h6l6 24h18l4-14H26%22 fill=%22none%22 stroke=%22%23031a12%22 stroke-width=%223%22 stroke-linecap=%22round%22/></svg>">
-
+<meta name="referrer" content="no-referrer">
 <style>
-  :root{--bg:#031a12;--bg2:#05261d;--text:#f6fbff;--muted:#b9c9d6;--line:rgba(255,255,255,.16);
-        --gold:#ffbf1a;--gold2:#e0a400;--radius:16px;--shadow:0 14px 48px rgba(0,0,0,.6);}
-  *{box-sizing:border-box} html,body{margin:0;height:100%}
-  body{font-family:-apple-system,Roboto,Inter,Arial,sans-serif;background:linear-gradient(180deg,#01120c,#05261d 45%,#062b20);color:var(--text);line-height:1.6}
-  .wrap{max-width:720px;margin:0 auto;padding:20px 16px 120px}
-  .langbar{display:flex;gap:8px;justify-content:flex-end}
-  .langbtn{padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.08);cursor:pointer;font-weight:800;color:var(--text)}
-  .langbtn.active{border-color:var(--gold);background:rgba(255,255,255,.15)}
-  .hero{margin-top:8px;padding:18px;border:1px solid var(--line);border-radius:var(--radius);
-        background:rgba(255,255,255,.02);box-shadow:var(--shadow);text-align:center}
-  .title{font-size:clamp(26px,6vw,40px);margin:6px 0;background:linear-gradient(90deg,#fff,#ffe7a8,#fff);
-         -webkit-background-clip:text;background-clip:text;color:transparent}
-  .sub{color:#d7e8f7;max-width:68ch;margin:0 auto 10px}
-  .badge{display:inline-block;margin:4px 6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);font-weight:700;background:rgba(255,255,255,.06)}
-  .cta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:14px 0}
-  .btn{display:inline-block;cursor:pointer;text-decoration:none;font-weight:900;border-radius:16px;border:1px solid var(--gold2);
-       background:linear-gradient(180deg,#ffe889,#ffc930 58%,#ffb40a);color:#1a1400;box-shadow:0 12px 26px rgba(255,191,26,.45);padding:16px 22px}
-  .btn:hover{transform:translateY(-1px);filter:saturate(1.05)}
-  .btn.sec{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));color:#eef;border:1px solid var(--line);box-shadow:none}
-  .card{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.02);box-shadow:var(--shadow)}
-  h2{margin:0 0 8px;font-size:20px}
-  .legal{font-size:12px;color:var(--muted)}
-  .grid{display:grid;gap:10px;margin-top:10px}
-  @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
-  .chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;color:var(--muted)}
-  .sticky{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:1fr 1fr;gap:10px;
-          padding:max(10px,env(safe-area-inset-bottom));backdrop-filter:blur(8px);
-          background:linear-gradient(180deg,transparent,rgba(0,0,0,.75) 40%,rgba(0,0,0,.9));border-top:1px solid var(--line);z-index:50}
-  @media(min-width:800px){.sticky{display:none}}
+  :root{
+    --shopee:#EE4D2D;          /* cam Shopee chính */
+    --shopee-2:#FF6A3D;        /* cam sáng hơn */
+    --gold:#FFD400;
+    --ink:#222;
+    --muted:#666;
+    --card:#fff;
+    --bg:#FFF8F5;              /* nền kem nhẹ giống app */
+    --ok:#12B886;
+  }
+  *{box-sizing:border-box} html,body{margin:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
+  .hero{
+    background:linear-gradient(135deg,var(--shopee),var(--shopee-2));
+    color:#fff;border-radius:18px;padding:24px 20px;position:relative;overflow:hidden
+  }
+  .hero .badge{display:inline-block;background:rgba(255,255,255,.15);padding:6px 10px;border-radius:999px;font-weight:600}
+  .hero h1{margin:10px 0 6px;font-size:28px}
+  .hero p{margin:0 0 14px;font-size:15px;opacity:.95}
+  .cta{display:inline-flex;gap:10px;align-items:center;background:#fff;color:var(--shopee);border-radius:12px;padding:12px 16px;font-weight:700}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:16px}
+  .card{grid-column:span 12;background:var(--card);border-radius:16px;padding:16px;border:1px solid #ffe0d6}
+  @media(min-width:700px){.card.half{grid-column:span 6}}
+  .card h3{margin:0 0 8px;font-size:18px}
+  .list{margin:8px 0 0;padding:0;list-style:none}
+  .list li{padding:8px 0;display:flex;gap:10px;border-top:1px dashed #ffe0d6}
+  .list li:first-child{border-top:none}
+  .pill{display:inline-block;background:#fff3; padding:2px 8px;border-radius:999px;border:1px solid #ffd1c4;color:#b23b1f;font-size:12px}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    background:linear-gradient(135deg,#fff,#fff);
+    color:var(--shopee);border:2px solid #fff;border-radius:12px;padding:12px 16px;font-weight:800
+  }
+  .btn.primary{
+    background:linear-gradient(135deg,var(--gold),#fff0);
+    color:#000;border-color:var(--gold)
+  }
+  .note{color:var(--muted);font-size:13px}
+  .footer{margin:22px 0 80px;color:var(--muted);font-size:13px}
+  /* Sticky bar */
+  .sticky{
+    position:fixed;left:0;right:0;bottom:0;background:linear-gradient(90deg,var(--shopee),var(--shopee-2));
+    display:flex;align-items:center;justify-content:center;gap:12px;padding:12px;z-index:10
+  }
+  .sticky a{background:#fff;color:var(--shopee);font-weight:800;border-radius:10px;padding:10px 14px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand .logo{width:38px;height:38px;border-radius:10px;background:#fff;display:grid;place-items:center;color:var(--shopee);font-weight:900}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .chip{background:#fff;border:1px solid #ffd1c4;border-radius:999px;padding:6px 10px;font-size:12px}
+  .store-row{display:flex;gap:8px;flex-wrap:wrap}
+  .store{border:1.5px solid #fff;border-radius:10px;background:#fff;color:#000;padding:8px 12px;font-weight:700}
 </style>
 </head>
 <body>
-  <main class="wrap">
-    <!-- Ngôn ngữ -->
-    <div class="langbar" aria-label="Language">
-      <button id="viBtn" class="langbtn active">VI</button>
-      <button id="enBtn" class="langbtn">EN</button>
-    </div>
+<script>
+  // === Cấu hình: thay link tại đây nếu cần ===
+  const AFF_LINK = "https://s.shopee.vn/4q5pVa3C9Y";
+</script>
 
-    <!-- Hero -->
-    <section class="hero">
-      <h1 class="title" data-i18n="title">Khám phá Shopee – mua sắm dễ dàng</h1>
-      <p class="sub" data-i18n="sub">Nhấn nút vàng để truy cập Shopee. Giá, khuyến mãi và vận chuyển do Shopee quyết định. Không thu phí tại trang này.</p>
+<div class="wrap">
+  <section class="hero">
+    <div class="brand">
+      <div class="logo">S</div>
       <div>
-        <span class="badge" data-i18n="b1">Link tổng Shopee</span>
-        <span class="badge" data-i18n="b2">Hợp lệ kiểm duyệt Zalo</span>
-        <span class="badge" data-i18n="b3">Dùng tốt cho TikTok bio</span>
+        <div class="badge">VuHuyPhat • Deal Shopee</div>
+        <h1>Săn ưu đãi Shopee – Freeship • Flash Sale • Mã giảm giá</h1>
       </div>
+    </div>
+    <p>Khuyến mãi do Shopee cung cấp, điều kiện áp dụng tuỳ chương trình. Bấm để vào Shopee và xem ưu đãi đang mở.</p>
+    <a class="cta" href="#" id="cta-hero" rel="nofollow sponsored noopener" target="_blank">Vào Shopee ngay 🛍️</a>
+    <div class="chips">
+      <span class="chip">Deal 0đ* (tuỳ điều kiện)</span>
+      <span class="chip">Voucher theo ngành hàng</span>
+      <span class="chip">Hàng chính hãng Shopee Mall</span>
+      <span class="chip">Giao nhanh</span>
+    </div>
+  </section>
 
-      <div class="cta">
-        <!-- NÚT CHÍNH: thay LINK_TONG bên dưới trong khối DATA -->
-        <a id="goBtn" class="btn" href="#" target="_blank" rel="noopener noreferrer nofollow" data-i18n="cta_go">Mở Shopee ngay</a>
-        <button id="copyBtn" class="btn sec" data-i18n="cta_copy">Sao chép link</button>
-        <button id="shareBtn" class="btn sec" data-i18n="cta_share">Chia sẻ</button>
+  <div class="grid">
+    <article class="card half">
+      <h3>Ưu đãi nổi bật</h3>
+      <ul class="list">
+        <li>🚚 Freeship theo điều kiện chương trình Shopee.</li>
+        <li>⚡ Flash Sale giờ vàng mỗi ngày.</li>
+        <li>🎟️ Mã giảm giá & voucher ngành hàng.</li>
+        <li>🆓 Deal 0đ cho người dùng đủ điều kiện (*chi tiết trong app Shopee).</li>
+      </ul>
+      <p class="note">Ưu đãi có thể thay đổi theo thời gian & khu vực. Vui lòng kiểm tra thông tin cụ thể trong ứng dụng Shopee.</p>
+      <p><a class="btn primary" href="#" id="cta-1" target="_blank" rel="nofollow sponsored noopener">Vào Shopee để xem khuyến mãi</a></p>
+    </article>
+
+    <article class="card half">
+      <h3>Mua gì cũng có</h3>
+      <ul class="list">
+        <li>👗 Thời trang nam/nữ, phụ kiện.</li>
+        <li>🏠 Gia dụng, nhà bếp, đồ điện nhỏ.</li>
+        <li>📱 Phụ kiện công nghệ, thiết bị xe.</li>
+        <li>🧴 Làm đẹp, chăm sóc cá nhân, mẹ & bé…</li>
+      </ul>
+      <div class="store-row">
+        <a class="store" href="#" id="cta-2" target="_blank" rel="nofollow sponsored noopener">Mở Shopee</a>
+        <a class="store" href="#" id="cta-3" target="_blank" rel="nofollow sponsored noopener">Săn voucher</a>
       </div>
+    </article>
 
-      <div class="grid">
-        <span class="chip">🛡️ <span data-i18n="c1">Không hứa hẹn lợi nhuận • Không thu thập tiền</span></span>
-        <span class="chip">🔒 <span data-i18n="c2">Bảo mật: giao dịch diễn ra trên Shopee</span></span>
-      </div>
-    </section>
+    <article class="card">
+      <h3>Hướng dẫn 3 bước</h3>
+      <ul class="list">
+        <li>1) Nhấn “Vào Shopee” để mở trang Shopee.</li>
+        <li>2) Đăng nhập hoặc tạo tài khoản miễn phí.</li>
+        <li>3) Chọn sản phẩm yêu thích, áp mã và thanh toán.</li>
+      </ul>
+      <p class="note">Tip: Theo dõi mục “Flash Sale” và “Mã giảm giá” trong app để không bỏ lỡ ưu đãi.</p>
+    </article>
 
-    <!-- Hướng dẫn ngắn -->
-    <section class="card">
-      <h2 data-i18n="h1">Cách sử dụng</h2>
-      <ol style="margin:6px 0 0 18px">
-        <li data-i18n="s1">Nhấn “Mở Shopee ngay”.</li>
-        <li data-i18n="s2">Đăng nhập Shopee và mua sắm như bình thường.</li>
-        <li data-i18n="s3">Ưu đãi/điểm thưởng (nếu có) do Shopee áp dụng theo chính sách từng thời kỳ.</li>
-      </ol>
-    </section>
+    <article class="card">
+      <h3>Câu hỏi thường gặp</h3>
+      <ul class="list">
+        <li><strong>Trang này có phải của Shopee?</strong> — Không. Đây là trang giới thiệu do VuHuyPhat tạo. Ưu đãi & giao dịch diễn ra trên hệ thống Shopee.</li>
+        <li><strong>Ưu đãi 0đ là gì?</strong> — Là các chương trình đặc thù (ví dụ cho người dùng mới hoặc theo điều kiện khác) do Shopee công bố trong app. Vui lòng xem chi tiết trong Shopee.</li>
+        <li><strong>Cam kết & bảo mật?</strong> — Chính sách, bảo hành, giao hàng và thanh toán đều theo quy định chính thức của Shopee.</li>
+      </ul>
+      <p class="note">*Disclosure: Liên kết có thể giúp VuHuyPhat nhận hoa hồng giới thiệu mà không làm tăng giá sản phẩm của bạn.</p>
+    </article>
+  </div>
 
-    <!-- Liên hệ -->
-    <section class="card">
-      <h2 data-i18n="h2">Thông tin liên hệ</h2>
-      <p><b data-i18n="name">Người phụ trách:</b> Vũ Huy Phát</p>
-      <p><b data-i18n="phone">Số điện thoại:</b> <a href="tel:0567892030">0567892030</a></p>
-      <p><b>Email:</b> <a href="mailto:vumumabada@gmail.com">vumumabada@gmail.com</a></p>
-      <p><b data-i18n="addr">Địa chỉ:</b> Phường Phong Thái, TP Huế</p>
-      <p class="legal" data-i18n="note">Thương hiệu/nhãn hiệu thuộc về Shopee và các chủ sở hữu; trang này chỉ là điểm chuyển hướng, không thuộc Shopee.</p>
-    </section>
+  <div class="footer">
+    © <span id="y"></span> VuHuyPhat. Màu sắc & phong cách lấy cảm hứng từ Shopee để đồng nhất trải nghiệm. Không đại diện cho Shopee.
+  </div>
+</div>
 
-    <!-- Miễn trừ -->
-    <section class="card">
-      <h2 data-i18n="h3">Chính sách & miễn trừ</h2>
-      <p class="legal" data-i18n="disclaimer">
-        Trang này chỉ cung cấp đường dẫn đến nền tảng Shopee (bên thứ ba). Giá bán, khuyến mãi, vận chuyển và bảo hành do Shopee/nhà bán hàng quyết định.
-        Không tư vấn tài chính, không cam kết kết quả. Người dùng tự chịu trách nhiệm với quyết định mua sắm của mình.
-      </p>
-    </section>
-
-    <footer class="card" style="text-align:center">
-      © <span id="y"></span> — <span data-i18n="foot">Trang dẫn đến Shopee. Không thu phí tại trang này.</span>
-    </footer>
-  </main>
-
-  <!-- Sticky CTA di động -->
-  <nav class="sticky" aria-label="Quick actions">
-    <a id="goBtnSticky" class="btn" href="#" target="_blank" rel="noopener noreferrer nofollow" data-i18n="cta_go">Mở Shopee ngay</a>
-    <button id="copyBtnSticky" class="btn sec" data-i18n="cta_copy">Sao chép link</button>
-  </nav>
+<!-- Sticky CTA -->
+<div class="sticky">
+  <span style="color:#fff;font-weight:700">Săn ưu đãi Shopee</span>
+  <a href="#" id="cta-sticky" rel="nofollow sponsored noopener" target="_blank">Mở Shopee 🛍️</a>
+</div>
 
 <script>
-  // ==== EDIT ONLY: đặt link tổng Shopee của anh tại đây ====
-  const LINK_TONG = 'https://shopee.vn/'; // <— THAY bằng link tổng affiliate của anh (từ Shopee Partner)
-
-  // Năm
+  // gán link cho tất cả CTA
+  const link = AFF_LINK;
+  for (const id of ["cta-hero","cta-1","cta-2","cta-3","cta-sticky"]) {
+    const a = document.getElementById(id);
+    if (a) a.href = link;
+  }
   document.getElementById('y').textContent = new Date().getFullYear();
 
-  // Song ngữ
-  const dict={
-    vi:{title:"Khám phá Shopee – mua sắm dễ dàng",
-        sub:"Nhấn nút vàng để truy cập Shopee. Giá, khuyến mãi và vận chuyển do Shopee quyết định. Không thu phí tại trang này.",
-        b1:"Link tổng Shopee",b2:"Hợp lệ kiểm duyệt Zalo",b3:"Dùng tốt cho TikTok bio",
-        cta_go:"Mở Shopee ngay",cta_copy:"Sao chép link",cta_share:"Chia sẻ",
-        c1:"Không hứa hẹn lợi nhuận • Không thu thập tiền",c2:"Bảo mật: giao dịch diễn ra trên Shopee",
-        h1:"Cách sử dụng",s1:"Nhấn “Mở Shopee ngay”.",s2:"Đăng nhập Shopee và mua sắm như bình thường.",s3:"Ưu đãi/điểm thưởng (nếu có) do Shopee áp dụng theo chính sách từng thời kỳ.",
-        h2:"Thông tin liên hệ",name:"Người phụ trách:",phone:"Số điện thoại:",addr:"Địa chỉ:",
-        note:"Thương hiệu/nhãn hiệu thuộc về Shopee và các chủ sở hữu; trang này chỉ là điểm chuyển hướng, không thuộc Shopee.",
-        h3:"Chính sách & miễn trừ",
-        disclaimer:"Trang này chỉ cung cấp đường dẫn đến nền tảng Shopee (bên thứ ba). Giá bán, khuyến mãi, vận chuyển và bảo hành do Shopee/nhà bán hàng quyết định. Không tư vấn tài chính, không cam kết kết quả. Người dùng tự chịu trách nhiệm với quyết định mua sắm của mình.",
-        foot:"Trang dẫn đến Shopee. Không thu phí tại trang này."},
-    en:{title:"Explore Shopee – shop with ease",
-        sub:"Tap the gold button to enter Shopee. Prices/promotions/shipping are decided by Shopee. No fees collected here.",
-        b1:"Shopee universal link",b2:"Zalo Ads compliant",b3:"Great for TikTok bio",
-        cta_go:"Open Shopee",cta_copy:"Copy link",cta_share:"Share",
-        c1:"No earnings promises • No payments collected",c2:"Privacy: checkout happens on Shopee",
-        h1:"How it works",s1:"Tap “Open Shopee”.",s2:"Sign in and shop as usual.",s3:"Any rewards/coupons are applied by Shopee per their policies.",
-        h2:"Contact",name:"Contact:",phone:"Phone:",addr:"Address:",
-        note:"Logos/trademarks belong to Shopee and respective owners; this page is a redirect hub and not affiliated with Shopee.",
-        h3:"Policy & disclaimer",
-        disclaimer:"This page only provides a link to a third-party platform (Shopee). Prices, promotions, shipping and warranty are decided by Shopee/sellers. Not financial advice. You are responsible for your purchase decisions.",
-        foot:"Shopee redirect page. No fees collected here."}
-  };
-  let cur='vi';
-  const $ = s => document.querySelector(s);
-  function applyLang(){
-    document.querySelectorAll('[data-i18n]').forEach(el=>{
-      const k=el.getAttribute('data-i18n'); if(dict[cur][k]) el.innerHTML=dict[cur][k];
+  // hỗ trợ Web Share API (nếu muốn chia sẻ)
+  if (navigator.share) {
+    const shareBtn = document.createElement('a');
+    shareBtn.className = 'btn';
+    shareBtn.textContent = 'Chia sẻ link cho bạn bè';
+    shareBtn.href = link;
+    shareBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      navigator.share({title:'Ưu đãi Shopee',text:'Săn voucher & flash sale Shopee',url:link})
+      .catch(()=>location.href=link);
     });
-    $('#viBtn').classList.toggle('active',cur==='vi');
-    $('#enBtn').classList.toggle('active',cur==='en');
-    document.documentElement.lang = cur;
+    document.querySelector('.card.half + .card.half').appendChild(document.createElement('p')).appendChild(shareBtn);
   }
-  $('#viBtn').onclick=()=>{cur='vi';applyLang();};
-  $('#enBtn').onclick=()=>{cur='en';applyLang();};
-  applyLang();
-
-  // Gắn link vào các nút
-  function attachLinks(){
-    $('#goBtn').href = LINK_TONG;
-    $('#goBtnSticky').href = LINK_TONG;
-  }
-  attachLinks();
-
-  // Copy link
-  function doCopy(btnId){
-    const el = $(btnId);
-    navigator.clipboard.writeText(LINK_TONG).then(()=>{
-      const old = el.textContent;
-      el.textContent = (cur==='vi'?'Đã sao chép ✓':'Copied ✓');
-      setTimeout(()=> el.textContent = (btnId.includes('Sticky') ? dict[cur].cta_copy : dict[cur].cta_copy), 1100);
-    }).catch(()=> alert(cur==='vi'?'Copy lỗi, vui lòng thử lại':'Copy failed, please try again'));
-  }
-  $('#copyBtn').onclick = ()=>doCopy('#copyBtn');
-  $('#copyBtnSticky').onclick = ()=>doCopy('#copyBtnSticky');
-
-  // Share (nếu trình duyệt hỗ trợ)
-  $('#shareBtn').onclick = async ()=>{
-    try{
-      if(navigator.share){ await navigator.share({title:document.title,text:dict[cur].title,url:LINK_TONG}); }
-      else{ doCopy('#copyBtn'); }
-    }catch(e){}
-  };
 </script>
 </body>
 </html>
