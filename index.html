@@ -3,81 +3,138 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>VuHuyPhat • Săn Ưu Đãi Shopee – Freeship • Flash Sale • Deal 0đ*</title>
-<meta name="description" content="Mua sắm Shopee: freeship theo điều kiện, flash sale, mã giảm giá, deal 0đ* cho người dùng đủ điều kiện. Nhấn để mở Shopee.">
+<title>VuHuyPhat • Shopee Deals — Freeship • Flash Sale • Voucher</title>
+<meta name="description" content="Mua sắm Shopee: freeship theo điều kiện, flash sale, voucher đa ngành, deal 0đ* cho tài khoản đủ điều kiện. Nhấn để mở Shopee.">
 <meta name="referrer" content="no-referrer">
-<meta property="og:title" content="Săn Ưu Đãi Shopee – Freeship • Flash Sale • Deal 0đ*">
+<meta property="og:title" content="Shopee Deals — Freeship • Flash Sale • Voucher">
 <meta property="og:description" content="Thời trang, gia dụng, công nghệ… Ưu đãi cập nhật liên tục. Nhấn để mở Shopee.">
 <meta property="og:type" content="website">
 <meta name="color-scheme" content="light">
 <link rel="preconnect" href="https://s.shopee.vn">
 <style>
   :root{
-    --shopee:#EE4D2D; --shopee2:#FF6A3D; --gold:#FFD400;
-    --ink:#1d1d1d; --muted:#666; --bg:#FFF8F5; --card:#fff; --ring:#ffd1c4;
+    --cam:#EE4D2D; --cam2:#FF6A3D; --gold:#FFD400;
+    --ink:#191919; --muted:#6b6b6b; --bg:#FFF3EC; --card:#fff; --ring:#ffc9b6;
   }
-  *{box-sizing:border-box} html,body{margin:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+  *{box-sizing:border-box}html,body{margin:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Arial,sans-serif;
+    color:var(--ink); line-height:1.6; background:var(--bg);
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
   a{color:inherit;text-decoration:none}
-  .wrap{max-width:1040px;margin:0 auto;padding:16px}
 
-  /* ===== HERO ===== */
+  /* ===== Shopee orange backdrop from top to bottom ===== */
+  .orange-bg{
+    position:fixed; inset:-20vmax -20vmax -20vmax -20vmax; z-index:-2;
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #ffdbc9 0%, transparent 60%),
+      linear-gradient(180deg, var(--cam) 0%, var(--cam2) 60%, #FFB095 110%);
+  }
+
+  .wrap{max-width:1080px;margin:0 auto;padding:16px}
+
+  /* ===== 3D Stage & Parallax ===== */
+  .stage{perspective:1200px; transform-style:preserve-3d}
+  .hero3d{transform:rotateX(0.4deg) rotateY(-0.6deg); will-change:transform}
+
+  /* ===== HERO CARD ===== */
   .hero{
-    position:relative; overflow:hidden; color:#fff; border-radius:20px; padding:24px 18px;
-    background:linear-gradient(135deg,var(--shopee),var(--shopee2));
-    isolation:isolate;
+    position:relative; color:#fff; border-radius:24px; padding:26px 18px; overflow:hidden;
+    background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.00));
+    backdrop-filter:saturate(130%) blur(6px); border:1px solid rgba(255,255,255,.35);
+    box-shadow:0 25px 60px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.12);
   }
-  .hero::after{
-    content:""; position:absolute; inset:auto -30% -40% auto; width:520px; height:520px;
-    background:radial-gradient(closest-side,#fff7,transparent); filter:blur(12px); opacity:.35; z-index:-1;
-    animation:float 8s ease-in-out infinite alternate;
+  .hero:after{
+    content:""; position:absolute; inset:auto -24% -40% auto; width:560px; height:560px;
+    background:radial-gradient(closest-side,#fff7,transparent); filter:blur(14px); opacity:.35; z-index:-1;
+    animation:float 9s ease-in-out infinite alternate;
   }
-  @keyframes float{from{transform:translateY(0)}to{transform:translateY(-18px)}}
-  .brand{display:flex;align-items:center;gap:12px}
-  .logo{width:44px;height:44px;border-radius:12px;background:#fff;display:grid;place-items:center;color:var(--shopee);font-weight:900}
-  .badge{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:6px 10px;border-radius:999px;font-weight:800}
-  .hero h1{margin:10px 0 6px;font-size:28px}
-  .hero p{margin:0 0 10px;opacity:.98}
-  .cta{display:inline-flex;align-items:center;gap:10px;border-radius:12px;padding:12px 16px;font-weight:900;border:2px solid #fff;background:#fff;color:var(--shopee)}
+  @keyframes float{to{transform:translateY(-18px)}}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{
+    width:48px;height:48px;border-radius:14px;background:#fff;display:grid;place-items:center;
+    color:var(--cam);font-weight:900; box-shadow:0 8px 24px rgba(0,0,0,.15);
+  }
+  .badge{
+    display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);
+    padding:6px 10px;border-radius:999px;font-weight:800
+  }
+  .hero h1{margin:10px 0 6px;font-size:29px}
+  .hero p{margin:0 0 12px;opacity:.98}
+  .cta{
+    display:inline-flex;align-items:center;gap:10px;border-radius:14px;padding:12px 16px;font-weight:900;
+    background:#fff;color:var(--cam);border:2px solid #fff; transition:.22s; will-change:transform;
+  }
+  .cta:hover{transform:translateY(-1.5px)}
   .cta.alt{background:transparent;color:#fff}
+  .pulse{animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,212,0,.0)}50%{box-shadow:0 0 0 8px rgba(255,212,0,.28)}}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 4px}
 
   /* voucher strip */
-  .vstrip{margin:12px 0 0; display:flex; gap:8px; flex-wrap:wrap}
-  .tag{background:#fff1; border:1px solid rgba(255,255,255,.35); padding:6px 10px; border-radius:999px}
+  .vstrip{margin-top:12px; display:flex; gap:8px; flex-wrap:wrap}
+  .tag{background:#fff1;border:1px solid rgba(255,255,255,.35);padding:6px 10px;border-radius:999px}
 
-  /* ===== GRID ===== */
-  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:16px}
-  .card{grid-column:span 12;background:var(--card);border-radius:16px;padding:16px;border:1px solid var(--ring)}
-  @media(min-width:760px){.half{grid-column:span 6}}
+  /* ===== GRID CONTENT ===== */
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:16px}
+  .card{
+    grid-column:span 12;background:var(--card);border-radius:18px;padding:16px;border:1px solid var(--ring);
+    box-shadow:0 14px 40px rgba(238,77,45,.18);
+    transform:translateZ(0); transition:transform .25s;
+  }
+  .card:hover{transform:translateY(-2px)}
+  @media(min-width:780px){.half{grid-column:span 6}}
+
   .card h3{margin:0 0 8px;font-size:18px}
   .list{list-style:none;margin:8px 0 0;padding:0}
   .list li{padding:8px 0;border-top:1px dashed var(--ring)}
   .list li:first-child{border-top:none}
+
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
   .chip{background:#fff;border:1px solid var(--ring);border-radius:999px;padding:7px 12px;font-size:12px}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:12px 16px;font-weight:900;border:2px solid var(--gold);background:linear-gradient(135deg,var(--gold),#fff0);color:#000}
-  .btn.ghost{border-color:#fff;background:#fff;color:var(--shopee)}
-  .row{display:flex;gap:8px;flex-wrap:wrap}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:12px 16px;font-weight:900;
+    border:2px solid var(--gold);background:linear-gradient(135deg,var(--gold),#fff0);color:#000; transition:.2s;
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .btn.ghost{border-color:#fff;background:#fff;color:var(--cam)}
 
   .note{color:var(--muted);font-size:13px}
   .faq dt{font-weight:800;margin-top:6px}
   .faq dd{margin:4px 0 10px}
-  .footer{margin:22px 0 90px;color:var(--muted);font-size:13px}
+  .footer{margin:24px 0 96px;color:var(--muted);font-size:13px}
 
-  /* ===== Sticky CTA ===== */
-  .sticky{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(90deg,var(--shopee),var(--shopee2));display:flex;align-items:center;justify-content:center;gap:12px;padding:12px;z-index:10}
-  .sticky a{background:#fff;color:var(--shopee);font-weight:900;border-radius:10px;padding:10px 14px}
+  /* Sticky */
+  .sticky{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(90deg,var(--cam),var(--cam2));display:flex;align-items:center;justify-content:center;gap:12px;padding:12px;z-index:10}
+  .sticky a{background:#fff;color:var(--cam);font-weight:900;border-radius:10px;padding:10px 14px}
 
-  /* FAB (nút nổi) */
-  .fab{position:fixed;right:14px;bottom:80px;background:#fff;color:var(--shopee);border:2px solid var(--gold);border-radius:999px;padding:10px 14px;font-weight:900;z-index:11}
+  /* FAB (floating action) */
+  .fab{position:fixed;right:14px;bottom:88px;background:#fff;color:var(--cam);border:2px solid var(--gold);
+       border-radius:999px;padding:10px 14px;font-weight:900;z-index:11;box-shadow:0 10px 26px rgba(0,0,0,.18)}
 
-  /* countdown pill */
-  .pill{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--shopee);border-radius:999px;padding:6px 10px;font-weight:800;border:2px solid var(--gold)}
+  /* Toast */
+  .toast{position:fixed;left:50%;bottom:130px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;transition:.25s;z-index:12}
+  .toast.show{opacity:1}
+
+  /* QR panel (desktop only) */
+  .qrbox{display:none}
+  @media(min-width:960px){
+    .qrbox{display:flex;align-items:center;gap:14px;margin-top:10px}
+    .qr{width:124px;height:124px;border-radius:12px;background:#fff;display:grid;place-items:center;border:2px dashed #ffcfbf}
+    .qr small{color:#fff;opacity:.88}
+  }
+
+  /* tiny SVG icon container */
+  .ico{width:18px;height:18px;display:inline-grid;place-items:center}
 </style>
 </head>
 <body>
+<div class="orange-bg" aria-hidden="true"></div>
+
 <script>
-  // ========== CẤU HÌNH ==========
+  /* ========= CONFIG ========= */
   const AFF_LINK = "https://s.shopee.vn/4q5pVa3C9Y";
   const HEADLINES = [
     "Freeship theo điều kiện • Flash Sale mỗi ngày",
@@ -86,40 +143,57 @@
   ];
 </script>
 
-<div class="wrap">
-  <!-- HERO -->
-  <section class="hero">
+<div class="wrap stage">
+  <!-- HERO 3D -->
+  <section class="hero hero3d">
     <div class="brand">
-      <div class="logo">S</div>
+      <div class="logo" aria-hidden="true">S</div>
       <div>
-        <span class="badge">VuHuyPhat • Ưu đãi Shopee</span>
-        <h1 id="headline">Săn ưu đãi Shopee – Freeship • Flash Sale • Deal 0đ*</h1>
+        <span class="badge">VuHuyPhat • Shopee Deals</span>
+        <h1 id="headline">Săn ưu đãi Shopee — Freeship • Flash Sale • Voucher</h1>
       </div>
     </div>
-    <p>Ưu đãi do Shopee cung cấp. Điều kiện áp dụng tùy chương trình và thời gian hiển thị trong ứng dụng Shopee.</p>
 
-    <div class="row" style="margin:10px 0 4px">
-      <a id="cta-hero" class="cta" href="#" target="_blank" rel="nofollow sponsored noopener">Mở Shopee ngay 🛍️</a>
-      <a id="cta-voucher" class="cta alt" href="#" target="_blank" rel="nofollow sponsored noopener">Săn mã nhanh</a>
+    <p>Ưu đãi do Shopee cung cấp. Điều kiện áp dụng tùy chương trình & thời gian hiển thị trong ứng dụng Shopee.</p>
+    <div class="row">
+      <a id="cta-hero" class="cta pulse" href="#" target="_blank" rel="nofollow sponsored noopener">
+        <!-- bag icon -->
+        <span class="ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M7 7V6a5 5 0 0 1 10 0v1h2a1 1 0 0 1 1 1v11a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V8a1 1 0 0 1 1-1h2zm2 0h6V6a3 3 0 0 0-6 0v1z"/></svg>
+        </span>
+        Mở Shopee ngay
+      </a>
+      <a id="cta-voucher" class="cta alt" href="#" target="_blank" rel="nofollow sponsored noopener">
+        <span class="ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 7a2 2 0 0 1 2-2h14l2 3-2 3H5a2 2 0 0 1-2-2V7zm0 7a2 2 0 0 1 2-2h14l2 3-2 3H5a2 2 0 0 1-2-2v-2z"/></svg>
+        </span>
+        Săn mã nhanh
+      </a>
     </div>
 
     <div class="vstrip">
       <span class="tag">Freeship (tùy điều kiện)</span>
       <span class="tag">Flash Sale giờ vàng</span>
-      <span class="tag">Mã giảm giá theo ngành</span>
+      <span class="tag">Voucher đa ngành</span>
       <span class="tag">Shopee Mall</span>
-      <span class="tag" id="count-pill">Khung giờ tiếp theo: <b><span id="count"></span></b></span>
+      <span class="tag" id="count-pill">Khung giờ kế tiếp: <b><span id="count"></span></b></span>
+    </div>
+
+    <!-- QR (desktop) -->
+    <div class="qrbox">
+      <div class="qr"><img id="qr" alt="QR mở Shopee" width="116" height="116" decoding="async"></div>
+      <small>Quét QR trên máy tính để mở Shopee trên điện thoại.</small>
     </div>
   </section>
 
   <!-- CONTENT -->
   <div class="grid">
     <article class="card half">
-      <h3>Ưu đãi nổi bật</h3>
+      <h3>Lợi ích bạn quan tâm</h3>
       <ul class="list">
-        <li>🎟️ Mã giảm giá toàn sàn & từng ngành hàng.</li>
-        <li>⚡ Flash Sale theo khung giờ trong ngày.</li>
-        <li>🆓 Deal 0đ* cho người dùng đủ điều kiện (chi tiết trong app).</li>
+        <li>🎟️ Mã giảm giá toàn sàn & ngành hàng — cập nhật thường xuyên.</li>
+        <li>⚡ Flash Sale theo khung giờ hiển thị trong ngày.</li>
+        <li>🆓 Deal 0đ* cho tài khoản đủ điều kiện (chi tiết trong app).</li>
         <li>🚚 Freeship theo quy định từng chương trình.</li>
       </ul>
       <p class="note">Ưu đãi thay đổi theo thời gian/khu vực. Vui lòng xem chi tiết khi mở Shopee.</p>
@@ -134,7 +208,7 @@
     </article>
 
     <article class="card half">
-      <h3>Mua sắm đa ngành</h3>
+      <h3>Mua sắm theo nhu cầu</h3>
       <div class="chips">
         <a class="chip" id="cat-1" href="#" target="_blank" rel="nofollow sponsored noopener">Thời trang</a>
         <a class="chip" id="cat-2" href="#" target="_blank" rel="nofollow sponsored noopener">Gia dụng</a>
@@ -143,77 +217,76 @@
         <a class="chip" id="cat-5" href="#" target="_blank" rel="nofollow sponsored noopener">Mẹ & Bé</a>
         <a class="chip" id="cat-6" href="#" target="_blank" rel="nofollow sponsored noopener">Nhà bếp</a>
       </div>
-      <p class="note">Danh mục mang tính tham khảo. Việc chọn & thanh toán được thực hiện trực tiếp trên Shopee.</p>
+      <p class="note">Danh mục mang tính gợi ý. Việc chọn & thanh toán diễn ra trực tiếp trong Shopee.</p>
     </article>
 
     <article class="card">
-      <h3>3 bước mua sắm nhanh</h3>
+      <h3>3 bước là xong</h3>
       <ul class="list">
-        <li>1) Nhấn “Mở Shopee” để tới Shopee.</li>
-        <li>2) Đăng nhập hoặc tạo tài khoản miễn phí.</li>
-        <li>3) Chọn sản phẩm, áp mã – thanh toán an toàn trên Shopee.</li>
+        <li>1) Nhấn “Mở Shopee”.</li>
+        <li>2) Đăng nhập/tạo tài khoản miễn phí.</li>
+        <li>3) Chọn sản phẩm, áp mã — thanh toán an toàn trên Shopee.</li>
       </ul>
     </article>
 
     <article class="card">
-      <h3>FAQ & Lưu ý</h3>
+      <h3>FAQ & Ghi chú</h3>
       <dl class="faq">
         <dt>Trang này có phải của Shopee?</dt>
-        <dd>Không. Đây là trang giới thiệu do VuHuyPhat tạo; toàn bộ giao dịch/ưu đãi diễn ra trên hệ thống Shopee.</dd>
+        <dd>Không. Đây là trang giới thiệu do VuHuyPhat tạo; mọi giao dịch/ưu đãi diễn ra trên hệ thống Shopee.</dd>
         <dt>“Deal 0đ*” nghĩa là gì?</dt>
         <dd>Là chương trình đặc thù (ví dụ người dùng mới/điều kiện khác) do Shopee công bố. Vui lòng xem chi tiết trong ứng dụng Shopee.</dd>
         <dt>Chính sách & bảo mật?</dt>
-        <dd>Mọi chính sách vận chuyển, bảo hành, đổi trả, thanh toán… theo quy định chính thức của Shopee.</dd>
+        <dd>Mọi chính sách vận chuyển, đổi trả, bảo hành, thanh toán… theo quy định chính thức của Shopee.</dd>
       </dl>
       <p class="note">*Disclosure: Liên kết có thể giúp VuHuyPhat nhận hoa hồng giới thiệu mà không làm tăng giá sản phẩm của bạn.</p>
     </article>
   </div>
 
   <div class="footer">
-    © <span id="year"></span> VuHuyPhat • Tông màu lấy cảm hứng từ Shopee để thống nhất trải nghiệm. Không đại diện cho Shopee.
+    © <span id="year"></span> VuHuyPhat • Tông cam cảm hứng Shopee. Không đại diện cho Shopee.
   </div>
 </div>
 
-<!-- Floating action + Sticky bar -->
+<!-- FAB + Sticky + Toast -->
 <a class="fab" id="cta-fab" href="#" target="_blank" rel="nofollow sponsored noopener">Mở Shopee</a>
 <div class="sticky">
-  <span style="color:#fff;font-weight:900">Ưu đãi Shopee đang mở</span>
+  <span style="color:#fff;font-weight:900">Ưu đãi đang mở</span>
   <a id="cta-sticky" href="#" target="_blank" rel="nofollow sponsored noopener">Mua sắm ngay 🛍️</a>
 </div>
+<div class="toast" id="toast">Đã sao chép link!</div>
 
 <script>
-  // GÁN LINK CHO MỌI CTA + CATEGORY (đều về link tổng để giữ tracking)
+  // Gắn link cho mọi CTA/chip -> luôn về link tổng (giữ tracking)
   const ids = ["cta-hero","cta-voucher","cta-1","cta-2","cta-fab","cta-sticky",
                "cat-1","cat-2","cat-3","cat-4","cat-5","cat-6"];
   ids.forEach(i => { const a=document.getElementById(i); if(a) a.href = AFF_LINK; });
 
-  // Headline xoay vòng (tạo nhịp đọc tự nhiên)
-  const HEAD = document.getElementById('headline'); let hi=0;
-  setInterval(()=>{ hi=(hi+1)%HEADLINES.length; HEAD.textContent=HEADLINES[hi]; }, 3200);
+  // Headline xoay vòng (nhịp nhẹ)
+  const H = document.getElementById('headline'); let k=0;
+  setInterval(()=>{ k=(k+1)%HEADLINES.length; H.textContent=HEADLINES[k]; }, 3200);
 
-  // Countdown tới khung giờ tròn (ước lượng – không hứa hẹn)
+  // Countdown tới khung giờ (không hứa hẹn ưu đãi; chỉ gợi ý nhịp)
   const countEl = document.getElementById('count');
   function nextSlot(){
     const now=new Date(); const n=new Date(now);
-    // ví dụ: khung giờ 00, 12, 18 (có thể đổi tuỳ bạn)
-    const slots=[0,12,18];
-    let next= new Date(now); next.setHours(24,0,0,0); // mặc định sang ngày mai
-    for(const h of slots){
-      const t=new Date(n); t.setHours(h,0,0,0);
-      if(t>now){ next=t; break; }
-    }
+    const slots=[0,12,18]; // tuỳ chỉnh
+    let next=new Date(now); next.setHours(24,0,0,0);
+    for(const h of slots){ const t=new Date(n); t.setHours(h,0,0,0); if(t>now){ next=t; break; } }
     return next;
   }
   function tick(){
     const t=nextSlot().getTime()-Date.now();
-    const h=Math.floor(t/36e5), m=Math.floor(t%36e5/6e4), s=Math.floor(t%6e4/1e3);
-    countEl.textContent = (h+'h '+m+'m '+s+'s');
+    const h=Math.max(0,Math.floor(t/36e5)), m=Math.max(0,Math.floor(t%36e5/6e4)), s=Math.max(0,Math.floor(t%6e4/1e3));
+    countEl.textContent = `${h}h ${m}m ${s}s`;
   }
   setInterval(tick,1000); tick();
 
-  // Copy link + Share
+  // Copy + Share + Toast
+  const toast = document.getElementById('toast');
+  function flash(){ toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),1200); }
   document.getElementById('copy').addEventListener('click',e=>{
-    e.preventDefault(); navigator.clipboard?.writeText(AFF_LINK).then(()=>alert("Đã sao chép link!")).catch(()=>{});
+    e.preventDefault(); navigator.clipboard?.writeText(AFF_LINK).then(flash).catch(()=>{});
   });
   document.getElementById('share').addEventListener('click',e=>{
     e.preventDefault();
@@ -221,8 +294,24 @@
     else { window.open(AFF_LINK,'_blank'); }
   });
 
+  // QR (desktop): dùng dịch vụ ảnh QR công cộng (không thư viện)
+  const qr = document.getElementById('qr');
+  if(qr){ qr.src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(AFF_LINK)}`; }
+
   // Năm
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Nhẹ parallax theo chuột (3D hero)
+  const hero = document.querySelector('.hero3d');
+  let rx=0, ry=0;
+  hero.addEventListener('mousemove', e=>{
+    const r = hero.getBoundingClientRect();
+    const cx = e.clientX - r.left, cy = e.clientY - r.top;
+    const nx = (cx/r.width - .5)*2, ny = (cy/r.height - .5)*2;
+    rx = ny * 2.2; ry = nx * -2.2;
+    hero.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+  });
+  hero.addEventListener('mouseleave', ()=>{ hero.style.transform='rotateX(0.4deg) rotateY(-0.6deg)'; });
 </script>
 </body>
 </html>
