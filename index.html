@@ -33,7 +33,7 @@
   .stage{perspective:1200px;transform-style:preserve-3d}
   .hero3d{transform:rotateX(.4deg) rotateY(-.6deg);will-change:transform}
 
-  /* HERO */
+  /* HERO glass */
   .hero{position:relative;border-radius:24px;padding:26px 18px;overflow:hidden;
     background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
     backdrop-filter:saturate(130%) blur(6px);border:1px solid var(--ring);
@@ -83,7 +83,7 @@
   .toast{position:fixed;left:50%;bottom:130px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;transition:.25s;z-index:12}
   .toast.show{opacity:1}
 
-  /* today's deals table */
+  /* Today's deals */
   .dealgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
   .deal{grid-column:span 12;background:#ffffff14;border:1px dashed #ffffff60;border-radius:12px;padding:10px;display:flex;align-items:center;justify-content:space-between}
   .deal b{font-size:14px}
@@ -99,6 +99,42 @@
   }
   .ico{width:18px;height:18px;display:inline-grid;place-items:center}
   canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+
+  /* ==== HERO COLLAGE 3D ==== */
+  .hero-collage{position:absolute; inset:0; pointer-events:none}
+  .pcard{
+    position:absolute; width:92px; height:96px; padding:10px 8px;
+    border-radius:16px; background:#fff; color:#EE4D2D; text-align:center;
+    box-shadow:0 14px 30px rgba(0,0,0,.18); border:1px solid #ffd7c9;
+    transform:translateZ(0) rotate(var(--rot,0deg)); will-change:transform, box-shadow;
+    pointer-events:auto;
+  }
+  .pcard:hover{transform:translateZ(0) scale(1.04) rotate(var(--rot,0deg))}
+  .pcard b{display:block;font-size:12px;color:#e24a2b;margin-top:6px}
+  .pico{width:38px;height:38px;display:grid;place-items:center;margin:0 auto}
+
+  @media (min-width:700px){
+    .pc-1{left:-6px; top:18px; --rot:-8deg; animation:floatA 6s ease-in-out infinite}
+    .pc-2{right:-6px; top:24px; --rot:8deg; animation:floatB 7s ease-in-out infinite}
+    .pc-3{left:12px; bottom:-14px; --rot:6deg; animation:floatB 6.5s ease-in-out infinite}
+    .pc-4{right:12px; bottom:-18px; --rot:-6deg; animation:floatA 7.5s ease-in-out infinite}
+  }
+  @media (max-width:699px){
+    .pcard{opacity:.96}
+    .pc-1{left:6px; top:-10px; --rot:-6deg; animation:floatA 6s ease-in-out infinite}
+    .pc-2{right:6px; top:-8px; --rot:6deg; animation:floatB 7s ease-in-out infinite}
+    .pc-3{left:6px; bottom:-20px; --rot:5deg; animation:floatB 6.5s ease-in-out infinite}
+    .pc-4{right:6px; bottom:-22px; --rot:-5deg; animation:floatA 7.5s ease-in-out infinite}
+  }
+  @keyframes floatA{0%,100%{transform:translateY(0) rotate(var(--rot))}50%{transform:translateY(-8px) rotate(var(--rot))}}
+  @keyframes floatB{0%,100%{transform:translateY(0) rotate(var(--rot))}50%{transform:translateY(7px) rotate(var(--rot))}}
+
+  /* MINI CAROUSEL */
+  .caro{margin-top:10px; display:flex; gap:10px; overflow:auto; scroll-snap-type:x mandatory; padding-bottom:2px}
+  .caro a{scroll-snap-align:start; flex:0 0 auto; background:#ffffff14; border:1px solid #ffffff45;
+    border-radius:14px; padding:10px 12px; display:flex; align-items:center; gap:8px; color:#fff}
+  .caro .pico{width:22px;height:22px}
+  .caro::-webkit-scrollbar{height:6px} .caro::-webkit-scrollbar-thumb{background:#ffd1c4;border-radius:99px}
 </style>
 </head>
 <body>
@@ -109,7 +145,7 @@
   /* CONFIG */
   const AFF_LINK = "https://s.shopee.vn/4q5pVa3C9Y";
 
-  /* A/B headline – 3 biến thể, lưu localStorage để ổn định trong 7 ngày */
+  /* A/B headline – 3 biến thể, lưu 7 ngày */
   const HEADLINE_VARIANTS = [
     "Freeship theo điều kiện • Flash Sale • Voucher đa ngành",
     "Săn ưu đãi Shopee — Mua sắm thông minh mỗi ngày",
@@ -154,6 +190,36 @@
       <span class="tag">Khung giờ kế tiếp: <b><span id="count"></span></b></span>
     </div>
 
+    <!-- COLLAGE 3D -->
+    <div class="hero-collage" aria-hidden="true">
+      <a class="pcard pc-1" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">
+        <span class="pico"><svg viewBox="0 0 24 24" width="38" height="38" fill="#EE4D2D"><path d="M3 15c0 1.657 1.343 3 3 3h12a3 3 0 0 0 3-3v-1l-4-3-3 2-4-3-2 2H4a1 1 0 0 0-1 1v2z"/></svg></span>
+        <b>Giày dép</b>
+      </a>
+      <a class="pcard pc-2" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">
+        <span class="pico"><svg viewBox="0 0 24 24" width="38" height="38" fill="#EE4D2D"><path d="M9 3 6 5 4 9v10h6V9h4v10h6V9l-2-4-3-2-2 2H11z"/></svg></span>
+        <b>Áo quần</b>
+      </a>
+      <a class="pcard pc-3" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">
+        <span class="pico"><svg viewBox="0 0 24 24" width="38" height="38" fill="#EE4D2D"><path d="M5 10h14v7a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-7zm-2 0h18v-2H3v2zm6-5h6v2H9V5z"/></svg></span>
+        <b>Gia dụng</b>
+      </a>
+      <a class="pcard pc-4" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">
+        <span class="pico"><svg viewBox="0 0 24 24" width="38" height="38" fill="#EE4D2D"><path d="M8 3h4v7H8zM7 11h6v10H7zM14 12h3v9h-3z"/></svg></span>
+        <b>Làm đẹp</b>
+      </a>
+    </div>
+
+    <!-- MINI CAROUSEL -->
+    <div class="caro">
+      <a href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="pico">👟</span> Giày dép</a>
+      <a href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="pico">👕</span> Thời trang</a>
+      <a href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="pico">🍳</span> Nhà bếp</a>
+      <a href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="pico">💄</span> Làm đẹp</a>
+      <a href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="pico">📱</span> Công nghệ</a>
+      <a href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="pico">🎒</span> Balo</a>
+    </div>
+
     <!-- QR desktop -->
     <div class="qrbox">
       <div class="qr"><img id="qr" alt="QR mở Shopee" width="116" height="116" decoding="async" loading="lazy"></div>
@@ -164,9 +230,7 @@
   <!-- TODAY'S DEALS (copy gợi ý) -->
   <section class="card">
     <h3>Ưu đãi đang mở hôm nay</h3>
-    <div class="dealgrid" id="dealgrid">
-      <!-- sẽ được JS điền vào -->
-    </div>
+    <div class="dealgrid" id="dealgrid"></div>
     <p class="note">Nội dung chỉ mang tính gợi ý tổng quát. Vui lòng xem chi tiết điều kiện trực tiếp trong ứng dụng Shopee.</p>
     <p><a class="btn" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Mở Shopee để xem đầy đủ</a></p>
   </section>
@@ -247,13 +311,12 @@
 </noscript>
 
 <script>
-  /* Gán lại href theo AFF_LINK để sau này chỉ đổi 1 chỗ */
+  /* gắn lại href theo AFF_LINK (để sau này đổi 1 chỗ) */
   const ids=["cta-hero","cta-voucher","cta-1","cta-2","cta-fab","cta-sticky","cat-1","cat-2","cat-3","cat-4","cat-5","cat-6"];
   ids.forEach(i=>{const a=document.getElementById(i); if(a) a.href=AFF_LINK;});
 
   // A/B headline
-  const H=document.getElementById('headline');
-  H.textContent = HEADLINE_VARIANTS[ab.i];
+  const H=document.getElementById('headline'); H.textContent = (typeof ab==='object'&&ab)? HEADLINE_VARIANTS[ab.i] : HEADLINE_VARIANTS[0];
 
   // Countdown gợi ý nhịp (không hứa hẹn)
   const countEl=document.getElementById('count');
@@ -307,6 +370,18 @@
     hero.style.transform=`rotateX(${ny*2.2}deg) rotateY(${nx*-2.2}deg)`;
   });
   hero.addEventListener('mouseleave',()=>{hero.style.transform='rotateX(.4deg) rotateY(-.6deg)';});
+
+  // Mini carousel auto-scroll nhẹ
+  const caro = document.querySelector('.caro');
+  if (caro) {
+    let dir = 1;
+    setInterval(() => {
+      if (document.activeElement === caro) return;
+      if (caro.scrollLeft + caro.clientWidth >= caro.scrollWidth - 2) dir = -1;
+      if (caro.scrollLeft <= 2) dir = 1;
+      caro.scrollBy({left: 2*dir, behavior: 'smooth'});
+    }, 30);
+  }
 
   // ===== Confetti mini (canvas, nhẹ) =====
   const c=document.getElementById('confetti'), ctx=c.getContext('2d');
