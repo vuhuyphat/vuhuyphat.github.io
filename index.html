@@ -14,12 +14,15 @@
 <style>
   :root{
     --cam:#EE4D2D; --cam2:#FF6A3D; --gold:#FFD400;
-    --ink:#ffffff; --muted:#ffffffcc; --card:#ffffff14; --ring:#ffffff45;
-    /* màu “khuyến mãi” tinh tế theo ngành */
+    --ink:#fff; --muted:#ffffffcc; --card:#ffffff14; --ring:#ffffff45;
+    /* màu ngành “khuyến mãi tinh tế” */
     --m-giay: linear-gradient(135deg,#ffedd5,#ffd3c1);
     --m-ao:   linear-gradient(135deg,#ffe3e3,#ffd0d7);
     --m-gd:   linear-gradient(135deg,#ffe7d6,#ffd6b8);
     --m-lb:   linear-gradient(135deg,#ffe6f3,#ffd6ef);
+    /* nút ưu đãi hôm nay */
+    --btnA: linear-gradient(135deg,#fff,#ffe8d7);
+    --btnB: linear-gradient(135deg,#fff,#ffeef4);
   }
   *{box-sizing:border-box} html,body{margin:0;height:100%}
   html,body{
@@ -27,6 +30,7 @@
     color:var(--ink); -webkit-font-smoothing:antialiased;
     font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Arial,sans-serif;
     line-height:1.6; overflow-x:hidden;
+    padding-bottom:96px; /* chừa chỗ cho sticky bar */
   }
   a{color:inherit;text-decoration:none}
   .wrap{max-width:1080px;margin:0 auto;padding:16px}
@@ -89,11 +93,24 @@
   .toast.show{opacity:1}
 
   /* Today's deals */
-  .dealgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
-  .deal{grid-column:span 12;background:#ffffff14;border:1px dashed #ffffff60;border-radius:12px;padding:10px;display:flex;align-items:center;justify-content:space-between}
+  .dealgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+  .deal{
+    grid-column:span 12;background:#ffffff14;border:1px dashed #ffffff60;border-radius:16px;padding:12px;
+    display:flex;align-items:center;justify-content:space-between
+  }
   .deal b{font-size:14px}
   .deal small{color:#ffffffcc}
   @media(min-width:760px){.deal{grid-column:span 6}}
+
+  /* Nút ưu đãi hôm nay: pill-gradient nổi khối */
+  .go{
+    display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;
+    background:var(--btnA); color:#d34324; font-weight:900; border:1.5px solid #ffd9c9;
+    box-shadow:0 6px 18px rgba(0,0,0,.12), inset 0 -2px 0 #ffe4d5;
+    transition:transform .15s, box-shadow .15s, background .15s;
+  }
+  .go:hover{transform:translateY(-1px); box-shadow:0 10px 22px rgba(0,0,0,.16), inset 0 -2px 0 #ffd9c0}
+  .go.alt{background:var(--btnB)}
 
   /* QR desktop */
   .qrbox{display:none}
@@ -105,7 +122,7 @@
   .ico{width:18px;height:18px;display:inline-grid;place-items:center}
   canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 
-  /* ==== HERO COLLAGE 3D (desktop/tablet) ==== */
+  /* ==== HERO COLLAGE 3D (tablet/desktop) ==== */
   .hero-collage{position:absolute; inset:0; pointer-events:none; z-index:1}
   .pcard{
     position:absolute; width:100px; height:104px; padding:10px 8px;
@@ -116,8 +133,6 @@
   }
   .pcard b{display:block;font-size:12px;color:#e24a2b;margin-top:6px}
   .pico{width:40px;height:40px;display:grid;place-items:center;margin:0 auto}
-
-  /* đặt ở ngoài khung chữ để không che CTA */
   @media (min-width:480px){
     .pc-1{left:-12px; top:-16px; --rot:-7deg; animation:floatA 6s ease-in-out infinite}
     .pc-2{right:-12px; top:-12px; --rot:7deg; animation:floatB 7s ease-in-out infinite}
@@ -137,8 +152,13 @@
   .cap.lamdep{background:var(--m-lb)}
   .caps::-webkit-scrollbar{height:6px} .caps::-webkit-scrollbar-thumb{background:#ffd1c4;border-radius:99px}
 
-  /* Ẩn collage trên màn hình nhỏ để không chồng chéo */
-  @media (max-width:479px){ .hero-collage{display:none} }
+  /* --------- FIX mobile: tắt nghiêng & tránh chồng chéo ---------- */
+  @media (hover:none), (pointer:coarse) {
+    .stage { perspective: none !important; }
+    .hero3d { transform: none !important; }
+    .pcard { animation: none !important; }
+    .fab { display: none !important; } /* không đè nội dung */
+  }
 </style>
 </head>
 <body>
@@ -229,7 +249,7 @@
     </div>
   </section>
 
-  <!-- TODAY'S DEALS (copy gợi ý) -->
+  <!-- TODAY'S DEALS -->
   <section class="card">
     <h3>Ưu đãi đang mở hôm nay</h3>
     <div class="dealgrid" id="dealgrid"></div>
@@ -313,7 +333,7 @@
 </noscript>
 
 <script>
-  /* gắn lại href theo AFF_LINK (để sau này đổi 1 chỗ) */
+  /* gắn lại href theo AFF_LINK (đổi 1 chỗ) */
   const ids=["cta-hero","cta-voucher","cta-1","cta-2","cta-fab","cta-sticky","cat-1","cat-2","cat-3","cat-4","cat-5","cat-6"];
   ids.forEach(i=>{const a=document.getElementById(i); if(a) a.href=AFF_LINK;});
 
@@ -326,20 +346,25 @@
   function tick(){const t=nextSlot().getTime()-Date.now(),h=Math.max(0,Math.floor(t/36e5)),m=Math.max(0,Math.floor(t%36e5/6e4)),s=Math.max(0,Math.floor(t%6e4/1e3));if(countEl)countEl.textContent=`${h}h ${m}m ${s}s`}
   setInterval(tick,1000); tick();
 
-  // Today's deals (gợi ý copy – không claim %)
+  // TODAY'S DEALS (copy gợi ý – không claim %)
   const DEALS=[
-    {title:"Freeship theo điều kiện", note:"Áp dụng theo từng chương trình trong app Shopee"},
-    {title:"Flash Sale giờ vàng", note:"Sản phẩm luân phiên trong ngày"},
-    {title:"Voucher đa ngành", note:"Thời trang • Gia dụng • Công nghệ..."},
-    {title:"Shopee Mall", note:"Hàng chính hãng • Chính sách từ Shopee"},
-    {title:"Mã sưu tầm", note:"Tìm ở mục Mã giảm giá • Voucher"},
-    {title:"Combo quà tặng", note:"Tuỳ sản phẩm & thời gian khuyến mãi"}
+    {title:"Freeship theo điều kiện", note:"Áp dụng theo từng chương trình trong app Shopee", alt:false},
+    {title:"Flash Sale giờ vàng", note:"Sản phẩm luân phiên trong ngày", alt:true},
+    {title:"Voucher đa ngành", note:"Thời trang • Gia dụng • Công nghệ...", alt:false},
+    {title:"Shopee Mall", note:"Hàng chính hãng • Chính sách từ Shopee", alt:true},
+    {title:"Mã sưu tầm", note:"Tìm ở mục Mã giảm giá • Voucher", alt:false},
+    {title:"Combo quà tặng", note:"Tuỳ sản phẩm & thời gian khuyến mãi", alt:true}
   ];
   const grid=document.getElementById('dealgrid');
   grid.innerHTML = DEALS.map(d=>`
     <div class="deal">
       <div><b>• ${d.title}</b><br><small>${d.note}</small></div>
-      <a class="chip" href="${AFF_LINK}" target="_blank" rel="nofollow sponsored noopener">Mở Shopee</a>
+      <a class="go ${d.alt?'alt':''}" href="${AFF_LINK}" target="_blank" rel="nofollow sponsored noopener">
+        <span class="ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="#e24a2b"><path d="M12 3l3.5 6.5L22 11l-7 1-3 6-3-6-7-1 6.5-1.5L12 3z"/></svg>
+        </span>
+        Mở Shopee
+      </a>
     </div>`).join("");
 
   // Progress bar khi cuộn
@@ -365,15 +390,22 @@
   // Năm
   document.getElementById('year').textContent=new Date().getFullYear();
 
-  // Parallax hero
+  // Parallax CHỈ trên desktop có chuột
   const hero=document.querySelector('.hero3d');
-  hero.addEventListener('mousemove',e=>{
-    const r=hero.getBoundingClientRect(), nx=((e.clientX-r.left)/r.width-.5)*2, ny=((e.clientY-r.top)/r.height-.5)*2;
-    hero.style.transform=`rotateX(${ny*2.2}deg) rotateY(${nx*-2.2}deg)`;
-  });
-  hero.addEventListener('mouseleave',()=>{hero.style.transform='rotateX(.4deg) rotateY(-.6deg)';});
+  const canParallax = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (canParallax && hero) {
+    hero.addEventListener('mousemove', e=>{
+      const r=hero.getBoundingClientRect(),
+            nx=((e.clientX-r.left)/r.width-.5)*2,
+            ny=((e.clientY-r.top)/r.height-.5)*2;
+      hero.style.transform=`rotateX(${ny*2.2}deg) rotateY(${nx*-2.2}deg)`;
+    });
+    hero.addEventListener('mouseleave',()=>{hero.style.transform='rotateX(.4deg) rotateY(-.6deg)';});
+  } else if (hero) {
+    hero.style.transform=''; // mobile: không nghiêng
+  }
 
-  // Mini confetti
+  // ===== Confetti mini (nhẹ) =====
   const c=document.getElementById('confetti'), ctx=c.getContext('2d');
   function resize(){c.width=innerWidth; c.height=innerHeight}
   addEventListener('resize',resize); resize();
