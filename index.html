@@ -5,32 +5,47 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>VuHuyPhat • Săn Ưu Đãi Shopee – Freeship • Flash Sale • Deal 0đ*</title>
 <meta name="description" content="Mua sắm Shopee: freeship theo điều kiện, flash sale, mã giảm giá, deal 0đ* cho người dùng đủ điều kiện. Nhấn để mở Shopee.">
+<meta name="referrer" content="no-referrer">
 <meta property="og:title" content="Săn Ưu Đãi Shopee – Freeship • Flash Sale • Deal 0đ*">
 <meta property="og:description" content="Thời trang, gia dụng, công nghệ… Ưu đãi cập nhật liên tục. Nhấn để mở Shopee.">
 <meta property="og:type" content="website">
-<meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://s.shopee.vn">
 <style>
   :root{
-    --shopee:#EE4D2D; --shopee-2:#FF6A3D; --gold:#FFD400;
-    --ink:#222; --muted:#666; --card:#fff; --bg:#FFF8F5;
-    --ring:#ffd1c4;
+    --shopee:#EE4D2D; --shopee2:#FF6A3D; --gold:#FFD400;
+    --ink:#1d1d1d; --muted:#666; --bg:#FFF8F5; --card:#fff; --ring:#ffd1c4;
   }
   *{box-sizing:border-box} html,body{margin:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+  body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
   a{color:inherit;text-decoration:none}
   .wrap{max-width:1040px;margin:0 auto;padding:16px}
-  /* === HERO === */
-  .hero{background:linear-gradient(135deg,var(--shopee),var(--shopee-2));color:#fff;border-radius:20px;padding:22px 18px;overflow:hidden;position:relative}
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative; overflow:hidden; color:#fff; border-radius:20px; padding:24px 18px;
+    background:linear-gradient(135deg,var(--shopee),var(--shopee2));
+    isolation:isolate;
+  }
+  .hero::after{
+    content:""; position:absolute; inset:auto -30% -40% auto; width:520px; height:520px;
+    background:radial-gradient(closest-side,#fff7,transparent); filter:blur(12px); opacity:.35; z-index:-1;
+    animation:float 8s ease-in-out infinite alternate;
+  }
+  @keyframes float{from{transform:translateY(0)}to{transform:translateY(-18px)}}
   .brand{display:flex;align-items:center;gap:12px}
-  .logo{width:42px;height:42px;border-radius:12px;background:#fff;display:grid;place-items:center;font-weight:900;color:var(--shopee)}
-  .badge{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:6px 10px;border-radius:999px;font-weight:700}
-  h1{margin:10px 0 6px;font-size:28px}
-  .hero p{margin:0 0 12px;opacity:.98}
-  .cta{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--shopee);border-radius:12px;padding:12px 16px;font-weight:800;border:2px solid #fff}
-  .tick{display:inline-flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-  .tick span{background:#fff1;border:1px solid rgba(255,255,255,.35);padding:6px 10px;border-radius:999px}
-  /* === GRID === */
+  .logo{width:44px;height:44px;border-radius:12px;background:#fff;display:grid;place-items:center;color:var(--shopee);font-weight:900}
+  .badge{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:6px 10px;border-radius:999px;font-weight:800}
+  .hero h1{margin:10px 0 6px;font-size:28px}
+  .hero p{margin:0 0 10px;opacity:.98}
+  .cta{display:inline-flex;align-items:center;gap:10px;border-radius:12px;padding:12px 16px;font-weight:900;border:2px solid #fff;background:#fff;color:var(--shopee)}
+  .cta.alt{background:transparent;color:#fff}
+
+  /* voucher strip */
+  .vstrip{margin:12px 0 0; display:flex; gap:8px; flex-wrap:wrap}
+  .tag{background:#fff1; border:1px solid rgba(255,255,255,.35); padding:6px 10px; border-radius:999px}
+
+  /* ===== GRID ===== */
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:16px}
   .card{grid-column:span 12;background:var(--card);border-radius:16px;padding:16px;border:1px solid var(--ring)}
   @media(min-width:760px){.half{grid-column:span 6}}
@@ -38,24 +53,31 @@
   .list{list-style:none;margin:8px 0 0;padding:0}
   .list li{padding:8px 0;border-top:1px dashed var(--ring)}
   .list li:first-child{border-top:none}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:12px 16px;font-weight:900;border:2px solid var(--gold);background:linear-gradient(135deg,var(--gold),#fff0);color:#000}
-  .btn.alt{border-color:#fff;background:#fff;color:var(--shopee);margin-left:8px}
-  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
   .chip{background:#fff;border:1px solid var(--ring);border-radius:999px;padding:7px 12px;font-size:12px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:12px 16px;font-weight:900;border:2px solid var(--gold);background:linear-gradient(135deg,var(--gold),#fff0);color:#000}
+  .btn.ghost{border-color:#fff;background:#fff;color:var(--shopee)}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+
   .note{color:var(--muted);font-size:13px}
   .faq dt{font-weight:800;margin-top:6px}
   .faq dd{margin:4px 0 10px}
-  .footer{margin:22px 0 80px;color:var(--muted);font-size:13px}
-  /* === Sticky CTA === */
-  .sticky{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(90deg,var(--shopee),var(--shopee-2));display:flex;align-items:center;justify-content:center;gap:12px;padding:12px;z-index:9}
+  .footer{margin:22px 0 90px;color:var(--muted);font-size:13px}
+
+  /* ===== Sticky CTA ===== */
+  .sticky{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(90deg,var(--shopee),var(--shopee2));display:flex;align-items:center;justify-content:center;gap:12px;padding:12px;z-index:10}
   .sticky a{background:#fff;color:var(--shopee);font-weight:900;border-radius:10px;padding:10px 14px}
-  /* subtle glow */
-  .glow{position:absolute;inset:auto -40% -40% auto;width:420px;height:420px;background:radial-gradient(closest-side,#fff6,transparent);filter:blur(10px);opacity:.35}
+
+  /* FAB (nút nổi) */
+  .fab{position:fixed;right:14px;bottom:80px;background:#fff;color:var(--shopee);border:2px solid var(--gold);border-radius:999px;padding:10px 14px;font-weight:900;z-index:11}
+
+  /* countdown pill */
+  .pill{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--shopee);border-radius:999px;padding:6px 10px;font-weight:800;border:2px solid var(--gold)}
 </style>
 </head>
 <body>
 <script>
-  // === THAY ĐỔI LINK Ở ĐÂY (giữ nguyên thuộc tính rel cho an toàn chính sách) ===
+  // ========== CẤU HÌNH ==========
   const AFF_LINK = "https://s.shopee.vn/4q5pVa3C9Y";
   const HEADLINES = [
     "Freeship theo điều kiện • Flash Sale mỗi ngày",
@@ -65,8 +87,8 @@
 </script>
 
 <div class="wrap">
+  <!-- HERO -->
   <section class="hero">
-    <div class="glow" aria-hidden="true"></div>
     <div class="brand">
       <div class="logo">S</div>
       <div>
@@ -75,25 +97,39 @@
       </div>
     </div>
     <p>Ưu đãi do Shopee cung cấp. Điều kiện áp dụng tùy chương trình và thời gian hiển thị trong ứng dụng Shopee.</p>
-    <a id="cta-hero" class="cta" href="#" target="_blank" rel="nofollow sponsored noopener">Mở Shopee ngay 🛍️</a>
-    <div class="tick">
-      <span>Freeship (tùy điều kiện)</span><span>Flash Sale giờ vàng</span><span>Mã giảm giá theo ngành</span><span>Shopee Mall</span>
+
+    <div class="row" style="margin:10px 0 4px">
+      <a id="cta-hero" class="cta" href="#" target="_blank" rel="nofollow sponsored noopener">Mở Shopee ngay 🛍️</a>
+      <a id="cta-voucher" class="cta alt" href="#" target="_blank" rel="nofollow sponsored noopener">Săn mã nhanh</a>
+    </div>
+
+    <div class="vstrip">
+      <span class="tag">Freeship (tùy điều kiện)</span>
+      <span class="tag">Flash Sale giờ vàng</span>
+      <span class="tag">Mã giảm giá theo ngành</span>
+      <span class="tag">Shopee Mall</span>
+      <span class="tag" id="count-pill">Khung giờ tiếp theo: <b><span id="count"></span></b></span>
     </div>
   </section>
 
+  <!-- CONTENT -->
   <div class="grid">
     <article class="card half">
-      <h3>Ưu đãi nổi bật hôm nay</h3>
+      <h3>Ưu đãi nổi bật</h3>
       <ul class="list">
         <li>🎟️ Mã giảm giá toàn sàn & từng ngành hàng.</li>
-        <li>⚡ Flash Sale liên tục trong ngày – theo khung giờ.</li>
+        <li>⚡ Flash Sale theo khung giờ trong ngày.</li>
         <li>🆓 Deal 0đ* cho người dùng đủ điều kiện (chi tiết trong app).</li>
         <li>🚚 Freeship theo quy định từng chương trình.</li>
       </ul>
       <p class="note">Ưu đãi thay đổi theo thời gian/khu vực. Vui lòng xem chi tiết khi mở Shopee.</p>
-      <p>
+      <p class="row">
         <a id="cta-1" class="btn" href="#" target="_blank" rel="nofollow sponsored noopener">Xem ưu đãi trong Shopee</a>
-        <a id="cta-2" class="btn alt" href="#" target="_blank" rel="nofollow sponsored noopener">Săn mã ngay</a>
+        <a id="cta-2" class="btn ghost" href="#" target="_blank" rel="nofollow sponsored noopener">Mở app Shopee</a>
+      </p>
+      <p class="row">
+        <a id="copy" class="chip" href="#">📋 Sao chép link</a>
+        <a id="share" class="chip" href="#">🔗 Chia sẻ cho bạn bè</a>
       </p>
     </article>
 
@@ -107,13 +143,13 @@
         <a class="chip" id="cat-5" href="#" target="_blank" rel="nofollow sponsored noopener">Mẹ & Bé</a>
         <a class="chip" id="cat-6" href="#" target="_blank" rel="nofollow sponsored noopener">Nhà bếp</a>
       </div>
-      <p class="note">Danh mục chỉ mang tính tham khảo. Việc chọn & thanh toán được thực hiện trực tiếp trên Shopee.</p>
+      <p class="note">Danh mục mang tính tham khảo. Việc chọn & thanh toán được thực hiện trực tiếp trên Shopee.</p>
     </article>
 
     <article class="card">
       <h3>3 bước mua sắm nhanh</h3>
       <ul class="list">
-        <li>1) Nhấn “Mở Shopee” để tới trang Shopee.</li>
+        <li>1) Nhấn “Mở Shopee” để tới Shopee.</li>
         <li>2) Đăng nhập hoặc tạo tài khoản miễn phí.</li>
         <li>3) Chọn sản phẩm, áp mã – thanh toán an toàn trên Shopee.</li>
       </ul>
@@ -125,7 +161,7 @@
         <dt>Trang này có phải của Shopee?</dt>
         <dd>Không. Đây là trang giới thiệu do VuHuyPhat tạo; toàn bộ giao dịch/ưu đãi diễn ra trên hệ thống Shopee.</dd>
         <dt>“Deal 0đ*” nghĩa là gì?</dt>
-        <dd>Là các chương trình đặc thù (ví dụ người dùng mới/điều kiện khác) do Shopee công bố. Vui lòng xem chi tiết trong ứng dụng Shopee.</dd>
+        <dd>Là chương trình đặc thù (ví dụ người dùng mới/điều kiện khác) do Shopee công bố. Vui lòng xem chi tiết trong ứng dụng Shopee.</dd>
         <dt>Chính sách & bảo mật?</dt>
         <dd>Mọi chính sách vận chuyển, bảo hành, đổi trả, thanh toán… theo quy định chính thức của Shopee.</dd>
       </dl>
@@ -138,32 +174,55 @@
   </div>
 </div>
 
+<!-- Floating action + Sticky bar -->
+<a class="fab" id="cta-fab" href="#" target="_blank" rel="nofollow sponsored noopener">Mở Shopee</a>
 <div class="sticky">
-  <span style="color:#fff;font-weight:800">Ưu đãi Shopee đang mở</span>
-  <a id="cta-sticky" href="#" target="_blank" rel="nofollow sponsored noopener">Mở Shopee 🛍️</a>
+  <span style="color:#fff;font-weight:900">Ưu đãi Shopee đang mở</span>
+  <a id="cta-sticky" href="#" target="_blank" rel="nofollow sponsored noopener">Mua sắm ngay 🛍️</a>
 </div>
 
 <script>
-  // gán link cho mọi CTA + category (đều về link tổng để giữ tracking)
-  const ids = ["cta-hero","cta-1","cta-2","cta-sticky","cat-1","cat-2","cat-3","cat-4","cat-5","cat-6"];
+  // GÁN LINK CHO MỌI CTA + CATEGORY (đều về link tổng để giữ tracking)
+  const ids = ["cta-hero","cta-voucher","cta-1","cta-2","cta-fab","cta-sticky",
+               "cat-1","cat-2","cat-3","cat-4","cat-5","cat-6"];
   ids.forEach(i => { const a=document.getElementById(i); if(a) a.href = AFF_LINK; });
 
-  // headline xoay vòng (tạo chuyển động nhẹ – tăng CTR, không gây hiểu nhầm)
-  const h = document.getElementById('headline'); let idx = 0;
-  setInterval(()=>{ idx=(idx+1)%HEADLINES.length; h.textContent = HEADLINES[idx]; }, 3500);
+  // Headline xoay vòng (tạo nhịp đọc tự nhiên)
+  const HEAD = document.getElementById('headline'); let hi=0;
+  setInterval(()=>{ hi=(hi+1)%HEADLINES.length; HEAD.textContent=HEADLINES[hi]; }, 3200);
 
-  // năm footer
-  document.getElementById('year').textContent = new Date().getFullYear();
-
-  // Web Share API (nếu có)
-  if(navigator.share){
-    const share = document.createElement('a');
-    share.className='btn alt'; share.textContent='Chia sẻ ưu đãi';
-    share.href=AFF_LINK; share.addEventListener('click',e=>{
-      e.preventDefault(); navigator.share({title:'Ưu đãi Shopee',text:'Freeship • Flash Sale • Voucher',url:AFF_LINK}).catch(()=>location.href=AFF_LINK);
-    });
-    document.querySelector('.card.half').appendChild(document.createElement('p')).appendChild(share);
+  // Countdown tới khung giờ tròn (ước lượng – không hứa hẹn)
+  const countEl = document.getElementById('count');
+  function nextSlot(){
+    const now=new Date(); const n=new Date(now);
+    // ví dụ: khung giờ 00, 12, 18 (có thể đổi tuỳ bạn)
+    const slots=[0,12,18];
+    let next= new Date(now); next.setHours(24,0,0,0); // mặc định sang ngày mai
+    for(const h of slots){
+      const t=new Date(n); t.setHours(h,0,0,0);
+      if(t>now){ next=t; break; }
+    }
+    return next;
   }
+  function tick(){
+    const t=nextSlot().getTime()-Date.now();
+    const h=Math.floor(t/36e5), m=Math.floor(t%36e5/6e4), s=Math.floor(t%6e4/1e3);
+    countEl.textContent = (h+'h '+m+'m '+s+'s');
+  }
+  setInterval(tick,1000); tick();
+
+  // Copy link + Share
+  document.getElementById('copy').addEventListener('click',e=>{
+    e.preventDefault(); navigator.clipboard?.writeText(AFF_LINK).then(()=>alert("Đã sao chép link!")).catch(()=>{});
+  });
+  document.getElementById('share').addEventListener('click',e=>{
+    e.preventDefault();
+    if(navigator.share){ navigator.share({title:'Ưu đãi Shopee',text:'Freeship • Flash Sale • Voucher',url:AFF_LINK}); }
+    else { window.open(AFF_LINK,'_blank'); }
+  });
+
+  // Năm
+  document.getElementById('year').textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
