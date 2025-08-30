@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
 <title>VuHuyPhat • Shopee Deals — Freeship • Flash Sale • Voucher</title>
 <meta name="description" content="Mua sắm Shopee: freeship theo điều kiện, flash sale, voucher đa ngành, deal 0đ* cho tài khoản đủ điều kiện. Nhấn để mở Shopee.">
 <meta name="referrer" content="no-referrer">
@@ -10,155 +11,142 @@
 <meta property="og:description" content="Thời trang, gia dụng, công nghệ… Ưu đãi cập nhật liên tục. Nhấn để mở Shopee.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#EE4D2D">
-<link rel="preconnect" href="https://s.shopee.vn">
+<link rel="dns-prefetch" href="https://s.shopee.vn">
+<link rel="preconnect" href="https://s.shopee.vn" crossorigin>
 <style>
-  :root{
-    --cam:#EE4D2D; --cam2:#FF6A3D; --gold:#FFD400;
-    --ink:#fff; --muted:#ffffffcc; --card:#ffffff14; --ring:#ffffff45;
-    /* màu ngành “khuyến mãi tinh tế” */
-    --m-giay: linear-gradient(135deg,#ffedd5,#ffd3c1);
-    --m-ao:   linear-gradient(135deg,#ffe3e3,#ffd0d7);
-    --m-gd:   linear-gradient(135deg,#ffe7d6,#ffd6b8);
-    --m-lb:   linear-gradient(135deg,#ffe6f3,#ffd6ef);
-    /* nút ưu đãi hôm nay */
-    --btnA: linear-gradient(135deg,#fff,#ffe8d7);
-    --btnB: linear-gradient(135deg,#fff,#ffeef4);
-  }
-  *{box-sizing:border-box} html,body{margin:0;height:100%}
-  html,body{
-    background:linear-gradient(180deg,#EE4D2D 0%,#FF6A3D 55%,#FF8A66 100%) fixed;
-    color:var(--ink); -webkit-font-smoothing:antialiased;
-    font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Arial,sans-serif;
-    line-height:1.6; overflow-x:hidden;
-    padding-bottom:96px; /* chừa chỗ cho sticky bar */
-  }
-  a{color:inherit;text-decoration:none}
-  .wrap{max-width:1080px;margin:0 auto;padding:16px}
+:root{
+  --cam:#EE4D2D; --cam2:#FF6A3D; --gold:#FFD400;
+  --ink:#fff; --muted:#ffffffcc; --card:#ffffff14; --ring:#ffffff45;
+  --btnA: linear-gradient(135deg,#fff,#ffe8d7);
+  --btnB: linear-gradient(135deg,#fff,#ffeef4);
+  /* capsule gợi ý ngành */
+  --m-giay: linear-gradient(135deg,#ffedd5,#ffd3c1);
+  --m-ao:   linear-gradient(135deg,#ffe3e3,#ffd0d7);
+  --m-gd:   linear-gradient(135deg,#ffe7d6,#ffd6b8);
+  --m-lb:   linear-gradient(135deg,#ffe6f3,#ffd6ef);
+}
+*{box-sizing:border-box} html,body{margin:0;height:100%}
+html,body{
+  background:linear-gradient(180deg,#EE4D2D 0%,#FF6A3D 55%,#FF8A66 100%) fixed;
+  color:var(--ink); -webkit-font-smoothing:antialiased;
+  font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  line-height:1.6; overflow-x:hidden; padding-bottom:96px; /* chừa chỗ sticky */
+  -webkit-tap-highlight-color: transparent;
+}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:16px}
 
-  /* progress bar */
-  .prog{position:fixed;top:0;left:0;height:3px;background:#FFD400;box-shadow:0 0 12px #FFD400AA;transform-origin:0 50%;transform:scaleX(0);z-index:99}
+/* progress bar */
+.prog{position:fixed;top:0;left:0;height:3px;background:#FFD400;box-shadow:0 0 12px #FFD400AA;transform-origin:0 50%;transform:scaleX(0);z-index:99}
 
-  /* 3D */
-  .stage{perspective:1200px;transform-style:preserve-3d}
-  .hero3d{transform:rotateX(.4deg) rotateY(-.6deg);will-change:transform}
+/* 3D container */
+.stage{perspective:1200px;transform-style:preserve-3d}
+.hero3d{transform:rotateX(.4deg) rotateY(-.6deg);will-change:transform}
 
-  /* HERO glass */
-  .hero{position:relative;border-radius:24px;padding:26px 18px;overflow:visible;
-    background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
-    backdrop-filter:saturate(130%) blur(6px);border:1px solid var(--ring);
-    box-shadow:0 25px 60px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.08);color:#fff}
-  .hero:after{content:"";position:absolute;inset:auto -24% -40% auto;width:560px;height:560px;
-    background:radial-gradient(closest-side,#fff7,transparent);filter:blur(14px);opacity:.35;z-index:-1;animation:float 9s ease-in-out infinite alternate}
-  @keyframes float{to{transform:translateY(-18px)}}
-  .brand{display:flex;align-items:center;gap:14px}
-  .logo{width:48px;height:48px;border-radius:14px;background:#fff;display:grid;place-items:center;color:#EE4D2D;font-weight:900;box-shadow:0 8px 24px rgba(0,0,0,.15)}
-  .badge{display:inline-block;background:#ffffff1f;border:1px solid #ffffff45;padding:6px 10px;border-radius:999px;font-weight:800}
-  .hero h1{margin:10px 0 6px;font-size:29px}
-  .hero p{margin:0 0 12px}
-  .cta{display:inline-flex;align-items:center;gap:10px;border-radius:14px;padding:12px 16px;font-weight:900;background:#fff;color:#EE4D2D;border:2px solid #fff;transition:.22s;will-change:transform}
-  .cta:hover{transform:translateY(-1.5px)}
-  .cta.alt{background:transparent;color:#fff;border-color:#ffffff70}
-  .pulse{animation:pulse 2s ease-in-out infinite}
-  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,212,0,.0)}50%{box-shadow:0 0 0 8px rgba(255,212,0,.28)}}
-  .row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 4px}
+/* HERO card (glass) */
+.hero{position:relative;border-radius:24px;padding:26px 18px;overflow:visible;
+  background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
+  backdrop-filter:saturate(130%) blur(6px);border:1px solid var(--ring);
+  box-shadow:0 25px 60px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.08);color:#fff}
+.hero:after{content:"";position:absolute;inset:auto -24% -40% auto;width:560px;height:560px;
+  background:radial-gradient(closest-side,#fff7,transparent);filter:blur(14px);opacity:.35;z-index:-1;animation:float 9s ease-in-out infinite alternate}
+@keyframes float{to{transform:translateY(-18px)}}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:48px;height:48px;border-radius:14px;background:#fff;display:grid;place-items:center;color:#EE4D2D;font-weight:900;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.badge{display:inline-block;background:#ffffff1f;border:1px solid #ffffff45;padding:6px 10px;border-radius:999px;font-weight:800}
+.hero h1{margin:10px 0 6px;font-size:29px}
+.hero p{margin:0 0 12px}
+.cta{
+  position:relative; z-index:5; cursor:pointer;
+  display:inline-flex;align-items:center;gap:10px;border-radius:14px;padding:12px 16px;font-weight:900;
+  background:#fff;color:#EE4D2D;border:2px solid #fff;transition:.22s;will-change:transform,box-shadow;
+}
+.cta:before{content:"";position:absolute;inset:0;border-radius:12px;background:linear-gradient(90deg,#ffffff80,#ffffff20);transform:translateX(-100%);transition:transform .6s}
+.cta:hover{transform:translateY(-1.5px)} .cta:hover:before{transform:translateX(0)}
+.cta.alt{background:transparent;color:#fff;border-color:#ffffff70}
+.pulse{animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,212,0,.0)}50%{box-shadow:0 0 0 8px rgba(255,212,0,.28)}}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 4px}
 
-  .vstrip{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
-  .tag{background:#ffffff14;border:1px solid #ffffff45;padding:6px 10px;border-radius:999px}
+/* tags dưới hero */
+.vstrip{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+.tag{background:#ffffff14;border:1px solid #ffffff45;padding:6px 10px;border-radius:999px;display:inline-flex;gap:6px;align-items:center}
 
-  /* GRID */
-  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:16px}
-  .card{grid-column:span 12;background:var(--card);border-radius:18px;padding:16px;border:1px solid var(--ring);
-    box-shadow:0 14px 40px rgba(0,0,0,.18);transition:transform .25s;color:#fff}
-  .card:hover{transform:translateY(-2px)}
-  @media(min-width:780px){.half{grid-column:span 6}}
-  .card h3{margin:0 0 8px;font-size:18px}
-  .list{list-style:none;margin:8px 0 0;padding:0}
-  .list li{padding:8px 0;border-top:1px dashed #ffffff45}
-  .list li:first-child{border-top:none}
-  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-  .chip{background:#ffffff10;border:1px solid #ffffff45;border-radius:999px;padding:7px 12px;font-size:12px}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:12px 16px;font-weight:900;border:2px solid var(--gold);background:linear-gradient(135deg,var(--gold),#fff0);color:#000;transition:.2s}
-  .btn:hover{transform:translateY(-1px)}
-  .btn.ghost{border-color:#fff;background:#fff;color:#EE4D2D}
-  .note{color:var(--muted);font-size:13px}
-  .faq dt{font-weight:800;margin-top:6px}
-  .faq dd{margin:4px 0 10px}
-  .footer{margin:24px 0 96px;color:#ffffffcc;font-size:13px}
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:16px}
+.card{grid-column:span 12;background:var(--card);border-radius:18px;padding:16px;border:1px solid var(--ring);
+  box-shadow:0 14px 40px rgba(0,0,0,.18);transition:transform .25s;color:#fff}
+.card:hover{transform:translateY(-2px)}
+@media(min-width:780px){.half{grid-column:span 6}}
+.card h3{margin:0 0 8px;font-size:18px}
+.list{list-style:none;margin:8px 0 0;padding:0}
+.list li{padding:8px 0;border-top:1px dashed #ffffff45}
+.list li:first-child{border-top:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{background:#ffffff10;border:1px solid var(--ring);border-radius:999px;padding:7px 12px;font-size:12px;display:inline-flex;gap:6px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:12px 16px;font-weight:900;border:2px solid var(--gold);background:linear-gradient(135deg,var(--gold),#fff0);color:#000;transition:.2s}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{border-color:#fff;background:#fff;color:#EE4D2D}
+.note{color:var(--muted);font-size:13px}
+.faq dt{font-weight:800;margin-top:6px}
+.faq dd{margin:4px 0 10px}
+.footer{margin:24px 0 96px;color:#ffffffcc;font-size:13px}
 
-  /* Sticky + FAB */
-  .sticky{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(90deg,#EE4D2D,#FF6A3D);display:flex;align-items:center;justify-content:center;gap:12px;padding:12px;z-index:10}
-  .sticky a{background:#fff;color:#EE4D2D;font-weight:900;border-radius:10px;padding:10px 14px}
-  .fab{position:fixed;right:14px;bottom:88px;background:#fff;color:#EE4D2D;border:2px solid var(--gold);border-radius:999px;padding:10px 14px;font-weight:900;z-index:11;box-shadow:0 10px 26px rgba(0,0,0,.18)}
-  .toast{position:fixed;left:50%;bottom:130px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;transition:.25s;z-index:12}
-  .toast.show{opacity:1}
+/* Sticky + FAB */
+.sticky{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(90deg,#EE4D2D,#FF6A3D);display:flex;align-items:center;justify-content:center;gap:12px;padding:12px;z-index:10}
+.sticky a{background:#fff;color:#EE4D2D;font-weight:900;border-radius:10px;padding:10px 14px}
+.fab{position:fixed;right:14px;bottom:88px;background:#fff;color:#EE4D2D;border:2px solid var(--gold);border-radius:999px;padding:10px 14px;font-weight:900;z-index:11;box-shadow:0 10px 26px rgba(0,0,0,.18)}
+.toast{position:fixed;left:50%;bottom:130px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;transition:.25s;z-index:12}
+.toast.show{opacity:1}
 
-  /* Today's deals */
-  .dealgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
-  .deal{
-    grid-column:span 12;background:#ffffff14;border:1px dashed #ffffff60;border-radius:16px;padding:12px;
-    display:flex;align-items:center;justify-content:space-between
-  }
-  .deal b{font-size:14px}
-  .deal small{color:#ffffffcc}
-  @media(min-width:760px){.deal{grid-column:span 6}}
+/* TODAY'S DEALS */
+.dealgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+.deal{grid-column:span 12;background:#ffffff14;border:1px dashed #ffffff60;border-radius:16px;padding:12px;display:flex;align-items:center;justify-content:space-between}
+.deal b{font-size:14px}
+.deal small{color:#ffffffcc}
+@media(min-width:760px){.deal{grid-column:span 6}}
 
-  /* Nút ưu đãi hôm nay: pill-gradient nổi khối */
-  .go{
-    display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;
-    background:var(--btnA); color:#d34324; font-weight:900; border:1.5px solid #ffd9c9;
-    box-shadow:0 6px 18px rgba(0,0,0,.12), inset 0 -2px 0 #ffe4d5;
-    transition:transform .15s, box-shadow .15s, background .15s;
-  }
-  .go:hover{transform:translateY(-1px); box-shadow:0 10px 22px rgba(0,0,0,.16), inset 0 -2px 0 #ffd9c0}
-  .go.alt{background:var(--btnB)}
+/* nút pill-gradient */
+.go{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:var(--btnA);color:#d34324;font-weight:900;border:1.5px solid #ffd9c9;box-shadow:0 6px 18px rgba(0,0,0,.12), inset 0 -2px 0 #ffe4d5;transition:transform .15s, box-shadow .15s, background .15s}
+.go:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(0,0,0,.16), inset 0 -2px 0 #ffd9c0}
+.go.alt{background:var(--btnB)}
 
-  /* QR desktop */
-  .qrbox{display:none}
-  @media(min-width:960px){
-    .qrbox{display:flex;align-items:center;gap:14px;margin-top:10px}
-    .qr{width:124px;height:124px;border-radius:12px;background:#fff;display:grid;place-items:center;border:2px dashed #ffcfbf}
-    .qr small{color:#fff;opacity:.88}
-  }
-  .ico{width:18px;height:18px;display:inline-grid;place-items:center}
-  canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+/* QR desktop */
+.qrbox{display:none}
+@media(min-width:960px){.qrbox{display:flex;align-items:center;gap:14px;margin-top:10px}
+.qr{width:124px;height:124px;border-radius:12px;background:#fff;display:grid;place-items:center;border:2px dashed #ffcfbf}
+.qr small{color:#fff;opacity:.88}}
+.ico{width:18px;height:18px;display:inline-grid;place-items:center}
+canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 
-  /* ==== HERO COLLAGE 3D (tablet/desktop) ==== */
-  .hero-collage{position:absolute; inset:0; pointer-events:none; z-index:1}
-  .pcard{
-    position:absolute; width:100px; height:104px; padding:10px 8px;
-    border-radius:16px; background:#fff; color:#EE4D2D; text-align:center;
-    box-shadow:0 14px 30px rgba(0,0,0,.18); border:1px solid #ffd7c9;
-    transform:translateZ(0) rotate(var(--rot,0deg)); will-change:transform, box-shadow;
-    pointer-events:auto;
-  }
-  .pcard b{display:block;font-size:12px;color:#e24a2b;margin-top:6px}
-  .pico{width:40px;height:40px;display:grid;place-items:center;margin:0 auto}
-  @media (min-width:480px){
-    .pc-1{left:-12px; top:-16px; --rot:-7deg; animation:floatA 6s ease-in-out infinite}
-    .pc-2{right:-12px; top:-12px; --rot:7deg; animation:floatB 7s ease-in-out infinite}
-    .pc-3{left:-10px; bottom:-24px; --rot:6deg; animation:floatB 6.5s ease-in-out infinite}
-    .pc-4{right:-10px; bottom:-28px; --rot:-6deg; animation:floatA 7.5s ease-in-out infinite}
-  }
-  @keyframes floatA{0%,100%{transform:translateY(0) rotate(var(--rot))}50%{transform:translateY(-8px) rotate(var(--rot))}}
-  @keyframes floatB{0%,100%{transform:translateY(0) rotate(var(--rot))}50%{transform:translateY(7px) rotate(var(--rot))}}
+/* COLLAGE 3D (chỉ desktop) */
+.hero-collage{position:absolute; inset:0; pointer-events:none; z-index:1}
+.pcard{position:absolute;width:100px;height:104px;padding:10px 8px;border-radius:16px;background:#fff;color:#EE4D2D;text-align:center;box-shadow:0 14px 30px rgba(0,0,0,.18);border:1px solid #ffd7c9;transform:translateZ(0) rotate(var(--rot,0deg));will-change:transform}
+.pcard b{display:block;font-size:12px;color:#e24a2b;margin-top:6px}
+.pico{width:40px;height:40px;display:grid;place-items:center;margin:0 auto}
+@media (min-width:480px){
+  .pc-1{left:-12px; top:-16px; --rot:-7deg; animation:floatA 6s ease-in-out infinite}
+  .pc-2{right:-12px; top:-12px; --rot:7deg; animation:floatB 7s ease-in-out infinite}
+  .pc-3{left:-10px; bottom:-24px; --rot:6deg; animation:floatB 6.5s ease-in-out infinite}
+  .pc-4{right:-10px; bottom:-28px; --rot:-6deg; animation:floatA 7.5s ease-in-out infinite}
+}
+@keyframes floatA{0%,100%{transform:translateY(0) rotate(var(--rot))}50%{transform:translateY(-8px) rotate(var(--rot))}}
+@keyframes floatB{0%,100%{transform:translateY(0) rotate(var(--rot))}50%{transform:translateY(7px) rotate(var(--rot))}}
 
-  /* ==== CATEGORY CAPSULE (mobile-first) ==== */
-  .caps{display:flex;gap:10px;overflow:auto;margin-top:12px;padding-bottom:4px;scroll-snap-type:x mandatory}
-  .cap{scroll-snap-align:start; flex:0 0 auto; border-radius:16px; padding:10px 12px; display:flex; align-items:center; gap:8px; color:#8a2b1b; font-weight:800; border:1px solid #ffd7c9}
-  .cap .emo{font-size:18px}
-  .cap.giay{background:var(--m-giay)}
-  .cap.ao{background:var(--m-ao)}
-  .cap.giadung{background:var(--m-gd)}
-  .cap.lamdep{background:var(--m-lb)}
-  .caps::-webkit-scrollbar{height:6px} .caps::-webkit-scrollbar-thumb{background:#ffd1c4;border-radius:99px}
+/* CAPSULE ngành hàng (mobile-first) */
+.caps{display:flex;gap:10px;overflow:auto;margin-top:12px;padding-bottom:4px;scroll-snap-type:x mandatory}
+.cap{scroll-snap-align:start;flex:0 0 auto;border-radius:16px;padding:10px 12px;display:flex;align-items:center;gap:8px;color:#8a2b1b;font-weight:800;border:1px solid #ffd7c9}
+.cap .emo{font-size:18px}
+.cap.giay{background:var(--m-giay)} .cap.ao{background:var(--m-ao)} .cap.giadung{background:var(--m-gd)} .cap.lamdep{background:var(--m-lb)}
+.caps::-webkit-scrollbar{height:6px} .caps::-webkit-scrollbar-thumb{background:#ffd1c4;border-radius:99px}
 
-  /* --------- FIX mobile: tắt nghiêng & tránh chồng chéo ---------- */
-  @media (hover:none), (pointer:coarse) {
-    .stage { perspective: none !important; }
-    .hero3d { transform: none !important; }
-    .pcard { animation: none !important; }
-    .fab { display: none !important; } /* không đè nội dung */
-  }
+/* FIX mobile: tắt nghiêng & tránh chồng chéo */
+@media (hover:none),(pointer:coarse){
+  .stage{perspective:none !important}
+  .hero3d{transform:none !important}
+  .pcard{animation:none !important}
+  .fab{display:none !important}
+}
 </style>
 </head>
 <body>
@@ -166,80 +154,66 @@
 <canvas id="confetti"></canvas>
 
 <script>
-  /* CONFIG */
-  const AFF_LINK = "https://s.shopee.vn/4q5pVa3C9Y";
+const AFF_LINK = "https://s.shopee.vn/4q5pVa3C9Y";
 
-  /* A/B headline – 3 biến thể, lưu 7 ngày */
-  const HEADLINE_VARIANTS = [
-    "Freeship theo điều kiện • Flash Sale • Voucher đa ngành",
-    "Săn ưu đãi Shopee — Mua sắm thông minh mỗi ngày",
-    "Shopee Mall chính hãng • Khuyến mãi cập nhật liên tục"
-  ];
-  const AB_KEY="vhp_ab_v1", TTL=7*24*60*60*1000;
-  let ab = localStorage.getItem(AB_KEY);
-  try{
-    ab = ab? JSON.parse(ab): null;
-    if(!ab || Date.now()-ab.t>TTL){ ab={i:Math.floor(Math.random()*HEADLINE_VARIANTS.length),t:Date.now()}; localStorage.setItem(AB_KEY,JSON.stringify(ab)); }
-  }catch{ ab={i:0,t:Date.now()} }
+/* A/B headline – 3 biến thể, lưu 7 ngày */
+const HEADLINE_VARIANTS=[
+ "Freeship theo điều kiện • Flash Sale • Voucher đa ngành",
+ "Săn ưu đãi Shopee — Mua sắm thông minh mỗi ngày",
+ "Shopee Mall chính hãng • Khuyến mãi cập nhật liên tục"
+];
+const AB_KEY="vhp_ab_v1",TTL=7*24*60*60*1000;
+let ab=localStorage.getItem(AB_KEY);
+try{ab=ab?JSON.parse(ab):null;if(!ab||Date.now()-ab.t>TTL){ab={i:Math.floor(Math.random()*HEADLINE_VARIANTS.length),t:Date.now()};localStorage.setItem(AB_KEY,JSON.stringify(ab));}}
+catch{ab={i:0,t:Date.now()}}
 </script>
 
 <div class="wrap stage">
   <!-- HERO -->
-  <section class="hero hero3d">
+  <section class="hero hero3d" aria-label="Khu vực giới thiệu và nút mở Shopee">
     <div class="brand">
       <div class="logo" aria-hidden="true">S</div>
       <div>
-        <span class="badge">VuHuyPhat • Shopee Deals</span>
+        <span class="badge" aria-label="Nguồn: VuHuyPhat • Shopee Deals">VuHuyPhat • Shopee Deals</span>
         <h1 id="headline">Freeship theo điều kiện • Flash Sale • Voucher đa ngành</h1>
       </div>
     </div>
 
     <p>Ưu đãi do Shopee cung cấp. Điều kiện áp dụng tùy chương trình & thời gian hiển thị trong ứng dụng Shopee.</p>
+
     <div class="row">
-      <a id="cta-hero" class="cta pulse" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">
+      <a class="cta pulse" href="https://s.shopee.vn/4q5pVa3C9Y" rel="nofollow sponsored noopener" target="_blank" aria-label="Mở Shopee ngay">
         <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M7 7V6a5 5 0 0 1 10 0v1h2a1 1 0 0 1 1 1v11a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V8a1 1 0 0 1 1-1h2zm2 0h6V6a3 3 0 0 0-6 0v1z"/></svg></span>
         Mở Shopee ngay
       </a>
-      <a id="cta-voucher" class="cta alt" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">
+      <a class="cta alt" href="https://s.shopee.vn/4q5pVa3C9Y" rel="nofollow sponsored noopener" target="_blank" aria-label="Săn mã nhanh">
         <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 7a2 2 0 0 1 2-2h14l2 3-2 3H5a2 2 0 0 1-2-2V7zm0 7a2 2 0 0 1 2-2h14l2 3-2 3H5a2 2 0 0 1-2-2v-2z"/></svg></span>
         Săn mã nhanh
       </a>
     </div>
 
-    <div class="vstrip">
-      <span class="tag">Freeship (tùy điều kiện)</span>
-      <span class="tag">Flash Sale giờ vàng</span>
-      <span class="tag">Voucher đa ngành</span>
-      <span class="tag">Shopee Mall</span>
+    <div class="vstrip" aria-label="Các điểm nổi bật">
+      <span class="tag"><span class="ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 12h16v2H4zM4 7h16v2H4zM4 17h10v2H4z"/></svg></span>Freeship (tùy điều kiện)</span>
+      <span class="tag"><span class="ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7v5l4 2"/></svg></span>Flash Sale giờ vàng</span>
+      <span class="tag"><span class="ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v12H4z"/></svg></span>Voucher đa ngành</span>
+      <span class="tag"><span class="ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18l-2 14H5z"/></svg></span>Shopee Mall</span>
       <span class="tag">Khung giờ kế tiếp: <b><span id="count"></span></b></span>
     </div>
 
-    <!-- CAPSULE ngành hàng (mobile) -->
-    <div class="caps">
+    <!-- capsules (mobile) -->
+    <div class="caps" aria-label="Ngành hàng nổi bật">
       <a class="cap giay" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="emo">👟</span> Giày dép</a>
       <a class="cap ao" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="emo">👕</span> Áo quần</a>
       <a class="cap giadung" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="emo">🍳</span> Gia dụng</a>
       <a class="cap lamdep" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="emo">💄</span> Làm đẹp</a>
     </div>
 
-    <!-- COLLAGE 3D (tablet/desktop) -->
+    <!-- Collage 3D (desktop only) -->
     <div class="hero-collage" aria-hidden="true">
-      <a class="pcard pc-1" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener" style="background:var(--m-giay)">
-        <span class="pico"><svg viewBox="0 0 24 24" width="40" height="40" fill="#EE4D2D"><path d="M3 15c0 1.657 1.343 3 3 3h12a3 3 0 0 0 3-3v-1l-4-3-3 2-4-3-2 2H4a1 1 0 0 0-1 1v2z"/></svg></span>
-        <b>Giày dép</b>
-      </a>
-      <a class="pcard pc-2" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener" style="background:var(--m-ao)">
-        <span class="pico"><svg viewBox="0 0 24 24" width="40" height="40" fill="#EE4D2D"><path d="M9 3 6 5 4 9v10h6V9h4v10h6V9l-2-4-3-2-2 2H11z"/></svg></span>
-        <b>Áo quần</b>
-      </a>
-      <a class="pcard pc-3" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener" style="background:var(--m-gd)">
-        <span class="pico"><svg viewBox="0 0 24 24" width="40" height="40" fill="#EE4D2D"><path d="M5 10h14v7a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-7zm-2 0h18v-2H3v2zm6-5h6v2H9V5z"/></svg></span>
-        <b>Gia dụng</b>
-      </a>
-      <a class="pcard pc-4" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener" style="background:var(--m-lb)">
-        <span class="pico"><svg viewBox="0 0 24 24" width="40" height="40" fill="#EE4D2D"><path d="M8 3h4v7H8zM7 11h6v10H7zM14 12h3v9h-3z"/></svg></span>
-        <b>Làm đẹp</b>
-      </a>
+      <div class="pcard pc-1" style="background:var(--m-giay)"><span class="pico"><svg viewBox="0 0 24 24" width="40" height="40" fill="#EE4D2D"><path d="M3 15c0 1.657 1.343 3 3 3h12a3 3 0 0 0 3-3v-1l-4-3-3 2-4-3-2 2H4a1 1 0 0 0-1 1v2z"/></svg></span><b>Giày dép</b></div>
+      <div class="pcard pc-2" style="background:var(--m-ao)"><span class="pico"><svg viewBox="0 0 24 24" width="40" height="40" fill="#EE4D2D"><path d="M9 3 6 5 4 9v10h6V9h4v10h6V9l-2-4-3-2-2 2H11z"/></svg></span><b>Áo quần</b></div>
+      <div class="pcard pc-3" style="background:var(--m-gd)"><span class="pico"><svg viewBox="0 0 24 24" width="40" height="40" fill="#EE4D2D"><path d="M5 10h14v7a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-7zm-2 0h18v-2H3v2zm6-5h6v2H9V5z"/></svg></span><b>Gia dụng</b></div>
+      <div class="pcard pc-4" style="background:var(--m-lb)"><span class="pico"><svg viewBox="0 0 24 24" width="40" height="40" fill="#EE4D2D"><path d="M8 3h4v7H8zM7 11h6v10H7zM14 12h3v9h-3z"/></svg></span><b>Làm đẹp</b></div>
     </div>
 
     <!-- QR desktop -->
@@ -250,10 +224,10 @@
   </section>
 
   <!-- TODAY'S DEALS -->
-  <section class="card">
+  <section class="card" aria-label="Ưu đãi đang mở hôm nay">
     <h3>Ưu đãi đang mở hôm nay</h3>
     <div class="dealgrid" id="dealgrid"></div>
-    <p class="note">Nội dung chỉ mang tính gợi ý tổng quát. Vui lòng xem chi tiết điều kiện trực tiếp trong ứng dụng Shopee.</p>
+    <p class="note">Nội dung gợi ý tổng quát. Vui lòng xem chi tiết và điều kiện trong ứng dụng Shopee.</p>
     <p><a class="btn" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Mở Shopee để xem đầy đủ</a></p>
   </section>
 
@@ -268,24 +242,24 @@
       </ul>
       <p class="note">Ưu đãi thay đổi theo thời gian/khu vực. Vui lòng xem chi tiết khi mở Shopee.</p>
       <p class="row">
-        <a id="cta-1" class="btn" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Xem ưu đãi trong Shopee</a>
-        <a id="cta-2" class="btn ghost" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Mở app Shopee</a>
+        <a class="btn" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Xem ưu đãi trong Shopee</a>
+        <a class="btn ghost" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Mở app Shopee</a>
       </p>
       <p class="row">
-        <a id="copy" class="chip" href="#">📋 Sao chép link</a>
-        <a id="share" class="chip" href="#">🔗 Chia sẻ cho bạn bè</a>
+        <a id="copy" class="chip" href="#"><span class="ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14h13a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg></span> Sao chép link</a>
+        <a id="share" class="chip" href="#"><span class="ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8a3 3 0 1 0-2.83-4H9a3 3 0 1 0 0 6h6.17A3 3 0 0 0 18 8zM6 13a3 3 0 1 0 2.83 4H15a3 3 0 1 0 0-6H8.83A3 3 0 0 0 6 13z"/></svg></span> Chia sẻ cho bạn bè</a>
       </p>
     </article>
 
     <article class="card half">
       <h3>Mua sắm theo nhu cầu</h3>
       <div class="chips">
-        <a class="chip" id="cat-1" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Thời trang</a>
-        <a class="chip" id="cat-2" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Gia dụng</a>
-        <a class="chip" id="cat-3" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Công nghệ</a>
-        <a class="chip" id="cat-4" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Làm đẹp</a>
-        <a class="chip" id="cat-5" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Mẹ & Bé</a>
-        <a class="chip" id="cat-6" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Nhà bếp</a>
+        <a class="chip" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="ico" aria-hidden="true">👗</span> Thời trang</a>
+        <a class="chip" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="ico" aria-hidden="true">🏠</span> Gia dụng</a>
+        <a class="chip" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="ico" aria-hidden="true">📱</span> Công nghệ</a>
+        <a class="chip" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="ico" aria-hidden="true">💄</span> Làm đẹp</a>
+        <a class="chip" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="ico" aria-hidden="true">👶</span> Mẹ & Bé</a>
+        <a class="chip" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener"><span class="ico" aria-hidden="true">🍳</span> Nhà bếp</a>
       </div>
       <p class="note">Danh mục mang tính gợi ý. Việc chọn & thanh toán diễn ra trực tiếp trong Shopee.</p>
     </article>
@@ -313,16 +287,14 @@
     </article>
   </div>
 
-  <div class="footer">
-    © <span id="year"></span> VuHuyPhat • Tông cam cảm hứng Shopee. Không đại diện cho Shopee.
-  </div>
+  <div class="footer">© <span id="year"></span> VuHuyPhat • Tông cam cảm hứng Shopee. Không đại diện cho Shopee.</div>
 </div>
 
 <!-- FAB + Sticky + Toast -->
-<a class="fab" id="cta-fab" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Mở Shopee</a>
+<a class="fab" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener" aria-label="Mở Shopee nhanh">Mở Shopee</a>
 <div class="sticky">
   <span style="color:#fff;font-weight:900">Ưu đãi đang mở</span>
-  <a id="cta-sticky" href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener">Mua sắm ngay 🛍️</a>
+  <a href="https://s.shopee.vn/4q5pVa3C9Y" target="_blank" rel="nofollow sponsored noopener" aria-label="Mua sắm ngay">Mua sắm ngay 🛍️</a>
 </div>
 <div class="toast" id="toast">Đã sao chép link!</div>
 
@@ -333,98 +305,75 @@
 </noscript>
 
 <script>
-  /* gắn lại href theo AFF_LINK (đổi 1 chỗ) */
-  const ids=["cta-hero","cta-voucher","cta-1","cta-2","cta-fab","cta-sticky","cat-1","cat-2","cat-3","cat-4","cat-5","cat-6"];
-  ids.forEach(i=>{const a=document.getElementById(i); if(a) a.href=AFF_LINK;});
+/* headline A/B */
+document.getElementById('headline').textContent = (typeof ab==='object'&&ab)? HEADLINE_VARIANTS[ab.i] : HEADLINE_VARIANTS[0];
 
-  // A/B headline
-  const H=document.getElementById('headline'); H.textContent = (typeof ab==='object'&&ab)? HEADLINE_VARIANTS[ab.i] : HEADLINE_VARIANTS[0];
+/* countdown gợi ý nhịp */
+const countEl=document.getElementById('count');
+function nextSlot(){const now=new Date(),n=new Date(now),slots=[0,12,18];let next=new Date(now);next.setHours(24,0,0,0);for(const h of slots){const t=new Date(n);t.setHours(h,0,0,0);if(t>now){next=t;break}}return next}
+function tick(){const t=nextSlot().getTime()-Date.now(),h=Math.max(0,Math.floor(t/36e5)),m=Math.max(0,Math.floor(t%36e5/6e4)),s=Math.max(0,Math.floor(t%6e4/1e3));if(countEl)countEl.textContent=`${h}h ${m}m ${s}s`} setInterval(tick,1000); tick();
 
-  // Countdown gợi ý nhịp (không hứa hẹn)
-  const countEl=document.getElementById('count');
-  function nextSlot(){const now=new Date(),n=new Date(now),slots=[0,12,18];let next=new Date(now);next.setHours(24,0,0,0);for(const h of slots){const t=new Date(n);t.setHours(h,0,0,0);if(t>now){next=t;break}}return next}
-  function tick(){const t=nextSlot().getTime()-Date.now(),h=Math.max(0,Math.floor(t/36e5)),m=Math.max(0,Math.floor(t%36e5/6e4)),s=Math.max(0,Math.floor(t%6e4/1e3));if(countEl)countEl.textContent=`${h}h ${m}m ${s}s`}
-  setInterval(tick,1000); tick();
+/* Today's deals (gợi ý) */
+const DEALS=[
+  {title:"Freeship theo điều kiện", note:"Áp dụng theo từng chương trình trong app Shopee", alt:false},
+  {title:"Flash Sale giờ vàng", note:"Sản phẩm luân phiên trong ngày", alt:true},
+  {title:"Voucher đa ngành", note:"Thời trang • Gia dụng • Công nghệ...", alt:false},
+  {title:"Shopee Mall", note:"Hàng chính hãng • Chính sách từ Shopee", alt:true},
+  {title:"Mã sưu tầm", note:"Tìm ở mục Mã giảm giá • Voucher", alt:false},
+  {title:"Combo quà tặng", note:"Tuỳ sản phẩm & thời gian khuyến mãi", alt:true}
+];
+document.getElementById('dealgrid').innerHTML =
+  DEALS.map(d=>`<div class="deal">
+    <div><b>• ${d.title}</b><br><small>${d.note}</small></div>
+    <a class="go ${d.alt?'alt':''}" href="${AFF_LINK}" target="_blank" rel="nofollow sponsored noopener" aria-label="Mở Shopee - ${d.title}">
+      <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="#e24a2b"><path d="M12 3l3.5 6.5L22 11l-7 1-3 6-3-6-7-1 6.5-1.5L12 3z"/></svg></span>Mở Shopee
+    </a></div>`).join("");
 
-  // TODAY'S DEALS (copy gợi ý – không claim %)
-  const DEALS=[
-    {title:"Freeship theo điều kiện", note:"Áp dụng theo từng chương trình trong app Shopee", alt:false},
-    {title:"Flash Sale giờ vàng", note:"Sản phẩm luân phiên trong ngày", alt:true},
-    {title:"Voucher đa ngành", note:"Thời trang • Gia dụng • Công nghệ...", alt:false},
-    {title:"Shopee Mall", note:"Hàng chính hãng • Chính sách từ Shopee", alt:true},
-    {title:"Mã sưu tầm", note:"Tìm ở mục Mã giảm giá • Voucher", alt:false},
-    {title:"Combo quà tặng", note:"Tuỳ sản phẩm & thời gian khuyến mãi", alt:true}
-  ];
-  const grid=document.getElementById('dealgrid');
-  grid.innerHTML = DEALS.map(d=>`
-    <div class="deal">
-      <div><b>• ${d.title}</b><br><small>${d.note}</small></div>
-      <a class="go ${d.alt?'alt':''}" href="${AFF_LINK}" target="_blank" rel="nofollow sponsored noopener">
-        <span class="ico" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="#e24a2b"><path d="M12 3l3.5 6.5L22 11l-7 1-3 6-3-6-7-1 6.5-1.5L12 3z"/></svg>
-        </span>
-        Mở Shopee
-      </a>
-    </div>`).join("");
+/* progress bar */
+const prog=document.getElementById('prog');
+addEventListener('scroll',()=>{const h=document.documentElement, p=h.scrollTop/(h.scrollHeight-h.clientHeight); prog.style.transform=`scaleX(${p})`;},{passive:true});
 
-  // Progress bar khi cuộn
-  const prog=document.getElementById('prog');
-  addEventListener('scroll',()=>{const h=document.documentElement, p=h.scrollTop/(h.scrollHeight-h.clientHeight); prog.style.transform=`scaleX(${p})`;},{passive:true});
+/* copy + share + confetti + vibrate */
+const toast=document.getElementById('toast');
+function flash(){toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1200);}
+document.getElementById('copy').addEventListener('click',e=>{
+  e.preventDefault();
+  navigator.clipboard?.writeText(AFF_LINK).then(()=>{if(navigator.vibrate)navigator.vibrate(10);flash();shootConfetti();});
+});
+document.getElementById('share').addEventListener('click',e=>{
+  e.preventDefault();
+  if(navigator.share){navigator.share({title:'Ưu đãi Shopee',text:'Freeship • Flash Sale • Voucher',url:AFF_LINK});}
+  else{open(AFF_LINK,'_blank');}
+});
 
-  // Copy + Share + CONFETTI
-  const toast=document.getElementById('toast');
-  function flash(){toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1200);}
-  document.getElementById('copy').addEventListener('click',e=>{
-    e.preventDefault(); navigator.clipboard?.writeText(AFF_LINK).then(()=>{flash(); shootConfetti();});
+/* QR desktop */
+const qr=document.getElementById('qr');
+if(qr){qr.src=`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(AFF_LINK)}`}
+
+/* year */
+document.getElementById('year').textContent=new Date().getFullYear();
+
+/* Parallax CHỈ desktop có chuột */
+const hero=document.querySelector('.hero3d');
+const canParallax = matchMedia('(hover: hover) and (pointer: fine)').matches;
+if (canParallax && hero) {
+  hero.addEventListener('mousemove', e=>{
+    const r=hero.getBoundingClientRect(), nx=((e.clientX-r.left)/r.width-.5)*2, ny=((e.clientY-r.top)/r.height-.5)*2;
+    hero.style.transform=`rotateX(${ny*2.2}deg) rotateY(${nx*-2.2}deg)`;
   });
-  document.getElementById('share').addEventListener('click',e=>{
-    e.preventDefault();
-    if(navigator.share){navigator.share({title:'Ưu đãi Shopee',text:'Freeship • Flash Sale • Voucher',url:AFF_LINK});}
-    else{window.open(AFF_LINK,'_blank');}
-  });
+  hero.addEventListener('mouseleave',()=>{hero.style.transform='rotateX(.4deg) rotateY(-.6deg)';});
+} else if (hero) { hero.style.transform=''; }
 
-  // QR desktop
-  const qr=document.getElementById('qr');
-  if(qr){qr.src=`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(AFF_LINK)}`;}
-
-  // Năm
-  document.getElementById('year').textContent=new Date().getFullYear();
-
-  // Parallax CHỈ trên desktop có chuột
-  const hero=document.querySelector('.hero3d');
-  const canParallax = matchMedia('(hover: hover) and (pointer: fine)').matches;
-  if (canParallax && hero) {
-    hero.addEventListener('mousemove', e=>{
-      const r=hero.getBoundingClientRect(),
-            nx=((e.clientX-r.left)/r.width-.5)*2,
-            ny=((e.clientY-r.top)/r.height-.5)*2;
-      hero.style.transform=`rotateX(${ny*2.2}deg) rotateY(${nx*-2.2}deg)`;
-    });
-    hero.addEventListener('mouseleave',()=>{hero.style.transform='rotateX(.4deg) rotateY(-.6deg)';});
-  } else if (hero) {
-    hero.style.transform=''; // mobile: không nghiêng
-  }
-
-  // ===== Confetti mini (nhẹ) =====
-  const c=document.getElementById('confetti'), ctx=c.getContext('2d');
-  function resize(){c.width=innerWidth; c.height=innerHeight}
-  addEventListener('resize',resize); resize();
-  function shootConfetti(){
-    const N=110, P=[];
-    for(let i=0;i<N;i++){
-      P.push({x:innerWidth/2,y:innerHeight*0.28,r:Math.random()*4+2,
-              vx:(Math.random()-0.5)*6,vy:Math.random()*-6-3,
-              a:Math.random()*Math.PI,spin:(Math.random()-0.5)*0.2,
-              col:i%3? '#FFD400':'#FFFFFF'});
-    }
-    let t=0; const id=setInterval(()=>{
-      t++; ctx.clearRect(0,0,c.width,c.height);
-      P.forEach(p=>{p.vy+=0.12;p.x+=p.vx;p.y+=p.vy;p.a+=p.spin;
-        ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);
-        ctx.fillStyle=p.col;ctx.fillRect(-p.r,-p.r,p.r*2,p.r*2);ctx.restore();});
-      if(t>110){clearInterval(id);ctx.clearRect(0,0,c.width,c.height);}
-    },16);
-  }
+/* confetti mini */
+const c=document.getElementById('confetti'), ctx=c.getContext('2d');
+function resize(){c.width=innerWidth;c.height=innerHeight} addEventListener('resize',resize); resize();
+function shootConfetti(){
+  const N=110,P=[]; for(let i=0;i<N;i++){P.push({x:innerWidth/2,y:innerHeight*0.28,r:Math.random()*4+2,vx:(Math.random()-0.5)*6,vy:Math.random()*-6-3,a:Math.random()*Math.PI,spin:(Math.random()-0.5)*0.2,col:i%3?'#FFD400':'#FFFFFF'})}
+  let t=0; const id=setInterval(()=>{t++;ctx.clearRect(0,0,c.width,c.height);
+    P.forEach(p=>{p.vy+=0.12;p.x+=p.vx;p.y+=p.vy;p.a+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.fillStyle=p.col;ctx.fillRect(-p.r,-p.r,p.r*2,p.r*2);ctx.restore();});
+    if(t>110){clearInterval(id);ctx.clearRect(0,0,c.width,c.height);}
+  },16);
+}
 </script>
 </body>
 </html>
